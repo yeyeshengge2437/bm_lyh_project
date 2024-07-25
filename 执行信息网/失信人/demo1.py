@@ -110,7 +110,10 @@ def crawl_data(key, sxr_page=1):
     for page_sxr in range(sxr_page, int(fayuan_pages)):
         time.sleep(1)
         # 获取查询结果
-        # items = page.ele("#tbody-result")
+        items = page.ele("#tbody-result")
+        if "验证码错误或验证码已过期" in items.text:
+            input_captcha()
+        # print(items)
         for i in range(-2, -11 - 1, -1):
             try:
                 # 点击查看
