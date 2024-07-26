@@ -17,9 +17,10 @@ sxr_data = db['shixin']
 shixin_page = db['shixin_page']
 search_key = db['search_key']
 
-
 chaojiying = Chaojiying_Client('2437948121', 'liyongheng10', '961977')
+
 page = ChromiumPage()
+
 
 # 获取并点击提交验证码
 def click_submit_captcha():
@@ -112,15 +113,15 @@ def crawl_data(key, sxr_page=1):
         # 获取查询结果
         items = page.ele("#tbody-result")
         if "验证码错误或验证码已过期" in items.text:
-            input_captcha()
+            click_submit_captcha()
+            page.ele("#goto").input(sxr_page)
+            # 点击跳转到
+            page.ele("跳转到").click()
         # print(items)
         for i in range(-2, -11 - 1, -1):
-            try:
-                # 点击查看
-                page.ele("查看", index=i).click()
-            except:
-                # 如果没有找到查看按钮
-                return False
+
+            # 点击查看
+            page.ele("查看", index=i).click()
 
             # 如果界面上有显示验证码错误字样
             if page.ele(".layui-layer-content layui-layer-padding"):
@@ -172,7 +173,7 @@ def run():
     key = search_key.find_one({}, {"_id": 0})['province']
 
     # 如果crawl_data函数出错，重新调用
-    max_attempts = 10  # 设置最大尝试次数
+    max_attempts = 100  # 设置最大尝试次数
     attempts = 0
 
     while attempts < max_attempts:
@@ -183,7 +184,7 @@ def run():
         except Exception as e:
             print(f"发生错误：{e}")
             attempts += 1  # 增加尝试次数
-            print(f"尝试再次爬取，尝试{attempts}/{max_attempts}")
+            print(f"次：尝试再次爬取，尝试{attempts}/{max_attempts}")
 
     if attempts == max_attempts:
         print("已达到最大尝试次数。退出。")
@@ -193,4 +194,14 @@ def run():
 
 
 if __name__ == '__main__':
-    run()
+    # 如果run函数出错，重新调用
+    max_attempts = 100  # 设置最大尝试次数
+    attempts = 0
+    while attempts < max_attempts:
+        try:
+            run()
+            break
+        except Exception as e:
+            print(f"发生错误：{e}")
+            attempts += 1  # 增加尝试次数
+            print(f"主：尝试再次爬取，尝试{attempts}/{max_attempts}")
