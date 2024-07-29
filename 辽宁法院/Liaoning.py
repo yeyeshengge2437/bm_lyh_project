@@ -8,6 +8,7 @@ from threading import Thread
 import mysql.connector
 import hashlib
 import redis
+from apscheduler.schedulers.blocking import BlockingScheduler
 
 # 连接到redis数据库
 redis_conn = redis.Redis()
@@ -158,12 +159,21 @@ def run_data(proxies_value=None):
         except Exception as e:
             print(f"发生错误：{e}")
             attempts += 1  # 增加尝试次数
-            print(f"次：尝试再次爬取，尝试{attempts}/{max_attempts}")
-            if attempts == max_attempts and proxies_value is not None:
-                print("开代理也不行")
+            print(f"尝试再次爬取，尝试{attempts}/{max_attempts}")
+            if attempts == max_attempts:
+                print("开启代理")
+                try:
+                    execute(proxies_value=proxies)
+                except Exception as e:
+                    return False
                 # 进行邮箱发送
 
-    run_data(proxies_value=proxies)
 
 
-run_data()
+def my_task():
+    run_data()
+
+
+scheduler = BlockingScheduler()
+scheduler.add_job(my_task, 'interval', seconds=86400)  # 每隔24小时执行一次
+scheduler.start()

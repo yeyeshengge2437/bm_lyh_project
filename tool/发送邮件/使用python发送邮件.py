@@ -12,15 +12,22 @@ msg["Subject"] = "Python 发送邮件测试"
 msg["From"] = _user
 msg["To"] = _to
 
-i = 0
-while i < 1:
-    try:
-        s = smtplib.SMTP_SSL("smtp.qq.com", 25)
-        s.login(_user, _pwd)
-        s.sendmail(_user, _to, msg.as_string())
-        s.quit()
-        print("Success!")
-    except smtplib.SMTPException as e:
-        print("Falied,%s" % e)
-
-    i = i + 1
+# i = 0
+# while i < 1:
+#     try:
+#         s = smtplib.SMTP_SSL("smtp.qq.com", 25)
+#         s.login(_user, _pwd)
+#         s.sendmail(_user, _to, msg.as_string())
+#         s.quit()
+#         print("Success!")
+#     except smtplib.SMTPException as e:
+#         print("Falied,%s" % e)
+#
+#     i = i + 1
+s = smtplib.SMTP_SSL("smtp.qq.com", 25)
+s.connect("smtp.qq.com", 25)
+s.ehlo()
+s.login(_user, _pwd)
+s.sendmail(_user, _to, msg.as_string())
+s.quit()
+print("Success!")

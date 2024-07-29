@@ -1,17 +1,23 @@
 import base64
+import json
 import time
+from datetime import datetime
 
+import redis
 from DrissionPage import ChromiumPage, ChromiumOptions
 # from DrissionPage import WebPage
 from DrissionPage.common import Keys
-from tool.chaojiying import Chaojiying_Client
+# from tool.chaojiying import Chaojiying_Client
 import pymongo
+import ddddocr
+import mysql.connector
+import hashlib
+import redis
 
-# 连接数据库
-client = pymongo.MongoClient()
-db = client['spider']
-collection = db['南京法院']
+# 连接redis数据库
+redis_conn = redis.Redis()
 
+destination = 1
 
 def get_captcha():
     time.sleep(3)
@@ -22,7 +28,8 @@ def get_captcha():
     with open("yzm.png", "wb") as f:
         f.write(img_yzm)
 
-    captcha = chaojiying.PostPic(img_yzm, 1902)['pic_str']
+    # captcha = chaojiying.PostPic(img_yzm, 1902)['pic_str']
+    captcha = ocr.classification(img_yzm)
     print(f"验证码：{captcha}")
 
     # 点击验证码输入框，输入验证码
@@ -67,106 +74,250 @@ def jump_to_page(num):
     :return:
     """
     jump = page.ele(".el-input__inner", index=8)
-    jump.click()
-    jump.clear()
-    jump.input(num)
-    # 回车
-    jump.tab.actions.key_down('ENTER')
-
-
-# 引入验证码模板
-chaojiying = Chaojiying_Client('2437948121', 'liyongheng10', '961977')
-# co = ChromiumOptions().headless()
-# 构造实例
-page = ChromiumPage()
-# 页面最大化
-page.set.window.max()
-
-# 打开目标网页
-page.get("https://ssfw.njfy.gov.cn/#/ktggList")
-# 点击日期
-date = page.ele(".el-input__inner", index=5)
-date.clear()
-date.input("2025-7-27")
-# 点击回车
-date.tab.actions.key_down('ENTER')
-
-page.wait(2)
-
-get_captcha()
-
-# 点击搜索按钮
-click_Inquire()
-
-# 如果提示元素出现
-error_dispose()
-
-# 获取数据
-# 等待页面加载完成
-page.wait.ele_displayed('.el-table__row')
-elements = page.eles('.el-table__row')
-
-# 获取共多少页
-total_page = int(page.ele(".el-pagination__total").text.split("共")[1].split("条")[0])
-total_page = int(total_page / 10) + 1
-print(f"共{total_page}页")
-
-# # 遍历元素
-# for element in elements:
-#     # 获取到的数据
-#     # print(element.text)
-#     # 存储到数据库
-#     collection.insert_one({"data": element.text})
-
-
-
-# page_now = 1
-
-for page_now in range(1, total_page):
-    # 等待页面加载完成
-    page.wait.ele_displayed('.el-table__row')
-    elements = page.eles('.el-table__row')
-    # 遍历元素
-    for element in elements:
-        # 获取到的数据
-        # print(element.text)
-        # 存储到数据库
-        collection.insert_one({"data": element.text})
-
-
-    # try:
-    #     # 获取下一页的状态
-    #     next_page_state = page.ele(".el-icon el-icon-arrow-right").parent().attr("disabled")
-    #     # 获取当前页数
-    #     # page_now = int(page.ele(".number active").text)
-    # except Exception as e:
-    #     print(f"获取下一页状态发生错误：{e}")
-    #     # 再次获取验证码
-    #     get_captcha()
-    #     click_Inquire()
-    #     get_captcha()
-    #     jump_to_page(page_now)
-
-    # 再次获取验证码
-    get_captcha()
-    try:
-        # 点击下一页
-        page.ele(".el-icon el-icon-arrow-right").click()
-    except Exception as e:
-        print(f"点击下一页发生错误：{e}")
+    if jump:
+        jump.click()
+        jump.clear()
+        jump.input(num)
+        # 回车
+        jump.tab.actions.key_down('ENTER')
+    else:
         get_captcha()
         click_Inquire()
         get_captcha()
-        jump_to_page(page_now)
-
-    # 错误处理
-    value_error = error_dispose()
-    # 跳转到当前爬取界面
-    if value_error:
-        jump_to_page(page_now)
-
-    print(page_now)
+        time.sleep(3)
+        jump_to_page(num)
 
 
-# 关闭浏览器
-page.quit()
+
+# 引入验证码模板
+# chaojiying = Chaojiying_Client('2437948121', 'liyongheng10', '961977')
+ocr = ddddocr.DdddOcr()
+
+# co = ChromiumOptions().headless()
+page = ChromiumPage()
+
+
+def run(destination_page):
+
+    # 页面最大化
+    page.set.window.max()
+    # 打开目标网页
+    page.get("https://ssfw.njfy.gov.cn/#/ktggList")
+    # 点击日期
+    date = page.ele(".el-input__inner", index=5)
+    date.clear()
+    # 获取两个月之后的日期
+    date.input(time.strftime('%Y-%m-%d', time.localtime(time.time() + 60 * 60 * 24 * 60)))
+    # 点击回车
+    date.tab.actions.key_down('ENTER')
+
+    page.wait(2)
+
+    get_captcha()
+
+    # 点击搜索按钮
+    click_Inquire()
+
+    # 如果提示元素出现
+    error_dispose()
+
+    # 获取数据
+    # 等待页面加载完成
+    page.wait.ele_displayed('.el-table__row')
+    elements = page.eles('.el-table__row')
+
+    # 获取共多少页
+    total_page = int(page.ele(".el-pagination__total").text.split("共")[1].split("条")[0])
+    total_page = int(total_page / 10) + 1
+    print(f"共{total_page}页")
+
+    # # 遍历元素
+    # for element in elements:
+    #     # 获取到的数据
+    #     # print(element.text)
+    #     # 存储到数据库
+    #     collection.insert_one({"data": element.text})
+
+    if destination_page != 1:
+        get_captcha()
+        jump_to_page(destination_page)
+
+    for page_now in range(destination_page, total_page):
+        # 等待页面加载完成
+        page.wait.ele_displayed('.el-table__row')
+        elements = page.eles('.el-table__row')
+        # 遍历元素
+        for element in elements:
+            # 获取到的数据
+            element = element.text
+            value = element.split('\n\t')
+            # 设置创建时间
+            create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            # 设置创建日期
+            create_date = datetime.now().strftime('%Y-%m-%d')
+            # 来源
+            origin = "南京中级人民法院开庭公告"
+            # 来源域名
+            origin_domain = "ssfw.njfy.gov.cn"
+            if len(value) == 10:
+                # 案号
+                case_no = value[0]
+                # 案由
+                cause = value[1]
+                # 当事人
+                members = value[2]
+                # 审理法院
+                trial_court = value[3]
+                # 承办人
+                room_leader = value[4]
+                # 承办部门
+                department = value[5]
+                # 是否公开开庭
+                is_public = value[6].split('\t')[-1]
+                # 开庭法院
+                court_room = value[7]
+                # 开庭日期
+                open_date = value[8] + " " + value[9]
+
+                # 确定唯一值
+                unique = case_no
+                # 数据去重
+                hash_value = hashlib.md5(json.dumps(unique).encode('utf-8')).hexdigest()
+                if not redis_conn.sismember("nanjing_set", hash_value):
+                    # 不重复哈希值添加到集合中
+                    redis_conn.sadd("nanjing_set", hash_value)
+                    print("新数据：", unique)
+
+                    # 连接到测试库
+                    conn_test = mysql.connector.connect(
+                        host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                        user="col2024",
+                        password="Bm_a12a06",
+                        database="col_test"
+                    )
+                    cursor_test = conn_test.cursor()
+                    # 将数据插入到case_open_copy1表中
+                    insert_sql = "INSERT INTO case_open_copy1 (case_no, cause, court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date) VALUES (%s,  %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+
+                    cursor_test.execute(insert_sql, (
+                        case_no, cause, trial_court, members, open_date, court_room, room_leader, department,
+                        origin,
+                        origin_domain, create_time, create_date))
+                    print("插入成功")
+                    conn_test.commit()
+                    cursor_test.close()
+                    conn_test.close()
+                else:
+                    print("重复数据：", unique)
+
+            else:
+                # 案号
+                case_no = value[0]
+                # 案由
+                cause = value[1]
+                # 当事人
+                members = value[2]
+                # 审理法院
+                trial_court = value[3]
+                # 承办人
+                room_leader = value[4]
+                # 承办部门
+                department = value[5]
+                # 书记员
+                clerk = value[6]
+                # 是否公开开庭
+                is_public = value[7]
+                # 开庭法院
+                court_room = value[8]
+                # 开庭日期
+                open_date = value[9] + " " + value[10]
+
+                # 确定唯一值
+                unique = case_no
+                # 数据去重
+                hash_value = hashlib.md5(json.dumps(unique).encode('utf-8')).hexdigest()
+                if not redis_conn.sismember("nanjing_set", hash_value):
+                    # 不重复哈希值添加到集合中
+                    redis_conn.sadd("nanjing_set", hash_value)
+                    print("新数据：", unique)
+
+                    # 连接到测试库
+                    conn_test = mysql.connector.connect(
+                        host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                        user="col2024",
+                        password="Bm_a12a06",
+                        database="col_test"
+                    )
+                    cursor_test = conn_test.cursor()
+                    # 将数据插入到case_open_copy1表中
+                    insert_sql = "INSERT INTO case_open_copy1 (case_no, cause, court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date) VALUES (%s,  %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+
+                    cursor_test.execute(insert_sql, (
+                        case_no, cause, trial_court, members, open_date, court_room, room_leader, department,
+                        origin,
+                        origin_domain, create_time, create_date))
+                    print("插入成功")
+                    conn_test.commit()
+                    cursor_test.close()
+                    conn_test.close()
+                else:
+                    print("重复数据：", unique)
+            # 存储到数据库
+            # collection.insert_one({"data": element.text})
+
+        destination = page_now
+
+        # try:
+        #     # 获取下一页的状态
+        #     next_page_state = page.ele(".el-icon el-icon-arrow-right").parent().attr("disabled")
+        #     # 获取当前页数
+        #     # page_now = int(page.ele(".number active").text)
+        # except Exception as e:
+        #     print(f"获取下一页状态发生错误：{e}")
+        #     # 再次获取验证码
+        #     get_captcha()
+        #     click_Inquire()
+        #     get_captcha()
+        #     jump_to_page(page_now)
+
+        # 再次获取验证码
+        get_captcha()
+        try:
+            # 点击下一页
+            page.ele(".el-icon el-icon-arrow-right").click()
+        except Exception as e:
+            print(f"点击下一页发生错误：{e}")
+            get_captcha()
+            click_Inquire()
+            get_captcha()
+            time.sleep(3)
+            jump_to_page(page_now)
+
+        # 错误处理
+        value_error = error_dispose()
+        # 跳转到当前爬取界面
+        if value_error:
+            jump_to_page(page_now)
+
+        print(page_now)
+
+    # 关闭浏览器
+    page.quit()
+
+
+max_attempts = 5  # 设置最大尝试次数
+attempts = 0
+
+while attempts < max_attempts:
+    try:
+        run(destination)
+        break  # 如果函数执行成功，退出循环
+    except Exception as e:
+        # 关闭浏览器
+        page.quit()
+        print(f"发生错误：{e}")
+        attempts += 1  # 增加尝试次数
+        print(f"尝试再次爬取，尝试{attempts}/{max_attempts}")
+
+if attempts == max_attempts:
+    print("已达到最大尝试次数。退出。")

@@ -6,5 +6,5 @@ def my_task():
 
 
 scheduler = BlockingScheduler()
-scheduler.add_job(my_task, 'interval', seconds=5)  # 每隔5秒执行一次
+scheduler.add_job(my_task, 'interval', seconds=86400)  # 每隔24小时执行一次
 scheduler.start()
