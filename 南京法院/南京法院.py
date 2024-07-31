@@ -3,7 +3,6 @@ import json
 import time
 from datetime import datetime
 
-import redis
 from DrissionPage import ChromiumPage, ChromiumOptions
 # from DrissionPage import WebPage
 from DrissionPage.common import Keys
@@ -18,6 +17,14 @@ import redis
 redis_conn = redis.Redis()
 
 destination = 1
+
+# 引入验证码模板
+# chaojiying = Chaojiying_Client('2437948121', 'liyongheng10', '961977')
+ocr = ddddocr.DdddOcr()
+
+# co = ChromiumOptions().headless()
+page = ChromiumPage(9111)
+
 
 def get_captcha():
     time.sleep(3)
@@ -86,15 +93,6 @@ def jump_to_page(num):
         get_captcha()
         time.sleep(3)
         jump_to_page(num)
-
-
-
-# 引入验证码模板
-# chaojiying = Chaojiying_Client('2437948121', 'liyongheng10', '961977')
-ocr = ddddocr.DdddOcr()
-
-# co = ChromiumOptions().headless()
-page = ChromiumPage()
 
 
 def run(destination_page):
@@ -284,7 +282,7 @@ def run(destination_page):
         get_captcha()
         try:
             # 点击下一页
-            page.ele(".el-icon el-icon-arrow-right").click()
+            page.ele(".el-icon el-icon-arrow-right").click(by_js=True)
         except Exception as e:
             print(f"点击下一页发生错误：{e}")
             get_captcha()

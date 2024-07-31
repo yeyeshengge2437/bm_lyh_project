@@ -14,11 +14,11 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 redis_conn = redis.Redis()
 
 # 隧道域名:端口号
-tunnel = "k671.kdltps.com:15818"
+tunnel = "x170.kdltps.com:15818"
 
 # 用户名密码方式
-username = "t12187029344112"
-password = "7jx55k73"
+username = "t12231186154417"
+password = "kp1840rx"
 proxies = {
     "http": "http://%(user)s:%(pwd)s@%(proxy)s/" % {"user": username, "pwd": password, "proxy": tunnel},
     "https": "http://%(user)s:%(pwd)s@%(proxy)s/" % {"user": username, "pwd": password, "proxy": tunnel}
@@ -97,7 +97,7 @@ def execute(proxies_value=None):
                 # 设置创建日期
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 来源
-                origin = "辽宁省法院诉讼服务网开通公告"
+                origin = "辽宁省法院诉讼服务网开庭公告"
                 # 来源域名
                 origin_domain = "lnsfw.lnsfy.gov.cn"
                 data = f"案号：{case_no}"
@@ -174,6 +174,8 @@ def my_task():
     run_data()
 
 
-scheduler = BlockingScheduler()
-scheduler.add_job(my_task, 'interval', seconds=86400)  # 每隔24小时执行一次
-scheduler.start()
+# scheduler = BlockingScheduler()
+# scheduler.add_job(my_task, 'interval', seconds=86400)  # 每隔24小时执行一次
+# scheduler.start()
+
+run_data()
