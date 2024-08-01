@@ -11,26 +11,31 @@ import requests
 from DrissionPage import ChromiumPage, ChromiumOptions, WebPage
 import redis
 
-
 # 连接到redis数据库
 redis_conn = redis.Redis()
 
 ocr = ddddocr.DdddOcr()
 
-court_names = ['广东自由贸易区南沙片区人民法院',
-               '广州市荔湾区人民法院',
-               '广州市越秀区人民法院',
-               '广州市海珠区人民法院',
-               '广州市黄埔区人民法院',
-               '广州市白云区人民法院',
-               '广州市花都区人民法院',
-               '广州市增城区人民法院',
-               '广州市番禺区人民法院',
-               '广州市南沙区人民法院',
-               '广州市天河区人民法院',
-               '广州市从化区人民法院',
-               '广州互联网法院']
-
+court_names = [
+    '广东自由贸易区南沙片区人民法院',
+    '广州市荔湾区人民法院',
+    '广州市越秀区人民法院',
+    '广州市海珠区人民法院',
+    '广州市黄埔区人民法院',
+    '广州市白云区人民法院',
+    '广州市花都区人民法院',
+    '广州市增城区人民法院',
+    '广州市番禺区人民法院',
+    '广州市南沙区人民法院',
+    '广州市天河区人民法院',
+    '广州市从化区人民法院',
+    '广州互联网法院'
+]
+# court_names = [
+#     '广州市天河区人民法院',
+#     '广州市从化区人民法院',
+#     '广州互联网法院'
+# ]
 # 隧道域名:端口号
 tunnel = "x170.kdltps.com:15818"
 
@@ -38,7 +43,7 @@ co = ChromiumOptions()
 co.set_proxy("http://" + tunnel)
 
 # page = WebPage(chromium_options=co)
-page = ChromiumPage(9222)
+page = ChromiumPage(9113)
 
 
 # page = WebPage()
@@ -82,9 +87,15 @@ page_num = 1
 # while page.ele('暂无数据'):
 #     page.refresh()
 for court_name in court_names:
-
-    page.ele('.el-input__icon el-icon-arrow-down').click()
-    time.sleep(2)
+    page.wait.ele_displayed('.el-input__icon el-icon-arrow-down')
+    court_ele = page.ele('.el-input__icon el-icon-arrow-down')
+    court_ele.click()
+    time.sleep(4)
+    if court_ele.text == '暂无数据':
+        court_ele.click()
+        time.sleep(4)
+        court_ele.click()
+    page.wait.ele_displayed(court_name)
     page.ele(court_name).click()
 
     # 验证码部分——————————————————————————
@@ -162,8 +173,8 @@ for court_name in court_names:
                     print("重复数据：", data_unique)
 
         time.sleep(15)
+        # 点击下一页——————————————————————————————
         page.ele(".btn-next").click()
-        # warning_message_processing()
         warning_value = warning_message_processing()
         if warning_value:
             time.sleep(4)
@@ -171,3 +182,8 @@ for court_name in court_names:
             jump_page = page.ele('.el-input__inner', index=-1)
             jump_page.input(page_num, clear=True)
             jump_page.tab.actions.key_down('ENTER')
+        page.wait.ele_hidden('.el-loading-text')
+        # warning_message_processing()
+
+
+page.close()

@@ -47,12 +47,10 @@ def execute(proxies_value=None):
     }
     data = json.dumps(data, separators=(',', ':'))
     response = requests.post(url, headers=headers, data=data, proxies=proxies_value)
-    print(response.json())
-
     total_page = response.json()["data"]["pages"]
-    print(f"总页数{total_page}")
 
-    def run(new_data_num=0):
+    new_data_num = 0
+    def run():
         while not task_queue.empty():
             page = task_queue.get()
             url = "https://lnsfw.lnsfy.gov.cn//lawsuit/api/case-center/v1/third/court/external/getCourtAnnouncementInfo"
@@ -64,7 +62,7 @@ def execute(proxies_value=None):
                 "pageSize": 80,
                 "slfy": "21"
             }
-            print(f"当前爬取{page}页")
+
             data = json.dumps(data, separators=(',', ':'))
             response = requests.post(url, headers=headers, data=data, proxies=proxies_value)
             time.sleep(1)
@@ -107,7 +105,8 @@ def execute(proxies_value=None):
                 if not redis_conn.sismember("liaoning_set", hash_value):
                     # 不重复哈希值添加到集合中
                     redis_conn.sadd("liaoning_set", hash_value)
-                    print("新数据：", data)
+
+                    global new_data_num
                     new_data_num += 1
                     # 连接到测试库
                     conn_test = mysql.connector.connect(
@@ -124,12 +123,9 @@ def execute(proxies_value=None):
                         case_no, cause, court, members, open_time, court_room, room_leader, department,
                         origin,
                         origin_domain, create_time, create_date))
-                    print("插入成功")
                     conn_test.commit()
                     cursor_test.close()
                     conn_test.close()
-                else:
-                    print("重复数据：", data)
         print(f"本次爬取新增数据量：{new_data_num}")
 
     if __name__ == '__main__':
