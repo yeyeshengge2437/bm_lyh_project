@@ -1,14 +1,14 @@
-import os
 
 from DrissionPage import ChromiumPage, ChromiumOptions
-import requests
 from lxml import etree
 import mysql.connector
-import json
 import time
 from datetime import datetime
-
-produce_url = "http://121.43.164.84:29875"
+import os
+import json
+import requests
+produce_url = "http://121.43.164.84:29875"  # 生产环境
+# produce_url = "http://121.43.164.84:29775"    # 测试环境
 test_url = produce_url
 
 requests.DEFAULT_RETRIES = 3
@@ -126,7 +126,8 @@ page = ChromiumPage(co)
 now = datetime.now()
 date_str = now.strftime('%Y%m%d')
 structure_url = f"http://epaper.legaldaily.com.cn/fzrb/content/{date_str}/"
-des_url = structure_url + 'PageArticleIndexBT.htm'
+# des_url = structure_url + 'PageArticleIndexBT.htm'
+des_url = 'http://epaper.legaldaily.com.cn/fzrb/content/20240806/Page01TB.htm'
 
 # 打开网页
 page.get(des_url)
@@ -140,73 +141,94 @@ if page.url != des_url:
 else:
     html = etree.HTML(page.html)
 
-    # 获取所有标题
-    all_titles = html.xpath("//tbody/tr/td[2]/table[3]/tbody/tr/td[2]/a")
-    # 创建pdf文件路径集合
-    pdf_path = set()
-    # 遍历所有标题
-    for title in all_titles:
-        # 判断标题是否有公告等字样
-        if '公告' in title.text:
-            # 获取标题对应的链接
-            link = title.xpath("./@href")[0]
-            ann_link = structure_url + link
-            page.get(ann_link)
-            ann_html = etree.HTML(page.html)
+    # 获取所有版面
+    all_bm = html.xpath("//table[3]/tbody/tr/td/a[@class='atitle']")
+    # 遍历所有版面
+    for bm in all_bm:
+        # 获取版面名称
+        bm_name = bm.xpath("./text()")[0]
+        # 获取版面链接
+        bm_link = bm.xpath("./@href")[0]
+        bm_link = structure_url + bm_link
+        page.get(bm_link)
+        bm_html = etree.HTML(page.html)
+        # 获取所有文章标题
+        all_titles = bm_html.xpath("//table[5]/tbody/tr/td[2]/a[@class='atitle']")
+        # 创建pdf文件路径集合
+        pdf_path = set()
+        # 遍历所有文章标题
+        for title in all_titles:
 
-            # 获取pdf地址
-            paper_pdf = ann_html.xpath("//tr[2]/td/table/tbody/tr/td[8]/a[@class='14']/@href")[0]
-            paper_pdf = paper_pdf.strip('../../')
-            paper_pdf_url = 'http://epaper.legaldaily.com.cn/fzrb/' + paper_pdf
-            if paper_pdf_url not in pdf_path:
-                pdf_path.add(paper_pdf_url)
-                file_name = paper_pdf.strip('.pdf').replace("/", "_")
-                value = upload_pdf_by_url(paper_pdf_url, file_name=file_name)
-                if value:
-                    # 上传到数据库
-                    conn_test = mysql.connector.connect(
-                        host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
-                        user="col2024",
-                        password="Bm_a12a06",
-                        database="col"
-                    )
-                    cursor_test = conn_test.cursor()
-                    name = '公告'
-                    pdf_url = value
-                    page_url = des_url
-                    original_pdf = paper_pdf_url
+            # 遍历所有标题
+            for title in all_titles:
+                # 判断标题是否有公告等字样
+                if '公告' in title.text:
+                    # 获取标题对应的链接
+                    link = title.xpath("./@href")[0]
+                    ann_link = structure_url + link
+                    page.get(ann_link)
+                    ann_html = etree.HTML(page.html)
 
-                    # 将数据插入到表中
-                    insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date) VALUES (%s,%s, %s, %s,%s, %s, %s, %s, %s)"
+                    # 获取pdf地址
+                    paper_pdf = ann_html.xpath("//tr[2]/td/table/tbody/tr/td[8]/a[@class='14']/@href")[0]
+                    paper_pdf = paper_pdf.strip('../../')
+                    paper_pdf_url = 'http://epaper.legaldaily.com.cn/fzrb/' + paper_pdf
+                    if paper_pdf_url not in pdf_path:
+                        pdf_path.add(paper_pdf_url)
+                        file_name = paper_pdf.strip('.pdf').replace("/", "_")
+                        value = upload_pdf_by_url(paper_pdf_url, file_name=file_name)
+                        if value:
+                            # 上传到数据库
+                            conn_test = mysql.connector.connect(
+                                host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                                user="col2024",
+                                password="Bm_a12a06",
+                                database="col"
+                            )
+                            cursor_test = conn_test.cursor()
+                            name = bm_name
+                            pdf_url = value
+                            page_url = bm_link
+                            original_pdf = paper_pdf_url
 
-                    cursor_test.execute(insert_sql, (
-                        day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date))
-                    conn_test.commit()
-                    cursor_test.close()
-                    conn_test.close()
+                            # 将数据插入到表中
+                            insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date) VALUES (%s,%s, %s, %s,%s, %s, %s, %s, %s)"
 
-            # 获取公告内容
-            ann_contents = ann_html.xpath(
-                "//span[2]/table[2]/tbody/tr/td/table[2]/tbody/tr/td//br/following-sibling::text()[1]")
-            for content in ann_contents:
-                if any(key in content for key in claims_keys):
-                    conn_test = mysql.connector.connect(
-                        host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
-                        user="col2024",
-                        password="Bm_a12a06",
-                        database="col"
-                    )
-                    page_url = ann_link
-                    cursor_test = conn_test.cursor()
-                    insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date) VALUES (%s,%s, %s,%s, %s, %s, %s, %s, %s)"
+                            cursor_test.execute(insert_sql, (
+                                day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue,
+                                create_date))
+                            conn_test.commit()
+                            cursor_test.close()
+                            conn_test.close()
 
-                    cursor_test.execute(insert_sql,
-                                        (page_url, day, paper, title, content, ann_link, create_time, from_queue,
-                                         create_date))
-                    conn_test.commit()
-                    cursor_test.close()
-                    conn_test.close()
-    success_data = {
-        "id": from_queue,
-    }
-    paper_queue_success(success_data)
+                    # 获取公告内容
+                    ann_contents = ann_html.xpath(
+                        "//span[2]/table[2]/tbody/tr/td/table[2]/tbody/tr/td//br/following-sibling::text()[1]")
+                    for content in ann_contents:
+                        if any(key in content for key in claims_keys):
+                            conn_test = mysql.connector.connect(
+                                host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                                user="col2024",
+                                password="Bm_a12a06",
+                                database="col"
+                            )
+                            page_url = ann_link
+                            cursor_test = conn_test.cursor()
+                            insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date) VALUES (%s,%s, %s,%s, %s, %s, %s, %s, %s)"
+
+                            cursor_test.execute(insert_sql,
+                                                (
+                                                page_url, day, paper, title, content, ann_link, create_time, from_queue,
+                                                create_date))
+                            conn_test.commit()
+                            cursor_test.close()
+                            conn_test.close()
+            success_data = {
+                "id": from_queue,
+            }
+            paper_queue_success(success_data)
+
+
+
+
+
