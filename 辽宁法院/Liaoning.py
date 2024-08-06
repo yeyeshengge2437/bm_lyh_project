@@ -47,101 +47,91 @@ def execute(proxies_value=None):
     }
     data = json.dumps(data, separators=(',', ':'))
     response = requests.post(url, headers=headers, data=data, proxies=proxies_value)
-    total_page = response.json()["data"]["pages"]
+    # 获取状态码
+    status_message = response.json()["message"]
+    if status_message == '操作成功！':
+        total_page = response.json()["data"]["pages"]
+    else:
+        return '网页问题'
 
     new_data_num = 0
-    def run():
-        while not task_queue.empty():
-            page = task_queue.get()
-            url = "https://lnsfw.lnsfy.gov.cn//lawsuit/api/case-center/v1/third/court/external/getCourtAnnouncementInfo"
-            data = {
-                "ah": "",
-                "curPage": page,
-                "ktrqBegin": "20240724",
-                "ktrqEnd": "20250731",
-                "pageSize": 80,
-                "slfy": "21"
-            }
+    data_num = 0
 
-            data = json.dumps(data, separators=(',', ':'))
-            response = requests.post(url, headers=headers, data=data, proxies=proxies_value)
-            time.sleep(1)
-            for item in response.json()["data"]["records"]:
-                # 案号
-                case_no = item["ah"]
-                # 案由
-                cause = item["ay"]
-                # 法院
-                court = item["fymc"]
-                # 当事人
-                members = item["dsr"]
-                # 内容
-                # content = item["zxnr"]
+    for page in range(1, total_page):
+        url = "https://lnsfw.lnsfy.gov.cn//lawsuit/api/case-center/v1/third/court/external/getCourtAnnouncementInfo"
+        data = {
+            "ah": "",
+            "curPage": page,
+            "ktrqBegin": "20240724",
+            "ktrqEnd": "20250731",
+            "pageSize": 80,
+            "slfy": "21"
+        }
 
-                # 开庭时间
-                open_time = item["ktrq"] + " " + item["kssj"]
-                # 开庭地点
-                court_room = item["ktft"]
-                # 审判长
-                room_leader = item["cbrDesc"]
-                # 部门
-                department = item["cbbmDesc"]
-                # url = "https://lnsfw.lnsfy.gov.cn/lnssfw/pages/gsgg/gglist.html?lx=ktgg"
-                # 发布时间
-                # release_date = item["ktrq"]
-                # update_time = item["gxsj"]
-                # 设置创建时间
-                create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                # 设置创建日期
-                create_date = datetime.now().strftime('%Y-%m-%d')
-                # 来源
-                origin = "辽宁省法院诉讼服务网开庭公告"
-                # 来源域名
-                origin_domain = "lnsfw.lnsfy.gov.cn"
-                data = f"案号：{case_no}"
-                # 数据去重
-                hash_value = hashlib.md5(json.dumps(data).encode('utf-8')).hexdigest()
-                # 判断唯一的哈希值是否在集合中
-                if not redis_conn.sismember("liaoning_set", hash_value):
-                    # 不重复哈希值添加到集合中
-                    redis_conn.sadd("liaoning_set", hash_value)
+        data = json.dumps(data, separators=(',', ':'))
+        response = requests.post(url, headers=headers, data=data, proxies=proxies_value)
+        time.sleep(1)
+        for item in response.json()["data"]["records"]:
+            data_num += 1
+            # 案号
+            case_no = item["ah"]
+            # 案由
+            cause = item["ay"]
+            # 法院
+            court = item["fymc"]
+            # 当事人
+            members = item["dsr"]
+            # 内容
+            # content = item["zxnr"]
 
-                    global new_data_num
-                    new_data_num += 1
-                    # 连接到测试库
-                    conn_test = mysql.connector.connect(
-                        host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
-                        user="col2024",
-                        password="Bm_a12a06",
-                        database="col_test"
-                    )
-                    cursor_test = conn_test.cursor()
-                    # 将数据插入到case_open_copy1表中
-                    insert_sql = "INSERT INTO case_open_copy1 (case_no, cause, court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date) VALUES (%s,  %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            # 开庭时间
+            open_time = item["ktrq"] + " " + item["kssj"]
+            # 开庭地点
+            court_room = item["ktft"]
+            # 审判长
+            room_leader = item["cbrDesc"]
+            # 部门
+            department = item["cbbmDesc"]
+            # url = "https://lnsfw.lnsfy.gov.cn/lnssfw/pages/gsgg/gglist.html?lx=ktgg"
+            # 发布时间
+            # release_date = item["ktrq"]
+            # update_time = item["gxsj"]
+            # 设置创建时间
+            create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            # 设置创建日期
+            create_date = datetime.now().strftime('%Y-%m-%d')
+            # 来源
+            origin = "辽宁省法院诉讼服务网开庭公告"
+            # 来源域名
+            origin_domain = "lnsfw.lnsfy.gov.cn"
+            data = f"案号：{case_no}"
+            # 数据去重
+            hash_value = hashlib.md5(json.dumps(data).encode('utf-8')).hexdigest()
+            # 判断唯一的哈希值是否在集合中
+            if not redis_conn.sismember("liaoning_set", hash_value):
+                # 不重复哈希值添加到集合中
+                redis_conn.sadd("liaoning_set", hash_value)
+                # 连接到测试库
+                conn_test = mysql.connector.connect(
+                    host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                    user="col2024",
+                    password="Bm_a12a06",
+                    database="col_test"
+                )
+                cursor_test = conn_test.cursor()
+                # 将数据插入到case_open_copy1表中
+                insert_sql = "INSERT INTO case_open_copy1 (case_no, cause, court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date) VALUES (%s,  %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-                    cursor_test.execute(insert_sql, (
-                        case_no, cause, court, members, open_time, court_room, room_leader, department,
-                        origin,
-                        origin_domain, create_time, create_date))
-                    conn_test.commit()
-                    cursor_test.close()
-                    conn_test.close()
-        print(f"本次爬取新增数据量：{new_data_num}")
-
-    if __name__ == '__main__':
-        task_queue = Queue()
-
-        for page in range(1, total_page):
-            task_queue.put(page)
-
-        t_list = []
-        for i in range(3):
-            t = Thread(target=run)
-            t_list.append(t)
-            t.start()
-
-        for t in t_list:
-            t.join()
+                cursor_test.execute(insert_sql, (
+                    case_no, cause, court, members, open_time, court_room, room_leader, department,
+                    origin,
+                    origin_domain, create_time, create_date))
+                conn_test.commit()
+                cursor_test.close()
+                conn_test.close()
+                new_data_num += 1
+    print(f"本次爬取数据量：{data_num}")
+    print(f"本次爬取新增数据量：{new_data_num}")
 
 
 def run_data(proxies_value=None):
@@ -150,7 +140,8 @@ def run_data(proxies_value=None):
 
     while attempts < max_attempts:
         try:
-            execute(proxies_value=proxies_value)
+            value = execute(proxies_value=proxies_value)
+            print(value)
             break
         except Exception as e:
             print(f"发生错误：{e}")
@@ -162,16 +153,6 @@ def run_data(proxies_value=None):
                     execute(proxies_value=proxies)
                 except Exception as e:
                     return False
-                # 进行邮箱发送
 
-
-
-def my_task():
-    run_data()
-
-
-# scheduler = BlockingScheduler()
-# scheduler.add_job(my_task, 'interval', seconds=86400)  # 每隔24小时执行一次
-# scheduler.start()
 
 run_data()

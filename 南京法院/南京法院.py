@@ -22,8 +22,11 @@ destination = 1
 # chaojiying = Chaojiying_Client('2437948121', 'liyongheng10', '961977')
 ocr = ddddocr.DdddOcr()
 
-# co = ChromiumOptions().headless()
-page = ChromiumPage(9111)
+co = ChromiumOptions()
+co = co.set_argument('--no-sandbox')  # 关闭沙箱模式, 解决`$DISPLAY`报错
+co = co.headless(True)  # 开启无头模式, 解决`浏览器无法连接`报错
+
+page = ChromiumPage(co)
 
 
 def get_captcha():
@@ -63,8 +66,8 @@ def error_dispose():
     """
     message = page.ele('@class:el-message')
     if message:
-        # 获取元素文本
-        print(message.text)
+        # # 获取元素文本
+        # print(message.text)
         # 再次获取验证码
         get_captcha()
         # 点击查询
@@ -96,7 +99,6 @@ def jump_to_page(num):
 
 
 def run(destination_page):
-
     # 页面最大化
     page.set.window.max()
     # 打开目标网页
@@ -127,7 +129,7 @@ def run(destination_page):
     # 获取共多少页
     total_page = int(page.ele(".el-pagination__total").text.split("共")[1].split("条")[0])
     total_page = int(total_page / 10) + 1
-    print(f"共{total_page}页")
+
 
     # # 遍历元素
     # for element in elements:
@@ -140,12 +142,16 @@ def run(destination_page):
         get_captcha()
         jump_to_page(destination_page)
 
+    data_num = 0
+    new_data_num = 0
+
     for page_now in range(destination_page, total_page):
         # 等待页面加载完成
         page.wait.ele_displayed('.el-table__row')
         elements = page.eles('.el-table__row')
         # 遍历元素
         for element in elements:
+            data_num += 1
             # 获取到的数据
             element = element.text
             value = element.split('\n\t')
@@ -184,7 +190,8 @@ def run(destination_page):
                 if not redis_conn.sismember("nanjing_set", hash_value):
                     # 不重复哈希值添加到集合中
                     redis_conn.sadd("nanjing_set", hash_value)
-                    print("新数据：", unique)
+
+                    new_data_num += 1
 
                     # 连接到测试库
                     conn_test = mysql.connector.connect(
@@ -201,12 +208,11 @@ def run(destination_page):
                         case_no, cause, trial_court, members, open_date, court_room, room_leader, department,
                         origin,
                         origin_domain, create_time, create_date))
-                    print("插入成功")
+                    # print("插入成功")
                     conn_test.commit()
                     cursor_test.close()
                     conn_test.close()
-                else:
-                    print("重复数据：", unique)
+
 
             else:
                 # 案号
@@ -237,29 +243,28 @@ def run(destination_page):
                 if not redis_conn.sismember("nanjing_set", hash_value):
                     # 不重复哈希值添加到集合中
                     redis_conn.sadd("nanjing_set", hash_value)
-                    print("新数据：", unique)
+
 
                     # 连接到测试库
                     conn_test = mysql.connector.connect(
                         host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
                         user="col2024",
                         password="Bm_a12a06",
-                        database="col_test"
+                        database="col"
                     )
                     cursor_test = conn_test.cursor()
                     # 将数据插入到case_open_copy1表中
-                    insert_sql = "INSERT INTO case_open_copy1 (case_no, cause, court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date) VALUES (%s,  %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                    insert_sql = "INSERT INTO case_open (case_no, cause, court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date) VALUES (%s,  %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
                     cursor_test.execute(insert_sql, (
                         case_no, cause, trial_court, members, open_date, court_room, room_leader, department,
                         origin,
                         origin_domain, create_time, create_date))
-                    print("插入成功")
+
                     conn_test.commit()
                     cursor_test.close()
                     conn_test.close()
-                else:
-                    print("重复数据：", unique)
+
             # 存储到数据库
             # collection.insert_one({"data": element.text})
 
@@ -284,7 +289,7 @@ def run(destination_page):
             # 点击下一页
             page.ele(".el-icon el-icon-arrow-right").click(by_js=True)
         except Exception as e:
-            print(f"点击下一页发生错误：{e}")
+
             get_captcha()
             click_Inquire()
             get_captcha()
@@ -297,7 +302,9 @@ def run(destination_page):
         if value_error:
             jump_to_page(page_now)
 
-        print(page_now)
+    # 获取当前时间
+    now_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    print(f"{now_time}:本次爬取{data_num}条数据, 新增数据{new_data_num}条")
 
     # 关闭浏览器
     page.quit()
