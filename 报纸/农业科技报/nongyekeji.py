@@ -6,6 +6,72 @@ import requests
 from PIL import Image
 from lxml import etree
 
+import os
+import json
+import requests
+
+produce_url = "http://121.43.164.84:29875"  # 生产环境
+# produce_url = "http://121.43.164.84:29775"    # 测试环境
+test_url = produce_url
+
+requests.DEFAULT_RETRIES = 3
+s = requests.session()
+s.keep_alive = False
+
+
+def paper_queue_next(webpage_url_list=None):
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    if webpage_url_list is None:
+        webpage_url_list = []
+
+    url = test_url + "/website/queue/next"
+    data = {
+        "webpage_url_list": webpage_url_list
+    }
+
+    data_str = json.dumps(data)
+
+    res = s.post(url=url, headers=headers, data=data_str)
+    result = res.json()
+    print(result)
+    return result.get("value")['id']
+
+
+def paper_queue_success(data=None):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
+        'Content-Type': 'application/json'
+    }
+    if data is None:
+        data = {}
+    url = test_url + "/website/queue/success"
+    data_str = json.dumps(data)
+
+    res = s.post(url=url, headers=headers, data=data_str)
+    result = res.json()
+
+    return result.get("value")
+
+
+def paper_queue_fail(data=None):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
+        'Content-Type': 'application/json'
+    }
+    try:
+        if data is None:
+            data = {}
+        url = test_url + "/website/queue/fail"
+        data_str = json.dumps(data)
+        res = s.post(url=url, headers=headers, data=data_str)
+        result = res.json()
+        return result.get("value")
+    except Exception as err:
+        print(err)
+        return None
+
 
 def upload_img_by_url(img_url, file_name):
     headers = {
@@ -51,6 +117,10 @@ claims_keys = [
 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 create_date = datetime.now().strftime('%Y-%m-%d')
 paper = "农业科技报"
+# 获取任务id
+
+
+queue_id = from_queue = paper_queue_next(webpage_url_list=['http://eb.nkb.com.cn/nykjb'])
 
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -108,7 +178,7 @@ if status_code == 200:
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
                     user="col2024",
                     password="Bm_a12a06",
-                    database="col_test"
+                    database="col"
                 )
                 cursor_test = conn_test.cursor()
                 if article_content:
@@ -119,24 +189,34 @@ if status_code == 200:
                     content_url = key_url
                     # 将数据插入到表中
 
-                    insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, create_date) VALUES (%s,%s, %s, %s, %s, %s, %s, %s)"
+                    insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date) VALUES (%s,%s,%s, %s, %s, %s, %s, %s, %s)"
 
                     cursor_test.execute(insert_sql,
-                                        (page_url, day, paper, title, content, content_url, create_time, create_date))
+                                        (page_url, day, paper, title, content, content_url, create_time, queue_id,
+                                         create_date))
                     conn_test.commit()
 
                 img_url = upload_img_by_url(bm_img, "1")
                 bm_url = base_url + f"index.htm#page{page_num}"
                 # 存储当前版次图片
-                insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, create_date) VALUES (%s,%s, %s, %s, %s, %s, %s, %s)"
+                insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date) VALUES (%s,%s, %s,%s, %s, %s, %s, %s, %s)"
 
                 cursor_test.execute(insert_sql,
-                                    (day, paper, bm_info, bm_img, bm_url, img_url, create_time,
-                                     create_date))
+                                    (day, paper, bm_info, bm_img, bm_url, img_url, create_time, queue_id, create_date))
                 conn_test.commit()
                 cursor_test.close()
                 conn_test.close()
+    success_data = {
+        'id': queue_id,
+        'description': '成功',
+    }
+    paper_queue_success(success_data)
 
 
 else:
     print("今天暂无报纸", url)
+    fail_data = {
+        'id': queue_id,
+        'description': '今天暂无报纸',
+    }
+    paper_queue_fail(data=fail_data)

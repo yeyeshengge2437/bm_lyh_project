@@ -1,4 +1,3 @@
-
 from DrissionPage import ChromiumPage, ChromiumOptions
 from lxml import etree
 import mysql.connector
@@ -7,6 +6,7 @@ from datetime import datetime
 import os
 import json
 import requests
+
 produce_url = "http://121.43.164.84:29875"  # 生产环境
 # produce_url = "http://121.43.164.84:29775"    # 测试环境
 test_url = produce_url
@@ -218,17 +218,13 @@ else:
 
                             cursor_test.execute(insert_sql,
                                                 (
-                                                page_url, day, paper, title, content, ann_link, create_time, from_queue,
-                                                create_date))
+                                                    page_url, day, paper, title, content, ann_link, create_time,
+                                                    from_queue,
+                                                    create_date))
                             conn_test.commit()
                             cursor_test.close()
                             conn_test.close()
-            success_data = {
-                "id": from_queue,
-            }
-            paper_queue_success(success_data)
-
-
-
-
-
+    success_data = {
+        "id": from_queue,
+    }
+    paper_queue_success(success_data)
