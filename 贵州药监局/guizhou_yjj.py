@@ -183,11 +183,12 @@ while r.llen('guizhou_yjj'):
                         summary_str.join(chinese_chars)
                 # 标题
                 title_name = "".join(title_html.xpath("//div[@id='c']/div[@class='Article_bt']//text()")).strip()
-                content = "".join(
-                    title_html.xpath("//div[contains(@class, 'trs_paper_default')]//text()")).strip()
-                if not content:
-                    content = "".join(title_html.xpath("//div[@class='Article_zw']//text()")).strip()
-                content = re.sub(r'var.*?当前页面', '', content, flags=re.S)
+                contents = title_html.xpath("//div[contains(@class, 'trs_paper_default')]")
+                content_html = ''
+                if not contents:
+                    contents = title_html.xpath("//div[@class='Article_zw']")
+                for cont in contents:
+                    content_html += etree.tostring(cont, method='html', encoding='unicode')
                 source = "".join(title_html.xpath("//div[@class='Article_ly']/span[@class='SourceName']//text()"))
                 if not source:
                     source = "".join(title_html.xpath("//div[@id='c']/div[@class='Article_ly']/span[2]//text()"))
@@ -245,7 +246,7 @@ while r.llen('guizhou_yjj'):
                 origin_domain = 'http://yjj.guizhou.gov.cn/'
                 create_date = time.strftime('%Y-%m-%d', time.localtime(time.time()))
                 # 进行数据的去重
-                data_unique = f"文章标题：{title_name}, 文章内容：{content}, 来源：{source}, 发布时间：{pub_date}"
+                data_unique = f"文章标题：{title_name}, 文章内容：{content_html}, 来源：{source}, 发布时间：{pub_date}"
                 # 数据去重
                 hash_value = hashlib.md5(json.dumps(data_unique).encode('utf-8')).hexdigest()
                 if not r.sismember("guizhou_yjj_set", hash_value):
@@ -260,9 +261,9 @@ while r.llen('guizhou_yjj'):
                     )
                     cursor_test = conn_test.cursor()
                     # 将数据插入到指定表中
-                    insert_sql = "INSERT INTO col_chief_public (title, content, path, summary, annex, origin_annex, source,pub_date, origin, origin_domain, create_date) VALUES (%s,  %s, %s, %s,%s, %s, %s, %s, %s, %s, %s)"
+                    insert_sql = "INSERT INTO col_chief_public (title,title_url, content_html, path, summary, annex, origin_annex, source,pub_date, origin, origin_domain, create_date) VALUES (%s,%s,  %s, %s, %s,%s, %s, %s, %s, %s, %s, %s)"
                     cursor_test.execute(insert_sql, (
-                        title_name, content, article_path, summary_str, new_annex_data, origin_annex_data, source, pub_date,
+                        title_name,url, content_html, article_path, summary_str, new_annex_data, origin_annex_data, source, pub_date,
                         origin, origin_domain, create_date))
                     conn_test.commit()
                     cursor_test.close()

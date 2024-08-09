@@ -24,6 +24,104 @@ proxies = {
     "https": "http://%(user)s:%(pwd)s@%(proxy)s/" % {"user": username, "pwd": password, "proxy": tunnel}
 }
 
+import os
+import json
+import requests
+
+produce_url = "http://121.43.164.84:29875"  # 生产环境
+# produce_url = "http://121.43.164.84:29775"    # 测试环境
+test_url = produce_url
+
+requests.DEFAULT_RETRIES = 3
+s = requests.session()
+s.keep_alive = False
+
+
+def paper_queue_next(webpage_url_list=None):
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    if webpage_url_list is None:
+        webpage_url_list = []
+
+    url = test_url + "/website/queue/next"
+    data = {
+        "webpage_url_list": webpage_url_list
+    }
+
+    data_str = json.dumps(data)
+
+    res = s.post(url=url, headers=headers, data=data_str)
+    result = res.json()
+    print(result)
+    return result.get("value")
+
+
+def paper_queue_success(data=None):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
+        'Content-Type': 'application/json'
+    }
+    if data is None:
+        data = {}
+    url = test_url + "/website/queue/success"
+    data_str = json.dumps(data)
+
+    res = s.post(url=url, headers=headers, data=data_str)
+    result = res.json()
+
+    return result.get("value")
+
+
+def paper_queue_fail(data=None):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
+        'Content-Type': 'application/json'
+    }
+    try:
+        if data is None:
+            data = {}
+        url = test_url + "/website/queue/fail"
+        data_str = json.dumps(data)
+        res = s.post(url=url, headers=headers, data=data_str)
+        result = res.json()
+        return result.get("value")
+    except Exception as err:
+        print(err)
+        return None
+
+
+def upload_file_by_url(file_url, file_name, file_type, type="paper"):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
+
+    }
+    r = requests.get(file_url, headers=headers)
+    if r.status_code != 200:
+        return "获取失败"
+    pdf_path = f"{file_name}.{file_type}"
+    if not os.path.exists(pdf_path):
+        fw = open(pdf_path, 'wb')
+        fw.write(r.content)
+        fw.close()
+    # 上传接口
+    fr = open(pdf_path, 'rb')
+    file_data = {"file": fr}
+    url = 'http://121.43.164.84:29775' + f"/file/upload/file?type={type}"
+    headers1 = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'
+    }
+    res = requests.post(url=url, headers=headers1, files=file_data)
+    result = res.json()
+    fr.close()
+    os.remove(pdf_path)
+    return result.get("value")["file_url"]
+
+
+value = paper_queue_next(webpage_url_list=['https://lnsfw.lnsfy.gov.cn/lnssfw/index.html'])
+from_queue = value['id']
+webpage_id = value["webpage_id"]
+
 
 def execute(proxies_value=None):
     headers = {
@@ -116,43 +214,51 @@ def execute(proxies_value=None):
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
                     user="col2024",
                     password="Bm_a12a06",
-                    database="col_test"
+                    database="col"
                 )
                 cursor_test = conn_test.cursor()
                 # 将数据插入到case_open_copy1表中
-                insert_sql = "INSERT INTO case_open_copy1 (case_no, cause, court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date) VALUES (%s,  %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                insert_sql = "INSERT INTO col_case_open (case_no, cause, court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,  %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
                 cursor_test.execute(insert_sql, (
                     case_no, cause, court, members, open_time, court_room, room_leader, department,
                     origin,
-                    origin_domain, create_time, create_date))
+                    origin_domain, create_time, create_date, from_queue, webpage_id))
                 conn_test.commit()
                 cursor_test.close()
                 conn_test.close()
                 new_data_num += 1
-    print(f"本次爬取数据量：{data_num}")
-    print(f"本次爬取新增数据量：{new_data_num}")
+    now = datetime.now()
+    print(f"时间:{now},本次爬取数据量：{data_num},本次爬取新增数据量：{new_data_num}")
 
 
-def run_data(proxies_value=None):
-    max_attempts = 5  # 设置最大尝试次数
-    attempts = 0
+max_attempts = 5  # 设置最大尝试次数
+attempts = 0
 
-    while attempts < max_attempts:
-        try:
-            value = execute(proxies_value=proxies_value)
-            print(value)
-            break
-        except Exception as e:
-            print(f"发生错误：{e}")
-            attempts += 1  # 增加尝试次数
-            print(f"尝试再次爬取，尝试{attempts}/{max_attempts}")
-            if attempts == max_attempts:
-                print("开启代理")
-                try:
-                    execute(proxies_value=proxies)
-                except Exception as e:
-                    return False
+while attempts < max_attempts:
+    try:
+        value = execute(proxies_value=None)
+        if value == '网页问题':
+            success_data = {
+                "id": from_queue,
+                'description': '网页自身问题',
+            }
+            paper_queue_success(success_data)
+        else:
+            success_data = {
+                'id': from_queue,
+            }
+            paper_queue_success(success_data)
+        break
+    except Exception as e:
+        print(f"发生错误：{e}")
+        attempts += 1  # 增加尝试次数
+        time.sleep(600)  # 等待十分钟后再次尝试
+        print(f"尝试再次爬取，尝试{attempts}/{max_attempts}")
 
-
-run_data()
+if attempts == max_attempts:
+    fail_data = {
+        "id": from_queue,
+        'description': '程序问题',
+    }
+    paper_queue_fail(fail_data)

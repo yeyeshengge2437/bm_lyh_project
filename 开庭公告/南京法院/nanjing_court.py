@@ -4,9 +4,7 @@ import time
 from datetime import datetime
 
 from DrissionPage import ChromiumPage, ChromiumOptions
-# from DrissionPage import WebPage
-from DrissionPage.common import Keys
-# from tool.chaojiying import Chaojiying_Client
+
 import pymongo
 import ddddocr
 import mysql.connector
@@ -20,13 +18,108 @@ destination = 1
 
 # 引入验证码模板
 # chaojiying = Chaojiying_Client('2437948121', 'liyongheng10', '961977')
-ocr = ddddocr.DdddOcr()
+ocr = ddddocr.DdddOcr(show_ad=False)
 
 co = ChromiumOptions()
+co = co.set_paths(local_port=9113)
 co = co.set_argument('--no-sandbox')  # 关闭沙箱模式, 解决`$DISPLAY`报错
 co = co.headless(True)  # 开启无头模式, 解决`浏览器无法连接`报错
 
 page = ChromiumPage(co)
+import os
+import json
+import requests
+produce_url = "http://121.43.164.84:29875"  # 生产环境
+# produce_url = "http://121.43.164.84:29775"    # 测试环境
+test_url = produce_url
+
+requests.DEFAULT_RETRIES = 3
+s = requests.session()
+s.keep_alive = False
+
+
+def paper_queue_next(webpage_url_list=None):
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    if webpage_url_list is None:
+        webpage_url_list = []
+
+    url = test_url + "/website/queue/next"
+    data = {
+        "webpage_url_list": webpage_url_list
+    }
+
+    data_str = json.dumps(data)
+
+    res = s.post(url=url, headers=headers, data=data_str)
+    result = res.json()
+    print(result)
+    return result.get("value")
+
+
+def paper_queue_success(data=None):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
+        'Content-Type': 'application/json'
+    }
+    if data is None:
+        data = {}
+    url = test_url + "/website/queue/success"
+    data_str = json.dumps(data)
+
+    res = s.post(url=url, headers=headers, data=data_str)
+    result = res.json()
+
+    return result.get("value")
+
+
+def paper_queue_fail(data=None):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
+        'Content-Type': 'application/json'
+    }
+    try:
+        if data is None:
+            data = {}
+        url = test_url + "/website/queue/fail"
+        data_str = json.dumps(data)
+        res = s.post(url=url, headers=headers, data=data_str)
+        result = res.json()
+        return result.get("value")
+    except Exception as err:
+        print(err)
+        return None
+
+value = paper_queue_next(webpage_url_list=['https://ssfw.njfy.gov.cn/#/ktggList'])
+from_queue = value['id']
+webpage_id = value["webpage_id"]
+
+def upload_file_by_url(file_url, file_name, file_type, type="paper"):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
+
+    }
+    r = requests.get(file_url, headers=headers)
+    if r.status_code != 200:
+        return "获取失败"
+    pdf_path = f"{file_name}.{file_type}"
+    if not os.path.exists(pdf_path):
+        fw = open(pdf_path, 'wb')
+        fw.write(r.content)
+        fw.close()
+    # 上传接口
+    fr = open(pdf_path, 'rb')
+    file_data = {"file": fr}
+    url = 'http://121.43.164.84:29775' + f"/file/upload/file?type={type}"
+    headers1 = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'
+    }
+    res = requests.post(url=url, headers=headers1, files=file_data)
+    result = res.json()
+    fr.close()
+    os.remove(pdf_path)
+    return result.get("value")["file_url"]
 
 
 def get_captcha():
@@ -35,12 +128,10 @@ def get_captcha():
     img_yzm = page.ele(".el-image__inner").attr("src")[23:]
     # 将base64图片转换为图片文件
     img_yzm = base64.b64decode(img_yzm)
-    with open("yzm.png", "wb") as f:
-        f.write(img_yzm)
 
-    # captcha = chaojiying.PostPic(img_yzm, 1902)['pic_str']
+
     captcha = ocr.classification(img_yzm)
-    print(f"验证码：{captcha}")
+
 
     # 点击验证码输入框，输入验证码
     yzm_srk = page.ele("xpath=//div[@class='el-input el-input--mini']/input[@class='el-input__inner']", index=-1)
@@ -99,8 +190,6 @@ def jump_to_page(num):
 
 
 def run(destination_page):
-    # 页面最大化
-    page.set.window.max()
     # 打开目标网页
     page.get("https://ssfw.njfy.gov.cn/#/ktggList")
     # 点击日期
@@ -198,16 +287,16 @@ def run(destination_page):
                         host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
                         user="col2024",
                         password="Bm_a12a06",
-                        database="col_test"
+                        database="col"
                     )
                     cursor_test = conn_test.cursor()
-                    # 将数据插入到case_open_copy1表中
-                    insert_sql = "INSERT INTO case_open_copy1 (case_no, cause, court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date) VALUES (%s,  %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                    # 将数据插入到表中
+                    insert_sql = "INSERT INTO col_case_open (case_no, cause, court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,  %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
                     cursor_test.execute(insert_sql, (
                         case_no, cause, trial_court, members, open_date, court_room, room_leader, department,
                         origin,
-                        origin_domain, create_time, create_date))
+                        origin_domain, create_time, create_date,from_queue, webpage_id))
                     # print("插入成功")
                     conn_test.commit()
                     cursor_test.close()
@@ -254,12 +343,12 @@ def run(destination_page):
                     )
                     cursor_test = conn_test.cursor()
                     # 将数据插入到case_open_copy1表中
-                    insert_sql = "INSERT INTO case_open (case_no, cause, court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date) VALUES (%s,  %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                    insert_sql = "INSERT INTO col_case_open (case_no, cause, court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date,from_queue, webpage_id) VALUES (%s,  %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
                     cursor_test.execute(insert_sql, (
                         case_no, cause, trial_court, members, open_date, court_room, room_leader, department,
                         origin,
-                        origin_domain, create_time, create_date))
+                        origin_domain, create_time, create_date, from_queue, webpage_id))
 
                     conn_test.commit()
                     cursor_test.close()
@@ -316,13 +405,22 @@ attempts = 0
 while attempts < max_attempts:
     try:
         run(destination)
+        success_data = {
+            'id': from_queue,
+        }
+        paper_queue_success(success_data)
         break  # 如果函数执行成功，退出循环
     except Exception as e:
         # 关闭浏览器
         page.quit()
         print(f"发生错误：{e}")
         attempts += 1  # 增加尝试次数
+        time.sleep(300)  # 等待5分钟后再次尝试
         print(f"尝试再次爬取，尝试{attempts}/{max_attempts}")
 
 if attempts == max_attempts:
     print("已达到最大尝试次数。退出。")
+    fail_data = {
+        "id": from_queue,
+    }
+    paper_queue_fail(fail_data)

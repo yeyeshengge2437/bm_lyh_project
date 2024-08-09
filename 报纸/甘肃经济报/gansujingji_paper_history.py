@@ -1,5 +1,6 @@
 import os
-from datetime import datetime
+import time
+from datetime import datetime, timedelta
 
 import mysql.connector
 import requests
@@ -10,8 +11,8 @@ import os
 import json
 import requests
 
-produce_url = "http://121.43.164.84:29875"  # 生产环境
-# produce_url = "http://121.43.164.84:29775"    # 测试环境
+# produce_url = "http://121.43.164.84:29875"  # 生产环境
+produce_url = "http://121.43.164.84:29775"    # 测试环境
 test_url = produce_url
 
 requests.DEFAULT_RETRIES = 3
@@ -36,7 +37,7 @@ def paper_queue_next(webpage_url_list=None):
     res = s.post(url=url, headers=headers, data=data_str)
     result = res.json()
     print(result)
-    return result.get("value")
+    return result.get("value")['id']
 
 
 def paper_queue_success(data=None):
@@ -100,24 +101,26 @@ def upload_pdf_by_url(pdf_url, file_name):
     os.remove(pdf_path)
     return result.get("value")["file_url"]
 
-value = paper_queue_next(webpage_url_list=['https://szb.gansudaily.com.cn/gsjjrb'])
-from_queue = value['id']
-webpage_id = value["webpage_id"]
 
+# from_queue = paper_queue_next(webpage_url_list=['https://szb.gansudaily.com.cn/gsjjrb'])
 claims_keys = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
                          r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
-try:
-    headers = {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-        'Accept-Language': 'zh-CN,zh;q=0.9',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
-    }
-    general_url = 'https://szb.gansudaily.com.cn/gsjjrb/pc/'
-    year_month = datetime.now().strftime('%Y%m')
-    date = datetime.now().strftime('%d')
-    base_url = f'https://szb.gansudaily.com.cn/gsjjrb/pc/layout/{year_month}/{date}/'
+
+headers = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept-Language': 'zh-CN,zh;q=0.9',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
+}
+general_url = 'https://szb.gansudaily.com.cn/gsjjrb/pc/'
+# year_month = datetime.now().strftime('%Y%m')
+# date = datetime.now().strftime('%d')
+for i in range(365):
+    year_month_day = (datetime.now() - timedelta(days=i)).strftime('%Y%m/%d')
+
+    base_url = f'https://szb.gansudaily.com.cn/gsjjrb/pc/layout/{year_month_day}/'
     target_url = base_url + 'col01.html'
     response = requests.get(target_url, headers=headers)
+    time.sleep(1)
     pdf_set = set()
     if response.status_code == 200:
         html_data = response.content.decode()
@@ -129,6 +132,7 @@ try:
             bm_name = bm.xpath("./text()")[0]
             bm_url = base_url + bm.xpath("./@href")[0]
             bm_res = requests.get(bm_url, headers=headers)
+            time.sleep(1)
             if bm_res.status_code == 200:
                 html_2data = bm_res.content.decode()
                 html_2 = etree.HTML(bm_res.content.decode())
@@ -141,12 +145,13 @@ try:
                 for article in articles:
                     art_base_url = 'https://szb.gansudaily.com.cn/gsjjrb/pc/'
                     # 获取文章名
-                    article_name = article.xpath("./h4/text()")[0]
+                    article_name = ''.join(article.xpath("./h4/text()"))
                     # 获取文章链接
                     article_url = art_base_url + article.xpath("./@href")[0].strip('../../..')
                     if claims_keys.match(article_name):
                         # 如果文章名中包含关键词，则进行下载
                         art_res = requests.get(article_url, headers=headers)
+                        time.sleep(1)
                         if art_res.status_code == 200:
                             html_3 = etree.HTML(art_res.content.decode())
                             # 获取文章内容
@@ -158,52 +163,36 @@ try:
                                 host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
                                 user="col2024",
                                 password="Bm_a12a06",
-                                database="col"
+                                database="col_test"
                             )
                             cursor_test = conn_test.cursor()
-                            day = datetime.now().strftime('%Y-%m-%d')
+                            day = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
                             paper = "甘肃经济日报"
                             create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                             create_date = datetime.now().strftime('%Y-%m-%d')
 
-                            insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time,from_queue, create_date, webpage_id) VALUES (%s,%s, %s,%s,%s, %s, %s, %s, %s, %s)"
+                            insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, create_date) VALUES (%s, %s,%s, %s, %s, %s, %s, %s)"
 
                             cursor_test.execute(insert_sql,
                                                 (
                                                     bm_url, day, paper, article_name, article_content, article_url,
                                                     create_time,
-                                                    from_queue, create_date, webpage_id))
+                                                    create_date))
 
                             conn_test.commit()
                             if original_pdf not in pdf_set:
                                 pdf_set.add(original_pdf)
                                 pdf_url = upload_pdf_by_url(original_pdf, "1")
-                                insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue,create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
+                                insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, create_date) VALUES (%s,%s, %s, %s, %s, %s, %s, %s)"
 
                                 cursor_test.execute(insert_sql,
                                                     (day, paper, bm_name, original_pdf, bm_url, pdf_url, create_time,
-                                                     from_queue, create_date,webpage_id))
+                                                     create_date))
                                 conn_test.commit()
                             cursor_test.close()
                             conn_test.close()
 
-        success_data = {
-            'id': from_queue,
-            'description': '成功',
-        }
-        paper_queue_success(success_data)
+
     else:
-        print("今天没有新文章")
-        success_data = {
-            "id": from_queue,
-            "description": "该天没有报纸",
-        }
-        paper_queue_success(success_data)
-except Exception as e:
-    print("发生异常：", e)
-    fail_data = {
-        "id": from_queue,
-        "description": "程序异常",
-    }
-    paper_queue_fail(fail_data)
+        print("今天没有新文章", target_url)
 

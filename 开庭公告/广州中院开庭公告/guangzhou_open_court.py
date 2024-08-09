@@ -89,7 +89,7 @@ if response.status_code == 200:
                 database="col"
             )
             cursor_test = conn_test.cursor()
-            # 将数据插入到case_open_copy1表中
+            # 将数据插入到表中
             insert_sql = "INSERT INTO case_open (case_no, cause, court, members, open_time, court_room,  origin, origin_domain, create_time, create_date) VALUES (%s,  %s, %s, %s, %s, %s, %s, %s, %s, %s)"
             cursor_test.execute(insert_sql, (
                 case_no, cause, court, members, open_time, court_room,

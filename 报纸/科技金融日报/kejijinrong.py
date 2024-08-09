@@ -35,7 +35,7 @@ def paper_queue_next(webpage_url_list=None):
     res = s.post(url=url, headers=headers, data=data_str)
     result = res.json()
     print(result)
-    return result.get("value")['id']
+    return result.get("value")
 
 
 def paper_queue_success(data=None):
@@ -122,104 +122,124 @@ headers = {
     'accept-language': 'zh-CN,zh;q=0.9',
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
 }
-# 获取当前年月
-year_month = datetime.now().strftime('%Y-%m')
-# 获取当前日期
-date = datetime.now().strftime('%d')
-base_pdf_url = "https://kjb.zjol.com.cn/"
-from_queue = paper_queue_next(webpage_url_list=['http://kjb.zjol.com.cn'])
+value = paper_queue_next(webpage_url_list=['http://kjb.zjol.com.cn'])
+from_queue = value['id']
+webpage_id = value["webpage_id"]
+try:
+    # 获取当前年月
+    year_month = datetime.now().strftime('%Y-%m')
+    # 获取当前日期
+    date = datetime.now().strftime('%d')
+    base_pdf_url = "https://kjb.zjol.com.cn/"
 
-base_url = f'https://kjb.zjol.com.cn/'
-# 获取今日的链接
-res_url = requests.get('https://kjb.zjol.com.cn/', headers=headers)
-html_content = res_url.content.decode()
-url = re.findall(r'URL=(.*?)">', html_content)[0]
-url = base_url + url
-base_url = re.sub(r'node_\d+\.htm', '', url)
-response = requests.get(url, headers=headers)
-if response.status_code == 200:
-    html = etree.HTML(response.content.decode())
-    # 获取当日报纸的所有版面
-    all_bm = html.xpath("//div[@class='main-ednav-nav']/dl")
-    for bm in all_bm:
-        bm_link = ''.join(bm.xpath("./dt/a[@id='pageLink']/@href"))
-        bm_name = ''.join(bm.xpath("./dt/a[@id='pageLink']/text()"))
-        bm_pdf = ''.join(bm.xpath("./dd/img[2]/@filepath"))
-        bm_pdf = bm_pdf.strip("../../..")
-        # 获取版面下的所有文章连接
-        bm_url = base_url + bm_link
-        r = requests.get(bm_url, headers=headers)
-        bm_html = etree.HTML(r.content.decode())
-        title_urls = bm_html.xpath("//div[@class='main-ed-map']/map/area/@href")
-        display_title_urls = bm_html.xpath("//ul[@class='main-ed-articlenav-list']/li/a")
-        have_key = False
-        if len(title_urls) > len(display_title_urls) * 2:
-            have_key = True
-            print(f"显示的标题数量为{len(display_title_urls)}，实际标题数量为{len(title_urls)}，存在隐藏标题")
-        # 连接数据库
-        conn_test = mysql.connector.connect(
-            host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
-            user="col2024",
-            password="Bm_a12a06",
-            database="col"
-        )
-        cursor_test = conn_test.cursor()
-        day = datetime.now().strftime('%Y-%m-%d')
-        paper = "科技金融日报"
-        create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        create_date = datetime.now().strftime('%Y-%m-%d')
-        for title in title_urls:
-            title_url = base_url + title
-            # 获取文章内容
-            res = requests.get(title_url, headers=headers)
 
-            title_html = etree.HTML(res.content.decode())
-            # 获取文章标题
-            title_name = "".join(title_html.xpath("//div[@class='main-article-alltitle']//text()")).strip()
-            # 获取文章内容
-            content = "".join(title_html.xpath(
-                "//div[@class='main-article-content']/div[@id='ozoom']/founder-content/p//text()")).strip()
-            # 获取文章标题含内容
-            title_content = title_name + "\n" + content
+    base_url = f'https://kjb.zjol.com.cn/'
+    # 获取今日的链接
+    res_url = requests.get('https://kjb.zjol.com.cn/', headers=headers)
+    html_content = res_url.content.decode()
+    url = re.findall(r'URL=(.*?)">', html_content)[0]
+    url_data = re.findall(r'html/(.*?)/node_\d+\.htm', url)[0]
+    actual_data = datetime.now().strftime('%Y-%m/%d')
+    if url_data != actual_data:
+        success_data = {
+            'id': from_queue,
+            'description': '今日没有报纸',
+        }
+        paper_queue_success(success_data)
+    else:
+        url = base_url + url
+        base_url = re.sub(r'node_\d+\.htm', '', url)
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            html = etree.HTML(response.content.decode())
+            # 获取当日报纸的所有版面
+            all_bm = html.xpath("//div[@class='main-ednav-nav']/dl")
+            for bm in all_bm:
+                bm_link = ''.join(bm.xpath("./dt/a[@id='pageLink']/@href"))
+                bm_name = ''.join(bm.xpath("./dt/a[@id='pageLink']/text()"))
+                bm_pdf = ''.join(bm.xpath("./dd/img[2]/@filepath"))
+                bm_pdf = bm_pdf.strip("../../..")
+                # 获取版面下的所有文章连接
+                bm_url = base_url + bm_link
+                r = requests.get(bm_url, headers=headers)
+                bm_html = etree.HTML(r.content.decode())
+                title_urls = bm_html.xpath("//div[@class='main-ed-map']/map/area/@href")
+                display_title_urls = bm_html.xpath("//ul[@class='main-ed-articlenav-list']/li/a")
+                have_key = False
+                if len(title_urls) > len(display_title_urls) * 2:
+                    have_key = True
+                    print(f"显示的标题数量为{len(display_title_urls)}，实际标题数量为{len(title_urls)}，存在隐藏标题")
+                # 连接数据库
+                conn_test = mysql.connector.connect(
+                    host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                    user="col2024",
+                    password="Bm_a12a06",
+                    database="col"
+                )
+                cursor_test = conn_test.cursor()
+                day = datetime.now().strftime('%Y-%m-%d')
+                paper = "科技金融日报"
+                create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                create_date = datetime.now().strftime('%Y-%m-%d')
+                for title in title_urls:
+                    title_url = base_url + title
+                    # 获取文章内容
+                    res = requests.get(title_url, headers=headers)
 
-            # 判断是否包含关键词
-            if claims_keys.match(title_name):
-                have_key = True
-                # 上传到数据库
-                # 将数据插入到表中
-                # 上传到数据库
-                insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date) VALUES (%s,%s, %s,%s, %s, %s, %s, %s, %s)"
+                    title_html = etree.HTML(res.content.decode())
+                    # 获取文章标题
+                    title_name = "".join(title_html.xpath("//div[@class='main-article-alltitle']//text()")).strip()
+                    # 获取文章内容
+                    content = "".join(title_html.xpath(
+                        "//div[@class='main-article-content']/div[@id='ozoom']/founder-content/p//text()")).strip()
+                    # 获取文章标题含内容
+                    title_content = title_name + "\n" + content
 
-                cursor_test.execute(insert_sql,
-                                    (bm_url, day, paper, title_name, content, title_url, create_time,from_queue, create_date))
+                    # 判断是否包含关键词
+                    if claims_keys.match(title_name):
+                        have_key = True
+                        # 上传到数据库
+                        # 将数据插入到表中
+                        # 上传到数据库
+                        insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
 
-                conn_test.commit()
+                        cursor_test.execute(insert_sql,
+                                            (bm_url, day, paper, title_name, content, title_url, create_time,from_queue, create_date, webpage_id))
 
-        if have_key:
-            # 获取pdf_url
-            original_pdf = base_pdf_url + bm_pdf
-            pdf_url = upload_pdf_by_url(original_pdf, "1")
-            insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time,from_queue, create_date) VALUES (%s,%s, %s,%s, %s, %s, %s, %s, %s)"
+                        conn_test.commit()
 
-            cursor_test.execute(insert_sql,
-                                (day, paper, bm_name, original_pdf, bm_url, pdf_url, create_time,from_queue,
-                                 create_date))
-            conn_test.commit()
-            print("pdf已经上传")
+                if have_key:
+                    # 获取pdf_url
+                    original_pdf = base_pdf_url + bm_pdf
+                    pdf_url = upload_pdf_by_url(original_pdf, "1")
+                    insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time,from_queue, create_date, webpage_id) VALUES (%s,%s, %s,%s,%s, %s, %s, %s, %s, %s)"
 
-        cursor_test.close()
-        conn_test.close()
+                    cursor_test.execute(insert_sql,
+                                        (day, paper, bm_name, original_pdf, bm_url, pdf_url, create_time,from_queue,
+                                         create_date, webpage_id))
+                    conn_test.commit()
+                    print("pdf已经上传")
 
-    success_data = {
-        'id': from_queue,
-        'description': '成功',
-    }
-    paper_queue_success(success_data)
-else:
-    print("网页问题")
+                cursor_test.close()
+                conn_test.close()
 
+            success_data = {
+                'id': from_queue,
+                'description': '成功',
+            }
+            paper_queue_success(success_data)
+        else:
+            print("网页问题")
+            success_data = {
+                'id': from_queue,
+                'description': "该天没有报纸",
+            }
+            paper_queue_success(success_data)
+except Exception as e:
+    print(f"错误原因: {e}")
     fail_data = {
-        "id": from_queue,
-        "description": "该天没有报纸",
+        'id': from_queue,
+        'description': f"错误原因: {e}",
     }
+
     paper_queue_fail(fail_data)

@@ -2,13 +2,14 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 from lxml import etree
 import mysql.connector
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 import json
 import requests
+import re
 
-produce_url = "http://121.43.164.84:29875"  # 生产环境
-# produce_url = "http://121.43.164.84:29775"    # 测试环境
+# produce_url = "http://121.43.164.84:29875"  # 生产环境
+produce_url = "http://121.43.164.84:29775"    # 测试环境
 test_url = produce_url
 
 requests.DEFAULT_RETRIES = 3
@@ -33,7 +34,7 @@ def paper_queue_next(webpage_url_list=None):
     res = s.post(url=url, headers=headers, data=data_str)
     result = res.json()
     print(result)
-    return result.get("value")
+    return result.get("value")['id']
 
 
 def paper_queue_success(data=None):
@@ -109,9 +110,8 @@ claims_keys = [
     '催收通知书', '催收告知书', '催收通知公告', '催收登报公告', '催收补登公告', '催收补充公告', '催收拍卖公告', '催收公告', '催收通知',
     '催讨通知书', '催讨告知书', '催讨通知公告', '催讨登报公告', '催讨补登公告', '催讨补充公告', '催讨拍卖公告', '催讨公告', '催讨通知'
 ]
-value = paper_queue_next(webpage_url_list=['http://epaper.legaldaily.com.cn/fzrb'])
-from_queue = value['id']
-webpage_id = value["webpage_id"]
+# claims_keys = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
+#                        r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)')
 
 not_claims_keys = ['法院公告', '减资公告', '注销公告', '清算公告', '合并公告', '出让公告', '重组公告', '调查公告', '分立公告', '重整公告', '悬赏公告', '注销登记公告']
 paper = '法制日报'
@@ -122,38 +122,41 @@ co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
 co.set_paths(local_port=9112)
-
+# from_queue = paper_queue_next(webpage_url_list=['http://epaper.legaldaily.com.cn/fzrb'])
 # 构造实例
 page = ChromiumPage(co)
 # 获取当前年月日,格式为20240801
 now = datetime.now()
-date_str = now.strftime('%Y%m%d')
-structure_url = f"http://epaper.legaldaily.com.cn/fzrb/content/{date_str}/"
-# des_url = structure_url + 'PageArticleIndexBT.htm'
-des_url = 'http://epaper.legaldaily.com.cn/fzrb/content/20240806/Page01TB.htm'
-try:
+# date_str = now.strftime('%Y%m%d')
+
+for i in range(356):
+    # 获取之前的日期
+    day1 = now - timedelta(days=i)
+    day_str = day1.strftime('%Y%m%d')
+
+    structure_url = f"http://epaper.legaldaily.com.cn/fzrb/content/{day_str}/"
+    # des_url = structure_url + 'PageArticleIndexBT.htm'
+    des_url = 'http://epaper.legaldaily.com.cn/fzrb/content/20240806/Page01TB.htm'
+
     # 打开网页
     page.get(des_url)
+    time.sleep(1)
     if page.url != des_url:
         print("该天没有报纸")
-        success_data = {
-            "id": from_queue,
-            "description": "该天没有报纸",
-        }
-        paper_queue_success(success_data)
     else:
         html = etree.HTML(page.html)
-
         # 获取所有版面
         all_bm = html.xpath("//table[3]/tbody/tr/td/a[@class='atitle']")
         # 遍历所有版面
         for bm in all_bm:
             # 获取版面名称
-            bm_name = bm.xpath("./text()")[0]
+            bm_name = ''.join(bm.xpath("./text()")[0])
             # 获取版面链接
             bm_link = bm.xpath("./@href")[0]
+            day = day1.strftime('%Y-%m-%d')
             bm_link = structure_url + bm_link
             page.get(bm_link)
+            time.sleep(1)
             bm_html = etree.HTML(page.html)
             # 获取所有文章标题
             all_titles = bm_html.xpath("//table[5]/tbody/tr/td[2]/a[@class='atitle']")
@@ -166,8 +169,10 @@ try:
                 if '公告' in title.text:
                     # 获取标题对应的链接
                     link = title.xpath("./@href")[0]
+                    title_name = title.text
                     ann_link = structure_url + link
                     page.get(ann_link)
+                    time.sleep(1)
                     ann_html = etree.HTML(page.html)
 
                     # 获取pdf地址
@@ -184,7 +189,7 @@ try:
                                 host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
                                 user="col2024",
                                 password="Bm_a12a06",
-                                database="col"
+                                database="col_test"
                             )
                             cursor_test = conn_test.cursor()
                             name = bm_name
@@ -193,11 +198,11 @@ try:
                             original_pdf = paper_pdf_url
 
                             # 将数据插入到表中
-                            insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date,webpage_id) VALUES (%s,%s,%s, %s, %s,%s, %s, %s, %s, %s)"
+                            insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time,  create_date) VALUES (%s, %s, %s,%s, %s, %s, %s, %s)"
 
                             cursor_test.execute(insert_sql, (
-                                day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue,
-                                create_date, webpage_id))
+                                day, paper, name, original_pdf, page_url, pdf_url, create_time,
+                                create_date))
                             conn_test.commit()
                             cursor_test.close()
                             conn_test.close()
@@ -211,27 +216,18 @@ try:
                                 host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
                                 user="col2024",
                                 password="Bm_a12a06",
-                                database="col"
+                                database="col_test"
                             )
                             page_url = ann_link
                             cursor_test = conn_test.cursor()
-                            insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s, %s,%s,%s, %s, %s, %s, %s, %s)"
+                            insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time,  create_date) VALUES (%s, %s,%s, %s, %s, %s, %s, %s)"
 
                             cursor_test.execute(insert_sql,
                                                 (
-                                                    page_url, day, paper, title, content, ann_link, create_time,
-                                                    from_queue,
-                                                    create_date, webpage_id))
+                                                    page_url, day, paper, title_name, content, ann_link, create_time,
+                                                    create_date))
                             conn_test.commit()
                             cursor_test.close()
                             conn_test.close()
-        success_data = {
-            "id": from_queue,
-        }
-        paper_queue_success(success_data)
-except Exception as e:
-    fail_data = {
-        "id": from_queue,
-        "description": "e",
-    }
-    paper_queue_fail(fail_data)
+    print(day,"完成")
+

@@ -1,5 +1,6 @@
 import os
-from datetime import datetime
+import time
+from datetime import datetime, timedelta
 
 import mysql.connector
 import requests
@@ -10,8 +11,8 @@ import os
 import json
 import requests
 
-produce_url = "http://121.43.164.84:29875"  # 生产环境
-# produce_url = "http://121.43.164.84:29775"    # 测试环境
+# produce_url = "http://121.43.164.84:29875"  # 生产环境
+produce_url = "http://121.43.164.84:29775"    # 测试环境
 test_url = produce_url
 
 requests.DEFAULT_RETRIES = 3
@@ -36,7 +37,7 @@ def paper_queue_next(webpage_url_list=None):
     res = s.post(url=url, headers=headers, data=data_str)
     result = res.json()
     print(result)
-    return result.get("value")
+    return result.get("value")['id']
 
 
 def paper_queue_success(data=None):
@@ -119,9 +120,8 @@ create_date = datetime.now().strftime('%Y-%m-%d')
 paper = "农业科技报"
 # 获取任务id
 
-value = paper_queue_next(webpage_url_list=['http://eb.nkb.com.cn/nykjb'])
-queue_id = value['id']
-webpage_id = value["webpage_id"]
+
+# queue_id = from_queue = paper_queue_next(webpage_url_list=['http://eb.nkb.com.cn/nykjb'])
 
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -133,21 +133,28 @@ headers = {
     'Upgrade-Insecure-Requests': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
 }
-now_day = datetime.now().strftime('%Y%m%d')
-# now_day = '20230821'
-# now_day = '20230928'
-# 将now_day格式改为2023-09-28
-day = now_day[:4] + '-' + now_day[4:6] + '-' + now_day[6:]
-try:
-    base_url = 'http://eb.nkb.com.cn/nykjb/' + now_day + '/mhtml/'
+now_day = datetime.now()
+for i in range(365):
+    # 计算以后的日期
+    day_date = now_day - timedelta(days=i)
+    # 将的日期格式化为'YYYYMMDD'格式
+    day_day = day_date.strftime('%Y%m%d')
+    # now_day = '20230821'
+    # now_day = '20230928'
+    # 将格式改为2023-09-28
+    day = day_date.strftime('%Y-%m-%d')
+
+    base_url = 'http://eb.nkb.com.cn/nykjb/' + day_day + '/mhtml/'
     url = base_url + 'index.htm'
     response = requests.get(url, headers=headers, verify=False)
+    time.sleep(1)
     status_code = response.status_code
     if status_code == 200:
         html = etree.HTML(response.text)
         # 获取所有版面
         banmian = html.xpath("//div[@class='nav-panel-primary']/div[@class='nav-items']")
         for bm in banmian:
+            img_set = set()
             # 打印版面信息
             bm_info = "".join(bm.xpath("./div[@class='nav-panel-heading']/text()"))
             # 获取版面下的所有栏目
@@ -171,6 +178,7 @@ try:
 
                     key_url = base_url + title_link
                     key_res = requests.get(key_url, headers=headers, verify=False)
+                    time.sleep(1)
                     key_html = etree.HTML(key_res.text)
                     # 获取文章文章字数
                     article_content = "".join(key_html.xpath("//div[@class='cont']/div[@id='memo']/div[@id='numb']/text()"))
@@ -179,7 +187,7 @@ try:
                         host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
                         user="col2024",
                         password="Bm_a12a06",
-                        database="col"
+                        database="col_test"
                     )
                     cursor_test = conn_test.cursor()
                     if article_content:
@@ -190,41 +198,28 @@ try:
                         content_url = key_url
                         # 将数据插入到表中
 
-                        insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
+                        insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, create_date) VALUES (%s,%s, %s, %s, %s, %s, %s, %s)"
 
                         cursor_test.execute(insert_sql,
-                                            (page_url, day, paper, title, content, content_url, create_time, queue_id,
-                                             create_date, webpage_id))
+                                            (page_url, day, paper, title, content, content_url, create_time,
+                                             create_date))
                         conn_test.commit()
+                    if bm_img not in img_set:
+                        img_set.add(bm_img)
 
-                    img_url = upload_img_by_url(bm_img, "1")
-                    bm_url = base_url + f"index.htm#page{page_num}"
-                    # 存储当前版次图片
-                    insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
+                        img_url = upload_img_by_url(bm_img, "1")
+                        bm_url = base_url + f"index.htm#page{page_num}"
+                        # 存储当前版次图片
+                        insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, create_date) VALUES (%s, %s,%s, %s, %s, %s, %s, %s)"
 
-                    cursor_test.execute(insert_sql,
-                                        (day, paper, bm_info, bm_img, bm_url, img_url, create_time, queue_id, create_date, webpage_id))
-                    conn_test.commit()
+                        cursor_test.execute(insert_sql,
+                                            (day, paper, bm_info, bm_img, bm_url, img_url, create_time,  create_date))
+                        conn_test.commit()
                     cursor_test.close()
                     conn_test.close()
-        success_data = {
-            'id': queue_id,
-            'description': '成功',
-        }
-        paper_queue_success(success_data)
+
 
 
     else:
         print("今天暂无报纸", url)
-        success_data = {
-            'id': queue_id,
-            'description': '今天暂无报纸',
-        }
-        paper_queue_success(success_data)
-except Exception as e:
-    print(f"失败原因: {e}")
-    fail_data = {
-        'id': queue_id,
-        'description': '程序问题',
-    }
-    paper_queue_fail(data=fail_data)
+
