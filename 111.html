@@ -1,73 +1,425 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<periodlist>
-		<period id="36775">
-		<period_name>2024-06-04</period_name>
-		<paper_id>1,513</paper_id>
-		<period_date>2024-06-04</period_date>
-		<rmp_exe_path></rmp_exe_path>
-		<rmp_pic_path></rmp_pic_path>
-		<rmp_xml_path></rmp_xml_path>
-		<rmp_build_time></rmp_build_time>
-		<front_page>node_2697.htm</front_page>
-	</period>
-	<period id="36782">
-		<period_name>2024-06-07</period_name>
-		<paper_id>1,513</paper_id>
-		<period_date>2024-06-07</period_date>
-		<rmp_exe_path></rmp_exe_path>
-		<rmp_pic_path></rmp_pic_path>
-		<rmp_xml_path></rmp_xml_path>
-		<rmp_build_time></rmp_build_time>
-		<front_page>node_2697.htm</front_page>
-	</period>
-	<period id="36790">
-		<period_name>2024-06-14</period_name>
-		<paper_id>1,513</paper_id>
-		<period_date>2024-06-14</period_date>
-		<rmp_exe_path></rmp_exe_path>
-		<rmp_pic_path></rmp_pic_path>
-		<rmp_xml_path></rmp_xml_path>
-		<rmp_build_time></rmp_build_time>
-		<front_page>node_2697.htm</front_page>
-	</period>
-	<period id="36794">
-		<period_name>2024-06-18</period_name>
-		<paper_id>1,513</paper_id>
-		<period_date>2024-06-18</period_date>
-		<rmp_exe_path></rmp_exe_path>
-		<rmp_pic_path></rmp_pic_path>
-		<rmp_xml_path></rmp_xml_path>
-		<rmp_build_time></rmp_build_time>
-		<front_page>node_2697.htm</front_page>
-	</period>
-	<period id="36803">
-		<period_name>2024-06-21</period_name>
-		<paper_id>1,513</paper_id>
-		<period_date>2024-06-21</period_date>
-		<rmp_exe_path></rmp_exe_path>
-		<rmp_pic_path></rmp_pic_path>
-		<rmp_xml_path></rmp_xml_path>
-		<rmp_build_time></rmp_build_time>
-		<front_page>node_2697.htm</front_page>
-	</period>
-	<period id="36808">
-		<period_name>2024-06-25</period_name>
-		<paper_id>1,513</paper_id>
-		<period_date>2024-06-25</period_date>
-		<rmp_exe_path></rmp_exe_path>
-		<rmp_pic_path></rmp_pic_path>
-		<rmp_xml_path></rmp_xml_path>
-		<rmp_build_time></rmp_build_time>
-		<front_page>node_2697.htm</front_page>
-	</period>
-	<period id="36815">
-		<period_name>2024-06-28</period_name>
-		<paper_id>1,513</paper_id>
-		<period_date>2024-06-28</period_date>
-		<rmp_exe_path></rmp_exe_path>
-		<rmp_pic_path></rmp_pic_path>
-		<rmp_xml_path></rmp_xml_path>
-		<rmp_build_time></rmp_build_time>
-		<front_page>node_2697.htm</front_page>
-	</period>
-</periodlist>
+﻿<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>中国环境报电子报</title>
+<link href="../../../tplimg/global.css" type="text/css"/>
+<link href="../../../tplimg/calendar.css" rel="stylesheet" type="text/css"/>
+<SCRIPT language=Javascript src="../../../tplimg/prototype.js"></SCRIPT>
+<SCRIPT language=Javascript src="../../../tplimg/mp.js"></SCRIPT>
+<SCRIPT language=Javascript src="../../../tplimg/calendar2.js"></SCRIPT>
+<SCRIPT language=Javascript src="../../../tplimg/range.js"></SCRIPT>
+<SCRIPT id=oMapScript event=onmouseover() for=PagePicMap>
+rangeDeltaX = 5;
+rangeDeltaY = -8;
+ drawLine(event.srcElement);
+ </SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+var tid = null;
+var speed=1000;
+var jk=-1;
+
+var colors=new Array();
+ colors[0]="#FF0000";
+ colors[1]="#00FF00";
+ colors[2]="#0000FF";
+
+function blink(){
+ var obj = eval("document.all." + "test1" );
+ var obj2 = eval("document.all." + "test2" );
+ 
+ jk++;
+ if(jk==3){
+ 	jk=-1;
+ }
+ //obj.style.color = colors[jk];
+ //obj2.style.color = colors[jk];
+ // tid = setTimeout("blink('"+ objId +"')",500);
+}
+setInterval("blink()", speed);
+</SCRIPT>
+
+<SCRIPT language=Javascript>
+function turnpage(src,mode){
+
+ currPos = src.selectedIndex;
+
+ if(mode==0){//前翻
+ 	if(currPos==0) return;
+	else {
+	 src.selectedIndex = currPos -1;
+	 src.onchange();
+	} 
+ }else{
+ if(currPos == src.length-1)
+	 return;
+	 else {
+	 src.selectedIndex = currPos +1;
+	 src.onchange();
+	 }
+ }
+}
+function changeMPCld()
+{
+ var y,m;
+ y=CLD.SY.selectedIndex+2006;
+ m=CLD.SM.selectedIndex;
+ //alert(m);
+ OBJ_MP_LOADACTION.loadPeriods("",y+"-"+appendZero(m+1));
+
+}
+</SCRIPT>
+<SCRIPT id=oMapScript1 event=onmouseout() for=PagePicMap>
+ MouseOutMap();
+</SCRIPT>
+<script type="text/javascript"> 
+ 
+function again(form)
+{
+	//alert("form="+form);
+	form.contentKey.value = ' ' + form.contentKey.value;
+	form.submit();
+}
+ 
+ 
+//提交表单
+function per_submit()
+{
+ var flag = true;
+ var content = form1.contentKey.value;
+ 
+ if ( content==null || content=="")
+ {
+		alert("搜索内容不能为空！");
+		document.all.contentKey.focus();
+		flag = false;
+ }
+ 
+ if( flag == true ) 
+ {
+ 	document.form1.submit(); 
+ 	//result_list.innerHTML="正在进行检索，请耐心等待结果...";
+ }
+}
+ 
+//提交表单2
+function per_submit2()
+{
+ var flag = true;
+ 
+ if(form2.contentKey.value==""){
+ 	return;
+ }
+ if( flag == true ) 
+ {
+ 	document.form2.submit(); 
+ 	//result_list.innerHTML="正在进行检索，请耐心等待结果...";
+ } 
+}
+ 
+</script>
+
+
+<style type="text/css">
+<!--
+body {
+	background-image: url();
+	background-color: #F7FAFF;
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+.Ltd1 {
+	BORDER-RIGHT: #555 1px solid; PADDING-RIGHT: 10px; BORDER-TOP: #555 1px solid; PADDING-LEFT: 18px; PADDING-BOTTOM: 10px; BORDER-LEFT: #555 1px solid; PADDING-TOP: 10px; BORDER-BOTTOM: #555 1px solid
+}
+#pgn {
+	position: absolute;
+	width: 150px;
+	padding: 0px;
+	border: 1px solid #292929;
+	background: #e8e8e8;
+	font-size: 12px;
+	line-height: 130%;
+	z-index: 2;
+	left:740px;
+	top:95px;
+	display:none;
+}
+.STYLE27 {color: #A90110}
+.px12 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #333333;
+	text-decoration: none;
+	line-height: 24px;
+}
+.px12w {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	line-height: 24px;
+	color: #FFFFFF;
+	text-decoration: none;
+}
+.style28 {
+	color: #FFFFFF;
+	font-size: 12px;
+}
+-->
+</style>
+</head>
+
+<SPAN id=leveldiv title=点击查看内容 
+style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; Z-INDEX: 100; LEFT: 233px; BORDER-BOTTOM-WIDTH: 0px; WIDTH: 210px; CURSOR: hand; POSITION: absolute; TOP: 123px; HEIGHT: 34px; BORDER-RIGHT-WIDTH: 0px"></SPAN>
+
+<body onLoad="initialize();initMPPage();" text=#000000 vlink=#000000 alink=#ff0000 link=#000000>
+<!-- 版面导航div -->
+<DIV id=pgn onMouseOver="getElementById('pgn').style.display='block';" onMouseOut="getElementById('pgn').style.display='none';" class="px12">
+ <UL> <Li>&nbsp;<a id=pageLink href=./node_2.htm>01： 一版要闻</a></Li> <Li>&nbsp;<a id=pageLink href=node_3.htm>02： 要闻</a></Li> <Li>&nbsp;<a id=pageLink href=node_4.htm>03： 观点</a></Li> <Li>&nbsp;<a id=pageLink href=node_5.htm>04： 专题</a></Li> <Li>&nbsp;<a id=pageLink href=node_6.htm>05： 攻坚</a></Li> <Li>&nbsp;<a id=pageLink href=node_7.htm>06： 法治</a></Li> <Li>&nbsp;<a id=pageLink href=node_8.htm>07： 双碳行动</a></Li> <Li>&nbsp;<a id=pageLink href=node_9.htm>08： 境界-知行</a></Li> </UL>
+</DIV>
+<!-- 版面导航div -->
+<table cellspacing=0 cellpadding=0 width=1015 align=center border=0 background="../../../tplimg/bg.jpg">
+ <tr>
+ <td valign=top width=413>
+ <table cellspacing=0 cellpadding=0 align=right border=0>
+ <tr>
+ <td align=middle>
+ <table height="146" border=0 cellpadding=0 cellspacing=0>
+ <tr>
+ <td width="280" rowspan="3" valign="top"><img src="../../../tplimg/jwb_red_r1_c1.jpg" width="23" height="100"></td>
+ <td valign="top" bgcolor=#ffffff><img src="../../../tplimg/jwb_red_r1_c2.jpg" width="381" height="24"></td>
+ <td rowspan="2" valign="top" background=../../../tplimg/jwb_red_r6_c3.jpg><img src="../../../tplimg/jwb_red_r1_c3.jpg" width="9" height="134"></td>
+ </tr>
+ <tr>
+ <td width="280" class="Ltd1" bgcolor=#ffffff><MAP NAME="pagepicmap"><Area coords="344,159,344,95,344,83,344,10,184,10,184,83,5,95,5,159,5,297,344,297" shape="polygon" href="content_99269.htm"><Area coords="236,300,344,300,344,403,236,403" shape="polygon" href="content_99270.htm"><Area coords="5,313,89,313,89,496,5,496" shape="polygon" href="content_99271.htm"><Area coords="99,410,344,410,344,542,99,542" shape="polygon" href="content_99272.htm"><Area coords="93,303,198,303,198,403,93,403" shape="polygon" href="content_99273.htm"></MAP><img src=../../1/2024-08/12/01B/2024081201B_brief.jpg border=0 USEMAP=#PagePicMap> </td>
+ </tr>
+ <tr>
+ <td height="23" align=left valign="top"><img src="../../../tplimg/jwb_red_r8_c2.jpg" width="381" height="9"></td>
+ <td valign="top"><img src="../../../tplimg/jwb_red_r8_c3.jpg" width="9" height="9"></td>
+ </tr>
+ </table>
+ <table style="MARGIN-BOTTOM: 3px" cellspacing=0 cellpadding=5 width=411 border=0>
+ <tr>
+ <td width="209" align=left class=px12><div align="center">
+ 第01版：<STRONG>一版要闻</STRONG>
+ </div></td>
+ <td width="128" 
+ align=right nowrap class=px12 
+ style="PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; PADDING-TOP: 0px"><a class=preart href="node_3.htm">下一版<span style='font-size:12px;font-family:webdings'>4</span></a></td>
+ <td width=44 
+ align=right valign=center nowrap class=px12 style="PADDING-RIGHT: 5px"><a href=../../1/2024-08/12/01B/2024081201B_pdf.pdf><IMG height=16 src="../../../tplimg/pdf.gif" width=16 border=0></a></td>
+ </tr>
+ </table>
+ <table style="BORDER-TOP: #555 1px solid" cellspacing=0 cellpadding=4 width=411 border=0>
+ <tr>
+ <td width=36 
+ align=left valign="top">&nbsp;</td>
+ <td width=359 
+ align=left valign="top"><TABLE cellSpacing=0 cellPadding=1 border=0> <TBODY> <tr> <TD class=px12 valign="top"> <img src="../../../tplimg/checkbox.gif" width="10" height="10"> </TD> <td class=px12 valign="top"> <a href=content_99269.htm><div style="display:inline" id=mp99269>中共中央 国务院关于加快经济社会发展全面绿色转型的意见</div></a> </td> </TR><tr> <TD class=px12 valign="top"> <img src="../../../tplimg/checkbox.gif" width="10" height="10"> </TD> <td class=px12 valign="top"> <a href=content_99270.htm><div style="display:inline" id=mp99270>江苏完成全省新污染物环境本底调查监测</div></a> </td> </TR><tr> <TD class=px12 valign="top"> <img src="../../../tplimg/checkbox.gif" width="10" height="10"> </TD> <td class=px12 valign="top"> <a href=content_99271.htm><div style="display:inline" id=mp99271>冒着高温入企帮扶</div></a> </td> </TR><tr> <TD class=px12 valign="top"> <img src="../../../tplimg/checkbox.gif" width="10" height="10"> </TD> <td class=px12 valign="top"> <a href=content_99272.htm><div style="display:inline" id=mp99272>江西武宁搭上致富“绿色”快车</div></a> </td> </TR><tr> <TD class=px12 valign="top"> <img src="../../../tplimg/checkbox.gif" width="10" height="10"> </TD> <td class=px12 valign="top"> <a href=content_99273.htm><div style="display:inline" id=mp99273>图片新闻</div></a> </td> </TR> </TBODY> </TABLE> </td>
+ </tr>
+ </table>
+ </td>
+ </tr>
+ </table>
+ </td> 
+
+ <td valign=top width=602 background="../../../tplimg/title_handan.jpg" style="background-repeat:no-repeat">
+ <table height=100 cellspacing=0 cellpadding=0 width="602" border=0>
+ <tr>
+ <td width="74%" height="100" align="center" valign="bottom" background="../../../tplimg/title_handan.jpg" style="background-repeat:no-repeat">
+ <table height=71 cellspacing=0 cellpadding=0 width="100%" border=0>
+ <tr>
+ <td height="32" valign="bottom">&nbsp; </td>
+ </tr>
+ <tr>
+ <td height="31" align=center class=whitenav> 
+ </tr>
+ </table>
+ <table height=29 cellspacing=0 cellpadding=0 width="100%" border=0>
+ <tr align=right>
+ <td class=whitenav width="314" valign=center>
+ </td>
+ <td class=whitenav width="130" align="center">
+				 <span onMouseOver="getElementById('pgn').style.display='block';"> <strong><a href="./node_2.htm">版面导航</a></strong></span>
+ </td>
+ </tr>
+ </table>
+
+ </td>
+ <td width="26%" rowspan="2" align=left class=stamp>
+ <table height=71 cellspacing=0 cellpadding=0 width="100%" border=0>
+ <tr>
+ <td height="32" valign="bottom">&nbsp; </td>
+ </tr>
+ <tr>
+ <td height="31" align=center class=whitenav> 
+ </tr>
+ </table>
+ <table height=29 cellspacing=0 cellpadding=0 width="100%" border=0>
+ <tr align=right>
+ <td class=whitenav width="130" align="center">
+				 <a class=preart href="../09/node_2.htm"><FONT face=Webdings>3</FONT>上一期</a>
+ 
+ </td>
+			<td class=whitenav valign=center>
+ </td>
+ </tr>
+ </table>
+ </td>
+ </tr>
+ </table>
+ 
+ <table width="583" height="507" border=0 cellpadding=0 cellspacing=0>
+ <tr valign=top>
+ <td width="373" rowspan="4"><table cellspacing=0 cellpadding=5 width="100%" border=0>
+ <tr>
+ <td class=default align=center><strong><font face="Arial, Helvetica, sans-serif"> <strong><font 
+ face="Arial, Helvetica, sans-serif">
+ 2024
+ </font></strong> 年
+ 8
+ 月
+ 12
+ 日　星期
+ <font class=weekday>一</font>
+ </font></strong></td>
+ </tr>
+ </table>
+ <table style="BORDER-TOP: #999 1px solid; MARGIN-BOTTOM: 5px" 
+ cellspacing=0 cellpadding=0 width="100%" border=0>
+ <tr>
+ <td bgcolor=#e8e8e8 class=default style="PADDING-RIGHT: 3px; PADDING-LEFT: 3px; PADDING-BOTTOM: 3px; PADDING-TOP: 3px"><span class="default" style="PADDING-RIGHT: 3px; PADDING-LEFT: 3px; PADDING-BOTTOM: 3px; PADDING-TOP: 3px"><strong>版面导航</strong></span> </td>
+ </tr>
+ </table>
+ <table cellspacing=0 cellpadding=2 width=100% border=0><tbody> <tr> <td class=px12 align=left>&nbsp;<a id=pageLink href=./node_2.htm>第01版：一版要闻</a></td> <td nowrap align=middle width=55><a href=../../1/2024-08/12/01B/2024081201B_pdf.pdf><img height=16 src="../../../tplimg/pdf.gif" width=16 border=0></a></td></tr> <tr bgcolor=#e8e8e8> <td align=left class=px12>&nbsp;<a id=pageLink href=node_3.htm>第02版：要闻</a></td> <td nowrap align=middle width=55><a href=../../1/2024-08/12/02B/2024081202B_pdf.pdf><img height=16 src="../../../tplimg/pdf.gif" width=16 border=0></a></td></tr> <tr> <td class=px12 align=left>&nbsp;<a id=pageLink href=node_4.htm>第03版：观点</a></td> <td nowrap align=middle width=55><a href=../../1/2024-08/12/03B/2024081203B_pdf.pdf><img height=16 src="../../../tplimg/pdf.gif" width=16 border=0></a></td></tr> <tr bgcolor=#e8e8e8> <td align=left class=px12>&nbsp;<a id=pageLink href=node_5.htm>第04版：专题</a></td> <td nowrap align=middle width=55><a href=../../1/2024-08/12/04B/2024081204B_pdf.pdf><img height=16 src="../../../tplimg/pdf.gif" width=16 border=0></a></td></tr> <tr> <td class=px12 align=left>&nbsp;<a id=pageLink href=node_6.htm>第05版：攻坚</a></td> <td nowrap align=middle width=55><a href=../../1/2024-08/12/05B/2024081205B_pdf.pdf><img height=16 src="../../../tplimg/pdf.gif" width=16 border=0></a></td></tr> <tr bgcolor=#e8e8e8> <td align=left class=px12>&nbsp;<a id=pageLink href=node_7.htm>第06版：法治</a></td> <td nowrap align=middle width=55><a href=../../1/2024-08/12/06B/2024081206B_pdf.pdf><img height=16 src="../../../tplimg/pdf.gif" width=16 border=0></a></td></tr> <tr> <td class=px12 align=left>&nbsp;<a id=pageLink href=node_8.htm>第07版：双碳行动</a></td> <td nowrap align=middle width=55><a href=../../1/2024-08/12/07B/2024081207B_pdf.pdf><img height=16 src="../../../tplimg/pdf.gif" width=16 border=0></a></td></tr> <tr bgcolor=#e8e8e8> <td align=left class=px12>&nbsp;<a id=pageLink href=node_9.htm>第08版：境界-知行</a></td> <td nowrap align=middle width=55><a href=../../1/2024-08/12/08B/2024081208B_pdf.pdf><img height=16 src="../../../tplimg/pdf.gif" width=16 border=0></a></td></tr> </tbody></table> </td>
+ <td width="10" rowspan="4" align="center"></td>
+ <td width="200" height="115" align="center"><table width=100% border=0 align="center" cellpadding=0 cellspacing=0 style="MARGIN-TOP: 5px">
+ <tr>
+ <td><script language=JavaScript>
+<!--
+document.write("<div id=detail style=position:absolute;width:300px;></div>");
+//-->
+ </script>
+ <table cellspacing=0 cellpadding=0 width="70%" border=0>
+ <tr>
+ <td width="200"></td>
+ </tr>
+ <tr>
+ <td background="../../../tplimg/red_a1.jpg" class=default style="PADDING-RIGHT: 3px; BORDER-TOP: #555 1px solid; PADDING-LEFT: 3px; PADDING-BOTTOM: 3px; PADDING-TOP: 3px; BORDER-BOTTOM: #d2d2d2 1px solid"><div align="center" onClick="calendar()"><strong class="whitenav"><font style="CURSOR: hand">按日期查阅</font></strong></div></td>
+ </tr>
+ <tr align="center">
+ <td><table width="200" height="100" border="0" cellpadding="0" cellspacing="0">
+ <tr>
+ <td height="33" colspan="2" align="left" bgcolor="#FFFFFF"><form name=CLD style="padding:0px;margin:0px;">
+ <table cellspacing=0 cellpadding=0 width="100%" align=center border=0>
+ <tr>
+ <td><table width="100%" align=center border="0" cellpadding="1" cellspacing="1">
+ <tr class="default" align=center>
+ <td height=15 colspan=7 bgcolor="#d2d2d2"><table width="100%" border="0" cellpadding="2" cellspacing="0">
+ <tr align="center">
+ <td align="left" nowrap><img src="../../../tplimg/d1.gif" width="7" height="11" style="cursor:hand;" onClick="turnpage(SY,0)"></td>
+ <td><select class=jumpmenu onChange=changeMPCld() name=SY>
+ <script language=JavaScript>
+					for(i=2006;i<2051;i++)
+					document.write('<option>'+i+'</option>')
+ 			</script>
+ </select> </td>
+ <td><img src="../../../tplimg/d.gif" width="7" height="11" style="cursor:hand;" onClick="turnpage(SY,1)"></td>
+ <td align="center" nowrap><img src="../../../tplimg/d1.gif" width="7" height="11" style="cursor:hand;" onClick="turnpage(SM,0)"></td>
+ <td><select class=jumpmenu onChange=changeMPCld() name=SM>
+ <script language=JavaScript>
+				<!-- 
+					for(i=1;i<13;i++) document.write('<option>'+i+'</option>')
+				//-->
+ 			</script>
+ </select> </td>
+ <td><img src="../../../tplimg/d.gif" width="7" height="11" style="cursor:hand;" onClick="turnpage(SM,1)"></td>
+ <td align="right" nowrap><strong><font id=GZ fface="Arial, Helvetica, sans-serif"></font></strong></td>
+ </tr>
+ </table></td>
+ </tr>
+ <tr align=middle bgcolor="#e8e8e8" class="default">
+ <td align="center" class="default"><b><font face="Arial, Helvetica, sans-serif">日</font></b></td>
+ <td align="center" class="default"><b><font face="Arial, Helvetica, sans-serif">一</font></b></td>
+ <td align="center" class="default"><b><font face="Arial, Helvetica, sans-serif">二</font></b></td>
+ <td align="center" class="default"><b><font face="Arial, Helvetica, sans-serif">三</font></b></td>
+ <td align="center" class="default"><b><font face="Arial, Helvetica, sans-serif">四</font></b></td>
+ <td align="center" class="default"><b><font face="Arial, Helvetica, sans-serif">五</font></b></td>
+ <td align="center" class="default"><b><font face="Arial, Helvetica, sans-serif">六</font></b> </td>
+ </tr>
+ <script language=JavaScript>
+		<!--
+			var gNum;
+			for(i=0;i<6;i++) 
+			{
+				document.write('<tr align=center>');
+				for(j=0;j<7;j++) 
+				{
+					gNum = i*7+j;
+					document.write('<td bgcolor="#d2d2d2" class="default" align=center id="GD' + gNum +'" style="cursor: default;" width="14%"><a href="" id="CD' + gNum + '"><span class="date" style="font-family:Verdana, Arial;font-size:11px;"><font _onMouseOver="mOvr(' + gNum +')" onMouseOut="mOut()" id="SD' + gNum +'"');
+					document.write('></font></span></a><br><font id="LD' + gNum + '" size=2 class=pt9 style=display:none></font></td>');
+				}
+				document.write('</tr>');
+			}
+		//-->
+ 	</script>
+ </table></td>
+ </tr>
+ </table>
+ </form></td>
+ </tr>
+ </table> </td>
+ </tr> 
+ <tr>
+ <td width="200"></td>
+ </tr>
+ </table></td>
+ </tr>
+<tr>
+ <td background="http://epaper.cena.com.cn/tplimg/red_a1.jpg" class=default style="PADDING-RIGHT: 3px; solid; PADDING-LEFT: 3px; BORDER-TOP: #A90110 1px solid; PADDING-BOTTOM: 3px; PADDING-TOP: 3px; BORDER-BOTTOM: #d2d2d2 1px solid">&nbsp;</td>
+</tr>
+ <tr>
+ <FORM name="form1" action="http://49.5.6.212:8021/search/servlet/SearchServlet.do" method="post" onSubmit="per_submit();return false;" target="_blank">
+
+ <td height="50" colspan="7" class=default style="PADDING-RIGHT: 3px; PADDING-LEFT: 3px; PADDING-BOTTOM: 3px; PADDING-TOP: 3px;background:#d9152b;"><input type="text" name="contentKey" id="contentKey" style="width:140px;border:1px solid #CCCCCC;height:22px;line-height:20px;margin-left:5px;margin-right:5px;"><input name="search" type="submit" value="检索" style="line-height:14px;height:22px;">	<input type="hidden" name="op" value="single"/>
+ <input type="hidden" name="op" value="single">
+<input type="hidden" name="siteID" value=""/> 
+<input type="hidden" name="sort" value="date"/>
+</td>
+ </FORM>
+ </tr>
+
+ </table></td>
+ </tr>
+ </table>
+ </td>
+ </tr>
+
+ <tr bgcolor="#A90110">
+ <td colspan="2" align="center" class="px12" style="line-height: 120%"><p class="px12w"><span class="STYLE27"><FONT color=#ffffff><br>
+ 中国环境网　<a href="http://www.cenews.com.cn" target="_blank"><FONT color=#ffffff>http://www.cenews.com.cn</FONT></a><BR>
+ 中国环境报社版权所有。未经许可，不得转载或镜像。<br>
+ 地址：北京市东城区广渠门内大街16号环境大厦1202、1005房间　邮编：100062<br>
+ 订阅电话：010-67102729 | 67102729<BR>
+ </FONT></span><br>
+
+ 　 </p>
+ </td>
+ </tr>
+</table>
+
+<map name="Map">
+ <area shape="rect" coords="17,12,189,72" href="http://www.cenews.cn.com">
+ <area shape="rect" coords="18,78,189,131" href="http://news.cenews.cn.com">
+</map>
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+ var hm = document.createElement("script");
+ hm.src = "https://hm.baidu.com/hm.js?231ab2c8aa13bfdeaf7f1ca0820e590d";
+ var s = document.getElementsByTagName("script")[0]; 
+ s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</body>
+</html>
+<!--enpproperty <founder-date>2024-08-12 23:59:59</founder-date><founder-pagenum>01B</founder-pagenum><founder-papername>中国环境报</founder-papername><founder-type>2</founder-type><founder-pagepicurl>zghjb/page/1/2024-08/12/01B/2024081201B_icon.jpg</founder-pagepicurl><founder-content>中国环境报</founder-content> /enpproperty-->

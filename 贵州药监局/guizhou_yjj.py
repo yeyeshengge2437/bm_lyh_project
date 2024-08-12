@@ -2,7 +2,6 @@ import hashlib
 import time
 
 import mysql.connector
-import requests
 from lxml import etree
 import re
 import redis
