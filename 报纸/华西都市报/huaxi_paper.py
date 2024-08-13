@@ -102,17 +102,6 @@ value = paper_queue_next(webpage_url_list=['https://www.wccdaily.com.cn'])
 queue_id = value['id']
 webpage_id = value["webpage_id"]
 
-# success_data = {
-#         'id': queue_id,
-#         'description': '成功',
-#     }
-# paper_queue_success(success_data)
-#
-# fail_data = {
-#         "id": queue_id,
-#         "description": "程序问题",
-#     }
-# paper_queue_fail(fail_data)
 
 claims_keys = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
                          r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
@@ -214,23 +203,20 @@ def paper_claims(paper_time):
                 cursor_test.close()
                 conn_test.close()
 
-            success_data = {
-                'id': queue_id,
-                'description': '数据获取成功',
-            }
-            paper_queue_success(success_data)
+        success_data = {
+            'id': queue_id,
+            'description': '数据获取成功',
+        }
+        paper_queue_success(success_data)
 
     else:
-        fail_data = {
-            "id": queue_id,
-            "description": f"响应码:{response.status_code}",
-        }
-        paper_queue_fail(fail_data)
-
+        # 获取当前时间小时分钟
+        now = datetime.now().strftime('%%m-%d %H:%M')
+        raise Exception(f'目前暂未有报纸，{now}，url:{url}')
 
 
 # 设置最大重试次数
-max_retries = 5
+max_retries = 3
 retries = 0
 while retries < max_retries:
     try:
@@ -240,7 +226,14 @@ while retries < max_retries:
         retries += 1
         fail_data = {
             "id": queue_id,
-            "description": f"程序问题:{e}",
+            "description": f"{e}",
         }
         paper_queue_fail(fail_data)
         time.sleep(3610)  # 等待1小时后重试
+    if retries == max_retries:
+        month_day = datetime.now().strftime('%Y-%m-%d')
+        success_data = {
+            'id': queue_id,
+            'description': f'{month_day}没有报纸',
+        }
+        paper_queue_success(success_data)

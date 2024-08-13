@@ -35,7 +35,7 @@ def paper_queue_next(webpage_url_list=None):
     res = s.post(url=url, headers=headers, data=data_str)
     result = res.json()
     print(result)
-    return result.get("value")['id']
+    return result.get("value")
 
 
 def paper_queue_success(data=None):
@@ -96,25 +96,32 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper"):
     result = res.json()
     fr.close()
     os.remove(pdf_path)
-    if "file_url" in result.get("value"):
-        return result.get("value")["file_url"]
-    else:
-        return "链接失效"
+    return result.get("value")["file_url"]
+
+def get_md5_set(database):
+    hash_value_set = set()
+    con_test = mysql.connector.connect(
+        host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+        user="col2024",
+        password="Bm_a12a06",
+        database=database
+    )
+    cursor = con_test.cursor()
+    # 获取表中的MD5值
+    cursor.execute("SELECT MD5 FROM col_chief_public")
+    for row in cursor:
+        hash_value_set.add(row[0])
+    return hash_value_set
 
 
-# from_queue = paper_queue_next(webpage_url_list=['https://szb.gansudaily.com.cn/gsjjrb'])
-#
-# success_data = {
-#         'id': from_queue,
-#         'description': '成功',
-#     }
-# paper_queue_success(success_data)
-#
-# fail_data = {
-#         "id": from_queue,
-#         "description": "该天没有报纸",
-#     }
-# paper_queue_fail(fail_data)
+# value = paper_queue_next(webpage_url_list=['https://yjj.guizhou.gov.cn/xwdt/tzgg'])
+# queue_id = value['id']
+# webpage_id = value["webpage_id"]
+
+queue_id = 11
+webpage_id = 22
+
+
 # 连接redis
 r = redis.Redis()
 
@@ -126,145 +133,182 @@ headers = {
     'sec-ch-ua-platform': '"Windows"',
 }
 
+hash_value_set = get_md5_set("col_test")
+
 response = requests.get('https://yjj.guizhou.gov.cn/gsgg/ypscxkgs/', headers=headers)
-print(response.status_code)
-# 获取所有首要的URL
-html_1 = etree.HTML(response.content.decode())
-main_urls = html_1.xpath("//ul[@id='Left_Nav']/li/a/@href")
-main_urls.append('https://yjj.guizhou.gov.cn/xwdt/tzgg/')
-if not r.llen('guizhou_yjj'):
-    for main in main_urls:
-        if any(s in main for s in ['wtgysxzspsxgs', 'xzcf', 'sfgs']):  # 去除三项不要的数据
-            pass
-        else:
-            res_target = requests.get(main, headers=headers)
-            if res_target.status_code == 200:
-                html_2 = etree.HTML(res_target.content.decode())
-                time.sleep(2)
-                # 获取一共有多少条数据
-                page = html_2.xpath("//div[3]/div/div[2]/div[2]/script/text()")[0]
-                page_num = re.findall(r'\d+', page)[0]
-
-                for i in range(1, int(page_num) + 1):
-                    if i == 1:
-                        url = main + "index.html"
-                    else:
-                        url = main + "index_" + str(i - 1) + ".html"
-
-                    res_notices = requests.get(url, headers=headers)
+if response.status_code == 200:
+    # 获取所有首要的URL
+    html_1 = etree.HTML(response.content.decode())
+    main_urls = html_1.xpath("//ul[@id='Left_Nav']/li/a/@href")
+    main_urls.append('https://yjj.guizhou.gov.cn/xwdt/tzgg/')
+    if not r.llen('guizhou_yjj'):
+        for main in main_urls:
+            if any(s in main for s in ['wtgysxzspsxgs', 'xzcf', 'sfgs']):  # 去除三项不要的数据
+                pass
+            else:
+                res_target = requests.get(main, headers=headers)
+                if res_target.status_code == 200:
+                    html_2 = etree.HTML(res_target.content.decode())
                     time.sleep(2)
-                    html_3 = etree.HTML(res_notices.content.decode())
-                    notices = html_3.xpath("//div[@class='right-list-box']/ul/li/a")
-                    for notice in notices:
-                        title_url = "".join(notice.xpath("./@href")[0])
+                    # 获取一共有多少条数据
+                    page = html_2.xpath("//div[3]/div/div[2]/div[2]/script/text()")[0]
+                    page_num = re.findall(r'\d+', page)[0]
 
-                        r.lpush('guizhou_yjj', title_url)
-
-while r.llen('guizhou_yjj'):
-    url = r.rpop('guizhou_yjj').decode()
-    for url_key in ['xwdt/tzgg', 'gsgg', 'zwgk/jdhy']:
-        if url_key in url:
-            title_res = requests.get(url, headers=headers)
-            time.sleep(2)
-            if title_res.status_code == 200:
-                title_html = etree.HTML(title_res.content.decode())
-                # 文章路径
-                article_path = "".join(title_html.xpath("//div[@class='dqwz']//text()")).strip()
-                # 概要
-                summary = title_html.xpath("//div[1]/table[@class='layui-table']/tbody/tr/td//text()")
-                summary_str = ""
-                if summary:
-                    for i in summary:
-                        if "var" in i:
-                            chinese_chars = re.findall(r'[\u4e00-\u9fa5]+', i)[0]
+                    for i in range(1, int(page_num) + 1):
+                        if i == 1:
+                            url = main + "index.html"
                         else:
-                            chinese_chars = i
-                        summary_str.join(chinese_chars)
-                # 标题
-                title_name = "".join(title_html.xpath("//div[@id='c']/div[@class='Article_bt']//text()")).strip()
-                contents = title_html.xpath("//div[contains(@class, 'trs_paper_default')]")
-                content_html = ''
-                if not contents:
-                    contents = title_html.xpath("//div[@class='Article_zw']")
-                for cont in contents:
-                    content_html += etree.tostring(cont, method='html', encoding='unicode')
-                source = "".join(title_html.xpath("//div[@class='Article_ly']/span[@class='SourceName']//text()"))
-                if not source:
-                    source = "".join(title_html.xpath("//div[@id='c']/div[@class='Article_ly']/span[2]//text()"))
-                    source = re.findall(r"var wzly='(.*?)';", source)[0]
-                    if not re.search(r'[\u4e00-\u9fff]+', source):
-                        source = "贵州省药品监督管理局"
+                            url = main + "index_" + str(i - 1) + ".html"
 
-                elif re.search(r'[A-Za-z]', source):
-                    source = re.findall(r"var SourceName='(.*?)';", source)[0]
-                    if not re.search(r'[\u4e00-\u9fff]+', source):
-                        source = "贵州省药品监督管理局"
-                else:
-                    source = source
-                pub_date = "".join(title_html.xpath("//div[@id='c']/div[@class='Article_ly']/span[1]//text()"))
-                pub_date = re.findall(r"var  pubdata='(.*?)';", pub_date)[0]
-                annexs = title_html.xpath("//p[@class='insertfileTag']/a")  # 获取所有附件
-                if not annexs:
-                    annexs = title_html.xpath("//div[contains(@class, 'trs_paper_default')]/p/a")
-                if not annexs:
-                    annexs = title_html.xpath("//font[@id='Zoom']/p//a")
+                        res_notices = requests.get(url, headers=headers)
+                        time.sleep(2)
+                        html_3 = etree.HTML(res_notices.content.decode())
+                        notices = html_3.xpath("//div[@class='right-list-box']/ul/li/a")
+                        for notice in notices:
+                            title_url = "".join(notice.xpath("./@href")[0])
 
-                if url_key == 'xwdt/tzgg':
-                    base_title_url = url[:42]
-                elif url_key == 'gsgg':
-                    cleaned_url = re.sub(r'/t\d+_\d+\.html', '', url)
-                    base_title_url = cleaned_url
-                # elif url_key == 'zwgk/jdhy':
-                else:
-                    base_title_url = url[:45]
-                annex_url_list = []
-                if annexs:
-                    for annex in annexs:
-                        if not annex.xpath("./@href") or not annex.xpath("./text()"):
-                            continue
-                        annex_name = annex.xpath("./text()")[0]
-                        annex_url = ''.join(annex.xpath("./@href")[0].strip('.'))
-                        if "http" not in annex_url:
-                            annex_url = base_title_url + annex_url
-                        annex_url_list.append(annex_url)
-                origin_annex_data = ''
-                new_annex_data = ''
-                if annex_url_list:
-                    for annex_url in annex_url_list:
-                        try:
-                            annex_url_type = annex_url.split('.')[-1]
-                            if annex_url_type == 'html':
+                            r.lpush('guizhou_yjj', title_url)
+else:
+    # fail_data = {
+    #     "id": queue_id,
+    #     "description": f"获取任务队列失败,响应码：{response.status_code}",
+    # }
+    # paper_queue_fail(fail_data)
+    pass
+
+
+def get_yjj_data(database):
+    while r.llen('guizhou_yjj'):
+        url = r.rpop('guizhou_yjj').decode()
+        for url_key in ['xwdt/tzgg', 'gsgg', 'zwgk/jdhy']:
+            if url_key in url:
+                title_res = requests.get(url, headers=headers)
+                time.sleep(2)
+                if title_res.status_code == 200:
+                    title_html = etree.HTML(title_res.content.decode())
+                    # 文章路径
+                    article_path = "".join(title_html.xpath("//div[@class='dqwz']//text()")).strip()
+                    # 概要
+                    summary = title_html.xpath("//div[1]/table[@class='layui-table']/tbody/tr/td//text()")
+                    summary_str = ""
+                    if summary:
+                        for i in summary:
+                            if "var" in i:
+                                chinese_chars = re.findall(r'[\u4e00-\u9fa5]+', i)[0]
+                            else:
+                                chinese_chars = i
+                            summary_str.join(chinese_chars)
+                    # 标题
+                    title_name = "".join(title_html.xpath("//div[@id='c']/div[@class='Article_bt']//text()")).strip()
+                    contents = title_html.xpath("//div[contains(@class, 'trs_paper_default')]")
+                    content_html = ''
+                    content = ''
+                    if not contents:
+                        contents = title_html.xpath("//div[@class='Article_zw']")
+                    for cont in contents:
+                        content_html += etree.tostring(cont, method='html', encoding='unicode')
+                        content = ''.join(cont.xpath(".//text()")).strip()
+                    source = "".join(title_html.xpath("//div[@class='Article_ly']/span[@class='SourceName']//text()"))
+                    if not source:
+                        source = "".join(title_html.xpath("//div[@id='c']/div[@class='Article_ly']/span[2]//text()"))
+                        source = re.findall(r"var wzly='(.*?)';", source)[0]
+                        if not re.search(r'[\u4e00-\u9fff]+', source):
+                            source = "贵州省药品监督管理局"
+
+                    elif re.search(r'[A-Za-z]', source):
+                        source = re.findall(r"var SourceName='(.*?)';", source)[0]
+                        if not re.search(r'[\u4e00-\u9fff]+', source):
+                            source = "贵州省药品监督管理局"
+                    else:
+                        source = source
+                    pub_date = "".join(title_html.xpath("//div[@id='c']/div[@class='Article_ly']/span[1]//text()"))
+                    pub_date = re.findall(r"var  pubdata='(.*?)';", pub_date)[0]
+                    annexs = title_html.xpath("//p[@class='insertfileTag']/a")  # 获取所有附件
+                    if not annexs:
+                        annexs = title_html.xpath("//div[contains(@class, 'trs_paper_default')]/p/a")
+                    if not annexs:
+                        annexs = title_html.xpath("//font[@id='Zoom']/p//a")
+
+                    if url_key == 'xwdt/tzgg':
+                        base_title_url = url[:42]
+                    elif url_key == 'gsgg':
+                        cleaned_url = re.sub(r'/t\d+_\d+\.html', '', url)
+                        base_title_url = cleaned_url
+                    # elif url_key == 'zwgk/jdhy':
+                    else:
+                        base_title_url = url[:45]
+                    annex_url_list = []
+                    if annexs:
+                        for annex in annexs:
+                            if not annex.xpath("./@href") or not annex.xpath("./text()"):
                                 continue
-                            origin_annex_data += annex_url + ','
-                            new_annex_url = upload_file_by_url(file_url=annex_url, file_name='1', file_type=annex_url_type,
-                                                               type='other')
-                            new_annex_data += new_annex_url + ','
-                        except Exception as e:
-                            continue
-                origin = "贵州药品监督管理局"
-                origin_domain = 'http://yjj.guizhou.gov.cn/'
-                create_date = time.strftime('%Y-%m-%d', time.localtime(time.time()))
-                # 进行数据的去重
-                data_unique = f"文章标题：{title_name}, 文章内容：{content_html}, 来源：{source}, 发布时间：{pub_date}"
-                # 数据去重
-                hash_value = hashlib.md5(json.dumps(data_unique).encode('utf-8')).hexdigest()
-                if not r.sismember("guizhou_yjj_set", hash_value):
-                    # 不重复哈希值添加到集合中
-                    r.sadd("guizhou_yjj_set", hash_value)
-                    # 连接到测试库
+                            annex_name = annex.xpath("./text()")[0]
+                            annex_url = ''.join(annex.xpath("./@href")[0].strip('.'))
+                            if "http" not in annex_url:
+                                annex_url = base_title_url + annex_url
+                            annex_url_list.append(annex_url)
+                    origin_annex_data = ''
+                    new_annex_data = ''
+                    if annex_url_list:
+                        for annex_url in annex_url_list:
+                            try:
+                                annex_url_type = annex_url.split('.')[-1]
+                                if annex_url_type == 'html':
+                                    continue
+                                origin_annex_data += annex_url + ','
+                                new_annex_url = upload_file_by_url(file_url=annex_url, file_name='1',
+                                                                   file_type=annex_url_type,
+                                                                   type='other')
+                                new_annex_data += new_annex_url + ','
+                            except Exception as e:
+                                continue
+                    origin = "贵州药品监督管理局"
+                    origin_domain = 'http://yjj.guizhou.gov.cn/'
+                    create_date = time.strftime('%Y-%m-%d', time.localtime(time.time()))
+                    # 进行数据的去重
+                    data_unique = f"文章标题：{title_name}, 文章内容：{content_html}, 来源：{source}, 发布时间：{pub_date}"
+                    # 数据去重
+                    hash_value = hashlib.md5(json.dumps(data_unique).encode('utf-8')).hexdigest()
+
                     conn_test = mysql.connector.connect(
                         host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
                         user="col2024",
                         password="Bm_a12a06",
-                        database="col_test"
+                        database=database
                     )
                     cursor_test = conn_test.cursor()
-                    # 将数据插入到指定表中
-                    insert_sql = "INSERT INTO col_chief_public (title,title_url, content_html, path, summary, annex, origin_annex, source,pub_date, origin, origin_domain, create_date) VALUES (%s,%s,  %s, %s, %s,%s, %s, %s, %s, %s, %s, %s)"
-                    cursor_test.execute(insert_sql, (
-                        title_name,url, content_html, article_path, summary_str, new_annex_data, origin_annex_data, source, pub_date,
-                        origin, origin_domain, create_date))
+
+                    if hash_value not in hash_value_set:
+                        hash_value_set.add(hash_value)
+                        # 如果哈希值不在集合中，则进行插入操作
+                        insert_sql = "INSERT INTO col_chief_public (title,title_url, content,content_html, path, summary, annex, origin_annex, source,pub_date, origin, origin_domain, create_date,from_queue, webpage_id,MD5) VALUES (%s,%s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s)"
+                        cursor_test.execute(insert_sql, (
+                            title_name, url, content, content_html, article_path, summary_str, new_annex_data,
+                            origin_annex_data,
+                            source, pub_date,
+                            origin, origin_domain, create_date, queue_id, webpage_id, hash_value))
+
                     conn_test.commit()
                     cursor_test.close()
                     conn_test.close()
-                    print(f"标题：{title_name}入库成功")
+
+# 设置最大重试次数
+max_retries = 5
+retries = 0
+while retries < max_retries:
+    try:
+        get_yjj_data("col_test")
+        # success_data = {
+        #     'id': queue_id,
+        #     'description': '数据获取成功',
+        # }
+        # paper_queue_success(success_data)
+        break
+    except Exception as e:
+        retries += 1
+        # fail_data = {
+        #     "id": queue_id,
+        #     "description": f"程序问题:{e}",
+        # }
+        # paper_queue_fail(fail_data)
+        time.sleep(3610)  # 等待1小时后重试

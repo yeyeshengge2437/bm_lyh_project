@@ -247,18 +247,19 @@ while attempts < max_attempts:
         else:
             success_data = {
                 'id': from_queue,
+                'description': '数据获取成功',
             }
             paper_queue_success(success_data)
         break
     except Exception as e:
         print(f"发生错误：{e}")
         attempts += 1  # 增加尝试次数
-        time.sleep(600)  # 等待十分钟后再次尝试
+        time.sleep(3600)  # 等待一小时后再次尝试
         print(f"尝试再次爬取，尝试{attempts}/{max_attempts}")
 
-if attempts == max_attempts:
-    fail_data = {
-        "id": from_queue,
-        'description': '程序问题',
-    }
-    paper_queue_fail(fail_data)
+    if attempts == max_attempts:
+        fail_data = {
+            "id": from_queue,
+            'description': '程序问题',
+        }
+        paper_queue_fail(fail_data)

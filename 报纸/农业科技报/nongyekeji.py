@@ -136,7 +136,6 @@ headers = {
 now_day = datetime.now().strftime('%Y%m%d')
 # now_day = '20230821'
 # now_day = '20230928'
-# 将now_day格式改为2023-09-28
 day = now_day[:4] + '-' + now_day[4:6] + '-' + now_day[6:]
 try:
     base_url = 'http://eb.nkb.com.cn/nykjb/' + now_day + '/mhtml/'
