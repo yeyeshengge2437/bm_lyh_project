@@ -1,3 +1,4 @@
+import hashlib
 import os
 import json
 import re
@@ -10,7 +11,7 @@ from lxml import etree
 from DrissionPage import ChromiumPage, ChromiumOptions
 
 co = ChromiumOptions()
-co = co.set_paths(local_port=9113)
+co = co.set_paths(local_port=9115)
 co = co.set_argument('--no-sandbox')  # 关闭沙箱模式, 解决`$DISPLAY`报错
 co = co.headless(True)  # 开启无头模式, 解决`浏览器无法连接`报错
 
@@ -105,43 +106,35 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper"):
     os.remove(pdf_path)
     return result.get("value")["file_url"]
 
+def get_md5_set(database, table_name):
+    hash_value_set = set()
+    con_test = mysql.connector.connect(
+        host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+        user="col2024",
+        password="Bm_a12a06",
+        database=database
+    )
+    cursor = con_test.cursor()
+    # 获取表中的MD5值
+    cursor.execute(f"SELECT md5 FROM {table_name}")
+    for row in cursor:
+        hash_value_set.add(row[0])
+    return hash_value_set
 
 value = paper_queue_next(webpage_url_list=['http://www.hnshangbao.com'])
 queue_id = value['id']
 webpage_id = value["webpage_id"]
 
-# success_data = {
-#         'id': queue_id,
-#         'description': '成功',
-#     }
-# paper_queue_success(success_data)
-#
-# fail_data = {
-#         "id": queue_id,
-#         "description": "程序问题",
-#     }
-# paper_queue_fail(fail_data)
 
+md5_set = get_md5_set("col", "col_paper_notice")
 claims_keys = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
                          r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
 paper = "河南商报"
 
-headers = {
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-    'Accept-Language': 'zh-CN,zh;q=0.9',
-    'Cache-Control': 'no-cache',
-    # 'Cookie': '_D_SID=F24136CE5C75C18DEC65BB8604657EF8; ASPSESSIONIDCQASTBCR=FIFNLPLAOHIKEGAMHBCKHGAI; Hm_lvt_9bdfc3c6e0ff45e87458a4ae354c3134=1723443187; HMACCOUNT=FDD970C8B3C27398; sajssdk_2015_cross_new_user=1; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%2219145380fa6581-0d28aa3ec9d9a7-26001e51-1296000-19145380fa7974%22%2C%22first_id%22%3A%22%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E7%9B%B4%E6%8E%A5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%89%93%E5%BC%80%22%2C%22%24latest_referrer%22%3A%22%22%7D%2C%22identities%22%3A%22eyIkaWRlbnRpdHlfY29va2llX2lkIjoiMTkxNDUzODBmYTY1ODEtMGQyOGFhM2VjOWQ5YTctMjYwMDFlNTEtMTI5NjAwMC0xOTE0NTM4MGZhNzk3NCJ9%22%2C%22history_login_id%22%3A%7B%22name%22%3A%22%22%2C%22value%22%3A%22%22%7D%2C%22%24device_id%22%3A%2219145380fa6581-0d28aa3ec9d9a7-26001e51-1296000-19145380fa7974%22%7D; __bid_n=19145380fd57456ccc7292; Hm_lpvt_9bdfc3c6e0ff45e87458a4ae354c3134=1723443596',
-    'Pragma': 'no-cache',
-    'Proxy-Connection': 'keep-alive',
-    'Upgrade-Insecure-Requests': '1',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
-}
-
 pdf_domain = 'http://news.cenews.com.cn/html'
 today = datetime.now().strftime('%Y-%m/%d')
 
-
-def paper_claims():
+def paper_claims(database):
     url = f'http://www.hnshangbao.com/sbn/'
     page.get(url)
     time.sleep(1)
@@ -161,7 +154,6 @@ def paper_claims():
             if page.url_available:
                 html_2 = etree.HTML(page.html)
                 # 获取该页所有标题
-                all_title = html_2.xpath("//div[@class='box-bd']/ul[@class='list']/li/a")
                 all_title = html_2.xpath("//div[@class='box-bd']/ul[@class='list']/li")
                 for title in all_title:
                     # 标题名称
@@ -172,15 +164,20 @@ def paper_claims():
                     day = ''.join(title.xpath("./span[@class='datatime']/text()"))
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
+                    # 进行数据的去重
+                    data_unique = f"文章标题：{article_name}, 发布时间：{day}"
+                    # 数据去重
+                    hash_value = hashlib.md5(json.dumps(data_unique).encode('utf-8')).hexdigest()
                     # 上传到测试数据库
                     conn_test = mysql.connector.connect(
                         host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
                         user="col2024",
                         password="Bm_a12a06",
-                        database="col_test",
+                        database=database,
                     )
                     cursor_test = conn_test.cursor()
-                    if claims_keys.match(article_name):
+                    if claims_keys.match(article_name) and hash_value not in md5_set:
+                        md5_set.add(hash_value)
                         # 获取文章内容
                         page.get(article_url)
                         time.sleep(1)
@@ -191,16 +188,18 @@ def paper_claims():
                         # day = ''.join(article_html.xpath("//div[@class='details']/p[1]/text()"))
 
                         # 上传到报纸的内容
-                        insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
+                        insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id, md5) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s, %s)"
 
                         cursor_test.execute(insert_sql,
-                                            (bm_url, day, paper, article_name, content, article_url, create_time, queue_id,
-                                             create_date, webpage_id))
+                                            (bm_url, day, paper, article_name, content, article_url, create_time,
+                                             queue_id,
+                                             create_date, webpage_id, hash_value))
                         conn_test.commit()
 
                     cursor_test.close()
                     conn_test.close()
 
+        page.close()
         success_data = {
             'id': queue_id,
             'description': '数据获取成功',
@@ -208,27 +207,23 @@ def paper_claims():
         paper_queue_success(success_data)
 
     else:
+        # 获取当前时间小时分钟
+        now = datetime.now().strftime('%m-%d %H:%M')
+        raise Exception(f'{now}程序出错，{page.url_available}')
+
+
+# 设置最大重试次数
+max_retries = 5
+retries = 0
+while retries < max_retries:
+    try:
+        paper_claims("col")
+        break
+    except Exception as e:
+        retries += 1
         fail_data = {
             "id": queue_id,
-            "description": f"页面状态:{page.url_available}",
+            "description": f"程序问题:{e}",
         }
         paper_queue_fail(fail_data)
-
-
-paper_claims()
-
-# # 设置最大重试次数
-# max_retries = 5
-# retries = 0
-# while retries < max_retries:
-#     try:
-#         paper_claims(today)
-#         break
-#     except Exception as e:
-#         retries += 1
-#         fail_data = {
-#             "id": queue_id,
-#             "description": f"程序问题:{e}",
-#         }
-#         paper_queue_fail(fail_data)
-#         time.sleep(3610)  # 等待1小时后重试
+        time.sleep(3610)  # 等待1小时后重试

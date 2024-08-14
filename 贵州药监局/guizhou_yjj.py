@@ -114,12 +114,10 @@ def get_md5_set(database):
     return hash_value_set
 
 
-# value = paper_queue_next(webpage_url_list=['https://yjj.guizhou.gov.cn/xwdt/tzgg'])
-# queue_id = value['id']
-# webpage_id = value["webpage_id"]
+value = paper_queue_next(webpage_url_list=['https://yjj.guizhou.gov.cn/xwdt/tzgg'])
+queue_id = value['id']
+webpage_id = value["webpage_id"]
 
-queue_id = 11
-webpage_id = 22
 
 
 # 连接redis
@@ -133,7 +131,7 @@ headers = {
     'sec-ch-ua-platform': '"Windows"',
 }
 
-hash_value_set = get_md5_set("col_test")
+hash_value_set = get_md5_set("col")
 
 response = requests.get('https://yjj.guizhou.gov.cn/gsgg/ypscxkgs/', headers=headers)
 if response.status_code == 200:
@@ -256,7 +254,7 @@ def get_yjj_data(database):
                                 if annex_url_type == 'html':
                                     continue
                                 origin_annex_data += annex_url + ','
-                                new_annex_url = upload_file_by_url(file_url=annex_url, file_name='1',
+                                new_annex_url = upload_file_by_url(file_url=annex_url, file_name='yjj',
                                                                    file_type=annex_url_type,
                                                                    type='other')
                                 new_annex_data += new_annex_url + ','
@@ -297,18 +295,18 @@ max_retries = 5
 retries = 0
 while retries < max_retries:
     try:
-        get_yjj_data("col_test")
-        # success_data = {
-        #     'id': queue_id,
-        #     'description': '数据获取成功',
-        # }
-        # paper_queue_success(success_data)
+        get_yjj_data("col")
+        success_data = {
+            'id': queue_id,
+            'description': '数据获取成功',
+        }
+        paper_queue_success(success_data)
         break
     except Exception as e:
         retries += 1
-        # fail_data = {
-        #     "id": queue_id,
-        #     "description": f"程序问题:{e}",
-        # }
-        # paper_queue_fail(fail_data)
+        fail_data = {
+            "id": queue_id,
+            "description": f"程序问题:{e}",
+        }
+        paper_queue_fail(fail_data)
         time.sleep(3610)  # 等待1小时后重试

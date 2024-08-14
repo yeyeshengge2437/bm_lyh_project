@@ -48,9 +48,17 @@ page.set.auto_handle_alert()
 def get_captcha():
     yzm_img = page.ele(".el-input el-input--small").next(1)
     yzm_img.wait(4)
-    if yzm_img.attr('src') == "not":
+    # 设置最大尝试次数
+    max_attempts = 10
+    attempts = 0
+    while yzm_img.attr('src') == "not":
         yzm_img.click(by_js=True)
-        time.sleep(2)
+        attempts += 1
+        time.sleep(4)
+        if attempts >= max_attempts:
+            print("尝试获取验证码图片失败")
+            break
+
     yzm_img1 = yzm_img.attr('src')[22:]
     # 将base64图片转换为图片文件
     img_yzm = base64.b64decode(yzm_img1)
@@ -168,6 +176,7 @@ value_unique = paper_queue_next(webpage_url_list=['https://www.gzcourt.gov.cn/fy
 from_queue = value_unique['id']
 webpage_id = value_unique["webpage_id"]
 
+
 def get_part_data():
     headers = {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
@@ -248,11 +257,17 @@ def get_part_data():
                 conn_test.close()
         now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         print(f"时间：{now}， 新增广州中院数据数：", new_num)
-        return True
+        success_data = {
+            'id': from_queue,
+            'description': '广州市中院数据获取成功',
+        }
+        paper_queue_success(success_data)
     else:
-        return False
-
-
+        fail_data = {
+            'id': from_queue,
+            'description': '广州市中院数据获取成功',
+        }
+        paper_queue_fail(fail_data)
 
 
 def get_court_data(page):
@@ -269,128 +284,120 @@ def get_court_data(page):
             get_part_data()
             break
 
-
-
-
-
     if flag:
         # 记录当前爬取页数——————————————————————
         page_num = 1
-
+        # 从任务队列中取出
         for court_name in court_names:
-            page.wait.ele_displayed('.el-input__icon el-icon-arrow-down')
-            court_ele = page.ele('.el-input__icon el-icon-arrow-down')
-            court_ele.click()
-            time.sleep(4)
-            if court_ele.text == '暂无数据':
+            try:
+                page.wait.ele_displayed('.el-input__icon el-icon-arrow-down')
+                court_ele = page.ele('.el-input__icon el-icon-arrow-down')
                 court_ele.click()
                 time.sleep(4)
-                court_ele.click()
-            page.wait.ele_displayed(court_name)
-            time.sleep(4)
-            page.ele(court_name).click()
+                if court_ele.text == '暂无数据':
+                    court_ele.click()
+                    time.sleep(4)
+                    court_ele.click()
+                page.wait.ele_displayed(court_name)
+                time.sleep(4)
+                page.ele(court_name).click()
 
-            # 验证码部分——————————————————————————
-            time.sleep(6)
-            get_captcha()
+                # 验证码部分——————————————————————————
+                time.sleep(6)
+                get_captcha()
 
-            # 下滑到底部
-            page.scroll.to_bottom()
-            page.ele('@placeholder=请选择', index=-1).click()
-            time.sleep(2)
-            page.ele('.el-scrollbar__view el-select-dropdown__list').child(index=-1).click(by_js=True)
-            time.sleep(10)
-            get_captcha()
-            page.ele('.el-button red-query-button el-button--danger el-button--small').click()
+                # 下滑到底部
+                page.scroll.to_bottom()
+                page.ele('@placeholder=请选择', index=-1).click()
+                time.sleep(2)
+                page.ele('.el-scrollbar__view el-select-dropdown__list').child(index=-1).click(by_js=True)
+                time.sleep(10)
+                get_captcha()
+                page.ele('.el-button red-query-button el-button--danger el-button--small').click()
 
-            warning_message_processing()
+                warning_message_processing()
 
-            page.wait.ele_displayed('.el-table__row')
-            page.wait.ele_displayed('.btn-next')
-            next_btn = page.ele('.btn-next')
+                page.wait.ele_displayed('.el-table__row')
+                page.wait.ele_displayed('.btn-next')
+                next_btn = page.ele('.btn-next')
 
-            while not next_btn.attr('disabled'):
+                while not next_btn.attr('disabled'):
 
-                court_infos = page.eles('.el-table__row')
-                # 获取目前爬取页数
-                page_num = page.ele('.number active').text
+                    court_infos = page.eles('.el-table__row')
+                    # 获取目前爬取页数
+                    page_num = page.ele('.number active').text
 
-                for court_info in court_infos:
-                    trial_info = court_info.text.split('\n\t')
-                    if len(trial_info) == 7:
-                        case_no = trial_info[0]
-                        cause = trial_info[1]
-                        members = trial_info[2]
-                        court = trial_info[3]
-                        open_time = trial_info[4]
-                        court_room = trial_info[5]
-                        release_date = trial_info[6]
-                        # 设置创建时间
-                        create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                        # 设置创建日期
-                        create_date = datetime.now().strftime('%Y-%m-%d')
-                        # 来源
-                        origin = "广州中院公告公示中心开庭公告"
-                        # 来源域名
-                        origin_domain = "gzcourt.gov.cn"
+                    for court_info in court_infos:
+                        trial_info = court_info.text.split('\n\t')
+                        if len(trial_info) == 7:
+                            case_no = trial_info[0]
+                            cause = trial_info[1]
+                            members = trial_info[2]
+                            court = trial_info[3]
+                            open_time = trial_info[4]
+                            court_room = trial_info[5]
+                            release_date = trial_info[6]
+                            # 设置创建时间
+                            create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                            # 设置创建日期
+                            create_date = datetime.now().strftime('%Y-%m-%d')
+                            # 来源
+                            origin = "广州中院公告公示中心开庭公告"
+                            # 来源域名
+                            origin_domain = "gzcourt.gov.cn"
 
-                        data_unique = case_no
-                        # 数据去重
-                        hash_value = hashlib.md5(json.dumps(data_unique).encode('utf-8')).hexdigest()
-                        # 判断唯一的哈希值是否在集合中
-                        if not redis_conn.sismember("guangdong_region_set", hash_value):
-                            # 不重复哈希值添加到集合中
-                            redis_conn.sadd("guangdong_region_set", hash_value)
-                            # 连接到数据库
-                            conn_test = mysql.connector.connect(
-                                host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
-                                user="col2024",
-                                password="Bm_a12a06",
-                                database="col"
-                            )
-                            cursor_test = conn_test.cursor()
-                            # 将数据插入到col_case_open表中
-                            insert_sql = "INSERT INTO col_case_open (case_no, cause, court, members, open_time, court_room, release_date, origin, origin_domain, create_time, create_date,from_queue, webpage_id) VALUES (%s,  %s,%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-                            cursor_test.execute(insert_sql, (
-                                case_no, cause, court, members, open_time, court_room, release_date,
-                                origin,
-                                origin_domain, create_time, create_date, from_queue, webpage_id))
-                            conn_test.commit()
-                            cursor_test.close()
-                            conn_test.close()
+                            data_unique = case_no
+                            # 数据去重
+                            hash_value = hashlib.md5(json.dumps(data_unique).encode('utf-8')).hexdigest()
+                            # 判断唯一的哈希值是否在集合中
+                            if not redis_conn.sismember("guangdong_region_set", hash_value):
+                                # 不重复哈希值添加到集合中
+                                redis_conn.sadd("guangdong_region_set", hash_value)
+                                # 连接到数据库
+                                conn_test = mysql.connector.connect(
+                                    host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                                    user="col2024",
+                                    password="Bm_a12a06",
+                                    database="col"
+                                )
+                                cursor_test = conn_test.cursor()
+                                # 将数据插入到col_case_open表中
+                                insert_sql = "INSERT INTO col_case_open (case_no, cause, court, members, open_time, court_room, release_date, origin, origin_domain, create_time, create_date,from_queue, webpage_id) VALUES (%s,  %s,%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                                cursor_test.execute(insert_sql, (
+                                    case_no, cause, court, members, open_time, court_room, release_date,
+                                    origin,
+                                    origin_domain, create_time, create_date, from_queue, webpage_id))
+                                conn_test.commit()
+                                cursor_test.close()
+                                conn_test.close()
 
-                time.sleep(15)
-                # 点击下一页——————————————————————————————
-                page.ele(".btn-next").click()
-                warning_value = warning_message_processing()
-                if warning_value:
-                    time.sleep(6)
-                    get_captcha()
-                    jump_page = page.ele('.el-input__inner', index=-1)
-                    jump_page.input(page_num, clear=True)
-                    jump_page.tab.actions.key_down('ENTER')
-                page.wait.ele_hidden('.el-loading-text')
-                # warning_message_processing()
+                    time.sleep(15)
+                    # 点击下一页——————————————————————————————
+                    page.ele(".btn-next").click()
+                    warning_value = warning_message_processing()
+                    if warning_value:
+                        time.sleep(6)
+                        get_captcha()
+                        jump_page = page.ele('.el-input__inner', index=-1)
+                        jump_page.input(page_num, clear=True)
+                        jump_page.tab.actions.key_down('ENTER')
+                    page.wait.ele_hidden('.el-loading-text')
+                        # warning_message_processing()
+
+            except Exception as e:
+                print(f"{court_names}部分数据获取失败: {e}")
 
         page.close()
-        value = get_part_data()
-        if value:
-            success_data = {
-                'id': from_queue,
-                'description': '广州市数据获取成功',
-            }
-            paper_queue_success(success_data)
-        else:
-            success_data = {
-                'id': from_queue,
-                'description': '广州各区数据获取成功',
-            }
-            paper_queue_success(success_data)
 
+        success_data = {
+            'id': from_queue,
+            'description': '广州市各区数据获取成功',
+        }
+        paper_queue_success(success_data)
 
 
 # 设置最大重试次数
-max_retries = 5
+max_retries = 3
 retries = 0
 while retries < max_retries:
     try:
@@ -405,4 +412,5 @@ while retries < max_retries:
         paper_queue_fail(fail_data)
         print(f"{e}，等待一小时后重试...")
         time.sleep(3600)
-
+    if retries == max_retries:
+        get_part_data()

@@ -97,6 +97,29 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper"):
     os.remove(pdf_path)
     return result.get("value")["file_url"]
 
+import hashlib
+import json
+import mysql.connector
+
+
+def get_md5_set(database, table_name):
+    hash_value_set = set()
+    con_test = mysql.connector.connect(
+        host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+        user="col2024",
+        password="Bm_a12a06",
+        database=database
+    )
+    cursor = con_test.cursor()
+    # 获取表中的MD5值
+    cursor.execute(f"SELECT md5 FROM {table_name}")
+    for row in cursor:
+        hash_value_set.add(row[0])
+    return hash_value_set
+
+
+md5_set = get_md5_set("col", "col_paper_notice")
+
 
 value = paper_queue_next(webpage_url_list=['https://epaper.qingdaonews.com'])
 queue_id = value['id']
@@ -160,6 +183,10 @@ def paper_claims(paper_time):
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 print(article_name, article_url)
+                # 进行数据的去重
+                data_unique = f"文章标题：{article_name}, 版面链接：{bm_url}"
+                # 数据去重
+                hash_value = hashlib.md5(json.dumps(data_unique).encode('utf-8')).hexdigest()
 
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
@@ -169,7 +196,7 @@ def paper_claims(paper_time):
                     database="col"
                 )
                 cursor_test = conn_test.cursor()
-                if bm_pdf not in pdf_set and ("公告" in article_name or claims_keys.match(article_name)):
+                if bm_pdf not in pdf_set and ("公告" in article_name or claims_keys.match(article_name)) and hash_value not in md5_set:
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, "青岛晚报", "pdf", "paper")
                     pdf_set.add(bm_pdf)
@@ -181,7 +208,8 @@ def paper_claims(paper_time):
                                          create_date, webpage_id))
                     conn_test.commit()
 
-                if claims_keys.match(article_name):
+                if claims_keys.match(article_name) and hash_value not in md5_set:
+                    md5_set.add(hash_value)
                     # 获取文章内容
                     article_response = requests.get(article_url, headers=headers)
                     time.sleep(1)
@@ -191,11 +219,11 @@ def paper_claims(paper_time):
                     content = ''.join(article_html.xpath("//td/div[@id='ozoom']/founder-content//text()"))
 
                     # 上传到报纸的内容
-                    insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
+                    insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id, md5) VALUES (%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
 
                     cursor_test.execute(insert_sql,
                                         (bm_url, day, paper, article_name, content, article_url, create_time, queue_id,
-                                         create_date, webpage_id))
+                                         create_date, webpage_id, hash_value))
                     conn_test.commit()
 
                 cursor_test.close()
@@ -208,11 +236,9 @@ def paper_claims(paper_time):
         paper_queue_success(success_data)
 
     else:
-        success_data = {
-            'id': queue_id,
-            'description': '今日暂无报纸',
-        }
-        paper_queue_success(success_data)
+        # 获取当前时间小时分钟
+        now = datetime.now().strftime('%m-%d %H:%M')
+        raise Exception(f'目前暂未有报纸，{now}，url:{url}')
 
 # paper_claims(today)
 
@@ -225,9 +251,12 @@ while retries < max_retries:
         break
     except Exception as e:
         retries += 1
-        fail_data = {
-            "id": queue_id,
-            "description": f"程序问题:{e}",
-        }
-        paper_queue_fail(fail_data)
-        time.sleep(3610)  # 等待1小时后重试
+        if '目前暂未有报纸' in str(e):
+            retries -= 1
+        else:
+            fail_data = {
+                "id": queue_id,
+                "description": f"出现问题:{e}",
+            }
+            paper_queue_fail(fail_data)
+            time.sleep(3610)  # 等待1小时后重试

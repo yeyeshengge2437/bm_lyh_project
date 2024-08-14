@@ -211,7 +211,7 @@ def paper_claims(paper_time):
 
     else:
         # 获取当前时间小时分钟
-        now = datetime.now().strftime('%%m-%d %H:%M')
+        now = datetime.now().strftime('%m-%d %H:%M')
         raise Exception(f'目前暂未有报纸，{now}，url:{url}')
 
 
