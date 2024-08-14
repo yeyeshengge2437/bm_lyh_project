@@ -125,14 +125,13 @@ headers = {
 value = paper_queue_next(webpage_url_list=['http://kjb.zjol.com.cn'])
 from_queue = value['id']
 webpage_id = value["webpage_id"]
-try:
+
+def get_jinrong_paper():
     # 获取当前年月
     year_month = datetime.now().strftime('%Y-%m')
     # 获取当前日期
     date = datetime.now().strftime('%d')
     base_pdf_url = "https://kjb.zjol.com.cn/"
-
-
     base_url = f'https://kjb.zjol.com.cn/'
     # 获取今日的链接
     res_url = requests.get('https://kjb.zjol.com.cn/', headers=headers)
@@ -141,11 +140,8 @@ try:
     url_data = re.findall(r'html/(.*?)/node_\d+\.htm', url)[0]
     actual_data = datetime.now().strftime('%Y-%m/%d')
     if url_data != actual_data:
-        success_data = {
-            'id': from_queue,
-            'description': '今日没有报纸',
-        }
-        paper_queue_success(success_data)
+        now = datetime.now().strftime('%m-%d %H:%M')
+        raise Exception(f'目前暂未有今天报纸，{now}')
     else:
         url = base_url + url
         base_url = re.sub(r'node_\d+\.htm', '', url)
@@ -218,7 +214,7 @@ try:
                                         (day, paper, bm_name, original_pdf, bm_url, pdf_url, create_time,from_queue,
                                          create_date, webpage_id))
                     conn_test.commit()
-                    print("pdf已经上传")
+
 
                 cursor_test.close()
                 conn_test.close()
@@ -228,18 +224,26 @@ try:
                 'description': '成功',
             }
             paper_queue_success(success_data)
-        else:
-            print("网页问题")
+
+# 设置最大重试次数
+max_retries = 5
+retries = 0
+while retries < max_retries:
+    try:
+        get_jinrong_paper()
+        break
+    except Exception as e:
+        retries += 1
+        fail_data = {
+            "id": from_queue,
+            "description": f"出现问题:{e}",
+        }
+        paper_queue_fail(fail_data)
+        time.sleep(3610)  # 等待1小时后重试
+        if retries == max_retries and "目前暂未有今天报纸" in e:
             success_data = {
                 'id': from_queue,
-                'description': "该天没有报纸",
+                'description': '今天没有报纸',
             }
             paper_queue_success(success_data)
-except Exception as e:
-    print(f"错误原因: {e}")
-    fail_data = {
-        'id': from_queue,
-        'description': f"错误原因: {e}",
-    }
 
-    paper_queue_fail(fail_data)

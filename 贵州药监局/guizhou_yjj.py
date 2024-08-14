@@ -167,11 +167,7 @@ if response.status_code == 200:
 
                             r.lpush('guizhou_yjj', title_url)
 else:
-    # fail_data = {
-    #     "id": queue_id,
-    #     "description": f"获取任务队列失败,响应码：{response.status_code}",
-    # }
-    # paper_queue_fail(fail_data)
+    print("获取任务队列失败")
     pass
 
 
@@ -206,6 +202,10 @@ def get_yjj_data(database):
                     for cont in contents:
                         content_html += etree.tostring(cont, method='html', encoding='unicode')
                         content = ''.join(cont.xpath(".//text()")).strip()
+                    content_html = re.sub(r'<script[^>]*>([\s\S]*?)<\/script>', '', str(content_html), re.S)
+                    content_html = re.sub(r'<p>扫一扫在手机打开当前页面</p>', '', str(content_html), re.S)
+                    content = re.sub(r'var\s+\$\s*=\s*jQuery;[\s\S]*?扫一扫在手机打开当前页面', '', str(content))
+
                     source = "".join(title_html.xpath("//div[@class='Article_ly']/span[@class='SourceName']//text()"))
                     if not source:
                         source = "".join(title_html.xpath("//div[@id='c']/div[@class='Article_ly']/span[2]//text()"))
@@ -223,7 +223,7 @@ def get_yjj_data(database):
                     pub_date = re.findall(r"var  pubdata='(.*?)';", pub_date)[0]
                     annexs = title_html.xpath("//p[@class='insertfileTag']/a")  # 获取所有附件
                     if not annexs:
-                        annexs = title_html.xpath("//div[contains(@class, 'trs_paper_default')]/p/a")
+                        annexs = title_html.xpath("//div[contains(@class, 'trs_paper_default')]//a")
                     if not annexs:
                         annexs = title_html.xpath("//font[@id='Zoom']/p//a")
 
@@ -235,12 +235,18 @@ def get_yjj_data(database):
                     # elif url_key == 'zwgk/jdhy':
                     else:
                         base_title_url = url[:45]
+
                     annex_url_list = []
+                    if not content:
+                        content_jpgs = title_html.xpath("//div[contains(@class, 'trs_paper_default')]//img/@src")
+                        for content_url in content_jpgs:
+                            content_url = content_url.strip('.')
+                            content_jpg_url = base_title_url + content_url
+                            annex_url_list.append(content_jpg_url)
                     if annexs:
                         for annex in annexs:
                             if not annex.xpath("./@href") or not annex.xpath("./text()"):
                                 continue
-                            annex_name = annex.xpath("./text()")[0]
                             annex_url = ''.join(annex.xpath("./@href")[0].strip('.'))
                             if "http" not in annex_url:
                                 annex_url = base_title_url + annex_url

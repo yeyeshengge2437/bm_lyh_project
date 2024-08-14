@@ -113,11 +113,8 @@ value = paper_queue_next(webpage_url_list=['http://epaper.legaldaily.com.cn/fzrb
 from_queue = value['id']
 webpage_id = value["webpage_id"]
 
-not_claims_keys = ['法院公告', '减资公告', '注销公告', '清算公告', '合并公告', '出让公告', '重组公告', '调查公告', '分立公告', '重整公告', '悬赏公告', '注销登记公告']
 paper = '法制日报'
-day = datetime.now().strftime('%Y-%m-%d')
-create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-create_date = datetime.now().strftime('%Y-%m-%d')
+
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
@@ -126,24 +123,19 @@ co.set_paths(local_port=9112)
 # 构造实例
 page = ChromiumPage(co)
 # 获取当前年月日,格式为20240801
-now = datetime.now()
-date_str = now.strftime('%Y%m%d')
-structure_url = f"http://epaper.legaldaily.com.cn/fzrb/content/{date_str}/"
-# des_url = structure_url + 'PageArticleIndexBT.htm'
-des_url = 'http://epaper.legaldaily.com.cn/fzrb/content/20240806/Page01TB.htm'
-try:
+date_str = datetime.now().strftime('%Y%m%d')
+
+def get_fazhi_paper(date):
+    day = datetime.strptime(date, '%Y%m%d').strftime('%Y-%m-%d')
+    structure_url = f"http://epaper.legaldaily.com.cn/fzrb/content/{date}/"
+    des_url = f'http://epaper.legaldaily.com.cn/fzrb/content/{date}/Page01TB.htm'
     # 打开网页
     page.get(des_url)
     if page.url != des_url:
-        print("该天没有报纸")
-        success_data = {
-            "id": from_queue,
-            "description": "该天没有报纸",
-        }
-        paper_queue_success(success_data)
+        now = datetime.now().strftime('%m-%d %H:%M')
+        raise Exception(f'目前暂未有今天报纸，{now}')
     else:
         html = etree.HTML(page.html)
-
         # 获取所有版面
         all_bm = html.xpath("//table[3]/tbody/tr/td/a[@class='atitle']")
         # 遍历所有版面
@@ -169,6 +161,8 @@ try:
                     ann_link = structure_url + link
                     page.get(ann_link)
                     ann_html = etree.HTML(page.html)
+                    create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    create_date = datetime.now().strftime('%Y-%m-%d')
 
                     # 获取pdf地址
                     paper_pdf = ann_html.xpath("//tr[2]/td/table/tbody/tr/td[8]/a[@class='14']/@href")[0]
@@ -225,13 +219,32 @@ try:
                             conn_test.commit()
                             cursor_test.close()
                             conn_test.close()
+        page.close()
         success_data = {
             "id": from_queue,
+            "description": "数据获取成功"
         }
         paper_queue_success(success_data)
-except Exception as e:
-    fail_data = {
-        "id": from_queue,
-        "description": "e",
-    }
-    paper_queue_fail(fail_data)
+
+
+# 设置最大重试次数
+max_retries = 5
+retries = 0
+while retries < max_retries:
+    try:
+        get_fazhi_paper(date_str)
+        break
+    except Exception as e:
+        retries += 1
+        fail_data = {
+            "id": from_queue,
+            "description": f"出现问题:{e}",
+        }
+        paper_queue_fail(fail_data)
+        time.sleep(3610)  # 等待1小时后重试
+        if retries == max_retries and "目前暂未有今天报纸" in e:
+            success_data = {
+                'id': from_queue,
+                'description': '今天没有报纸',
+            }
+            paper_queue_success(success_data)

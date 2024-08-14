@@ -3,7 +3,8 @@ import json
 import re
 import time
 from datetime import datetime
-
+import hashlib
+import json
 import mysql.connector
 import requests
 from lxml import etree
@@ -97,9 +98,7 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper"):
     os.remove(pdf_path)
     return result.get("value")["file_url"]
 
-import hashlib
-import json
-import mysql.connector
+
 
 
 def get_md5_set(database, table_name):
@@ -182,7 +181,6 @@ def paper_claims(paper_time):
                 article_name = ''.join(article.xpath("./text()"))
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
-                print(article_name, article_url)
                 # 进行数据的去重
                 data_unique = f"文章标题：{article_name}, 版面链接：{bm_url}"
                 # 数据去重
@@ -251,12 +249,10 @@ while retries < max_retries:
         break
     except Exception as e:
         retries += 1
-        if '目前暂未有报纸' in str(e):
-            retries -= 1
-        else:
-            fail_data = {
-                "id": queue_id,
-                "description": f"出现问题:{e}",
-            }
-            paper_queue_fail(fail_data)
-            time.sleep(3610)  # 等待1小时后重试
+
+        fail_data = {
+            "id": queue_id,
+            "description": f"出现问题:{e}",
+        }
+        paper_queue_fail(fail_data)
+        time.sleep(3610)  # 等待1小时后重试
