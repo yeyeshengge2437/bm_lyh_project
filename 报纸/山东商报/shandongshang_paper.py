@@ -98,9 +98,7 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper"):
     return result.get("value")["file_url"]
 
 
-value = paper_queue_next(webpage_url_list=['https://dzb.subaoxw.com'])
-queue_id = value['id']
-webpage_id = value["webpage_id"]
+
 
 claims_keys = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
                          r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
@@ -167,10 +165,10 @@ def paper_claims(paper_time):
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
                     user="col2024",
                     password="Bm_a12a06",
-                    database="col_test"
+                    database="col"
                 )
                 cursor_test = conn_test.cursor()
-                if bm_pdf not in pdf_set and ("公告" in article_name or claims_keys.match(article_title)):
+                if bm_pdf not in pdf_set and ("公告" in article_name or claims_keys.match(article_title) or "分类" in bm_name or "警界" in bm_name or "无标题" in article_name):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, "青岛晚报", "pdf", "paper")
                     pdf_set.add(bm_pdf)
@@ -203,26 +201,37 @@ def paper_claims(paper_time):
         paper_queue_success(success_data)
 
     else:
-        success_data = {
-            'id': queue_id,
-            'description': '今日暂无报纸',
-        }
-        paper_queue_success(success_data)
+        # 获取当前时间小时分钟
+        now = datetime.now().strftime('%m-%d %H:%M')
+        raise Exception(f'{now}，状态码：{response.status_code}')
 
-paper_claims(today)
 
-# # 设置最大重试次数
-# max_retries = 5
-# retries = 0
-# while retries < max_retries:
-#     try:
-#         paper_claims(today)
-#         break
-#     except Exception as e:
-#         retries += 1
-#         fail_data = {
-#             "id": queue_id,
-#             "description": f"程序问题:{e}",
-#         }
-#         paper_queue_fail(fail_data)
-#         time.sleep(3610)  # 等待1小时后重试
+
+# 设置最大重试次数
+max_retries = 5
+retries = 0
+while retries < max_retries:
+    value = paper_queue_next(webpage_url_list=['https://dzb.subaoxw.com'])
+    queue_id = value['id']
+    webpage_id = value["webpage_id"]
+    try:
+        paper_claims(today)
+        break
+    except Exception as e:
+        if retries == max_retries and "状态码" in e:
+            success_data = {
+                'id': queue_id,
+                'description': '今天没有报纸',
+            }
+            paper_queue_success(success_data)
+            break
+        else:
+            retries += 1
+            fail_data = {
+                "id": queue_id,
+                "description": f"出现问题:{e}",
+            }
+            paper_queue_fail(fail_data)
+            print("一小时后重试...")
+            time.sleep(3610)  # 等待1小时后重试
+

@@ -122,9 +122,7 @@ headers = {
     'accept-language': 'zh-CN,zh;q=0.9',
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
 }
-value = paper_queue_next(webpage_url_list=['http://kjb.zjol.com.cn'])
-from_queue = value['id']
-webpage_id = value["webpage_id"]
+
 
 def get_jinrong_paper():
     # 获取当前年月
@@ -229,21 +227,27 @@ def get_jinrong_paper():
 max_retries = 5
 retries = 0
 while retries < max_retries:
+    value = paper_queue_next(webpage_url_list=['http://kjb.zjol.com.cn'])
+    from_queue = value['id']
+    webpage_id = value["webpage_id"]
     try:
         get_jinrong_paper()
         break
     except Exception as e:
         retries += 1
-        fail_data = {
-            "id": from_queue,
-            "description": f"出现问题:{e}",
-        }
-        paper_queue_fail(fail_data)
-        time.sleep(3610)  # 等待1小时后重试
         if retries == max_retries and "目前暂未有今天报纸" in e:
             success_data = {
                 'id': from_queue,
                 'description': '今天没有报纸',
             }
             paper_queue_success(success_data)
+            break
+        else:
+            fail_data = {
+                "id": from_queue,
+                "description": f"出现问题:{e}",
+            }
+            paper_queue_fail(fail_data)
+            time.sleep(3610)  # 等待1小时后重试
+
 

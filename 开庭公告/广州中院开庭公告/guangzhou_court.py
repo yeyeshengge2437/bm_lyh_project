@@ -172,9 +172,7 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper"):
     return result.get("value")["file_url"]
 
 
-value_unique = paper_queue_next(webpage_url_list=['https://www.gzcourt.gov.cn/fygg/ktgg'])
-from_queue = value_unique['id']
-webpage_id = value_unique["webpage_id"]
+
 
 
 def get_part_data():
@@ -257,17 +255,7 @@ def get_part_data():
                 conn_test.close()
         now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         print(f"时间：{now}， 新增广州中院数据数：", new_num)
-        success_data = {
-            'id': from_queue,
-            'description': '广州市中院数据获取成功',
-        }
-        paper_queue_success(success_data)
-    else:
-        fail_data = {
-            'id': from_queue,
-            'description': '广州市中院数据获取成功',
-        }
-        paper_queue_fail(fail_data)
+
 
 
 def get_court_data(page):
@@ -387,21 +375,26 @@ def get_court_data(page):
             except Exception as e:
                 print(f"{court_names}部分数据获取失败: {e}")
 
-        page.close()
 
-        success_data = {
-            'id': from_queue,
-            'description': '广州市各区数据获取成功',
-        }
-        paper_queue_success(success_data)
+
+
 
 
 # 设置最大重试次数
 max_retries = 3
 retries = 0
 while retries < max_retries:
+    value_unique = paper_queue_next(webpage_url_list=['https://www.gzcourt.gov.cn/fygg/ktgg'])
+    from_queue = value_unique['id']
+    webpage_id = value_unique["webpage_id"]
     try:
         get_court_data(page)
+        get_part_data()
+        success_data = {
+            'id': from_queue,
+            'description': '广州市数据获取成功',
+        }
+        paper_queue_success(success_data)
         break
     except Exception as e:
         retries += 1
@@ -412,5 +405,6 @@ while retries < max_retries:
         paper_queue_fail(fail_data)
         print(f"{e}，等待一小时后重试...")
         time.sleep(3600)
-    if retries == max_retries:
-        get_part_data()
+
+page.close()
+

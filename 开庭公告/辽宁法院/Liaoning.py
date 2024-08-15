@@ -117,13 +117,30 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper"):
     os.remove(pdf_path)
     return result.get("value")["file_url"]
 
+def get_md5_set(database):
+    hash_value_set = set()
+    con_test = mysql.connector.connect(
+        host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+        user="col2024",
+        password="Bm_a12a06",
+        database=database
+    )
+    cursor = con_test.cursor()
+    # 获取表中的MD5值
+    cursor.execute("SELECT md5 FROM col_case_open")
+    for row in cursor:
+        hash_value_set.add(row[0])
+    cursor.close()
+    con_test.close()
+    return hash_value_set
 
-value = paper_queue_next(webpage_url_list=['https://lnsfw.lnsfy.gov.cn/lnssfw/index.html'])
-from_queue = value['id']
-webpage_id = value["webpage_id"]
+
+
 
 
 def execute(proxies_value=None):
+    # 获取唯一值
+    md5_set = get_md5_set('col')
     headers = {
         "Accept": "application/json, text/javascript, */*; q=0.01",
         "Accept-Language": "zh-CN,zh;q=0.9",
@@ -150,7 +167,7 @@ def execute(proxies_value=None):
     if status_message == '操作成功！':
         total_page = response.json()["data"]["pages"]
     else:
-        return '网页问题'
+        raise Exception(f'网页问题')
 
     new_data_num = 0
     data_num = 0
@@ -168,7 +185,7 @@ def execute(proxies_value=None):
 
         data = json.dumps(data, separators=(',', ':'))
         response = requests.post(url, headers=headers, data=data, proxies=proxies_value)
-        time.sleep(1)
+        time.sleep(2)
         for item in response.json()["data"]["records"]:
             data_num += 1
             # 案号
@@ -202,13 +219,14 @@ def execute(proxies_value=None):
             origin = "辽宁省法院诉讼服务网开庭公告"
             # 来源域名
             origin_domain = "lnsfw.lnsfy.gov.cn"
-            data = f"案号：{case_no}"
+
+            unique_value = f"{str(case_no)}"
             # 数据去重
-            hash_value = hashlib.md5(json.dumps(data).encode('utf-8')).hexdigest()
+            hash_value = hashlib.md5(json.dumps(unique_value).encode('utf-8')).hexdigest()
             # 判断唯一的哈希值是否在集合中
-            if not redis_conn.sismember("liaoning_set", hash_value):
+            if hash_value not in md5_set:
                 # 不重复哈希值添加到集合中
-                redis_conn.sadd("liaoning_set", hash_value)
+                md5_set.add(hash_value)
                 # 连接到测试库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -218,12 +236,12 @@ def execute(proxies_value=None):
                 )
                 cursor_test = conn_test.cursor()
                 # 将数据插入到case_open_copy1表中
-                insert_sql = "INSERT INTO col_case_open (case_no, cause, court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,  %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                insert_sql = "INSERT INTO col_case_open (case_no, cause, court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date, from_queue, webpage_id, md5) VALUES (%s,  %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
                 cursor_test.execute(insert_sql, (
                     case_no, cause, court, members, open_time, court_room, room_leader, department,
                     origin,
-                    origin_domain, create_time, create_date, from_queue, webpage_id))
+                    origin_domain, create_time, create_date, from_queue, webpage_id, hash_value))
                 conn_test.commit()
                 cursor_test.close()
                 conn_test.close()
@@ -236,30 +254,35 @@ max_attempts = 5  # 设置最大尝试次数
 attempts = 0
 
 while attempts < max_attempts:
+    value = paper_queue_next(webpage_url_list=['https://lnsfw.lnsfy.gov.cn/lnssfw/index.html'])
+    from_queue = value['id']
+    webpage_id = value["webpage_id"]
     try:
-        value = execute(proxies_value=None)
-        if value == '网页问题':
-            success_data = {
-                "id": from_queue,
-                'description': '网页自身问题',
-            }
-            paper_queue_success(success_data)
-        else:
-            success_data = {
-                'id': from_queue,
-                'description': '数据获取成功',
-            }
-            paper_queue_success(success_data)
+        execute(proxies_value=None)
+        success_data = {
+            'id': from_queue,
+            'description': '数据获取成功',
+        }
+        paper_queue_success(success_data)
         break
     except Exception as e:
         print(f"发生错误：{e}")
         attempts += 1  # 增加尝试次数
-        time.sleep(3600)  # 等待一小时后再次尝试
-        print(f"尝试再次爬取，尝试{attempts}/{max_attempts}")
+        if attempts == max_attempts:
+            success_data = {
+                'id': from_queue,
+                'description': '网页自身存在问题',
+            }
+            paper_queue_success(success_data)
+            break
+        else:
+            fail_data = {
+                "id": from_queue,
+                'description': f'{e}',
+            }
+            paper_queue_fail(fail_data)
+            print(f"一小时后将尝试再次爬取，尝试{attempts}/{max_attempts}")
+            time.sleep(3600)  # 等待一小时后再次尝试
 
-    if attempts == max_attempts:
-        fail_data = {
-            "id": from_queue,
-            'description': '程序问题',
-        }
-        paper_queue_fail(fail_data)
+
+

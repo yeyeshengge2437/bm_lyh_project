@@ -106,6 +106,7 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper"):
     os.remove(pdf_path)
     return result.get("value")["file_url"]
 
+
 def get_md5_set(database, table_name):
     hash_value_set = set()
     con_test = mysql.connector.connect(
@@ -121,10 +122,6 @@ def get_md5_set(database, table_name):
         hash_value_set.add(row[0])
     return hash_value_set
 
-value = paper_queue_next(webpage_url_list=['http://www.hnshangbao.com'])
-queue_id = value['id']
-webpage_id = value["webpage_id"]
-
 
 md5_set = get_md5_set("col", "col_paper_notice")
 claims_keys = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
@@ -133,6 +130,7 @@ paper = "河南商报"
 
 pdf_domain = 'http://news.cenews.com.cn/html'
 today = datetime.now().strftime('%Y-%m/%d')
+
 
 def paper_claims(database):
     url = f'http://www.hnshangbao.com/sbn/'
@@ -199,7 +197,6 @@ def paper_claims(database):
                     cursor_test.close()
                     conn_test.close()
 
-        page.close()
         success_data = {
             'id': queue_id,
             'description': '数据获取成功',
@@ -212,18 +209,27 @@ def paper_claims(database):
         raise Exception(f'{now}程序出错，{page.url_available}')
 
 
-# 设置最大重试次数
-max_retries = 5
-retries = 0
-while retries < max_retries:
+if __name__ == '__main__':
     try:
-        paper_claims("col")
-        break
+        # 设置最大重试次数
+        max_retries = 5
+        retries = 0
+        while retries < max_retries:
+            value = paper_queue_next(webpage_url_list=['http://www.hnshangbao.com'])
+            queue_id = value['id']
+            webpage_id = value["webpage_id"]
+            try:
+                paper_claims("col")
+                break
+            except Exception as e:
+                retries += 1
+                fail_data = {
+                    "id": queue_id,
+                    "description": f"程序问题:{e}",
+                }
+                paper_queue_fail(fail_data)
+                print(f"第{retries}次重试, 一小时后重试")
+                time.sleep(3610)  # 等待1小时后重试
+        page.close()
     except Exception as e:
-        retries += 1
-        fail_data = {
-            "id": queue_id,
-            "description": f"程序问题:{e}",
-        }
-        paper_queue_fail(fail_data)
-        time.sleep(3610)  # 等待1小时后重试
+        page.close()

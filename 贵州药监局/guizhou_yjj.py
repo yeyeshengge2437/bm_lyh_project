@@ -114,9 +114,7 @@ def get_md5_set(database):
     return hash_value_set
 
 
-value = paper_queue_next(webpage_url_list=['https://yjj.guizhou.gov.cn/xwdt/tzgg'])
-queue_id = value['id']
-webpage_id = value["webpage_id"]
+
 
 
 
@@ -300,6 +298,9 @@ def get_yjj_data(database):
 max_retries = 5
 retries = 0
 while retries < max_retries:
+    value = paper_queue_next(webpage_url_list=['https://yjj.guizhou.gov.cn/xwdt/tzgg'])
+    queue_id = value['id']
+    webpage_id = value["webpage_id"]
     try:
         get_yjj_data("col")
         success_data = {
@@ -315,4 +316,5 @@ while retries < max_retries:
             "description": f"程序问题:{e}",
         }
         paper_queue_fail(fail_data)
+        print(f"第{retries}次获取失败，错误信息：{e}, 1小时后重试")
         time.sleep(3610)  # 等待1小时后重试

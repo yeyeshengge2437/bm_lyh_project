@@ -91,9 +91,7 @@ def paper_queue_fail(data=None):
         print(err)
         return None
 
-value = paper_queue_next(webpage_url_list=['https://ssfw.njfy.gov.cn/#/ktggList'])
-from_queue = value['id']
-webpage_id = value["webpage_id"]
+
 
 def upload_file_by_url(file_url, file_name, file_type, type="paper"):
     headers = {
@@ -403,6 +401,9 @@ max_attempts = 5  # 设置最大尝试次数
 attempts = 0
 
 while attempts < max_attempts:
+    value = paper_queue_next(webpage_url_list=['https://ssfw.njfy.gov.cn/#/ktggList'])
+    from_queue = value['id']
+    webpage_id = value["webpage_id"]
     try:
         run(destination)
         success_data = {
@@ -411,16 +412,14 @@ while attempts < max_attempts:
         paper_queue_success(success_data)
         break  # 如果函数执行成功，退出循环
     except Exception as e:
-        # 关闭浏览器
-        page.quit()
         print(f"发生错误：{e}")
         attempts += 1  # 增加尝试次数
-        time.sleep(300)  # 等待5分钟后再次尝试
+        time.sleep(3600)  # 等待一小时后再次尝试
         print(f"尝试再次爬取，尝试{attempts}/{max_attempts}")
 
-if attempts == max_attempts:
-    print("已达到最大尝试次数。退出。")
-    fail_data = {
-        "id": from_queue,
-    }
-    paper_queue_fail(fail_data)
+        if attempts == max_attempts:
+            print("已达到最大尝试次数。退出。")
+            fail_data = {
+                "id": from_queue,
+            }
+            paper_queue_fail(fail_data)

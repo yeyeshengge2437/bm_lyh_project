@@ -98,9 +98,7 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper"):
     return result.get("value")["file_url"]
 
 
-value = paper_queue_next(webpage_url_list=['https://wfwb.wfnews.com.cn'])
-queue_id = value['id']
-webpage_id = value["webpage_id"]
+
 
 claims_keys = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
                          r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
@@ -164,7 +162,7 @@ def paper_claims(paper_time):
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
                     user="col2024",
                     password="Bm_a12a06",
-                    database="col_test",
+                    database="col",
                 )
                 cursor_test = conn_test.cursor()
                 if bm_pdf not in pdf_set and ("公告" in article_name or claims_keys.match(article_name)):
@@ -216,6 +214,9 @@ def paper_claims(paper_time):
 max_retries = 5
 retries = 0
 while retries < max_retries:
+    value = paper_queue_next(webpage_url_list=['https://wfwb.wfnews.com.cn'])
+    queue_id = value['id']
+    webpage_id = value["webpage_id"]
     try:
         paper_claims(today)
         break

@@ -1,49 +1,65 @@
-import requests
-from pdfminer.high_level import extract_text
-from pdfminer.pdfparser import PDFParser
-from pdfminer.pdfdocument import PDFDocument
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
-from pdfminer.converter import TextConverter
-from pdfminer.layout import LAParams
-from pdfminer.pdfpage import PDFPage
-
-pdf_urls = [
-    "https://res.debtop.com/col/test/paper/202408/14/2024081416280568014a79f7ba4a3a.pdf",
-    "https://res.debtop.com/col/test/paper/202408/14/202408141628532cc6b28aef04456f.pdf",
-    "https://res.debtop.com/col/test/paper/202408/14/20240814162941200a14dfeb1d4a8f.pdf",
-    "https://res.debtop.com/col/test/paper/202408/14/202408141630387779174cca81411f.pdf",
-    "https://res.debtop.com/col/test/paper/202408/14/202408141631333784f9183fdc44b7.pdf",
-    "https://res.debtop.com/col/test/paper/202408/14/20240814163237419c3d7952774b1a.pdf",
-    "https://res.debtop.com/col/test/paper/202408/14/202408141633258e435f2bcecd4306.pdf",
-    "https://res.debtop.com/col/test/paper/202408/14/202408141634088175343e60c04f4a.pdf",
-    "https://res.debtop.com/col/test/paper/202408/14/202408141634583308530bf8af4bf8.pdf",
-    "https://res.debtop.com/col/test/paper/202408/14/2024081416353943f3076a9c174ada.pdf",
-    "https://res.debtop.com/col/test/paper/202408/14/2024081416362747a550cdd5a1414b.pdf",
-    "https://res.debtop.com/col/test/paper/202408/14/2024081416371847a99c9197cf4fc8.pdf",
-    "https://res.debtop.com/col/test/paper/202408/14/20240814163800d5d4b0bd087b444f.pdf",
-    "https://res.debtop.com/col/test/paper/202408/14/2024081416393483b1c1577d5e449f.pdf"
-]
-
-# # 接下来，你可以使用这个列表来循环处理每个PDF文件
-# for pdf_url in pdf_urls:
-#     response = requests.get(pdf_url)
+# import pdfplumber
+# import requests
+#
+#
+# def download_pdf(pdf_url, output_filename):
+#     """
+#     从给定的链接下载 PDF 文件。
+#
+#     参数:
+#     pdf_url: str, PDF文件的链接。
+#     output_filename: str, 下载的PDF文件保存的本地路径。
+#     """
+#     # 发送 HTTP 请求获取 PDF 文件内容
+#     response = requests.get(pdf_url, stream=True)
 #
 #     # 检查请求是否成功
 #     if response.status_code == 200:
-#         # 将PDF内容写入文件
-#         with open('downloaded_pdf.pdf', 'wb') as f:
+#         # 打开一个文件用于写入二进制数据
+#         with open(output_filename, 'wb') as f:
+#             # 写入从请求中获取的二进制内容
 #             f.write(response.content)
+#         print(f"PDF 文件已下载为: {output_filename}")
+#     else:
+#         print('下载失败，状态码:', response.status_code)
+#
+#
+# # 调用函数，传入 PDF 链接和输出文件名
+# def down_pdf():
+#     pdf_url = 'http://dzb.subaoxw.com/resfiles/2023-03//14//lscm20230314a0004v01.pdf'
+#     output_filename = '999.pdf'
+#     download_pdf(pdf_url, output_filename)
+#     return output_filename
+# down_pdf()
 
-import ocrmypdf
+# def extract_text(pdf_path):
+#     with pdfplumber.open(pdf_path) as pdf:
+#         text = ""
+#         for page in pdf.pages:
+#             text += page.extract_text() + "\n"
+#             print(page.extract_text())
+#     return text
+#
+#
+#
+# # 使用示例
+# pdf_path = '999.pdf'
+# extracted_text = extract_text(pdf_path)
+# # print(extracted_text)
 
-# 要转换的输入 PDF 文件和输出 PDF 文件的路径
-input_file = 'downloaded_pdf.pdf'
-output_file = 'output_pdf_file.pdf'
+import ddddocr
+from PIL import Image
+import pdfplumber
 
-# 使用 ocrmypdf 转换 PDF
-ocrmypdf.ocr(input_file, output_file, language='eng', output_type='pdf')
+# 打开PDF文件
+with pdfplumber.open("888.pdf") as pdf:
+    for i, page in enumerate(pdf.pages):
 
-# 上面的代码会生成一个新的 PDF 文件，其中包含从扫描图像中识别的文本
+        print(page.extract_text())
+        # 将PDF页面转换为图像
+        img = page.to_image(resolution=500)
+        img.save(f"page_{i}.png")
+# 获取图片中的文字
 
 
 

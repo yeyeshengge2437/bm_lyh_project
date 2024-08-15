@@ -109,9 +109,7 @@ claims_keys = [
     '催收通知书', '催收告知书', '催收通知公告', '催收登报公告', '催收补登公告', '催收补充公告', '催收拍卖公告', '催收公告', '催收通知',
     '催讨通知书', '催讨告知书', '催讨通知公告', '催讨登报公告', '催讨补登公告', '催讨补充公告', '催讨拍卖公告', '催讨公告', '催讨通知'
 ]
-value = paper_queue_next(webpage_url_list=['http://epaper.legaldaily.com.cn/fzrb'])
-from_queue = value['id']
-webpage_id = value["webpage_id"]
+
 
 paper = '法制日报'
 
@@ -231,20 +229,25 @@ def get_fazhi_paper(date):
 max_retries = 5
 retries = 0
 while retries < max_retries:
+    value = paper_queue_next(webpage_url_list=['http://epaper.legaldaily.com.cn/fzrb'])
+    from_queue = value['id']
+    webpage_id = value["webpage_id"]
     try:
         get_fazhi_paper(date_str)
         break
     except Exception as e:
-        retries += 1
-        fail_data = {
-            "id": from_queue,
-            "description": f"出现问题:{e}",
-        }
-        paper_queue_fail(fail_data)
-        time.sleep(3610)  # 等待1小时后重试
         if retries == max_retries and "目前暂未有今天报纸" in e:
             success_data = {
                 'id': from_queue,
                 'description': '今天没有报纸',
             }
             paper_queue_success(success_data)
+            break
+        else:
+            retries += 1
+            fail_data = {
+                "id": from_queue,
+                "description": f"出现问题:{e}",
+            }
+            paper_queue_fail(fail_data)
+            time.sleep(3610)  # 等待1小时后重试

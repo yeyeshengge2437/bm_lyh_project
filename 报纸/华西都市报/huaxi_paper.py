@@ -173,7 +173,7 @@ def paper_claims(paper_time):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
-                if bm_pdf not in pdf_set and claims_keys.match(article_name):
+                if bm_pdf not in pdf_set and (claims_keys.match(article_name) or '广告' in article_name):
                     pdf_set.add(bm_pdf)
                     # 上传到报纸的图片或PDF
                     insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
@@ -223,17 +223,20 @@ while retries < max_retries:
         paper_claims(today)
         break
     except Exception as e:
-        retries += 1
-        fail_data = {
-            "id": queue_id,
-            "description": f"{e}",
-        }
-        paper_queue_fail(fail_data)
-        time.sleep(3610)  # 等待1小时后重试
-    if retries == max_retries:
-        month_day = datetime.now().strftime('%Y-%m-%d')
-        success_data = {
-            'id': queue_id,
-            'description': f'{month_day}没有报纸',
-        }
-        paper_queue_success(success_data)
+        if retries == max_retries:
+            month_day = datetime.now().strftime('%Y-%m-%d')
+            success_data = {
+                'id': queue_id,
+                'description': f'{month_day}没有报纸',
+            }
+            paper_queue_success(success_data)
+            break
+        else:
+            retries += 1
+            fail_data = {
+                "id": queue_id,
+                "description": f"{e}",
+            }
+            paper_queue_fail(fail_data)
+            time.sleep(3610)  # 等待1小时后重试
+

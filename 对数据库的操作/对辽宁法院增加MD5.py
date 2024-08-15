@@ -12,15 +12,16 @@ conn_test = mysql.connector.connect(
 cursor_test = conn_test.cursor()
 
 # 查询origin = "辽宁省法院诉讼服务网开庭公告"的数据
-cursor_test.execute("SELECT id, case_no, cause, court, members, open_time, md5 FROM col_case_open WHERE case_no = '（2024）辽0202民初3246号'")
+cursor_test.execute("SELECT id, case_no, cause, court, members, open_time FROM col_case_open WHERE origin = '辽宁省法院诉讼服务网开庭公告'")
 rows = cursor_test.fetchall()
-for id, case_no, cause, court, members, open_time, md5 in rows:
+for id, case_no, cause, court, members, open_time in rows:
     unique_value = f"{str(case_no)}"
-    # 数据去重
     hash_value = hashlib.md5(json.dumps(unique_value).encode('utf-8')).hexdigest()
-    print(hash_value)
-    print(f"{id, case_no, cause, court, members, open_time, md5}")
-
+    # 将hash_value加入表中
+    insert_sql = "UPDATE col_case_open SET md5 = %s WHERE id = %s"
+    # 执行SQL语句
+    cursor_test.execute(insert_sql, (hash_value, id))
+    conn_test.commit()
 
 cursor_test.close()
 conn_test.close()

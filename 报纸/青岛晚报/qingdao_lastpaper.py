@@ -120,9 +120,9 @@ def get_md5_set(database, table_name):
 md5_set = get_md5_set("col", "col_paper_notice")
 
 
-value = paper_queue_next(webpage_url_list=['https://epaper.qingdaonews.com'])
-queue_id = value['id']
-webpage_id = value["webpage_id"]
+# value = paper_queue_next(webpage_url_list=['https://epaper.qingdaonews.com'])
+# queue_id = value['id']
+# webpage_id = value["webpage_id"]
 
 claims_keys = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
                          r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
@@ -241,18 +241,31 @@ def paper_claims(paper_time):
 # paper_claims(today)
 
 # 设置最大重试次数
-max_retries = 5
+max_retries = 2
 retries = 0
 while retries < max_retries:
+    # 获取队列id
+    value = paper_queue_next(webpage_url_list=['https://epaper.qingdaonews.com'])
+    queue_id = value['id']
+    webpage_id = value["webpage_id"]
     try:
         paper_claims(today)
         break
     except Exception as e:
         retries += 1
+        if retries == max_retries and "目前暂未有报" in str(e):
+            success_data = {
+                'id': queue_id,
+                'description': f'今日暂未有报',
+            }
+            paper_queue_success(success_data)
+            break
+        else:
+            fail_data = {
+                "id": queue_id,
+                "description": f"出现问题:{e}",
+            }
+            paper_queue_fail(fail_data)
+            time.sleep(3610)  # 等待1小时后重试
 
-        fail_data = {
-            "id": queue_id,
-            "description": f"出现问题:{e}",
-        }
-        paper_queue_fail(fail_data)
-        time.sleep(3610)  # 等待1小时后重试
+
