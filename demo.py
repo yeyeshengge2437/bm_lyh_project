@@ -1,26 +1,23 @@
-import hashlib
-import json
+from datetime import datetime, timedelta
 
-import mysql.connector
+# 获取当前时间
+now = datetime.now()
 
-conn_test = mysql.connector.connect(
-                    host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
-                    user="col2024",
-                    password="Bm_a12a06",
-                    database="col"
-                )
-cursor_test = conn_test.cursor()
+# 设置起始年份和月份
+start_year = now.year - 2
+start_month = now.month
+current_date = datetime(start_year, start_month, 1)
 
-# 查询origin = "辽宁省法院诉讼服务网开庭公告"的数据
-cursor_test.execute("SELECT id, case_no, cause, court, members, open_time, md5 FROM col_case_open WHERE case_no = '（2024）辽0202民初3246号'")
-rows = cursor_test.fetchall()
-for id, case_no, cause, court, members, open_time, md5 in rows:
-    unique_value = f"{str(case_no)}"
-    # 数据去重
-    hash_value = hashlib.md5(json.dumps(unique_value).encode('utf-8')).hexdigest()
-    print(hash_value)
-    print(f"{id, case_no, cause, court, members, open_time, md5}")
+# 当前日期
+formatted_date = current_date.strftime('%Y-%m/%d')
 
+# 打印起始日期
+print("起始日期:", formatted_date)
 
-cursor_test.close()
-conn_test.close()
+# 遍历近两年的日期
+while current_date <= now:
+    # 计算下一天的日期
+    current_date += timedelta(days=1)
+    # 更新格式化的日期
+    formatted_date = current_date.strftime('%Y-%m/%d')
+    print(formatted_date)

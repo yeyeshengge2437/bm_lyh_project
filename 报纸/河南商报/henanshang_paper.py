@@ -1,21 +1,12 @@
-import hashlib
 import os
 import json
 import re
 import time
-from datetime import datetime
-
+from datetime import datetime, timedelta
+import pdfplumber
 import mysql.connector
 import requests
 from lxml import etree
-from DrissionPage import ChromiumPage, ChromiumOptions
-
-co = ChromiumOptions()
-co = co.set_paths(local_port=9115)
-co = co.set_argument('--no-sandbox')  # 关闭沙箱模式, 解决`$DISPLAY`报错
-co = co.headless(True)  # 开启无头模式, 解决`浏览器无法连接`报错
-
-page = ChromiumPage(co)
 
 produce_url = "http://121.43.164.84:29875"  # 生产环境
 # produce_url = "http://121.43.164.84:29775"    # 测试环境
@@ -107,95 +98,139 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper"):
     return result.get("value")["file_url"]
 
 
-def get_md5_set(database, table_name):
-    hash_value_set = set()
-    con_test = mysql.connector.connect(
-        host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
-        user="col2024",
-        password="Bm_a12a06",
-        database=database
-    )
-    cursor = con_test.cursor()
-    # 获取表中的MD5值
-    cursor.execute(f"SELECT md5 FROM {table_name}")
-    for row in cursor:
-        hash_value_set.add(row[0])
-    return hash_value_set
+def parse_pdf(pdf_url):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
+        'Content-Type': 'application/json'
+    }
+    r = requests.get(pdf_url, headers=headers)
+    pdf_path = f"111.pdf"
+    if os.path.exists(pdf_path):
+        os.remove(pdf_path)
+    if not os.path.exists(pdf_path):
+        fw = open(pdf_path, 'wb')
+        fw.write(r.content)
+        fw.close()
+    pdf_content = ''
+    flag = 0
+    with pdfplumber.open(pdf_path) as pdf:
+        for i, page in enumerate(pdf.pages):
+            if '公告' in page.extract_text():
+                flag = 1
+                break
+    if flag:
+        os.remove(pdf_path)
+        return True
+    else:
+        return False
 
 
-md5_set = get_md5_set("col", "col_paper_notice")
 claims_keys = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
                          r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
 paper = "河南商报"
+headers = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept-Language': 'zh-CN,zh;q=0.9',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+    'Pragma': 'no-cache',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'cross-site',
+    'Sec-Fetch-User': '?1',
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
+    'sec-ch-ua': '"Not)A;Brand";v="99", "Google Chrome";v="127", "Chromium";v="127"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+}
 
-pdf_domain = 'http://news.cenews.com.cn/html'
+pdf_domain = 'https://newpaper.dahe.cn/hnsb/'
 today = datetime.now().strftime('%Y-%m/%d')
+queue_id = 1111
+webpage_id = 1111
 
 
-def paper_claims(database):
-    url = f'http://www.hnshangbao.com/sbn/'
-    page.get(url)
-    time.sleep(1)
-    if page.url_available:
-        html_1 = etree.HTML(page.html)
-        # 获取末版链接
-        bm_last = ''.join(html_1.xpath("//div[@class='box-bd']/div[@class='page']/a[9]/@href"))
-        # 正则匹配页面数
-        page_num = re.findall(r'(\d+)', bm_last)[0]
-        for i in range(int(page_num)):
-            if i == 0:
-                bm_url = 'http://www.hnshangbao.com/sbn/'
-            else:
-                bm_url = f'http://www.hnshangbao.com/sbn/page_{i + 1}.html'
-            page.get(bm_url)
+def paper_claims(paper_time):
+    # 将today的格式进行改变
+    day = datetime.strptime(paper_time, '%Y-%m/%d').strftime('%Y-%m-%d')
+    base_url = f'https://newpaper.dahe.cn/hnsb/html/{paper_time}/'
+    url = base_url + 'node_1.htm'
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        content = response.content.decode()
+        html_1 = etree.HTML(content)
+        # 获取所有版面的的链接
+        all_bm = html_1.xpath("//ul[@class='layout-catalogue-list']/li[@class='layout-catalogue-item']")
+        for bm in all_bm:
+            # 版面名称
+            bm_name = "".join(bm.xpath("./a[1]/text()")).strip()
+            # 版面链接
+            bm_url = base_url + ''.join(bm.xpath("./a[1]/@href"))
+            # 版面的pdf
+            bm_pdf = pdf_domain + "".join(bm.xpath("./a[@class='pdf']/@href")).strip('../../..')
+
+            # 获取版面详情
+            bm_response = requests.get(bm_url, headers=headers)
             time.sleep(1)
-            if page.url_available:
-                html_2 = etree.HTML(page.html)
-                # 获取该页所有标题
-                all_title = html_2.xpath("//div[@class='box-bd']/ul[@class='list']/li")
-                for title in all_title:
-                    # 标题名称
-                    article_name = ''.join(title.xpath("./a/text()"))
-                    # 标题链接
-                    article_url = ''.join(title.xpath("./a/@href"))
-                    # 发布时间
-                    day = ''.join(title.xpath("./span[@class='datatime']/text()"))
-                    create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                    create_date = datetime.now().strftime('%Y-%m-%d')
-                    # 进行数据的去重
-                    data_unique = f"文章标题：{article_name}, 发布时间：{day}"
-                    # 数据去重
-                    hash_value = hashlib.md5(json.dumps(data_unique).encode('utf-8')).hexdigest()
-                    # 上传到测试数据库
-                    conn_test = mysql.connector.connect(
-                        host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
-                        user="col2024",
-                        password="Bm_a12a06",
-                        database=database,
-                    )
-                    cursor_test = conn_test.cursor()
-                    if claims_keys.match(article_name) and hash_value not in md5_set:
-                        md5_set.add(hash_value)
-                        # 获取文章内容
-                        page.get(article_url)
-                        time.sleep(1)
-                        article_html = etree.HTML(page.html)
-                        # 获取文章内容
-                        content = ''.join(article_html.xpath("//div[@class='details']//text()"))
-                        # 获取时间
-                        # day = ''.join(article_html.xpath("//div[@class='details']/p[1]/text()"))
+            bm_content = bm_response.content.decode()
+            bm_html = etree.HTML(bm_content)
 
-                        # 上传到报纸的内容
-                        insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id, md5) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s, %s)"
 
-                        cursor_test.execute(insert_sql,
-                                            (bm_url, day, paper, article_name, content, article_url, create_time,
-                                             queue_id,
-                                             create_date, webpage_id, hash_value))
-                        conn_test.commit()
+            pdf_set = set()
+            create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            create_date = datetime.now().strftime('%Y-%m-%d')
+            # 上传到测试数据库
+            conn_test = mysql.connector.connect(
+                host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                user="col2024",
+                password="Bm_a12a06",
+                database="col",
+            )
+            cursor_test = conn_test.cursor()
+            up_pdf = upload_file_by_url(bm_pdf, "河南商报", "pdf", "paper")
+            try:
+                is_have = parse_pdf(bm_pdf)
+            except Exception as e:
+                print("解析pdf失败")
+                continue
+            if is_have:
+                pdf_set.add(bm_pdf)
+                print(up_pdf)
+                # 上传到报纸的图片或PDF
+                insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
 
-                    cursor_test.close()
-                    conn_test.close()
+                cursor_test.execute(insert_sql,
+                                    (day, paper, bm_name, bm_pdf, bm_url, up_pdf, create_time, queue_id,
+                                     create_date, webpage_id))
+                conn_test.commit()
+                # 获取所有文章的链接
+            all_article = bm_html.xpath("//div[@class='pic-box fl']/map/area")
+            for article in all_article:
+                # 获取文章链接
+                article_url = base_url + ''.join(article.xpath("./@href"))
+                # 获取文章名称
+                article_name = ''.join(article.xpath("./@title")).strip()
+
+                if claims_keys.match(article_name):
+                    # 获取文章内容
+                    article_response = requests.get(article_url, headers=headers)
+                    time.sleep(1)
+                    article_content = article_response.content.decode()
+                    article_html = etree.HTML(article_content)
+                    # 获取文章内容
+                    content = ''.join(
+                        article_html.xpath("//div[@class='info']/div[@id='articleContent']//text()"))
+                    # 上传到报纸的内容
+                    insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
+
+                    cursor_test.execute(insert_sql,
+                                        (bm_url, day, paper, article_name, content, article_url, create_time, queue_id,
+                                         create_date, webpage_id))
+                    conn_test.commit()
+
+            cursor_test.close()
+            conn_test.close()
 
         success_data = {
             'id': queue_id,
@@ -206,30 +241,61 @@ def paper_claims(database):
     else:
         # 获取当前时间小时分钟
         now = datetime.now().strftime('%m-%d %H:%M')
-        raise Exception(f'{now}程序出错，{page.url_available}')
+        raise Exception(f'{now}目前未有报纸，{response.status_code}')
 
 
-if __name__ == '__main__':
+# paper_claims(today)
+
+# 设置最大重试次数
+max_retries = 5
+retries = 0
+while retries < max_retries:
+    value = paper_queue_next(webpage_url_list=['https://newpaper.dahe.cn/hnsb/html'])
+    queue_id = value['id']
+    webpage_id = value["webpage_id"]
     try:
-        # 设置最大重试次数
-        max_retries = 5
-        retries = 0
-        while retries < max_retries:
-            value = paper_queue_next(webpage_url_list=['http://www.hnshangbao.com'])
-            queue_id = value['id']
-            webpage_id = value["webpage_id"]
-            try:
-                paper_claims("col")
-                break
-            except Exception as e:
-                retries += 1
-                fail_data = {
-                    "id": queue_id,
-                    "description": f"程序问题:{e}",
-                }
-                paper_queue_fail(fail_data)
-                print(f"第{retries}次重试, 一小时后重试")
-                time.sleep(3610)  # 等待1小时后重试
-        page.close()
+        paper_claims(today)
+        break
     except Exception as e:
-        page.close()
+        if retries == max_retries and "目前未有报纸" in e:
+            success_data = {
+                'id': queue_id,
+                'description': '今天没有报纸',
+            }
+            paper_queue_success(success_data)
+            break
+        else:
+            retries += 1
+            fail_data = {
+                "id": queue_id,
+                "description": f"出现问题:{e}",
+            }
+            paper_queue_fail(fail_data)
+            print(f'{e}, 等待一小时后重试...')
+            time.sleep(3610)  # 等待1小时后重试
+
+# ####################################
+# # 获取近两年的日期进行遍历
+# # 获取当前时间
+# now = datetime.now()
+#
+# # 设置起始年份和月份
+# start_year = now.year - 1
+# start_month = now.month
+# current_date = datetime(start_year, start_month, 1)
+#
+# # 当前日期
+# formatted_date = current_date.strftime('%Y-%m/%d')
+#
+# # 打印起始日期
+# print("起始日期:", formatted_date)
+#
+# # 遍历近两年的日期
+# while current_date <= now:
+#     # 计算下一天的日期
+#     current_date += timedelta(days=1)
+#     # 更新格式化的日期
+#     formatted_date = current_date.strftime('%Y-%m/%d')
+#     print(formatted_date)
+#     paper_claims(formatted_date)
+#     time.sleep(10)

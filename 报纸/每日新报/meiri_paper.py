@@ -114,8 +114,8 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
 }
 pdf_domain = 'http://epaper.tianjinwe.com/mrxb/'
-# today = datetime.now().strftime('%Y-%m/%d')
-today = '2023-12/20'
+today = datetime.now().strftime('%Y-%m/%d')
+
 
 def paper_claims(paper_time):
     # 将today的格式进行改变
@@ -161,7 +161,7 @@ def paper_claims(paper_time):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
-                if bm_pdf not in pdf_set and ("公告" in article_name or claims_keys.match(article_name)):
+                if bm_pdf not in pdf_set and ("公告" in article_name or claims_keys.match(article_name) or "广告" in article_name):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, "每日新报", "pdf", "paper")
                     pdf_set.add(bm_pdf)
@@ -204,7 +204,7 @@ def paper_claims(paper_time):
     else:
         # 获取当前时间小时分钟
         now = datetime.now().strftime('%m-%d %H:%M')
-        raise Exception(f'{now}程序出错，{response.status_code}')
+        raise Exception(f'{now}目前未有报纸，{response.status_code}')
 
 # paper_claims(today)
 
@@ -219,7 +219,7 @@ while retries < max_retries:
         paper_claims(today)
         break
     except Exception as e:
-        if retries == max_retries and "程序出错" in e:
+        if retries == max_retries and "目前未有报纸" in e:
             success_data = {
                 'id': queue_id,
                 'description': '今天没有报纸',
@@ -233,4 +233,5 @@ while retries < max_retries:
                 "description": f"出现问题:{e}",
             }
             paper_queue_fail(fail_data)
+            print(f'第{retries}次重试, 一小时后重试...')
             time.sleep(3610)  # 等待1小时后重试
