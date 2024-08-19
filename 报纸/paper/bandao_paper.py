@@ -223,7 +223,7 @@ while retries < max_retries:
         break
     except Exception as e:
         retries += 1
-        if retries == max_retries and "目前暂未有报纸" in e:
+        if retries == max_retries and "目前暂未有报纸" in str(e):
             success_data = {
                 'id': queue_id,
                 'description': '今天没有报纸',

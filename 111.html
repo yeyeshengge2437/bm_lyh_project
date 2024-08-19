@@ -1,474 +1,648 @@
 ﻿<!DOCTYPE html>
-<html lang="zh-CN">
-
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<meta name="description" content="">
-	<meta name="keywords" content="">
-	<title>辽沈晚报</title>
-	<link type="text/css" rel="stylesheet" href="../../../static/css/global.css">
-	<link type="text/css" rel="stylesheet" href="../../../static/css/layout2.css">
-	<link href="../../../static/css/laydate.css" rel="stylesheet" type="text/css" />
-	<link href="../../../static/css/calendar.css" rel="stylesheet" type="text/css" />
-	<style type="text/css">
-		body,
-		td,
-		th {
-			font-size: 12px;
-			color: #FFF;
-		}
-		html,body{
-			height: 100%;
-		}
-
-	</style>
-	<script type="text/javascript" src="../../../static/js/jquery.new.min.js"></script>
-	<script type="text/javascript" src="../../../static/js/jquery-migrate.min.js"></script>
-	<script type="text/javascript" src="../../../static/js/Scroll.js"></script>
-	<script type="text/javascript" src="../../../static/js/layout.js"></script>
-	<script type="text/javascript" src="../../../static/js/jquery.validate.js"></script>
-	<script type="text/javascript" src="../../../static/js/jquery.metadata.js"></script>
-	<script type="text/javascript" src="../../../static/js/laydate.js"></script>
-	<script type="text/javascript" src="../../../static/js/laydate.js"></script>
-	<script src="../../../static/js/index.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../../static/js/index1.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../../static/js/calendar.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../../static/js/js.js" type="text/javascript" charset="utf-8"></script>
-	<script>
-                window._bd_share_config = {
-                        "common": {
-                                "bdSnsKey": {},
-                                "bdText": "辽沈晚报",
-								"bdDesc": "我正在看“辽沈晚报”",
-                                "bdMini": "2",
-                                "bdMiniList": false,
-                                "bdPic": "https://epaper.lnd.com.cn/amucsite/newPaper/pad/padstatic/images/logow.jpg",
-                                "bdStyle": "0",
-                                "bdSize": "16",
-								"bdUrl": location.href.replace('/pc/', '/pad/'),
-                        },
-                        "share": {}
-                };
-                with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = '../../../static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
-        </script>
-</head>
-
-<body id="allBody">
-	<!--head-->
-
-	<!--head-->
-
-	<!--content-->
-	<div class="Newslistbox">
-		<div class="Newsmain">
-			<div class="Newsboxtit clearfix">
-
-				<h3>
-					<a href="https://epaper.lnd.com.cn/">
-						<img src="../../../static/images/pic11.png" />
-					</a>
-				</h3>
-			</div>
-			<div class="newscon clearfix">
-				<div class="newsside">
-					<ul>
-						<li class="oneclick1">
-							<a class="Chunkicon" href="javascript:;"></a>
-							<div class="Chunkiconbox">
-								<em class="Chunem"></em>
-								<img class="Chunkiconimg" src="../../../static/images/pic21.png" />
-								<div class="Chunkiconlist">
-
-																					<p>
-												<a href="node_A01.html">第A01版：头版</a>
-												<a href="../../../att/202408/19/c2df79bb-6f43-4198-bdea-e03487c467e7.pdf"></a>
-											</p>
-											<p>
-												<a href="node_A02.html">第A02版：要闻</a>
-												<a href="../../../att/202408/19/b025a1f4-3be4-46a3-9913-57bb2b79e853.pdf"></a>
-											</p>
-											<p>
-												<a href="node_A03.html">第A03版：城事</a>
-												<a href="../../../att/202408/19/b0c67cd0-7205-47ce-845d-cd9c605b9ae0.pdf"></a>
-											</p>
-											<p>
-												<a href="node_A04.html">第A04版：专题</a>
-												<a href="../../../att/202408/19/7cb1d120-c48a-4c33-852a-db8bb0f71e47.pdf"></a>
-											</p>
-											<p>
-												<a href="node_A06.html">第A06版：县区</a>
-												<a href="../../../att/202408/19/73e90873-d941-40be-bb21-c34e094a6182.pdf"></a>
-											</p>
-											<p>
-												<a href="node_A07.html">第A07版：县区</a>
-												<a href="../../../att/202408/19/3dc96cca-a428-4bfb-836e-1b5f7dcd0c77.pdf"></a>
-											</p>
-											<p>
-												<a href="node_A08.html">第A08版：社会</a>
-												<a href="../../../att/202408/19/a8ce9904-d629-456f-b9db-6630e42c44ab.pdf"></a>
-											</p>
-
-								</div>
-								<img class="Chunkiconimg" src="../../../static/images/pic22.png" />
-							</div>
-						</li>
-						<li class="oneclick2">
-							<a class="Calendar" href="javascript:;"></a>
-							<div class="Datebox">
-								<input type="button" id="startDate" value=""> </div>
-						</li>
-						<li class="oneclick3">
-							<a class="Share" href="javascript:;"></a>
-							<div id="Sharelist" class="bdsharebuttonbox">
-								<a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
-								<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
-								<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
-							</div>
-						</li>
-						<li class="oneclick4">
-							<a class="Phone" href="javascript:;"></a>
-							<div class="Phonecode">
-								<img src="../../../static/images/img22.jpg" />
-							</div>
-						</li>
-					</ul>
-				</div>
-
-				<div class="newscondiv clearfix">
-					<a class="backlist" href="javascript:void(0)"></a>
-					<div class="newsconimg" style="position: relative;">
-
-							<img src="../../../pic/202408/19/bfc09bca-887c-45f7-9f3e-426028a0c6cc.jpg.2" id="paperImg" USEMAP=#PagePicMap> <MAP NAME="PagePicMap"><Area coords="7.5449154,129.64706316,674.7307968,129.64706316,674.7307968,746.5882401,7.5449154,746.5882401" shape="polygon" href="../../../con/202408/19/content_250414.html"><Area coords="7.5449154,767.8235262600001,491.4971913,767.8235262600001,491.4971913,971.2352903399999,7.5449154,971.2352903399999" shape="polygon" href="../../../con/202408/19/content_250415.html"><Area coords="516.2876216999999,780.11764308,671.4972636,780.11764308,671.4972636,812.529414,516.2876216999999,812.529414,516.2876216999999,780.11764308,588.5032218,815.88235122,601.4373545999999,815.88235122,601.4373545999999,825.9411731399999,588.5032218,825.9411731399999,588.5032218,815.88235122" shape="polygon" href="../../../con/202408/19/content_250416.html"><Area coords="517.3654707000001,835.9999950600001,672.5751057,835.9999950600001,672.5751057,867.2941133999999,517.3654707000001,867.2941133999999,517.3654707000001,835.9999950600001,588.5032218,871.7647032000001,601.4373545999999,871.7647032000001,601.4373545999999,880.7058827999999,588.5032218,880.7058827999999,588.5032218,871.7647032000001" shape="polygon" href="../../../con/202408/19/content_250417.html"><Area coords="517.3654707000001,890.76470472,672.5751057,890.76470472,672.5751057,922.05882306,517.3654707000001,922.05882306,517.3654707000001,890.76470472,588.5032218,926.5294128599999,601.4373545999999,926.5294128599999,601.4373545999999,935.47059246,588.5032218,935.47059246,588.5032218,926.5294128599999" shape="polygon" href="../../../con/202408/19/content_250418.html"><Area coords="516.2876216999999,945.5294143799999,671.4972636,945.5294143799999,671.4972636,976.8235327199999,516.2876216999999,976.8235327199999,516.2876216999999,945.5294143799999,587.4253728,981.29412252,600.3595124999999,981.29412252,600.3595124999999,990.23529186,587.4253728,990.23529186,587.4253728,981.29412252" shape="polygon" href="../../../con/202408/19/content_250419.html"><Area coords="22.634739299999996,989.1176495400001,478.56305850000007,989.1176495400001,478.56305850000007,1011.4705882799999,22.634739299999996,1011.4705882799999" shape="polygon" href="../../../con/202408/19/content_250420.html"></MAP>
-
-						<div id="showMap" style="display: none; border: 2px solid rgb(16, 113, 184); opacity: 0.3; position: absolute;background-color: rgb(243, 152, 20);">
-							<a style="width: 100%;height: 100%;" href="javascript:void(0)"></a>
-						</div>
-						<!--日历 begin-->
-						<div class="time-control" style="position: absolute;">
-							<div class="data_box" id="data_box">
-								<table cellspacing="0" cellpadding="0" style="background-color:#fff;width:213px;">
-									<tbody>
-										<tr>
-											<td style="background: #f6f6f6; text-align: center;border: 1px solid #ddd;padding: 0 2px;">
-												<!--<img src="pre_year.gif" id="pre_y" onclick="changeY(-1);">-->
-												<span style="margin-left: -3px;margin-right: 5px;" class="ft18 pointer ft18 arrow-left" onclick="changeY(-1);"></span>
-												<!--<img id="pre_m" src="pre_month.gif">-->
-											</td>
-											<td>
-												<table cellspacing="0" cellpadding="0">
-													<tbody>
-														<tr>
-															<td>
-																<select style="width: 64px; height: 24px; border: 1px solid #ddd;" id="year_box" onchange="changeDate();">
-																	<script type="text/javascript">
-																		yearList();
-																	</script>
-															</td>
-															<td align="center" style="background: #f6f6f6; text-align: center;border: 1px solid #ddd;padding: 0 2px;display: block;height: 22px;margin-right: 8px;">
-																<span style="margin-left: 5px; margin-top: 6px;" class="ft18 pointer arrow-right" onclick="changeY(1);"></span>
-															</td>
-															<td style="background: #f6f6f6; text-align: center;border: 1px solid #ddd;padding: 0 2px;" align="center">
-																<span style="margin-right: 6px;" class="ft18 pointer arrow-left" onclick="changeMn(-1);"></span>
-															</td>
-														</tr>
-													</tbody>
-												</table>
-											</td>
-											<td>
-												<table cellspacing="0" cellpadding="0">
-													<tbody>
-														<tr>
-															<td>
-																<select style="width: 59px; height: 24px; border: 1px solid #ddd;" id="month_box" onchange="changeDate();">
-																	<script type="text/javascript">
-																		monthList();
-																	</script>
-															</td>
-														</tr>
-													</tbody>
-												</table>
-											</td>
-											<td style="background: #f6f6f6; text-align: center;border: 1px solid #ddd;padding: 0 2px;">
-												<span style="margin-left: 5px;" class="ft18 pointer arrow-right" onclick="changeMn(1);"></span>
-
-											</td>
-										</tr>
-									</tbody>
-								</table>
-								<table cellspacing="0" cellpadding="0" class="data_table" id="data_table">
-									<thead>
-										<tr>
-											<th>一</th>
-											<th>二</th>
-											<th>三</th>
-											<th>四</th>
-											<th>五</th>
-											<th>六</th>
-											<th>日</th>
-										</tr>
-									</thead>
-									<tbody>
-										<script type="text/javascript">
-											tdlist();
-											loadCalendar();
-										</script>
-									</tbody>
-								</table>
-							</div>
-						</div>
-						<!--日历 end-->
-					</div>
-					<div class="newsconright">
-						<div class="Scrollbox" id="Scroll">
-							<div class="newsshow" id="ScroLeft">
-								<div class="newslisttit">
-
-										<span class="newstime">2024年08月19日</span>
-										<img class="newstitimg" src="../../../static/images/img18.jpg" />
-										<em>第A01版：头版</em>
-
-								</div>
-								<div class="newslist">
-									<ul>
-
-																							<li>
-													<h3>
-														<a href="../../../con/202408/19/content_250414.html">主导产业齐发力 法库向高飞</a>
-													</h3>
-												</li>
-												<li>
-													<h3>
-														<a href="../../../con/202408/19/content_250415.html">我省18名运动员将出征巴黎残奥会</a>
-													</h3>
-												</li>
-												<li>
-													<h3>
-														<a href="../../../con/202408/19/content_250416.html">沈阳人社部门发布十大创新发展行动计划</a>
-													</h3>
-												</li>
-												<li>
-													<h3>
-														<a href="../../../con/202408/19/content_250417.html">今年1月至7月丹东空气质量全省第一</a>
-													</h3>
-												</li>
-												<li>
-													<h3>
-														<a href="../../../con/202408/19/content_250418.html">沈河区招募百对新人共赴第四届国风集体婚礼</a>
-													</h3>
-												</li>
-												<li>
-													<h3>
-														<a href="../../../con/202408/19/content_250419.html">凌源年产值约2亿元玻璃盖板项目即将达产</a>
-													</h3>
-												</li>
-												<li>
-													<h3>
-														<a href="../../../con/202408/19/content_250420.html">省卫健委向全省医务工作者致慰问信</a>
-													</h3>
-												</li>
-
-										<div class="articleContent">
-											<iframe class="articles" frameborder="no" scrolling="no" src="" width="" height=""></iframe>
-										</div>
-									</ul>
-								</div>
-							</div>
-							<!--<div class="Roller" id="ScroRight"><span id="ScroLine"></span></div>-->
-						</div>
-					</div>
-				</div>
-				<div class="newsnext">
-
-													<a href="node_A02.html">下一版</a>
-
-				</div>
-			</div>
-		</div>
-
-		<div class="Therest">
-			<div class="Therestcon clearfix">
-				<a class="restleft" href="javascript:;"></a>
-				<a class="restright" href="javascript:;"></a>
-				<div class="Therestlist" align="center">
-					<ul class="" id="widthNone" style="width: 1200px;">
-
-															<li>
-									<a class="restmask" href="javascript:;"></a>
-									<a href="node_A01.html">
-										<img src="../../../pic/202408/19/bfc09bca-887c-45f7-9f3e-426028a0c6cc.jpg.2">
-									</a>
-									<p>
-										第
-										<span class="layoutNum">A01</span>版
-										<a href="../../../att/202408/19/c2df79bb-6f43-4198-bdea-e03487c467e7.pdf"></a>
-									</p>
-								</li>
-								<li>
-									<a class="restmask" href="javascript:;"></a>
-									<a href="node_A02.html">
-										<img src="../../../pic/202408/19/aa331743-33ab-4fce-815a-7ac67c460f3c.jpg.2">
-									</a>
-									<p>
-										第
-										<span class="layoutNum">A02</span>版
-										<a href="../../../att/202408/19/b025a1f4-3be4-46a3-9913-57bb2b79e853.pdf"></a>
-									</p>
-								</li>
-								<li>
-									<a class="restmask" href="javascript:;"></a>
-									<a href="node_A03.html">
-										<img src="../../../pic/202408/19/24324ff1-3eb7-466a-8773-16d96fc1bc15.jpg.2">
-									</a>
-									<p>
-										第
-										<span class="layoutNum">A03</span>版
-										<a href="../../../att/202408/19/b0c67cd0-7205-47ce-845d-cd9c605b9ae0.pdf"></a>
-									</p>
-								</li>
-								<li>
-									<a class="restmask" href="javascript:;"></a>
-									<a href="node_A04.html">
-										<img src="../../../pic/202408/19/6b67ed8f-640e-40a0-8d45-8bc62bf198c7.jpg.2">
-									</a>
-									<p>
-										第
-										<span class="layoutNum">A04</span>版
-										<a href="../../../att/202408/19/7cb1d120-c48a-4c33-852a-db8bb0f71e47.pdf"></a>
-									</p>
-								</li>
-								<li>
-									<a class="restmask" href="javascript:;"></a>
-									<a href="node_A06.html">
-										<img src="../../../pic/202408/19/fb1b5e3d-03b8-464c-bc3d-dd34636f5a64.jpg.2">
-									</a>
-									<p>
-										第
-										<span class="layoutNum">A06</span>版
-										<a href="../../../att/202408/19/73e90873-d941-40be-bb21-c34e094a6182.pdf"></a>
-									</p>
-								</li>
-								<li>
-									<a class="restmask" href="javascript:;"></a>
-									<a href="node_A07.html">
-										<img src="../../../pic/202408/19/4df1c053-7910-4211-89d7-939ca3314568.jpg.2">
-									</a>
-									<p>
-										第
-										<span class="layoutNum">A07</span>版
-										<a href="../../../att/202408/19/3dc96cca-a428-4bfb-836e-1b5f7dcd0c77.pdf"></a>
-									</p>
-								</li>
-								<li>
-									<a class="restmask" href="javascript:;"></a>
-									<a href="node_A08.html">
-										<img src="../../../pic/202408/19/ba930571-f3b8-4225-85c1-66f7175cac47.jpg.2">
-									</a>
-									<p>
-										第
-										<span class="layoutNum">A08</span>版
-										<a href="../../../att/202408/19/a8ce9904-d629-456f-b9db-6630e42c44ab.pdf"></a>
-									</p>
-								</li>
-
-					</ul>
-				</div>
-			</div>
-		</div>
-
-	</div>
-
-	<!--content-->
-
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?77002c6b9fe15a5136bbe06f933886b8";
-  var s = document.getElementsByTagName("script")[0];
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-
-</body>
-<!--<script type="text/javascript">-->
-<!--new Slider(getS('Scroll'), getS('ScroLine'), getS('ScroRight'), {-->
-<!--topvalue: 500,-->
-<!--bottomvalue: -500-->
-<!--});-->
-
-<!--laydate({-->
-<!--elem: '#startDate'-->
-<!--})-->
-<!--</script>-->
-
-<script>
+<html>
+<head id="Head1"><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta content="IE=Edge,chrome=1" http-equiv="X-UA-Compatible" />
+    <script type="text/javascript" src="http://lib.cet.com.cn/Scripts/zooming.js"></script>
 
 
-	var onOffScale = false;
+    <title>
+	中国经济时报
+</title>
 
-
-
-
-
-  //生成map 下面的area 以及热点坐标的换算
-  var articleUrl = '';
-	var strObj = '';
-
-		strObj = [{"mapping":["1.093466%,12.636166%","97.787072%,12.636166%","97.787072%,72.766885%","1.093466%,72.766885%"],"articleID":"250414"},{"mapping":["1.093466%,74.836601%","71.231477%,74.836601%","71.231477%,94.662309%","1.093466%,94.662309%"],"articleID":"250415"},{"mapping":["74.824293%,76.034858%","97.318444%,76.034858%","97.318444%,79.193900%","74.824293%,79.193900%","74.824293%,76.034858%","85.290322%,79.520697%","87.164834%,79.520697%","87.164834%,80.501089%","85.290322%,80.501089%","85.290322%,79.520697%"],"articleID":"250416"},{"mapping":["74.980503%,81.481481%","97.474653%,81.481481%","97.474653%,84.531590%","74.980503%,84.531590%","74.980503%,81.481481%","85.290322%,84.967320%","87.164834%,84.967320%","87.164834%,85.838780%","85.290322%,85.838780%","85.290322%,84.967320%"],"articleID":"250417"},{"mapping":["74.980503%,86.819172%","97.474653%,86.819172%","97.474653%,89.869281%","74.980503%,89.869281%","74.980503%,86.819172%","85.290322%,90.305011%","87.164834%,90.305011%","87.164834%,91.176471%","85.290322%,91.176471%","85.290322%,90.305011%"],"articleID":"250418"},{"mapping":["74.824293%,92.156863%","97.318444%,92.156863%","97.318444%,95.206972%","74.824293%,95.206972%","74.824293%,92.156863%","85.134112%,95.642702%","87.008625%,95.642702%","87.008625%,96.514161%","85.134112%,96.514161%","85.134112%,95.642702%"],"articleID":"250419"},{"mapping":["3.280397%,96.405229%","69.356965%,96.405229%","69.356965%,98.583878%","3.280397%,98.583878%"],"articleID":"250420"}];
-        articleUrl = {
-						250414 : "../../../con/202408/19/content_250414.html",
-						250415 : "../../../con/202408/19/content_250415.html",
-						250416 : "../../../con/202408/19/content_250416.html",
-						250417 : "../../../con/202408/19/content_250417.html",
-						250418 : "../../../con/202408/19/content_250418.html",
-						250419 : "../../../con/202408/19/content_250419.html",
-						250420 : "../../../con/202408/19/content_250420.html"
+    <style type="text/css">
+        <!--
+        * {
+            margin: 0;
+            padding: 0;
         }
 
-		$("map[name='PagePicMap']").empty();
+        html {
+            color: #000;
+            background: #fff;
+        }
 
-	if (onOffScale) {
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Microsoft YaHei','微软雅黑', '宋体';
+            font-size: 13px;
+            color: #3C4449;
+            text-align: center;
+            background: #e8e2da;
+            width: 999px;
+        }
 
-		localStorage.setItem("iframeBox", "true");
-		for (var i = 0; i < strObj.length; i++) {
-			var arr = [];
-			for (var j = 0; j < strObj[i].mapping.length; j++) {
-				var x = (strObj[i].mapping[j].split(',')[0].split('%')[0]) * 1091 / 100;
-				var y = (strObj[i].mapping[j].split(',')[1].split('%')[0]) * 766 / 100;
-				arr.push(x);
-				arr.push(y);
+        img {
+            border: 0;
+        }
 
-			}
-			var areaNew = $("<area>");
-			areaNew.attr("coords", arr.join(","));
-			areaNew.attr("shape", "polygon");
-			areaNew.attr("href", articleUrl[strObj[i].articleID]);
-			$("map[name='PagePicMap']").append(areaNew);
-		}
-	} else {
-		localStorage.setItem("iframeBox", "false");
-		for (var i = 0; i < strObj.length; i++) {
-			var arr = [];
-			for (var j = 0; j < strObj[i].mapping.length; j++) {
-				var x = (strObj[i].mapping[j].split(',')[0].split('%')[0]) * 506 / 100 +20;
-				var y = (strObj[i].mapping[j].split(',')[1].split('%')[0]) * 736 / 100 +20;
-				arr.push(x);
-				arr.push(y);
+        a:link, a:visited {
+            color: #666;
+            text-decoration: none;
+        }
 
-			}
+        a:hover {
+            text-decoration: underline;
+        }
 
-			var areaNew = $("<area>");
-			areaNew.attr("coords", arr.join(","));
-			areaNew.attr("shape", "polygon");
-			areaNew.attr("href", articleUrl[strObj[i].articleID]);
-			$("map[name='PagePicMap']").append(areaNew);
-		}
-	}
+        ul, li {
+            list-style: none;
+        }
+
+        body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, legend, input, button, textarea, p, blockquote, thead, tbody, tfoot, th, td {
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        img {
+            border: none;
+        }
+
+        p {
+            line-height: 1.4em;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #505050;
+            height: 1px;
+        }
+
+        a {
+            text-decoration: none;
+            color: Navy;
+        }
+
+        .title_1 {
+            font-size: 32px;
+            font-family: "黑体";
+            font-weight: bold;
+        }
+
+        .title_2 {
+            font-size: 20px;
+            font-family: "黑体";
+            font-weight: bold;
+        }
+
+        .div_content {
+            font-family: 'Microsoft YaHei','微软雅黑', '宋体';
+            line-height: 23px;
+            font-size: 15px;
+            text-align: left;
+            text-indent: 2em;
+            letter-spacing: 1px;
+            min-height: 500px;
+            vertical-align: middle;
+        }
+
+            .div_content p {
+                margin-top: 15px;
+                font-family: 'Microsoft YaHei','微软雅黑', '宋体';
+                line-height: 23px;
+                font-size: 15px;
+                text-align: left;
+                text-indent: 2em;
+                letter-spacing: 1px;
+            }
+
+        .div_content_end {
+            border-top: solid 1px #666666;
+            width: 620px;
+            height: 50px;
+            padding-left: 30px;
+            padding-right: 30px;
+            padding-top: 10px;
+        }
+
+        .div_comment {
+            width: 600px;
+            height: 400px;
+            border: solid 1px silver;
+            text-align: left;
+            margin-left: 10px;
+            padding-left: 20px;
+        }
+
+        .div_comment_view {
+            width: 600px;
+            height: 200px;
+            display: block;
+        }
+
+        .area_common {
+            width: 560px;
+            height: 130px;
+            border: solid 1px silver;
+        }
+
+        .ltl_pic {
+            width: 100%;
+            text-align:center;
+            font-family: "楷体_GB2312";
+        }
+        -->
+    </style>
+<script type="text/javascript"  src="/Scripts/jquery-1.11.1.min.js"></script><script type="text/javascript"  src="/Scripts/blockui/jquery.blockUI.js"></script><script type="text/javascript"  src="/Scripts/cust/wikmain.js"></script></head>
+<body>
 
 
+<script src="Scripts/index.js" type="text/javascript"></script>
 
+<img src="images/top.jpg" width="999" height="208" alt="中国经济时报"/>
+<div style="width: 999px; height: 100px;  background-color:#686868">
 
+</div>
+<table style="width: 999px; height: 38px;" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td style="width: 200px; background-image:url(images/top-l1.jpg); background-repeat: repeat-x; vertical-align:bottom; text-align:left;">
+
+</td>
+<td style="width: 52px; background-image:url(images/top-l2.jpg); background-repeat: no-repeat;"></td>
+<td style="background-color:#686868; width: 380px; text-align: left;">
+<form id="_frm_sch" action="DigitaNewspaper.aspx" defaultbutton="btn_sch" defaultfocus="btn_sch_date" method="get" target="_blank">
+    按日期：<input type="text" id="txb_sch_date" name="date" style="width: 160px; color:#ccc;" value="请输入日期。如2013-07-09"
+        onfocus="if (this.value=='请输入日期。如2013-07-09'){this.value=''; this.style.color='#000';}"
+        onchange="this.value=htmlEncodeByRegExp(this);"
+        onblur="if (this.value==''){this.value='请输入关键词'; this.style.color='#ccc';}"/>&nbsp;&nbsp;
+    <input type="submit" title="搜索" name="btn_sch_date" value="搜索" style="width: 60px;" onclick="javascript:return _frm_sch_date_check();" />
+    </form>
+</td>
+<td style="background-color:#686868; text-align: left;">
+<form id="_frm_sch2" action="Search.aspx" defaultbutton="btn_sch_kw" defaultfocus="txb_sch_kw" method="get" target="_blank">
+    按关键词搜索：<input type="text" id="txb_sch_kw" name="word" style="width: 120px; color:#ccc;" value="请输入关键词" onfocus="if (this.value=='请输入关键词'){this.value=''; this.style.color='#000';}" onchange="this.value=htmlEncodeByRegExp(this);" onblur="if (this.value==''){this.value='请输入关键词'; this.style.color='#ccc';}; "/>&nbsp;&nbsp;
+    <input type="submit" title="搜索" name="btn_sch_kw" value="搜索" style="width: 60px;" onclick="javascript:return _frm_sch_keywords_check();" />
+    </form>
+</td>
+</tr>
+</table>
+<script language="javascript" type="text/javascript">
+function _frm_sch_keywords_check() {
+            var obj = document.getElementById("txb_sch_kw");
+            if ((obj.value == "") || (obj.value == "请输入关键词")) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+
+        function _frm_sch_date_check() {
+            var obj = document.getElementById("txb_sch_date");
+            if ((obj.value == "") || (obj.value.length < 8) || (obj.value == "请输入日期。如2013-07-09")) {
+                obj.value = "请输入日期。如2013-07-09";
+                return false;
+            }
+            else {
+                var d = new Date(Date.parse(obj.value.replace(/-/g, "/")));
+                if (d != NaN) {
+                    obj.value = date2str(d, "yyyy-MM-dd");
+                    return true;
+                } else {
+                obj.value = "请输入日期。如2013-07-09";
+                return false;
+                }
+            }
+        }
+
+        function date2str(x, y) {
+            var z = { M: x.getMonth() + 1, d: x.getDate(), h: x.getHours(), m: x.getMinutes(), s: x.getSeconds() };
+            y = y.replace(/(M+|d+|h+|m+|s+)/g, function(v) { return ((v.length > 1 ? "0" : "") + eval('z.' + v.slice(-1))).slice(-2) });
+            return y.replace(/(y+)/g, function(v) { return x.getFullYear().toString().slice(-v.length) });
+        }
 </script>
+    <form name="form1" method="post" action="./show_511074.html?articleID=511074" id="form1">
+<div>
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKLTYzMTI0Nzk2OGRkuCQZY+ehcx2y0dZy4206sHsnztpr8jOY9ykF2exlNws=" />
+</div>
 
+<div>
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="EC898DA6" />
+</div>
+
+        <table width="999px" cellpadding="0" cellspacing="0">
+            <tr>
+                <td valign="top" align="center">
+                    <br />
+                    <div style="width: 680px; text-align: left;">
+                        <a href="/" target="_blank">首页</a> &gt;&gt;
+                    <a id="hl_paper" target="_blank" />本期首页</a>
+                    &gt;&gt;
+                    <a id="hl_verOrder" target="_blank">当前版面</a>
+                        &gt;&gt;
+                    <span id="lb_title1"></span>
+                        <br />
+                        <br />
+                        <a id="hl_pre" target="_self" style="display: none;">上一篇</a>
+                        <a id="hl_next" target="_self" style="display: none;">下一篇</a>
+                    </div>
+                    <br />
+                </td>
+                <td style="width: 319px">
+                    <div class="f-mt20 f-fr">
+                        <!-- Baidu Button BEGIN -->
+                        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a></div>
+                        <script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "32" }, "share": {}, "image": { "viewList": ["weixin", "sqq", "tsina"], "viewText": "分享到：", "viewSize": "16" }, "selectShare": { "bdContainerClass": null, "bdSelectMiniList": ["weixin", "sqq", "tsina"] } }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+
+
+                        <!-- Baidu Button END -->
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <div style="width: 620px; text-align: center; border: 1px solid #666666; background-image: url(/images/bk_content.jpg); background-repeat: repeat;">
+                        <p align="center" class="title_2">
+                            <span id="Labeltitle0"></span>
+                        </p>
+                        <p class="title_1">
+                            <span id="Labeltitle"></span>&nbsp;
+                        </p>
+                        <p align="center" class="title_2">
+                            <span id="Labeltitle1"></span>
+                        </p>
+                        <div>
+                        </div>
+                        <div style="width: 100%; height: 20px; font-size: 11px; text-align: center; margin-top: 10px;">
+                            <!-- source begin-->
+                            来源：<a href="/" target="_blank">中国经济时报-中国经济新闻网</a>&nbsp;&nbsp;<span id="lbl_date"></span> <span id="lbl_author"></span>
+                            浏览量：<span id="lbl_viewcount"></span>
+                            <!-- source end-->
+                        </div>
+                        <br />
+                        <br />
+                        <div class="div_content">
+
+                            <div style="width: 100%; text-align: center;">
+                                <div id="ltl_pic"></div>
+                            </div>
+                            <br />
+                            <span id="Labelcontent"></span>
+
+                            <img id="paperimg" data-action="zoom" class="span1 f-fl" style="max-width: 80px; max-height: 120px;">
+
+                            <div style="float: right; margin-right: 20px;" id="lbl_zrbj">
+                            </div>
+                        </div>
+
+                    </div>
+                    <br />
+                    <br />
+
+                </td>
+                <td valign="top">
+                    <div style="width: 315px; border: solid 1px #666666; text-align: left;">
+
+
+                        <div id="rep_vername" style="margin-left: 10px; width: 300px; border-bottom: dotted 1px black;"></div>
+                        <div id="rep_article"></div>
+                        <br />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="div_content_end">
+                        <span style="float: left;">
+                            <a id="hl_pre1" target="_self" style="display: none;">上一篇</a>
+                        </span>
+                        <span style="float: right;">
+                            <a id="hl_next1" target="_self" style="display: none;">下一篇</a>
+                        </span>
+                    </div>
+
+                </td>
+                <td></td>
+            </tr>
+        </table>
+
+        <div style="width: 920px;">
+
+<style type="text/css">
+.div_friendly_link{margin-top: 5px;
+width: 920px; border: solid 1px silver; border-top: solid 2px #A10000;
+font-size: 14px; font-weight:lighter; background-color: #eeeeee;
+line-height: 20px; color: #666; text-align: left;}
+.div_friendly_link a{font-size: 12px;color: #666;}
+</style>
+<table width="920" border="0" align="center" cellpadding="0" cellspacing="0">
+<tr><td><a style="font-size: 12px; font-weight: bold; color: #A10000;" target="_blank" href="https://lib.cet.com.cn/paper/order.aspx">报纸订阅</a>&nbsp;
+<a href="https://www.cet.com.cn/CONTACT/cetwe.html" target="_blank" style="font-size:12px; font-weight:bold; color:#990000; ">关于我们</a>&nbsp;
+<a style="font-size: 12px; font-weight: bold; color: #A10000;" target="_blank" href="http://mail.cet.com.cn">CET邮箱</a>&nbsp;
+
+</td></tr>
+  <tr><td>
+<div class="div_friendly_link">
+    |<a href="www.sina.com.cn" target="_blank">新浪网</a>
+	|<a href="www.sohu.com" target="_blank">搜狐网</a>
+	|<a href="www.qq.com" target="_blank">腾讯网</a>
+	|<a href="www.jrj.com.cn" target="_blank">金融界</a>
+	|<a href="www.soufun.com" target="_blank">搜房网</a>
+	|<a href="www.techweb.com.cn" target="_blank">千钧万博</a>
+	|<a href="www.p5w.net" target="_blank">全景网</a>
+	|<a href="www.zgjrw.com" target="_blank">中国金融网</a>
+	|<a href="www.cnki.net" target="_blank">中国知网</a>
+	|<a href="www.hexun.com" target="_blank">和讯网</a>
+	|<a href="finance.news.tom.com" target="_blank">TOM财经</a>
+	|<a href="www.drcnet.com.cn" target="_blank">国研信息网</a>
+	|<a href="www.hc360.com" target="_blank">慧聪网</a>
+	|<a href="www.xinhuanet.com" target="_blank"> 新华网</a>
+	|<a href="www.kejixun.com" target="_blank">科技讯</a>
+	|<a href="www.glinfo.com" target="_blank">钢联资讯</a>
+	|<a href="www.ifeng.com" target="_blank">凤凰网财经</a>
+	|<a href="www.chinese-no1.com" target="_blank">华商门户网</a>
+	|<a href="oilchem.net" target="_blank">隆众石化商务网</a>
+	|<a href="www.ebrun.com" target="_blank">亿邦动力网</a>
+	|<a href="www.simuwang.com" target="_blank">私募排排网</a>
+	|<a href="www.cnsoftnews.com" target="_blank">中国软件资讯网</a>
+	|<a href="www.lotour.com" target="_blank">乐途旅游网</a>
+	|<a href="www.guzhiwang.com" target="_blank">股指期货</a>
+	|<a href="www.iincn.net" target="_blank">中国产业网</a>
+	|<a href="www.acin.org.cn" target="_blank">中国产业报协会</a>
+	|<a href="www.51cto.com" target="_blank">51CTO</a>
+	|<a href="www.cheshi.com" target="_blank">网上车市</a>
+	|<a href="www.zhongsou.net" target="_blank">行业中国</a>
+	|<a href="www.meadin.com" target="_blank">迈点网</a>
+	|<a href="www.mykuaiji.com" target="_blank">会计家园</a>
+</div>
+<tr><td></table>
+<table width="999" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="264" height="96" align="center"><a href="http://www.hd315.gov.cn/beian/view.asp?bianhao=010202001123000010" target="_blank"><img src="https://www.cet.com.cn/images/wscfy_031.gif" alt="备案" border="0" /></a> <br />
+    <!--京ICP备07019363号-1 --> </td>
+    <td width="441" align="center" class="font_01 lig_hig">中国经济新闻网  版权所有 未经书面允许不得转载、复制或建立镜像<br />
+联系电话：（010）81785256   投稿邮箱:cesnew@163.com   wlzx@cet.com.cn<br />
+中国经济时报社 地址:北京市昌平区平西府王府街  邮政编码：102209 电话：(010)81785188(总机) (010)81785188-5100(编辑部) (010)81785186(广告部) (010)81785178(发行部) 传真：(010)81785121 电邮：info@cet.com.cn
+<a href="/sitemap.xml" target="_blank">站点地图</a>
+Copyright 2011 www.cet.com.cn. All Rights Reserved<br /></td>
+    <td width="294" align="center"><a href="http://net.china.cn/chinese/index.htm" target="_blank"><img src="https://www.cet.com.cn/images/netchina.gif" alt="举报" width="50" height="50" border="0" /></a> <a href="http://net.china.cn/chinese/index.htm" target="_blank"><br />
+    不良信息举报中心</a></td>
+  </tr>
+  <tr><td colspan="3" align="center">京公网安备110114001037号</td></tr>
+</table>
+        </div>
+        <script>
+            function Loading_msg(_msg) {
+                $.blockUI({
+                    message: '<table><tr><td style="vertical-align:middle;text-align:center; width: 100px;"><img src="/Images/Loading.gif" style="width: 60px; height:60px;" width="60" /></td><td style="vertical-align:middle;text-align:center;"> ' + _msg + '</h3><td><tr><table>'
+                    , css: {
+                        backgroundColor: '#eee',
+                        border: '1px solid #0066cc',
+                        color: 'blue',
+                        cursor: 'default'
+                    }
+                });
+            }
+
+            $(function () {
+                //
+                try {
+                    LoadArticle();
+                }
+                catch (e)
+                {
+                    console.log(e);
+                }
+            });
+
+            var curr_paper = null;
+            var curr_art = null;
+
+            function LoadPaper(_pid) {
+                if (undefined == _pid) {
+                    return;
+                }
+                $.ajax({
+                    url: '/ashx/tb_paper.ashx',
+                    type: 'POST',
+                    data: { "cmd": "dispid", "id": _pid },
+                    dataType: 'json',
+                    timeout: 3000,
+                    async: false,
+                    success: function (_dp) {
+                        if ((null == _dp) || (_dp.id == 0)) {
+                            window.location = "http://jjsb.cet.com.cn/404err.htm";
+                            return;
+                        }
+                        curr_paper = _dp;
+                    }
+                });
+            }
+
+            function LoadPreLink(_pid, _aid) {
+                if (undefined == _pid) {
+                    return;
+                }
+                $.ajax({
+                    url: '/ashx/tb_article.ashx',
+                    type: 'POST',
+                    data: { "cmd": "get_preart_link", "pid": _pid, "aid": _aid },
+                    dataType: 'text',
+                    timeout: 3000,
+                    async: false,
+                    success: function (_idx) {
+                        if ((_idx == "0") || (_idx == "")) {
+                            return;
+                        }
+                        $('#hl_pre').attr("href", "show_" + _idx + ".html");
+                        $('#hl_pre1').attr("href", "show_" + _idx + ".html");
+                        $('#hl_pre').show();
+                        $('#hl_pre1').show();
+                    }
+                });
+            }
+
+            function LoadNextLink(_pid, _aid) {
+                if (undefined == _pid) {
+                    return;
+                }
+                $.ajax({
+                    url: '/ashx/tb_article.ashx',
+                    type: 'POST',
+                    data: { "cmd": "get_nextart_link", "pid": _pid, "aid": _aid },
+                    dataType: 'text',
+                    timeout: 3000,
+                    async: false,
+                    success: function (_idx) {
+                        if ((_idx == "0") || (_idx == "")) {
+                            return;
+                        }
+                        $('#hl_next').attr("href", "show_" + _idx + ".html");
+                        $('#hl_next1').attr("href", "show_" + _idx + ".html");
+                        $('#hl_next').show();
+                        $('#hl_next1').show();
+                    }
+                });
+            }
+
+            function LoadOrderList(_pid, _oid) {
+                if (undefined == _pid) {
+                    return;
+                }
+                //grid.datagrid("load", { "cmd": "disporder", "pid": _pid, "oid": _oid });
+
+                $.ajax({
+                    url: '/ashx/tb_article.ashx',
+                    type: 'POST',
+                    data: { "cmd": "disporder", "pid": _pid, "oid": _oid },
+                    dataType: 'json',
+                    timeout: 3000,
+                    success: function (_dx) {
+                        var _str = "";
+                        $.each(_dx, function (idx, rec) {
+                            //if (idx == 0) {
+                            //    //同countinue，返回false同break
+                            //    return true;
+                            //}
+                            if (curr_art.id - rec.id == 1) {
+                                $('#hl_pre').attr("href", "show_" + rec.id + ".html");
+                                $('#hl_pre1').attr("href", "show_" + rec.id + ".html");
+                                $('#hl_pre').show();
+                                $('#hl_pre1').show();
+                            }
+                            if (rec.id - curr_art.id == 1) {
+                                $('#hl_next').attr("href", "show_" + rec.id + ".html");
+                                $('#hl_next1').attr("href", "show_" + rec.id + ".html");
+                                $('#hl_next').show();
+                                $('#hl_next1').show();
+                            }
+                            _str += "<div style=\"width:300px; margin-left: 10px\"><a href=\"show_" + rec.id + ".html\" target=\"_self\"><span style=\"width:100%;font-size:12px;\">" + rec.leadTitle + "<span><br /><span style=\"font-size:14px; font-weight:bold;\">" + rec.title + "</span><br/><span style=\"font-size:12px;\">" + rec.title1 + "</span></a></div>";
+                        });
+                        $("#rep_article").html(_str);
+                        if ($('#hl_pre').attr("href") == undefined) {
+                            LoadPreLink(curr_art.paperId, curr_art.id);
+                        }
+                        if ($('#hl_next').attr("href") == undefined) {
+                            LoadNextLink(curr_art.paperId, curr_art.id);
+                        }
+                    }
+                })
+            }
+
+            function LoadArticle() {
+
+                var _id = "0";
+                var _s1 = window.location.href.match(/\d+\.html/gi);
+                if (_s1 != undefined) {
+                    _id = _s1[0].replace(".html", "");
+                } else {
+                    _id = request("articleID");
+                }
+
+                $.ajax({
+                    url: '/ashx/tb_article.ashx',
+                    type: 'POST',
+                    data: { "cmd": "dispid", "id": _id },
+                    dataType: 'json',
+                    timeout: 6000,
+                    beforeSend: function () {
+                        //异步请求时spinner出现
+                        Loading_msg("正在加载文章，请稍后...");
+                    },
+                    error: function () { $.unblockUI(); $.messager.alert('系统提示', '加载文章时出现错误。'); },
+                    success: function (_d) {
+
+                        curr_art = _d;
+                        document.title = _d.title + "-中国经济时报-中国经济新闻网";
+                        $('#hl_paper').attr("href", "index.html?paperID=" + _d.paperId.toString());
+                        $("#Labeltitle0").text(ReplaceTitleStr(_d.leadTitle));
+                        $("#Labeltitle").text(ReplaceTitleStr(_d.title));
+                        $("#lbl_date").text("日期:" + _d.publishDate.substring(0, 11).replace("-", "年").replace("-", "月") + "日");
+                        $("#Labeltitle1").text(ReplaceTitleStr(_d.title1));
+                        $("#lbl_author").html("作者:" + getAuthorAlbum(_d.author));
+                        $("#hl_verOrder").attr("href", "szb_" + _d.paperId.toString() + "_" + _d.verOrder.toString() + ".html");
+                        $("#paperimg").attr("src", "http://jjsb.cet.com.cn/zgjjsb/" + _d.publishDate.substring(0, 10).replace(/-/g, "") + "/" + _d.perVerImgUrl);
+                        if (!isBlank(_d.images)) {
+                            var _strs = _d.images.split(";");
+                            var infos;
+                            if (!isBlank(_d.imagesInfo))
+                            {
+                                infos = _d.imagesInfo.split(";");
+                            }
+                            var _str = "";
+
+                            for (var i = 0 ; i < _strs.length ; i++) {
+                                _str += '<img width="400" src="http://jjsb.cet.com.cn/zgjjsb/' + _d.publishDate.substring(0, 10).replace(/-/g, "") + '\/' + _strs[i] + '" /><br/>';
+                                if ((infos != undefined) && (infos.length >= i))
+                                {
+                                    _str += "<div style='width:100%; text-align:center; font-family: '楷体;'>" + infos[i] + "</div><br /><br />";
+                                }
+                            }
+
+                            $("#ltl_pic").html(_str);
+                        }
+
+                        $("#Labelcontent").html(ReplaceContentStr(_d.content));
+                        $('#rep_vername').html("<H3>" + _d.verOrder + _d.verName + "<br /><br /></H3>");
+
+                        LoadPaper(_d.paperId);
+
+                        //$("#lbl_zrbj").text("（责任编辑：" + curr_paper.Editor + "）");
+
+                        LoadOrderList(_d.paperId, _d.verOrder);
+                        LoadArticleViews(_id);
+                        $.unblockUI();
+                    }
+                });
+            };
+
+
+            //整理不规则数据
+            function ReplaceAuthorStr(_str) {
+                if (isBlank(_str)) {
+                    return "";
+                }
+                _str = _str.replace(/\/摄/g, " ");
+                _str = _str.replace(/摄/g, " ");
+                _str = _str.replace(/■/g, " ");
+                _str = _str.replace(/□/g, " ");
+                _str = _str.replace(/整理/g, " ");
+
+                return _str;
+            }
+
+            function getAuthorAlbum(strauthor) {
+                if ("" == strauthor) { return "<br />"; }
+                var _strs = ReplaceAuthorStr(strauthor).split(" ");
+                var _str = "";
+                for (i = 0; i < _strs.length; i++) {
+                    if (_strs[i].length < 2) {
+                        _str += _strs[i];
+                    }
+                    else {
+                        _str += "<a href=\"/szb_alb.aspx?author=" + encodeURI(_strs[i]) + "\" target=\"_blank\" class=\"badge\">" + _strs[i] + "</a>&nbsp;";
+                    }
+                }
+                if ("" == _str) { _str = "<br />"; }
+                return _str;
+            }
+
+            function LoadArticleViews(uid) {
+
+                $.ajax({
+                    url: '/ashx/tb_article.ashx',
+                    type: 'POST',
+                    data: { "cmd": "viewcount", "id": uid },
+                    dataType: 'json',
+                    timeout: 3000,
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert(XMLHttpRequest.status);
+                        alert(XMLHttpRequest.readyState);
+                        alert(textStatus);
+                    },
+                    success: function (_d) {
+
+                        $("#lbl_viewcount").text(_d.data);
+
+                        console.log(_d);
+
+                    }
+                });
+            };
+
+
+        </script>
+    </form>
+</body>
 </html>

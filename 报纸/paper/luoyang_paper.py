@@ -18,7 +18,7 @@ s.keep_alive = False
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9112)
+co.set_paths(local_port=9116)
 
 # 构造实例
 page = ChromiumPage(co)
@@ -111,9 +111,9 @@ paper = "洛阳日报"
 
 pdf_domain = 'https://lyrb.lyd.com.cn/'
 today = datetime.now().strftime('%Y-%m/%d')
+
+
 # today = '2014-12/01'
-queue_id = 111
-webpage_id = 111
 
 
 def date_conversion(date):
@@ -219,6 +219,12 @@ def get_luoyang_paper(paper_time):
 
                 cursor_test.close()
                 conn_test.close()
+        success_data = {
+            'id': queue_id,
+            'description': '数据获取成功',
+        }
+        paper_queue_success(success_data)
+        page.close()
     else:
         base_url = f'https://lyrb.lyd.com.cn/html/{paper_time}/'
 
@@ -297,7 +303,7 @@ def get_luoyang_paper(paper_time):
             'description': '数据获取成功',
         }
         paper_queue_success(success_data)
-
+        page.close()
 
 
 # 设置最大重试次数
@@ -318,6 +324,7 @@ while retries < max_retries:
                 'description': '今天没有报纸',
             }
             paper_queue_success(success_data)
+            page.close()
             break
         else:
             fail_data = {

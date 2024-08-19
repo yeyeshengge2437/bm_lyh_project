@@ -415,8 +415,9 @@ while attempts < max_attempts:
     except Exception as e:
         print(f"发生错误：{e}")
         attempts += 1  # 增加尝试次数
-        time.sleep(3600)  # 等待一小时后再次尝试
         print(f"尝试再次爬取，尝试{attempts}/{max_attempts}")
+        time.sleep(3600)  # 等待一小时后再次尝试
+
 
         if attempts == max_attempts:
             print("已达到最大尝试次数。退出。")

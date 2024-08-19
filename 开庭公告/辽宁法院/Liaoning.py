@@ -254,7 +254,7 @@ max_attempts = 5  # 设置最大尝试次数
 attempts = 0
 
 while attempts < max_attempts:
-    value = paper_queue_next(webpage_url_list=['https://lnsfw.lnsfy.gov.cn/lnssfw/index.html'])
+    value = paper_queue_next(webpage_url_list=['https://lnsfw.lnsfy.gov.cn/lnssfw/pages/gsgg/gglist.html?lx=ktgg'])
     from_queue = value['id']
     webpage_id = value["webpage_id"]
     try:
