@@ -219,6 +219,7 @@ while retries < max_retries:
         paper_claims(today)
         break
     except Exception as e:
+        retries += 1
         if retries == max_retries and "目前未有报纸" in e:
             success_data = {
                 'id': queue_id,
@@ -227,7 +228,7 @@ while retries < max_retries:
             paper_queue_success(success_data)
             break
         else:
-            retries += 1
+
             fail_data = {
                 "id": queue_id,
                 "description": f"出现问题:{e}",

@@ -223,6 +223,7 @@ while retries < max_retries:
         paper_claims(today)
         break
     except Exception as e:
+        retries += 1
         if retries == max_retries:
             month_day = datetime.now().strftime('%Y-%m-%d')
             success_data = {
@@ -232,7 +233,7 @@ while retries < max_retries:
             paper_queue_success(success_data)
             break
         else:
-            retries += 1
+
             fail_data = {
                 "id": queue_id,
                 "description": f"{e}",

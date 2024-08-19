@@ -236,6 +236,7 @@ while retries < max_retries:
         get_fazhi_paper(date_str)
         break
     except Exception as e:
+        retries += 1
         if retries == max_retries and "目前暂未有今天报纸" in e:
             success_data = {
                 'id': from_queue,
@@ -244,7 +245,7 @@ while retries < max_retries:
             paper_queue_success(success_data)
             break
         else:
-            retries += 1
+
             fail_data = {
                 "id": from_queue,
                 "description": f"出现问题:{e}",
