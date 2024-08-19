@@ -123,7 +123,7 @@ headers = {
 today = datetime.now().strftime('%Y-%m-%d')
 # today = '2022-05-19'
 
-def paper_claims(paper_time):
+def get_kaifeng_paper(paper_time):
     # 将today的格式进行改变
     day = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m-%d')
     base_url = f'https://epaper.kf.cn/paper/kfrb/{paper_time}/'
@@ -211,7 +211,7 @@ while retries < max_retries:
     queue_id = value['id']
     webpage_id = value["webpage_id"]
     try:
-        paper_claims(today)
+        get_kaifeng_paper(today)
         break
     except Exception as e:
         retries += 1
@@ -229,4 +229,5 @@ while retries < max_retries:
                 "description": f"出现问题:{e}",
             }
             paper_queue_fail(fail_data)
+            print(f'{e},等待一小时后重试...')
             time.sleep(3610)  # 等待1小时后重试

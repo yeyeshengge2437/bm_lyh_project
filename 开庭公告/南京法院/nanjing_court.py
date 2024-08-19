@@ -190,6 +190,7 @@ def jump_to_page(num):
 def run(destination_page):
     # 打开目标网页
     page.get("https://ssfw.njfy.gov.cn/#/ktggList")
+    time.sleep(10)
     # 点击日期
     date = page.ele(".el-input__inner", index=5)
     date.clear()

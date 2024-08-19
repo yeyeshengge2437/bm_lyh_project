@@ -112,22 +112,20 @@ paper = "洛阳日报"
 pdf_domain = 'https://lyrb.lyd.com.cn/'
 today = datetime.now().strftime('%Y-%m/%d')
 # today = '2014-12/01'
+queue_id = 111
+webpage_id = 111
 
 
-
-def date_conversion(date, origin_date, data_type):
-    """
-    日期格式转换
-    :param date: 传入的日期数据
-    :param origin_date: 原始日期数据的格式
-    :param data_type: 想要的日期格式
-    :return: 处理好日期格式的日期
-    """
+def date_conversion(date):
     # 日期格式正则表达式
     date = str(date)
-    date_obj = datetime.strptime(date, origin_date)
-    date = date_obj.strftime(data_type)
-    return date
+    date_pattern = re.compile(r'^\d{4}-\d{2}/\d{2}$')
+    if date_pattern.match(date):
+        return date
+    else:
+        date_obj = datetime.strptime(date, '%Y-%m-%d')
+        date = date_obj.strftime('%Y-%m/%d')
+        return date
 
 
 def get_luoyang_paper(paper_time):
@@ -138,7 +136,7 @@ def get_luoyang_paper(paper_time):
     :param paper_time:
     :return:
     """
-    paper_time = date_conversion(paper_time, '%Y-%m-%d', '%Y-%m/%d')
+    paper_time = date_conversion(paper_time)
 
     # 将today的格式进行改变
     day = datetime.strptime(paper_time, '%Y-%m/%d').strftime('%Y-%m-%d')
@@ -299,6 +297,7 @@ def get_luoyang_paper(paper_time):
             'description': '数据获取成功',
         }
         paper_queue_success(success_data)
+
 
 
 # 设置最大重试次数
