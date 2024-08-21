@@ -13,7 +13,7 @@ from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, p
 
 claims_keys = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
                          r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
-paper = "河南商报"
+paper = "河南法制报"
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'zh-CN,zh;q=0.9',
@@ -31,15 +31,15 @@ headers = {
     'sec-ch-ua-platform': '"Windows"',
 }
 
-pdf_domain = 'https://newpaper.dahe.cn/hnsb/'
+pdf_domain = 'https://newpaper.dahe.cn/jrab/'
 today = datetime.now().strftime('%Y-%m-%d')
 
 
-def get_henanshang_paper(paper_time, queue_id, webpage_id):
+def get_henanfazhi_paper(paper_time, queue_id, webpage_id):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m/%d')
-    base_url = f'https://newpaper.dahe.cn/hnsb/html/{paper_time}/'
+    base_url = f'https://newpaper.dahe.cn/jrab/html/{paper_time}/'
     url = base_url + 'node_1.htm'
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
@@ -121,7 +121,10 @@ def get_henanshang_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# paper_claims(today)
+# queue_id = 111
+# webpage_id = 1111
+# time1 = '2024-03-13'
+# get_henanfazhi_paper(time1, queue_id, webpage_id)
 
 # # 设置最大重试次数
 # max_retries = 5

@@ -7,101 +7,13 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 import mysql.connector
 import requests
 from lxml import etree
+from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
-produce_url = "http://121.43.164.84:29875"  # 生产环境
-# produce_url = "http://121.43.164.84:29775"    # 测试环境
-test_url = produce_url
 
-requests.DEFAULT_RETRIES = 3
-s = requests.session()
-s.keep_alive = False
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
 co.set_paths(local_port=9117)
-
-# 构造实例
-page = ChromiumPage(co)
-
-def paper_queue_next(webpage_url_list=None):
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    if webpage_url_list is None:
-        webpage_url_list = []
-
-    url = test_url + "/website/queue/next"
-    data = {
-        "webpage_url_list": webpage_url_list
-    }
-
-    data_str = json.dumps(data)
-
-    res = s.post(url=url, headers=headers, data=data_str)
-    result = res.json()
-    print(result)
-    return result.get("value")
-
-
-def paper_queue_success(data=None):
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
-        'Content-Type': 'application/json'
-    }
-    if data is None:
-        data = {}
-    url = test_url + "/website/queue/success"
-    data_str = json.dumps(data)
-
-    res = s.post(url=url, headers=headers, data=data_str)
-    result = res.json()
-
-    return result.get("value")
-
-
-def paper_queue_fail(data=None):
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
-        'Content-Type': 'application/json'
-    }
-    try:
-        if data is None:
-            data = {}
-        url = test_url + "/website/queue/fail"
-        data_str = json.dumps(data)
-        res = s.post(url=url, headers=headers, data=data_str)
-        result = res.json()
-        return result.get("value")
-    except Exception as err:
-        print(err)
-        return None
-
-
-def upload_file_by_url(file_url, file_name, file_type, type="paper"):
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
-
-    }
-    r = requests.get(file_url, headers=headers)
-    if r.status_code != 200:
-        return "获取失败"
-    pdf_path = f"{file_name}.{file_type}"
-    if not os.path.exists(pdf_path):
-        fw = open(pdf_path, 'wb')
-        fw.write(r.content)
-        fw.close()
-    # 上传接口
-    fr = open(pdf_path, 'rb')
-    file_data = {"file": fr}
-    url = 'http://121.43.164.84:29775' + f"/file/upload/file?type={type}"
-    headers1 = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'
-    }
-    res = requests.post(url=url, headers=headers1, files=file_data)
-    result = res.json()
-    fr.close()
-    os.remove(pdf_path)
-    return result.get("value")["file_url"]
 
 
 
@@ -129,11 +41,11 @@ headers = {
 
 
 today = datetime.now().strftime('%Y-%m-%d')
-# today = '2019-10-25'
-# queue_id = 1111
-# webpage_id = 1111
 
-def get_chinajingji_paper(paper_time):
+
+def get_chinajingji_paper(paper_time, queue_id, webpage_id):
+    # 构造实例
+    page = ChromiumPage(co)
     params = {
         'date': paper_time,
         'btn_sch_date': '搜索',
@@ -148,7 +60,6 @@ def get_chinajingji_paper(paper_time):
         html_1 = etree.HTML(content)
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//td[2]/div/a")
-        print(len(all_bm))
         for bm in all_bm:
             # 版面名称
             bm_name = "".join(bm.xpath("./text()"))
@@ -178,7 +89,7 @@ def get_chinajingji_paper(paper_time):
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
                     user="col2024",
                     password="Bm_a12a06",
-                    database="col_test",
+                    database="col",
                 )
                 cursor_test = conn_test.cursor()
                 if bm_pdf not in pdf_set and ("公告" in article_name or claims_keys.match(article_name)):
@@ -222,38 +133,37 @@ def get_chinajingji_paper(paper_time):
         paper_queue_success(success_data)
 
     else:
-        # 获取当前时间小时分钟
-        now = datetime.now().strftime('%m-%d %H:%M')
-        raise Exception(f'{now}暂未获取到今日报纸{response.status_code}')
+        page.close()
+        raise Exception(f'该日期没有报纸')
 
 
 
 
-# 设置最大重试次数
-max_retries = 5
-retries = 0
-while retries < max_retries:
-    value = paper_queue_next(webpage_url_list=['https://jjsb.cet.com.cn'])
-    queue_id = value['id']
-    webpage_id = value["webpage_id"]
-    try:
-        get_chinajingji_paper(today)
-        break
-    except Exception as e:
-        retries += 1
-        if retries == max_retries and "暂未获取到今日报纸" in str(e):
-            success_data = {
-                'id': queue_id,
-                'description': '今日没有报纸',
-            }
-            paper_queue_success(success_data)
-            break
-        else:
-            fail_data = {
-                "id": queue_id,
-                "description": f"问题:{e}",
-            }
-            paper_queue_fail(fail_data)
-            print("等待一小时后重试...")
-            time.sleep(3610)  # 等待1小时后重试
-page.close()
+# # 设置最大重试次数
+# max_retries = 5
+# retries = 0
+# while retries < max_retries:
+#     value = paper_queue_next(webpage_url_list=['https://jjsb.cet.com.cn'])
+#     queue_id = value['id']
+#     webpage_id = value["webpage_id"]
+#     try:
+#         get_chinajingji_paper(today)
+#         break
+#     except Exception as e:
+#         retries += 1
+#         if retries == max_retries and "暂未获取到今日报纸" in str(e):
+#             success_data = {
+#                 'id': queue_id,
+#                 'description': '今日没有报纸',
+#             }
+#             paper_queue_success(success_data)
+#             break
+#         else:
+#             fail_data = {
+#                 "id": queue_id,
+#                 "description": f"问题:{e}",
+#             }
+#             paper_queue_fail(fail_data)
+#             print("等待一小时后重试...")
+#             time.sleep(3610)  # 等待1小时后重试
+
