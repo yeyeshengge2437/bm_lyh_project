@@ -7,12 +7,11 @@ import pdfplumber
 import mysql.connector
 import requests
 from lxml import etree
-from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, parse_pdf
+from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, parse_pdf
 
 
 
-claims_keys = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
-                         r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
+
 paper = "河南商报"
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -90,16 +89,16 @@ def get_henanshang_paper(paper_time, queue_id, webpage_id):
                 article_url = base_url + ''.join(article.xpath("./@href"))
                 # 获取文章名称
                 article_name = ''.join(article.xpath("./@title")).strip()
+                # 获取文章内容
+                article_response = requests.get(article_url, headers=headers)
+                time.sleep(2)
+                article_content = article_response.content.decode()
+                article_html = etree.HTML(article_content)
+                # 获取文章内容
+                content = ''.join(
+                    article_html.xpath("//div[@class='info']/div[@id='articleContent']//text()"))
+                if judging_criteria(article_name, content):
 
-                if claims_keys.match(article_name):
-                    # 获取文章内容
-                    article_response = requests.get(article_url, headers=headers)
-                    time.sleep(1)
-                    article_content = article_response.content.decode()
-                    article_html = etree.HTML(article_content)
-                    # 获取文章内容
-                    content = ''.join(
-                        article_html.xpath("//div[@class='info']/div[@id='articleContent']//text()"))
                     # 上传到报纸的内容
                     insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
 

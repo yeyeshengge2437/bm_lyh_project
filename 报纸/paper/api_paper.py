@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from datetime import datetime
 
 import pdfplumber
@@ -129,6 +130,11 @@ def date_conversion(date, origin_date, data_type):
 
 
 def parse_pdf(pdf_url):
+    """
+    目前未使用
+    :param pdf_url:
+    :return:
+    """
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
         'Content-Type': 'application/json'
@@ -153,3 +159,28 @@ def parse_pdf(pdf_url):
         return True
     else:
         return False
+
+
+def judging_criteria(title, article_content):
+    """
+    判断是否为债权公告
+    :param title: 报纸的标题
+    :param article_content: 报纸的内容
+    :return:
+    """
+    explicit_claims = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
+                                 r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
+
+    explicit_not_claims = re.compile(
+        r'(法院公告|减资公告|注销公告|清算公告|合并公告|出让公告|重组公告|调查公告|分立公告|重整公告|悬赏公告|注销登记公告)')
+
+    possible_claims = re.compile(r'^(?=.*(公告|无标题|广告| )).{1,10}$')
+
+    possible_content = re.compile(r'.*(债权|债务|借款|催收)[^\W_]*(公告|通知)')
+    if (explicit_claims.search(title) or possible_claims.search(title) or possible_content.search(
+            article_content)) and not explicit_not_claims.search(title):
+        return True
+    else:
+        return False
+
+

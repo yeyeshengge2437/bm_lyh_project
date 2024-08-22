@@ -6,8 +6,9 @@ from chinahuanjing_paper import get_chinahuanjiang_paper  # 中国环境报
 from chinajingji_paper import get_chinajingji_paper  # 中国经济时报
 from chinaqiye_paper import get_chinaqiye_paper  # 中国企业报
 from fazhi_paper import get_fazhi_paper  # 法制日报
+from kejijinrong import get_kejijinrong_paper  # 科技金融时报
 from gansujingji_paper import get_gansujingji_paper  # 甘肃经济日报
-# from guangxifazhi_paper import get_guangxifazhi_paper  # 广西法制报
+from guangxifazhi_paper import get_guangxifazhi_paper  # 广西法制报
 from henanshang_paper import get_henanshang_paper  # 河南商报
 from huaxi_paper import get_huaxi_paper  # 华西都市报
 from kaifeng_paper import get_kaifeng_paper  # 开封日报
@@ -40,7 +41,7 @@ methods = {
     '中国企业报': get_chinaqiye_paper,
     '法制日报': get_fazhi_paper,
     '甘肃经济日报': get_gansujingji_paper,
-    # '广西法制报': get_guangxifazhi_paper,
+    '广西法制报': get_guangxifazhi_paper,
     '河南商报': get_henanshang_paper,
     '华西都市报': get_huaxi_paper,
     '开封日报': get_kaifeng_paper,
@@ -64,6 +65,7 @@ methods = {
     '重庆晨报': get_chongqingchen_paper,
     '青海法制报': get_qinghaifazhi_paper,
     '贵州法制报': get_guizhoufazhi_paper,
+    '科技金融时报': get_kejijinrong_paper,
 }
 
 webpage_url_list = [
@@ -88,6 +90,9 @@ webpage_url_list = [
     'https://rb.xxrb.com.cn/epaper',
     'https://epaper.zqrb.cn',
     'https://jjsb.cet.com.cn',
+    'http://kjb.zjol.com.cn',
+    'http://epaper.zqcn.com.cn',
+    'https://ipaper.pagx.cn',
 ]
 # webpage_url_list_test = ['https://szb.gansudaily.com.cn/gsjjrb']
 while True:
@@ -112,6 +117,7 @@ while True:
                     print('该日期没有报纸')
                     data = {
                         "id": queue_id,
+                        'description': f'该日期没有报纸',
                     }
                     paper_queue_delay(data)
                 else:

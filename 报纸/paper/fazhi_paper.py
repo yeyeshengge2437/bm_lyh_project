@@ -6,23 +6,8 @@ from datetime import datetime
 import os
 import json
 import requests
-from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
+from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
-
-
-
-claims_keys = [
-    '债权通知书', '债权告知书', '债权通知公告', '债权登报公告', '债权补登公告', '债权补充公告', '债权拍卖公告', '债权公告', '债权通知',
-    '转让通知书', '转让告知书', '转让通知公告', '转让登报公告', '转让补登公告', '转让补充公告', '转让拍卖公告', '转让公告', '转让通知',
-    '受让通知书', '受让告知书', '受让通知公告', '受让登报公告', '受让补登公告', '受让补充公告', '受让拍卖公告', '受让公告', '受让通知',
-    '处置通知书', '处置告知书', '处置通知公告', '处置登报公告', '处置补登公告', '处置补充公告', '处置拍卖公告', '处置公告', '处置通知',
-    '招商通知书', '招商告知书', '招商通知公告', '招商登报公告', '招商补登公告', '招商补充公告', '招商拍卖公告', '招商公告', '招商通知',
-    '营销通知书', '营销告知书', '营销通知公告', '营销登报公告', '营销补登公告', '营销补充公告', '营销拍卖公告', '营销公告', '营销通知',
-    '信息通知书', '信息告知书', '信息通知公告', '信息登报公告', '信息补登公告', '信息补充公告', '信息拍卖公告', '信息公告', '信息通知',
-    '联合通知书', '联合告知书', '联合通知公告', '联合登报公告', '联合补登公告', '联合补充公告', '联合拍卖公告', '联合公告', '联合通知',
-    '催收通知书', '催收告知书', '催收通知公告', '催收登报公告', '催收补登公告', '催收补充公告', '催收拍卖公告', '催收公告', '催收通知',
-    '催讨通知书', '催讨告知书', '催讨通知公告', '催讨登报公告', '催讨补登公告', '催讨补充公告', '催讨拍卖公告', '催讨公告', '催讨通知'
-]
 
 
 paper = '法制日报'
@@ -32,21 +17,21 @@ co = co.set_argument('--no-sandbox')
 co = co.headless()
 co.set_paths(local_port=9112)
 
-# 构造实例
-page = ChromiumPage(co)
-# 获取当前年月日,格式为20240801
-date_str = datetime.now().strftime('%Y%m%d')
+
+
 
 def get_fazhi_paper(paper_time, queue_id, webpage_id):
+    # 构造实例
+    page = ChromiumPage(co)
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m%d')
     structure_url = f"http://epaper.legaldaily.com.cn/fzrb/content/{paper_time}/"
     des_url = f'http://epaper.legaldaily.com.cn/fzrb/content/{paper_time}/Page01TB.htm'
+    # 创建pdf文件路径集合
+    pdf_path = set()
     # 打开网页
     page.get(des_url)
-    if page.url != des_url:
-        raise Exception(f'该日期没有报纸')
-    else:
+    if page.url_available:
         html = etree.HTML(page.html)
         # 获取所有版面
         all_bm = html.xpath("//table[3]/tbody/tr/td/a[@class='atitle']")
@@ -61,14 +46,14 @@ def get_fazhi_paper(paper_time, queue_id, webpage_id):
             bm_html = etree.HTML(page.html)
             # 获取所有文章标题
             all_titles = bm_html.xpath("//table[5]/tbody/tr/td[2]/a[@class='atitle']")
-            # 创建pdf文件路径集合
-            pdf_path = set()
+
 
             # 遍历所有标题
             for title in all_titles:
                 # 判断标题是否有公告等字样
                 if '公告' in title.text:
                     # 获取标题对应的链接
+                    title_name = ''.join(title.xpath("./text()"))
                     link = title.xpath("./@href")[0]
                     ann_link = structure_url + link
                     page.get(ann_link)
@@ -112,7 +97,7 @@ def get_fazhi_paper(paper_time, queue_id, webpage_id):
                     ann_contents = ann_html.xpath(
                         "//span[2]/table[2]/tbody/tr/td/table[2]/tbody/tr/td//br/following-sibling::text()[1]")
                     for content in ann_contents:
-                        if any(key in content for key in claims_keys):
+                        if judging_criteria(title_name, content):
                             conn_test = mysql.connector.connect(
                                 host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
                                 user="col2024",
@@ -125,19 +110,26 @@ def get_fazhi_paper(paper_time, queue_id, webpage_id):
 
                             cursor_test.execute(insert_sql,
                                                 (
-                                                    page_url, day, paper, title, content, ann_link, create_time,
+                                                    page_url, day, paper, title_name, content, ann_link, create_time,
                                                     queue_id,
                                                     create_date, webpage_id))
                             conn_test.commit()
                             cursor_test.close()
                             conn_test.close()
-        page.close()
+        page.quit()
         success_data = {
             "id": queue_id,
             "description": "数据获取成功"
         }
         paper_queue_success(success_data)
 
+    else:
+        page.quit()
+        raise Exception(f'该日期没有报纸')
+
+# queue_id = 1111
+# webpage_id = 1111
+# get_fazhi_paper('2024-08-22', queue_id, webpage_id)
 
 # # 设置最大重试次数
 # max_retries = 5

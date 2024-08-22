@@ -3,14 +3,13 @@ import json
 import re
 import time
 from datetime import datetime
-from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
+from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 import mysql.connector
 import requests
 from lxml import etree
 
 
-claims_keys = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
-                         r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
+
 paper = "山东商报"
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -78,11 +77,10 @@ def get_shandongshang_paper(paper_time, queue_id, webpage_id):
                     database="col"
                 )
                 cursor_test = conn_test.cursor()
-                if bm_pdf not in pdf_set and ("公告" in article_name or claims_keys.match(article_title) or "分类" in bm_name or "警界" in bm_name or "无标题" in article_name):
+                if bm_pdf not in pdf_set and ("公告" in article_name or judging_criteria(article_name, content) or "分类" in bm_name or "警界" in bm_name or "无标题" in article_name):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, "青岛晚报", "pdf", "paper")
                     pdf_set.add(bm_pdf)
-                    print(bm_pdf)
                     # 上传到报纸的图片或PDF
                     insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
 
@@ -91,7 +89,7 @@ def get_shandongshang_paper(paper_time, queue_id, webpage_id):
                                          create_date, webpage_id))
                     conn_test.commit()
 
-                if claims_keys.match(article_title):
+                if judging_criteria(article_name, content):
 
                     # 上传到报纸的内容
                     insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"

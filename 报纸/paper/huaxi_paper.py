@@ -3,7 +3,7 @@ import json
 import re
 import time
 from datetime import datetime
-from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
+from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 import mysql.connector
 import requests
 from lxml import etree
@@ -12,8 +12,6 @@ from lxml import etree
 
 
 
-claims_keys = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
-                         r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
 paper = "华西都市报"
 
 headers = {
@@ -73,7 +71,13 @@ def get_huaxi_paper(paper_time, queue_id, webpage_id):
                 article_name = ''.join(article.xpath("./@title"))
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
-
+                # 获取文章内容
+                article_response = requests.get(article_url, headers=headers)
+                time.sleep(1)
+                article_content = article_response.content.decode()
+                article_html = etree.HTML(article_content)
+                # 获取文章内容
+                content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()"))
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -82,7 +86,7 @@ def get_huaxi_paper(paper_time, queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
-                if bm_pdf not in pdf_set and (claims_keys.match(article_name) or '广告' in article_name):
+                if bm_pdf not in pdf_set and (judging_criteria(article_name, content) or '广告' in article_name):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, "huaxi", "pdf", "paper")
                     pdf_set.add(bm_pdf)
@@ -94,14 +98,8 @@ def get_huaxi_paper(paper_time, queue_id, webpage_id):
                                          create_date, webpage_id))
                     conn_test.commit()
 
-                if claims_keys.match(article_name):
-                    # 获取文章内容
-                    article_response = requests.get(article_url, headers=headers)
-                    time.sleep(1)
-                    article_content = article_response.content.decode()
-                    article_html = etree.HTML(article_content)
-                    # 获取文章内容
-                    content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()"))
+                if judging_criteria(article_name, content):
+
 
                     # 上传到报纸的内容
                     insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"

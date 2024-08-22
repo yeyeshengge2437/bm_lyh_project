@@ -2,24 +2,19 @@ import os
 import json
 import re
 import time
-from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, parse_pdf
+from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
+    parse_pdf
 from datetime import datetime
 from DrissionPage import ChromiumPage, ChromiumOptions
 import mysql.connector
 import requests
 from lxml import etree
 
-
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
 co.set_paths(local_port=9118)
 
-
-
-
-claims_keys = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
-                         r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
 paper = "广西法制日报"
 
 today = datetime.now().strftime('%Y-%m-%d')
@@ -33,8 +28,9 @@ def get_guangxifazhi_paper(paper_time, queue_id, webpage_id):
     base_url = f'http://ipaper.pagx.cn/bz/html/'
     url = base_url + f'index.html?date={paper_time}&cid=1'
     page.get(url)
-    data = page.html
+
     if page.url_available:
+        data = page.html
         bm_html = etree.HTML(data)
         bm_list = bm_html.xpath("//div[@class='article-con']/ul[@class='banmian-wenzhang']/li/a")
         for bm in bm_list:
@@ -47,7 +43,6 @@ def get_guangxifazhi_paper(paper_time, queue_id, webpage_id):
                                                                                                                   "")
             bm_pdf = bm_pdf.replace('jpg', 'pdf')
 
-
             pdf_set = set()
             create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             create_date = datetime.now().strftime('%Y-%m-%d')
@@ -57,7 +52,7 @@ def get_guangxifazhi_paper(paper_time, queue_id, webpage_id):
                 host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
                 user="col2024",
                 password="Bm_a12a06",
-                database="col_test",
+                database="col",
             )
             cursor_test = conn_test.cursor()
 
@@ -74,7 +69,7 @@ def get_guangxifazhi_paper(paper_time, queue_id, webpage_id):
                 conn_test.commit()
             cursor_test.close()
             conn_test.close()
-        page.close()
+        page.quit()
         success_data = {
             'id': queue_id,
             'description': '数据获取成功',
@@ -82,14 +77,13 @@ def get_guangxifazhi_paper(paper_time, queue_id, webpage_id):
         paper_queue_success(success_data)
 
     else:
-        page.close()
+        page.quit()
         raise Exception(f'该日期没有报纸')
+
 
 # value = paper_queue_next(webpage_url_list=['https://ipaper.pagx.cn'])
 # queue_id = value['id']
 # webpage_id = value["webpage_id"]
-queue_id = 1111
-webpage_id = 2222
-get_guangxifazhi_paper('2024-04-08', queue_id, webpage_id)
-
-
+# queue_id = 1111
+# webpage_id = 2222
+# get_guangxifazhi_paper('2024-08-22', queue_id, webpage_id)

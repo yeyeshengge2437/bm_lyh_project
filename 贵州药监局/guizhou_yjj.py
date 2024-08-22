@@ -88,7 +88,7 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper"):
     # 上传接口
     fr = open(pdf_path, 'rb')
     file_data = {"file": fr}
-    url = 'http://121.43.164.84:29775' + f"/file/upload/file?type={type}"
+    url = 'http://121.43.164.84:29875' + f"/file/upload/file?type={type}"
     headers1 = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'
     }
@@ -251,19 +251,7 @@ def get_yjj_data(database):
                             annex_url_list.append(annex_url)
                     origin_annex_data = ''
                     new_annex_data = ''
-                    if annex_url_list:
-                        for annex_url in annex_url_list:
-                            try:
-                                annex_url_type = annex_url.split('.')[-1]
-                                if annex_url_type == 'html':
-                                    continue
-                                origin_annex_data += annex_url + ','
-                                new_annex_url = upload_file_by_url(file_url=annex_url, file_name='yjj',
-                                                                   file_type=annex_url_type,
-                                                                   type='other')
-                                new_annex_data += new_annex_url + ','
-                            except Exception as e:
-                                continue
+
                     origin = "贵州药品监督管理局"
                     origin_domain = 'http://yjj.guizhou.gov.cn/'
                     create_date = time.strftime('%Y-%m-%d', time.localtime(time.time()))
@@ -282,6 +270,19 @@ def get_yjj_data(database):
 
                     if hash_value not in hash_value_set:
                         hash_value_set.add(hash_value)
+                        if annex_url_list:
+                            for annex_url in annex_url_list:
+                                try:
+                                    annex_url_type = annex_url.split('.')[-1]
+                                    if annex_url_type == 'html':
+                                        continue
+                                    origin_annex_data += annex_url + ','
+                                    new_annex_url = upload_file_by_url(file_url=annex_url, file_name='yjj',
+                                                                       file_type=annex_url_type,
+                                                                       type='other')
+                                    new_annex_data += new_annex_url + ','
+                                except Exception as e:
+                                    continue
                         # 如果哈希值不在集合中，则进行插入操作
                         insert_sql = "INSERT INTO col_chief_public (title,title_url, content,content_html, path, summary, annex, origin_annex, source,pub_date, origin, origin_domain, create_date,from_queue, webpage_id,MD5) VALUES (%s,%s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s)"
                         cursor_test.execute(insert_sql, (

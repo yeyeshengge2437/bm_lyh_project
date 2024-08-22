@@ -2,14 +2,13 @@
 import re
 import time
 from datetime import datetime
-from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
+from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 import mysql.connector
 import requests
 from lxml import etree
 
 
-claims_keys = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
-                         r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
+
 paper = "天门日报"
 headers = {
     "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
@@ -36,6 +35,7 @@ def get_tianmen_paper(paper_time, queue_id, webpage_id):
     base_url = f'https://tmrb.tmwcn.com/tmrb/{paper_time}/html/'
     url = base_url + 'index.htm'
     response = requests.get(url, headers=headers)
+    time.sleep(2)
     if response.status_code == 200:
         content = response.content.decode()
 
@@ -64,6 +64,12 @@ def get_tianmen_paper(paper_time, queue_id, webpage_id):
                 article_url = base_url + ''.join(article.xpath("./@href"))
                 # 获取文章标题
                 article_title = ''.join(article.xpath("./text()"))
+                res_content = requests.get(article_url, headers=headers)
+                time.sleep(2)
+                article_html = etree.HTML(res_content.content.decode())
+                # 获取文章内容
+                content = ''.join(article_html.xpath("//div[@class='bmnr_con_con']/div[@id='zoom']/text()"))
+
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -72,11 +78,7 @@ def get_tianmen_paper(paper_time, queue_id, webpage_id):
                     database="col"
                 )
                 cursor_test = conn_test.cursor()
-                if claims_keys.match(article_title):  # 如果标题匹配，则上传
-                    res_content = requests.get(article_url, headers=headers)
-                    article_html = etree.HTML(res_content.content.decode())
-                    # 获取文章内容
-                    content = ''.join(article_html.xpath("//div[@class='bmnr_con_con']/div[@id='zoom']/text()"))
+                if judging_criteria(article_title, content):  # 如果标题匹配，则上传
 
                     # 上传到报纸的内容
                     insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"

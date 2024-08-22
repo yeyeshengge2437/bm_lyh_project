@@ -1,37 +1,17 @@
 import os
+import time
 from datetime import datetime
 
 import mysql.connector
 import requests
 from PIL import Image
 from lxml import etree
-from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
+from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 import os
 import json
 import requests
 
-claims_keys = [
-    '债权通知书', '债权告知书', '债权通知公告', '债权登报公告', '债权补登公告', '债权补充公告', '债权拍卖公告',
-    '债权公告', '债权通知',
-    '转让通知书', '转让告知书', '转让通知公告', '转让登报公告', '转让补登公告', '转让补充公告', '转让拍卖公告',
-    '转让公告', '转让通知',
-    '受让通知书', '受让告知书', '受让通知公告', '受让登报公告', '受让补登公告', '受让补充公告', '受让拍卖公告',
-    '受让公告', '受让通知',
-    '处置通知书', '处置告知书', '处置通知公告', '处置登报公告', '处置补登公告', '处置补充公告', '处置拍卖公告',
-    '处置公告', '处置通知',
-    '招商通知书', '招商告知书', '招商通知公告', '招商登报公告', '招商补登公告', '招商补充公告', '招商拍卖公告',
-    '招商公告', '招商通知',
-    '营销通知书', '营销告知书', '营销通知公告', '营销登报公告', '营销补登公告', '营销补充公告', '营销拍卖公告',
-    '营销公告', '营销通知',
-    '信息通知书', '信息告知书', '信息通知公告', '信息登报公告', '信息补登公告', '信息补充公告', '信息拍卖公告',
-    '信息公告', '信息通知',
-    '联合通知书', '联合告知书', '联合通知公告', '联合登报公告', '联合补登公告', '联合补充公告', '联合拍卖公告',
-    '联合公告', '联合通知',
-    '催收通知书', '催收告知书', '催收通知公告', '催收登报公告', '催收补登公告', '催收补充公告', '催收拍卖公告',
-    '催收公告', '催收通知',
-    '催讨通知书', '催讨告知书', '催讨通知公告', '催讨登报公告', '催讨补登公告', '催讨补充公告', '催讨拍卖公告',
-    '催讨公告', '催讨通知'
-]
+
 
 paper = "农业科技报"
 # 获取任务id
@@ -59,6 +39,7 @@ def get_nongyekeji_paper(paper_time, queue_id, webpage_id):
     base_url = f'http://eb.nkb.com.cn/nykjb/{paper_time}/mhtml/'
     url = base_url + 'index.htm'
     response = requests.get(url, headers=headers, verify=False)
+    time.sleep(2)
     status_code = response.status_code
     if status_code == 200:
         html = etree.HTML(response.text)
@@ -69,29 +50,32 @@ def get_nongyekeji_paper(paper_time, queue_id, webpage_id):
             bm_info = "".join(bm.xpath("./div[@class='nav-panel-heading']/text()"))
             # 获取版面下的所有栏目
             for title in bm.xpath("./ul[@class='nav-list-group']/li"):
+                img_set = set()
                 # 打印栏目信息
                 title_info = "".join(title.xpath("./a/text()"))
                 title_link = title.xpath("./a/@href")[0]
+                # 获取栏目下的所有文章
+                title_link = title.xpath("./a/@href")[0]
+                # 获取当前版次的img
+                page_num = title_link[-1:]
+                if page_num == '0':
+                    bm_img = base_url + 'index_h.jpg'
+                else:
+                    if int(page_num) < 10:
+                        page_num = '0' + page_num
+                    bm_img = base_url + 'page_' + page_num + '_h.jpg'
+
+                key_url = base_url + title_link
+                key_res = requests.get(key_url, headers=headers, verify=False)
+                time.sleep(2)
+                key_html = etree.HTML(key_res.text)
+                # 获取文章文章字数
+                article_content = "".join(
+                    key_html.xpath("//div[@class='cont']/div[@id='memo']/div[@id='numb']/text()"))
 
                 # 判断是否包含债权关键字
-                if any(key in title_info for key in claims_keys):
-                    # 获取栏目下的所有文章
-                    title_link = title.xpath("./a/@href")[0]
-                    # 获取当前版次的img
-                    page_num = title_link[-1:]
-                    if page_num == '0':
-                        bm_img = base_url + 'index_h.jpg'
-                    else:
-                        if int(page_num) < 10:
-                            page_num = '0' + page_num
-                        bm_img = base_url + 'page_' + page_num + '_h.jpg'
+                if judging_criteria(title_info, article_content):
 
-                    key_url = base_url + title_link
-                    key_res = requests.get(key_url, headers=headers, verify=False)
-                    key_html = etree.HTML(key_res.text)
-                    # 获取文章文章字数
-                    article_content = "".join(
-                        key_html.xpath("//div[@class='cont']/div[@id='memo']/div[@id='numb']/text()"))
                     # 上传到数据库
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
@@ -117,15 +101,17 @@ def get_nongyekeji_paper(paper_time, queue_id, webpage_id):
                                              create_date, webpage_id))
                         conn_test.commit()
 
-                    img_url = upload_file_by_url(bm_img, "1", 'img')
                     bm_url = base_url + f"index.htm#page{page_num}"
-                    # 存储当前版次图片
-                    insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
+                    if bm_url not in img_set:
+                        img_set.add(bm_url)
+                        img_url = upload_file_by_url(bm_img, "1", 'img')
+                        # 存储当前版次图片
+                        insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
 
-                    cursor_test.execute(insert_sql,
-                                        (day, paper, bm_info, bm_img, bm_url, img_url, create_time, queue_id,
-                                         create_date, webpage_id))
-                    conn_test.commit()
+                        cursor_test.execute(insert_sql,
+                                            (day, paper, bm_info, bm_img, bm_url, img_url, create_time, queue_id,
+                                             create_date, webpage_id))
+                        conn_test.commit()
                     cursor_test.close()
                     conn_test.close()
         success_data = {

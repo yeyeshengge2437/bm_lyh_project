@@ -7,10 +7,9 @@ from datetime import datetime
 import mysql.connector
 import requests
 from lxml import etree
-from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
+from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
-claims_keys = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
-                         r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
+
 paper = "半岛都市报"
 headers = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -39,6 +38,7 @@ def get_bandao_paper(paper_time, queue_id, webpage_id):
     base_url = f'https://bddsb.bandao.cn/pc/bddsb/{paper_time}/'
     url = base_url + 'PageA01BC.htm'
     response = requests.get(url, headers=headers)
+    time.sleep(2)
     if response.status_code == 200:
         content = response.text
         html_1 = etree.HTML(content)
@@ -51,7 +51,7 @@ def get_bandao_paper(paper_time, queue_id, webpage_id):
             bm_url = base_url + ''.join(bm.xpath("./@href"))
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers)
-            time.sleep(1)
+            time.sleep(2)
             bm_content = bm_response.text
             bm_html = etree.HTML(bm_content)
             bm_pdf = pdf_domain + "".join(bm_html.xpath("//div[@class='pdf']/a/@href")).strip("../")
@@ -75,7 +75,7 @@ def get_bandao_paper(paper_time, queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
-                if bm_pdf not in pdf_set and ("公告" in article_name or claims_keys.match(article_name)):
+                if bm_pdf not in pdf_set and ("公告" in article_name):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, "半岛都市", "pdf", "paper")
                     pdf_set.add(bm_pdf)
@@ -86,16 +86,14 @@ def get_bandao_paper(paper_time, queue_id, webpage_id):
                                         (day, paper, bm_name, bm_pdf, bm_url, up_pdf, create_time, queue_id,
                                          create_date, webpage_id))
                     conn_test.commit()
+                article_response = requests.get(article_url, headers=headers)
+                time.sleep(1)
+                article_content = article_response.text
+                article_html = etree.HTML(article_content)
+                # 获取文章内容
+                content = ''.join(article_html.xpath("//td/div[@id='ozoom']/founder-content//text()"))
 
-                if claims_keys.match(article_name):
-                    # 获取文章内容
-                    article_response = requests.get(article_url, headers=headers)
-                    time.sleep(1)
-                    article_content = article_response.text
-                    article_html = etree.HTML(article_content)
-                    # 获取文章内容
-                    content = ''.join(article_html.xpath("//td/div[@id='ozoom']/founder-content//text()"))
-
+                if judging_criteria(article_name, content):
                     # 上传到报纸的内容
                     insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
 

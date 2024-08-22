@@ -8,7 +8,7 @@ import json
 import mysql.connector
 import requests
 from lxml import etree
-from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
+from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 def get_md5_set(database, table_name):
     hash_value_set = set()
@@ -30,8 +30,7 @@ md5_set = get_md5_set("col", "col_paper_notice")
 
 
 
-claims_keys = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
-                         r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
+
 paper = "青岛晚报"
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -92,7 +91,13 @@ def get_qingdao_lastpaper(paper_time, queue_id, webpage_id):
                 data_unique = f"文章标题：{article_name}, 版面链接：{bm_url}"
                 # 数据去重
                 hash_value = hashlib.md5(json.dumps(data_unique).encode('utf-8')).hexdigest()
-
+                # 获取文章内容
+                article_response = requests.get(article_url, headers=headers)
+                time.sleep(1)
+                article_content = article_response.content.decode()
+                article_html = etree.HTML(article_content)
+                # 获取文章内容
+                content = ''.join(article_html.xpath("//td/div[@id='ozoom']/founder-content//text()"))
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -101,7 +106,7 @@ def get_qingdao_lastpaper(paper_time, queue_id, webpage_id):
                     database="col"
                 )
                 cursor_test = conn_test.cursor()
-                if bm_pdf not in pdf_set and ("公告" in article_name or claims_keys.match(article_name)) and hash_value not in md5_set:
+                if bm_pdf not in pdf_set and ("公告" in article_name or judging_criteria(article_name, content)) and hash_value not in md5_set:
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, "青岛晚报", "pdf", "paper")
                     pdf_set.add(bm_pdf)
@@ -113,15 +118,9 @@ def get_qingdao_lastpaper(paper_time, queue_id, webpage_id):
                                          create_date, webpage_id))
                     conn_test.commit()
 
-                if claims_keys.match(article_name) and hash_value not in md5_set:
+                if judging_criteria(article_name, content) and hash_value not in md5_set:
                     md5_set.add(hash_value)
-                    # 获取文章内容
-                    article_response = requests.get(article_url, headers=headers)
-                    time.sleep(1)
-                    article_content = article_response.content.decode()
-                    article_html = etree.HTML(article_content)
-                    # 获取文章内容
-                    content = ''.join(article_html.xpath("//td/div[@id='ozoom']/founder-content//text()"))
+
 
                     # 上传到报纸的内容
                     insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id, md5) VALUES (%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
