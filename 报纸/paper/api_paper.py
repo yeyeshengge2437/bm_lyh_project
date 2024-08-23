@@ -1,5 +1,6 @@
 import json
 import os
+import random
 import re
 from datetime import datetime
 
@@ -92,6 +93,7 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper"):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
 
     }
+    file_name = file_name + str(random.randint(1, 999999999))
     r = requests.get(file_url, headers=headers)
     if r.status_code != 200:
         return "获取失败"
@@ -129,7 +131,7 @@ def date_conversion(date, origin_date, data_type):
     return date
 
 
-def parse_pdf(pdf_url):
+def parse_pdf(pdf_url, pdf_name):
     """
     目前未使用
     :param pdf_url:
@@ -139,25 +141,32 @@ def parse_pdf(pdf_url):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
         'Content-Type': 'application/json'
     }
-    r = requests.get(pdf_url, headers=headers)
-    pdf_path = f"111.pdf"
-    if os.path.exists(pdf_path):
-        os.remove(pdf_path)
-    if not os.path.exists(pdf_path):
-        fw = open(pdf_path, 'wb')
-        fw.write(r.content)
-        fw.close()
-    pdf_content = ''
-    flag = 0
-    with pdfplumber.open(pdf_path) as pdf:
-        for i, page in enumerate(pdf.pages):
-            if '公告 ' in page.extract_text():
-                flag = 1
-                break
-    if flag:
-        os.remove(pdf_path)
-        return True
-    else:
+    try:
+        r = requests.get(pdf_url, headers=headers)
+        if r.status_code != 200:
+            return False
+        pdf_path = f"{pdf_name}.pdf"
+        if os.path.exists(pdf_path):
+            os.remove(pdf_path)
+        if not os.path.exists(pdf_path):
+            fw = open(pdf_path, 'wb')
+            fw.write(r.content)
+            fw.close()
+        pdf_content = ''
+        flag = 0
+        with pdfplumber.open(pdf_path) as pdf:
+            for i, page in enumerate(pdf.pages):
+                if '公告 ' in page.extract_text():
+                    flag = 1
+                    break
+        if flag:
+            os.remove(pdf_path)
+            return True
+        else:
+            if os.path.exists(pdf_path):
+                os.remove(pdf_path)
+            return False
+    except:
         return False
 
 
@@ -174,7 +183,7 @@ def judging_criteria(title, article_content):
     explicit_not_claims = re.compile(
         r'(法院公告|减资公告|注销公告|清算公告|合并公告|出让公告|重组公告|调查公告|分立公告|重整公告|悬赏公告|注销登记公告)')
 
-    possible_claims = re.compile(r'^(?=.*(公告|无标题|广告| )).{1,10}$')
+    possible_claims = re.compile(r'^(?=.*(公告|公 告|无标题|广告)).{1,10}$')
 
     possible_content = re.compile(r'.*(债权|债务|借款|催收)[^\W_]*(公告|通知)')
     if (explicit_claims.search(title) or possible_claims.search(title) or possible_content.search(

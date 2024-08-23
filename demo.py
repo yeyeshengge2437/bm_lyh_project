@@ -1,5 +1,9 @@
-from DrissionPage import ChromiumPage, ChromiumOptions
-co = ChromiumOptions()
-co = co.set_argument('--no-sandbox')
-co = co.headless()
-co.set_paths(local_port=9116)
+import time
+
+# 随机生成数
+def random_num():
+    import random
+    return random.randint(1, 999999999)
+
+
+print(random_num())

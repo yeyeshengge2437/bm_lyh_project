@@ -128,7 +128,7 @@ def get_gongshangdao_paper(paper_time, queue_id, webpage_id):
                     cursor_test = conn_test.cursor()
                     if bm_img not in pdf_set and ("公告" in article_name or "分类信息" in article_name or judging_criteria(article_name, content)):
                         # 将报纸img上传
-                        up_img = upload_file_by_url(bm_img, "这是报纸", "img", "paper")
+                        up_img = upload_file_by_url(bm_img, paper, "img", "paper")
                         pdf_set.add(bm_img)
                         # 上传到报纸的图片或PDF
                         insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"

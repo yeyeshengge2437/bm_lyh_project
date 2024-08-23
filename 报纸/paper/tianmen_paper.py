@@ -63,7 +63,7 @@ def get_tianmen_paper(paper_time, queue_id, webpage_id):
                 # 获取文章链接
                 article_url = base_url + ''.join(article.xpath("./@href"))
                 # 获取文章标题
-                article_title = ''.join(article.xpath("./text()"))
+                article_title = ''.join(article.xpath("./text()")).strip()
                 res_content = requests.get(article_url, headers=headers)
                 time.sleep(2)
                 article_html = etree.HTML(res_content.content.decode())

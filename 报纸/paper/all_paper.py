@@ -1,6 +1,6 @@
 import time
 from datetime import datetime, timedelta
-
+from multiprocessing import Process, Queue, Pool
 from bandao_paper import get_bandao_paper  # 半岛都市报
 from chinahuanjing_paper import get_chinahuanjiang_paper  # 中国环境报
 from chinajingji_paper import get_chinajingji_paper  # 中国经济时报
@@ -8,6 +8,7 @@ from chinaqiye_paper import get_chinaqiye_paper  # 中国企业报
 from fazhi_paper import get_fazhi_paper  # 法制日报
 from kejijinrong import get_kejijinrong_paper  # 科技金融时报
 from gansujingji_paper import get_gansujingji_paper  # 甘肃经济日报
+from gansufazhi_paper import get_gansufazhi_paper  # 甘肃法制报
 from guangxifazhi_paper import get_guangxifazhi_paper  # 广西法制报
 from henanshang_paper import get_henanshang_paper  # 河南商报
 from huaxi_paper import get_huaxi_paper  # 华西都市报
@@ -26,12 +27,13 @@ from xinxiang_paper import get_xinxiang_paper  # 新乡日报
 from zhengquan_paper import get_zhengquan_paper  # 证券日报
 from gongshangdao_paper import get_gongshangdao_paper  # 工商导报
 from beihai_paper import get_beihai_paper  # 北海日报
-from chuxiong_paper import get_chuxiong_paper    # 楚雄日报
+from chuxiong_paper import get_chuxiong_paper  # 楚雄日报
 from henanfazhi_paper import get_henanfazhi_paper  # 河南法制报
 from xiaofei_paper import get_xiaofei_paper  # 消费日报
 from chongqingchen_paper import get_chongqingchen_paper  # 重庆晨报
 from qinghaifazhi_paper import get_qinghaifazhi_paper  # 青海法制报
 from guizhoufazhi_paper import get_guizhoufazhi_paper  # 贵州法制报
+from henan_paper import get_henan_paper  # 河南日报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -66,6 +68,8 @@ methods = {
     '青海法制报': get_qinghaifazhi_paper,
     '贵州法制报': get_guizhoufazhi_paper,
     '科技金融时报': get_kejijinrong_paper,
+    '甘肃法制报': get_gansufazhi_paper,
+    '河南日报': get_henan_paper,
 }
 
 webpage_url_list = [
@@ -93,41 +97,64 @@ webpage_url_list = [
     'http://kjb.zjol.com.cn',
     'http://epaper.zqcn.com.cn',
     'https://ipaper.pagx.cn',
+    'http://epaper.chuxiong.cn',
+    'https://newpaper.dahe.cn/jrab/html/2024-07/18/node_2170.htm',
+    'https://epaper.bhxww.com/bhrb',
+    'https://newpaper.dahe.cn/hnrb'
 ]
-# webpage_url_list_test = ['https://szb.gansudaily.com.cn/gsjjrb']
-while True:
-    try:
-        # 调用paper_queue_next函数并获取返回值
-        paper_queue = paper_queue_next(
-            webpage_url_list=webpage_url_list)
-        # 检查返回值是否符合预期
-        if paper_queue is None or len(paper_queue) == 0:
-            time.sleep(30)
-            pass
-        else:
-            webpage_name = paper_queue['webpage_name']
-            queue_day = paper_queue['day']
-            queue_id = paper_queue['id']
-            webpage_id = paper_queue["webpage_id"]
-            print(queue_day)
-            try:
-                methods[webpage_name](queue_day, queue_id, webpage_id)
-            except Exception as e:
-                if '该日期没有报纸' in str(e):
-                    print('该日期没有报纸')
-                    data = {
-                        "id": queue_id,
-                        'description': f'该日期没有报纸',
-                    }
-                    paper_queue_delay(data)
-                else:
-                    print(f"{e}")
-                    fail_data = {
-                        "id": queue_id,
-                        'description': f'程序异常：{e}',
-                    }
-                    paper_queue_fail(fail_data)
 
-    except Exception as e:
-        time.sleep(30)
-        print(f"解析过程中发生错误: {e}")
+
+# webpage_url_list_test = ['https://szb.gansudaily.com.cn/gsjjrb']
+def get_paper_data():
+    while True:
+        try:
+            # 调用paper_queue_next函数并获取返回值
+            paper_queue = paper_queue_next(
+                webpage_url_list=webpage_url_list)
+            # 检查返回值是否符合预期
+            if paper_queue is None or len(paper_queue) == 0:
+                time.sleep(30)
+                pass
+            else:
+                webpage_name = paper_queue['webpage_name']
+                queue_day = paper_queue['day']
+                queue_id = paper_queue['id']
+                webpage_id = paper_queue["webpage_id"]
+                print(queue_day)
+                try:
+                    methods[webpage_name](queue_day, queue_id, webpage_id)
+                except Exception as e:
+                    if '该日期没有报纸' in str(e):
+                        print('该日期没有报纸')
+                        data = {
+                            "id": queue_id,
+                            'description': f'该日期没有报纸',
+                        }
+                        paper_queue_delay(data)
+                    else:
+                        print(f"{e}")
+                        fail_data = {
+                            "id": queue_id,
+                            'description': f'程序异常：{e}',
+                        }
+                        paper_queue_fail(fail_data)
+
+        except Exception as e:
+            time.sleep(30)
+            print(f"解析过程中发生错误: {e}")
+
+
+if __name__ == '__main__':
+    """
+    多进程2个
+    """
+    process_list = []
+    for i in range(2):
+        process = Process(target=get_paper_data, args=())
+        process_list.append(process)
+
+    for process in process_list:
+        process.start()
+
+    for process in process_list:
+        process.join()

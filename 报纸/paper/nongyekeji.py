@@ -104,7 +104,7 @@ def get_nongyekeji_paper(paper_time, queue_id, webpage_id):
                     bm_url = base_url + f"index.htm#page{page_num}"
                     if bm_url not in img_set:
                         img_set.add(bm_url)
-                        img_url = upload_file_by_url(bm_img, "1", 'img')
+                        img_url = upload_file_by_url(bm_img, paper, 'img')
                         # 存储当前版次图片
                         insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
 

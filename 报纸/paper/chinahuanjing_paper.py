@@ -23,7 +23,7 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
 }
 
-pdf_domain = 'http://news.cenews.com.cn/html'
+pdf_domain = 'http://news.cenews.com.cn/html/'
 today = datetime.now().strftime('%Y-%m/%d')
 
 
@@ -51,7 +51,7 @@ def get_chinahuanjiang_paper(paper_time, queue_id, webpage_id):
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
             # 版面PDF
-            bm_pdf = pdf_domain + "".join(bm_html.xpath("//td[@class='px12'][3]/a/@href"))
+            bm_pdf = pdf_domain + "".join(bm_html.xpath("//td[@class='px12'][3]/a/@href")).strip('../..')
 
             # 获取所有文章的链接
             all_article = bm_html.xpath("//td[2]/table/tbody/tr/td[2]/a")

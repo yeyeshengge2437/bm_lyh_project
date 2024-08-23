@@ -120,7 +120,7 @@ def get_kejijinrong_paper(paper_time, queue_id, webpage_id):
             if have_key:
                 # 获取pdf_url
                 original_pdf = base_pdf_url + bm_pdf
-                pdf_url = upload_file_by_url(original_pdf, "这是报纸", 'pdf')
+                pdf_url = upload_file_by_url(original_pdf, paper, 'pdf')
                 insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time,from_queue, create_date, webpage_id) VALUES (%s,%s, %s,%s,%s, %s, %s, %s, %s, %s)"
 
                 cursor_test.execute(insert_sql,

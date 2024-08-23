@@ -59,7 +59,7 @@ def get_shichangxing_paper(paper_time, queue_id, webpage_id):
                 # 获取文章链接
                 article_url = base_url + ''.join(article.xpath("./@href"))
                 # 获取文章名称
-                article_name = ''.join(article.xpath(".//text()"))
+                article_name = ''.join(article.xpath(".//text()")).strip()
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 获取文章内容
