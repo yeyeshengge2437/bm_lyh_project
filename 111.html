@@ -1,648 +1,468 @@
-﻿<!DOCTYPE html>
-<html>
-<head id="Head1"><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta content="IE=Edge,chrome=1" http-equiv="X-UA-Compatible" />
-    <script type="text/javascript" src="http://lib.cet.com.cn/Scripts/zooming.js"></script>
+﻿<!DOCTYPE html><html><head>
+	<meta charset="utf-8">
+	<title>缺陷产品召回查询</title>
+	<link rel="stylesheet" href="/qxzh/common/css/web_style.css">
+	<style>
+		.page_m a {
+			min-width: 30px;
+			height: 28px;
+			border: 1px solid #dce0e0!important;
+			text-align: center;
+			margin: 0 4px;
+			cursor: pointer;
+			line-height: 28px;
+			color: #666666;
+			font-size: 13px;
+			display: inline-block;
+		}
+		/*.layui-layer-content{
+			background-color: #fff;
+			left: 50%;
+			position: fixed;
+			top: 50%;
+			width: 300px;
+			height: 300px;
+			z-index: 999;
+		}*/
+		.firstPage,.lastPage {
+			width: 50px;
+			color: #0073A9;
+			border: 1px solid #0073A9!important;
+		}
+		.prePage,.nextPage {
+			width: 70px;
+			color: #0073A9;
+			border: 1px solid #0073A9!important;
+		}
+		.page_m .current {
+			background-color: #0073A9;
+			border-color: #0073A9;
+			color: #FFFFFF;
+		}
+		.totalPages {
+			margin: 0 10px;
+		}
 
+		.totalPages span,
+		.totalSize span {
+			color: #0073A9;
+			margin: 0 5px;
+		}
 
-    <title>
-	中国经济时报
-</title>
+	</style>
+	<script src="https://hm.baidu.com/hm.js?199ba1e1cd989a33d0ee9f9dee1e0196"></script><script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "https://hm.baidu.com/hm.js?199ba1e1cd989a33d0ee9f9dee1e0196";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
 
-    <style type="text/css">
-        <!--
-        * {
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            color: #000;
-            background: #fff;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Microsoft YaHei','微软雅黑', '宋体';
-            font-size: 13px;
-            color: #3C4449;
-            text-align: center;
-            background: #e8e2da;
-            width: 999px;
-        }
-
-        img {
-            border: 0;
-        }
-
-        a:link, a:visited {
-            color: #666;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        ul, li {
-            list-style: none;
-        }
-
-        body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, legend, input, button, textarea, p, blockquote, thead, tbody, tfoot, th, td {
-            margin: 0 auto;
-            padding: 0;
-        }
-
-        img {
-            border: none;
-        }
-
-        p {
-            line-height: 1.4em;
-        }
-
-        hr {
-            border: 0;
-            border-top: 1px solid #505050;
-            height: 1px;
-        }
-
-        a {
-            text-decoration: none;
-            color: Navy;
-        }
-
-        .title_1 {
-            font-size: 32px;
-            font-family: "黑体";
-            font-weight: bold;
-        }
-
-        .title_2 {
-            font-size: 20px;
-            font-family: "黑体";
-            font-weight: bold;
-        }
-
-        .div_content {
-            font-family: 'Microsoft YaHei','微软雅黑', '宋体';
-            line-height: 23px;
-            font-size: 15px;
-            text-align: left;
-            text-indent: 2em;
-            letter-spacing: 1px;
-            min-height: 500px;
-            vertical-align: middle;
-        }
-
-            .div_content p {
-                margin-top: 15px;
-                font-family: 'Microsoft YaHei','微软雅黑', '宋体';
-                line-height: 23px;
-                font-size: 15px;
-                text-align: left;
-                text-indent: 2em;
-                letter-spacing: 1px;
-            }
-
-        .div_content_end {
-            border-top: solid 1px #666666;
-            width: 620px;
-            height: 50px;
-            padding-left: 30px;
-            padding-right: 30px;
-            padding-top: 10px;
-        }
-
-        .div_comment {
-            width: 600px;
-            height: 400px;
-            border: solid 1px silver;
-            text-align: left;
-            margin-left: 10px;
-            padding-left: 20px;
-        }
-
-        .div_comment_view {
-            width: 600px;
-            height: 200px;
-            display: block;
-        }
-
-        .area_common {
-            width: 560px;
-            height: 130px;
-            border: solid 1px silver;
-        }
-
-        .ltl_pic {
-            width: 100%;
-            text-align:center;
-            font-family: "楷体_GB2312";
-        }
-        -->
-    </style>
-<script type="text/javascript"  src="/Scripts/jquery-1.11.1.min.js"></script><script type="text/javascript"  src="/Scripts/blockui/jquery.blockUI.js"></script><script type="text/javascript"  src="/Scripts/cust/wikmain.js"></script></head>
+<link rel="stylesheet" href="http://qxzh.samr.gov.cn/qxzh/cms/js/layer/skin/layer.css" id="layui_layer_skinlayercss" style=""></head>
 <body>
+<div class="wrapper">
+	<div class="w1100">
 
+		<div class="ad_m">
+			<img src="/qxzh/common/img/ad_2.jpg" width="100%" alt="">
+		</div>
 
-<script src="Scripts/index.js" type="text/javascript"></script>
+		<div class="explain_m">
+			<p class="indent">
+				缺陷产品召回是生产企业消除产品安全隐患的重要措施，召回的方式主要包括修理、更换、退货、补充标识等。请您关注产品召回信息，并积极配合生产企业实施召回。
+			</p>
+		</div>
 
-<img src="images/top.jpg" width="999" height="208" alt="中国经济时报"/>
-<div style="width: 999px; height: 100px;  background-color:#686868">
+		<dl class="tab">
+			<dt><a href="javascript:sethash();" class="hover"><strong>缺陷汽车产品召回查询</strong></a><a id="tab_consume" href="javascript:sethash();"><strong>缺陷消费品召回查询</strong></a></dt>
+			<dd>
+				<form id="car_form">
+					<div class="search_m">
+						<input id="carkeyword" type="text" name="keyword" placeholder="可输入生产者、品牌、车型系列、缺陷描述等关键字" class="input_ss_m" maxlength="30">
+						<input type="button" value="搜索" class="btn_ss_m" id="car_search" onclick="carSearch();">
+						<div id="beizhuDIV1" style="position: absolute; z-index: 999; width: 310px; border: 1px solid rgb(1, 82, 147); top: 40px; left: 330px; background-color: rgb(225, 241, 255); display: none;">
+        <span class="divTipTitle" style="background-color: #015293;display:  block;color:  #fff;">提示信息</span> <span id="bzSpan" style="word-wrap: break-word; width: 300px; display: block;">可输入生产者、品牌、车型系列、缺陷描述等关键字</span>
+        <img src="" style="display: none;">
+                         </div>
+					</div>
+					<input type="hidden" name="pageNo" value="1">
+					<input type="hidden" name="pageSize" value="10">
+				</form>
+				
+				<div class="news_m">
+					<h3>缺陷汽车召回新闻</h3>
+					<ul id="car_ul"><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240823_111847.html">保时捷（中国）汽车销售有限公司召回部分进口Carrera GT系列汽车</a><span>2024-08-23</span></li><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240823_111846.html">梅赛德斯-奔驰（中国）汽车销售有限公司、北京奔驰汽车有限公司召回部分进口及国产汽车</a><span>2024-08-23</span></li><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240816_111802.html">梅赛德斯-奔驰（中国）汽车销售有限公司召回部分进口汽车</a><span>2024-08-16</span></li><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240816_111800.html">沃尔沃（中国）投资有限公司召回部分进口FH牵引车</a><span>2024-08-16</span></li><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240816_111799.html">一汽-大众汽车有限公司召回部分进口奥迪E-TRON GT系列汽车</a><span>2024-08-16</span></li><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240816_111798.html">捷尼赛思汽车销售（上海）有限公司召回部分进口捷尼赛思G80和GV80系列汽车</a><span>2024-08-16</span></li><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240816_111797.html">梅赛德斯-奔驰（中国）汽车销售有限公司召回部分进口E级、AMG GT汽车</a><span>2024-08-16</span></li><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240816_111796.html">华晨宝马汽车有限公司、宝马（中国）汽车贸易有限公司召回部分国产及进口宝马汽车</a><span>2024-08-16</span></li><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240809_111752.html">捷豹路虎（中国）投资有限公司扩大召回部分进口捷豹I-PACE系列纯电汽车</a><span>2024-08-09</span></li><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240802_111704.html">梅赛德斯-奔驰（中国）汽车销售有限公司召回部分进口A级汽车</a><span>2024-08-06</span></li></ul>
+				</div>
 
+				<div class="page_m" id="car_page"><a class="firstPage">首页</a><a class="prePage">上一页</a><a class="current">1</a><a>2</a><a>3</a><a>4</a><a>5</a>. . .<a>212</a><a class="nextPage">下一页</a><a class="lastPage">尾页</a><span class="totalPages"> 共<span>212</span>页 </span><span class="totalSize"> 共<span>2112</span>条记录 </span></div>
+
+				<div class="recall_m">
+					<h3>缺陷汽车召回范围查询</h3>
+					
+					<form id="vincode_form">
+						<div class="search_n clearfix">
+							<input id="vinKeyword" type="text" name="vincode" value="" placeholder="请输入17位VIN码" class="input_ss_n" maxlength="17">
+							<input type="button" value="查询" class="btn_ss_n" id="vincode_search" onclick="vincodeSearch();">
+						</div>
+						<input type="hidden" name="pageNo" value="1">
+						<input type="hidden" name="pageSize" value="100">
+						<input type="hidden" name="source" value="GOVWEB">
+					</form>
+					<p>车主可通过车辆识别代号（VIN）查询您的车辆是否在召回范围之内。目前您可查询2014年以后（含2014年）的车辆召回信息。</p>
+					<form id="vincode_form_data">
+					</form>
+					<table id="vincode_table_all">
+						
+					</table>
+
+				</div>
+				<form id="car_form_data" data-timestamp="1724404775976"><input type="hidden" name="keyword" value=""><input type="hidden" name="pageNo" value="MQ=="><input type="hidden" name="pageSize" value="MTA="></form> 
+			</dd>
+
+			<dd style="display: none;">
+				<form id="consume_form">
+					<div class="search_m">
+						<input id="consumeKeyword" type="text" name="keyword" value="" placeholder="可输入生产者、品牌、产品名称、缺陷描述等关键字" class="input_ss_m">
+						<input type="button" value="搜索" class="btn_ss_m" id="consume_search" onclick="consumeSearch();">
+								<div id="beizhuDIV2" style="position: absolute; z-index: 999; width: 310px; border: 1px solid rgb(1, 82, 147); top: 40px; left: 330px; background-color: rgb(225, 241, 255); display: none;">
+        <span class="divTipTitle" style="background-color: #015293;display:  block;color:  #fff;">提示信息</span> <span id="bzSpan" style="word-wrap: break-word; width: 300px; display: block;">可输入生产者、品牌、产品名称、缺陷描述等关键字</span>
+        <img src="" style="display: none;">
+                         </div>
+					</div>
+					<input type="hidden" name="pageNo" value="1">
+					<input type="hidden" name="pageSize" value="10">
+					<input type="hidden" name="source" value="GOVWEB">
+				</form>
+				
+				<div class="news_m">
+					<h3>缺陷消费品召回新闻</h3>
+					<ul id="consume_ul">
+					</ul>
+				</div>
+
+				<div class="page_m" id="consume_page">
+					<a href="#">上一页</a><a href="#">&lt;</a><a href="#" class="hover">1</a><a href="#">2</a><a href="#">3</a><a href="#">4</a><a href="#">5</a><a href="#">6</a><a href="#">7</a><a href="#">8</a><a href="#">9</a><a href="#">10</a><a href="#">下一页</a><a href="#">最后一页</a>
+				</div>
+				<form id="consume_form_data"></form>
+			</dd>
+		</dl>
+
+	</div>
 </div>
-<table style="width: 999px; height: 38px;" border="0" cellpadding="0" cellspacing="0">
-<tr>
-<td style="width: 200px; background-image:url(images/top-l1.jpg); background-repeat: repeat-x; vertical-align:bottom; text-align:left;">
 
-</td>
-<td style="width: 52px; background-image:url(images/top-l2.jpg); background-repeat: no-repeat;"></td>
-<td style="background-color:#686868; width: 380px; text-align: left;">
-<form id="_frm_sch" action="DigitaNewspaper.aspx" defaultbutton="btn_sch" defaultfocus="btn_sch_date" method="get" target="_blank">
-    按日期：<input type="text" id="txb_sch_date" name="date" style="width: 160px; color:#ccc;" value="请输入日期。如2013-07-09"
-        onfocus="if (this.value=='请输入日期。如2013-07-09'){this.value=''; this.style.color='#000';}"
-        onchange="this.value=htmlEncodeByRegExp(this);"
-        onblur="if (this.value==''){this.value='请输入关键词'; this.style.color='#ccc';}"/>&nbsp;&nbsp;
-    <input type="submit" title="搜索" name="btn_sch_date" value="搜索" style="width: 60px;" onclick="javascript:return _frm_sch_date_check();" />
-    </form>
-</td>
-<td style="background-color:#686868; text-align: left;">
-<form id="_frm_sch2" action="Search.aspx" defaultbutton="btn_sch_kw" defaultfocus="txb_sch_kw" method="get" target="_blank">
-    按关键词搜索：<input type="text" id="txb_sch_kw" name="word" style="width: 120px; color:#ccc;" value="请输入关键词" onfocus="if (this.value=='请输入关键词'){this.value=''; this.style.color='#000';}" onchange="this.value=htmlEncodeByRegExp(this);" onblur="if (this.value==''){this.value='请输入关键词'; this.style.color='#ccc';}; "/>&nbsp;&nbsp;
-    <input type="submit" title="搜索" name="btn_sch_kw" value="搜索" style="width: 60px;" onclick="javascript:return _frm_sch_keywords_check();" />
-    </form>
-</td>
-</tr>
-</table>
-<script language="javascript" type="text/javascript">
-function _frm_sch_keywords_check() {
-            var obj = document.getElementById("txb_sch_kw");
-            if ((obj.value == "") || (obj.value == "请输入关键词")) {
+<!--<script src="/qxzh/common/js/jquery-1.12.4.min.js"></script>-->
+<script src="/qxzh/cms/js/jquery-1.7.1.min.js"></script>
+<script src="/qxzh/common/js/web_script.js"></script>
+
+<script src="/qxzh/cms/js/baseCode16.js"></script>
+<script src="/qxzh/cms/js/utiltool.js"></script>
+<script src="/qxzh/cms/js/jquery.form.js"></script>
+<script src="/qxzh/cms/js/layer/layer.min.js"></script>
+<script src="/qxzh/cms/js/paging.js"></script>
+<script src="/qxzh/cms/js/jquery.placeholder.min.js"></script>
+<script src="/qxzh/common/js/setHash.js"></script>
+<script>
+
+	//解决ie低版本placehoder问题
+
+(function($) {
+     $.fn.placeholder = function(options) {
+         var opts = $.extend({}, $.fn.placeholder.defaults, options);
+         var isIE = document.all ? true : false;
+         return this.each(function() {
+             var _this = this,
+                 placeholderValue = _this.getAttribute("placeholder"); //缓存默认的placeholder值
+             if (isIE) {
+                 _this.setAttribute("value", placeholderValue);
+                 _this.onfocus = function() {
+                     $.trim(_this.value) == placeholderValue ? _this.value = "" : '';
+                 };
+                 _this.onblur = function() {
+                     $.trim(_this.value) == "" ? _this.value = placeholderValue : '';
+                 };
+             }
+         });
+     };
+ })(jQuery);
+
+
+    $(function(){ 
+	
+ 
+	/*$('input, textarea').placeholder();*/
+
+	$("#carkeyword").hover(function(){
+				$("#beizhuDIV1").show();
+	},function(){
+	$("#beizhuDIV1").hide();
+	})
+
+	$("#consumeKeyword").hover(function(){
+				$("#beizhuDIV2").show();
+	},function(){
+	$("#beizhuDIV2").hide();
+	})
+
+
+
+
+	
+	});
+
+    $(function(){
+	    init();
+		//消费品页签第一次点击
+		$("#tab_consume").one("click",function(){
+            consumeNewsSearch();
+            sethash();
+				$("#consumeKeyword").placeholder();
+		})
+	})
+    //初始化
+    function init(){
+        //第一次
+        carNewsSearch();
+				$("#carkeyword").placeholder();
+	            $("#vinKeyword").placeholder();
+    }
+    //汽车查询
+    function carNewsSearch(){
+
+		var my_val= $("#carkeyword").val()
+
+		if(my_val =='可输入生产者、品牌、车型系列、缺陷描述等关键字'){
+			 $("#carkeyword").val("");
+		}
+
+        base16Form("car_form","car_form_data");
+        var url="/qxzh/frame/car/siteNews";
+        var s=layer.load(2);
+        var html="";
+        $.post(url,$("#car_form_data").serialize(),function (data) {
+            if(data.successful){
+                if(data.rows.length>0){
+                    $.each(data.rows,function (i,item) {
+                        html+='<li><a target="_blank" href="'+item.docpuburl+'">'+item.doctitle.substring(0,60)+'</a><span>'+item.docreltime+'</span>';
+                    })
+                }else{
+                    html+='<li>未查询到相关数据</li>';
+                }
+                $("#car_ul").html(html);
+				sethash();
+                $('#car_page').paging({
+                    totalSize: Number(data.total),
+                    totalPage:Number(data.totalpage),
+                    pageNo: Number($("#car_form input[name='pageNo']").val()),
+                    callback: function (num) {
+                        $("#car_form input[name='pageNo']").val(num);
+                        carNewsSearch();
+                    }
+                });
+            }else{
+                layer.msg(data.error,{shade:0.3,icon: 2});
+            }
+        },"json").complete(function (data) {
+            layer.close(s);
+			$("input[name='keyword']").focus();
+			$("input[name='keyword']").blur();
+			//sethash();
+        }).error(function (data) {
+            layer.msg("网络繁忙,请稍后再试",{shade:0.3,icon:2});
+        });
+    }
+    //消费品查询
+    function consumeNewsSearch(){
+
+		var my_val= $("#consumeKeyword").val()
+
+		if(my_val =='可输入生产者、品牌、产品名称、缺陷描述等关键字'){
+			  $("#consumeKeyword").val("");
+		}
+        base16Form("consume_form","consume_form_data");
+        var url="/qxzh/frame/car/consumeNews";
+        var s=layer.load(2);
+        var html="";
+        $.post(url,$("#consume_form_data").serialize(),function (data) {
+            if(data.successful){
+                if(data.rows.length>0){
+                    $.each(data.rows,function (i,item) {
+                        html+='<li><a target="_blank" href="'+item.docpuburl+'">'+item.doctitle.substring(0,60)+'</a><span>'+item.docreltime+'</span>';
+                    })
+                }else{
+                    html+='<li>未查询到相关数据</li>';
+                }
+                $("#consume_ul").html(html);
+				sethash();
+                $('#consume_page').paging({
+                    totalSize:Number(data.total),
+                    totalPage:Number(data.totalpage),
+                    pageNo: Number($("#consume_form input[name='pageNo']").val()),
+                    callback: function (num) {
+                        $("#consume_form input[name='pageNo']").val(num);
+                        consumeNewsSearch();
+                    }
+                });
+            }else{
+                layer.msg(data.error,{shade:0.3,icon: 2});
+            }
+        },"json").complete(function (data) {
+            layer.close(s);
+			$("input[name='keyword']").focus();
+			$("input[name='keyword']").blur();
+        }).error(function (data) {
+            layer.msg("网络繁忙,请稍后再试",{shade:0.3,icon: 2});
+        });
+    }
+    /**
+     VIN格式计算规则模块**********START--------------------------------------------------------------------------
+     */
+        //加权系数对应字典
+    var dicWeighCoefficient = { "1": "8", "2": "7", "3": "6", "4": "5", "5": "4", "6": "3", "7": "2", "8": "10", "10": "9", "11": "8", "12": "7", "13": "6", "14": "5", "15": "4", "16": "3", "17": "2" };
+    //字母对应值
+    var dicLetterVal = { "A": "1", "B": "2", "C": "3", "D": "4", "E": "5", "F": "6", "G": "7", "H": "8", "J": "1", "K": "2", "L": "3", "M": "4", "N": "5", "P": "7", "R": "9", "S": "2", "T": "3", "U": "4", "V": "5", "W": "6", "X": "7", "Y": "8", "Z": "9" };
+    function IsLetter(val) {   //是否为字母
+        var patten = new RegExp(/^[A-Za-z]+$/);
+        return patten.test(val);
+    }
+    function VINCalculation(val) {    //VIN检验位计算验证
+        if (val.length != 17) return false;
+        var VINsum = 0;
+        var arr = val.split(""); //VIN字符串集合
+        var isPass = true;
+        for (var i = 0; i < val.length; i++) {
+            if (i == "8") {//校验位跳过
+                continue;
+            }
+            var Corresponding = ""; //对应值
+            if (IsLetter(arr[i])) {
+                if (dicLetterVal[arr[i].toUpperCase()] != undefined) {
+                    Corresponding = dicLetterVal[arr[i].toUpperCase()]
+                }
+                else {//如果此字符在对应字典里不存在则直接退出
+                    isPass = false;
+                    break;
+                }
+            }
+            else if (!isNaN(arr[i])) {
+                Corresponding = arr[i];
+            }
+            var aProduct = Corresponding * dicWeighCoefficient[i + 1]; //每一位的对应值*加权系数
+            VINsum = parseInt(VINsum) + parseInt(aProduct); //乘积相加
+        }
+        if (isPass) {
+            var yushu = VINsum % 11; //获取余数
+            var checkChar = ""; //经过计算获得的检验位值
+            if (yushu == 10) {
+                checkChar = "X";
+            }
+            else {
+                checkChar = yushu;
+            }
+            if (checkChar != arr[8].toUpperCase()) { //计算的校验位值与用户录入的值对比
                 return false;
             }
             else {
                 return true;
             }
         }
+        else {
+            return false;
+        }
+    }
+    /**
+     VIN格式计算规则模块**********END----------------------------------------------------------------
+     */
+    function valid_VIN(val) {
+        var patten = new RegExp(/^(?!(?:\d+|[a-zA-Z]+)$)[\da-zA-Z]{17}$/);
+        return VINCalculation(val);
+    }
+    //VIN查询
+    function vincodeNewsSearch(){
 
-        function _frm_sch_date_check() {
-            var obj = document.getElementById("txb_sch_date");
-            if ((obj.value == "") || (obj.value.length < 8) || (obj.value == "请输入日期。如2013-07-09")) {
-                obj.value = "请输入日期。如2013-07-09";
-                return false;
-            }
-            else {
-                var d = new Date(Date.parse(obj.value.replace(/-/g, "/")));
-                if (d != NaN) {
-                    obj.value = date2str(d, "yyyy-MM-dd");
-                    return true;
-                } else {
-                obj.value = "请输入日期。如2013-07-09";
-                return false;
+        base16Form("vincode_form","vincode_form_data");
+        var url="/qxzh/frame/car/vincodeNews";
+        var s=layer.load(2);
+        var html="<thead><tr><th>序</th><th>发布时间</th><th>品牌</th><th>一级总成</th><th>详情</th></tr></thead><tbody id='vincode_table'>";
+        $.post(url,$("#vincode_form_data").serialize(),function (data) {
+            if(data.successful){
+                if(data.rows.length>0){
+                    $.each(data.rows,function (i,item) {
+                        html+='<tr><td>'+(i+1)+'</td><td>'+item.docreltime+'</td><td>'+item.brandname+'</td>';
+                        if(item.docpuburl!=""){
+                            html+='<td>'+item.dicdesc+'</td><td><a target="_blank" href="'+item.docpuburl+'">查看新闻</a></td>';
+                        }else{
+                            html+='<td>'+item.dicdesc+'</td><td><span>暂无新闻</span></td>';
+                        }
+                    })
+                }else{
+                    html+="<tr><td colspan='5'>未查询到相关数据</td></tr>"
                 }
-            }
-        }
+				html+="</tbody>";
 
-        function date2str(x, y) {
-            var z = { M: x.getMonth() + 1, d: x.getDate(), h: x.getHours(), m: x.getMinutes(), s: x.getSeconds() };
-            y = y.replace(/(M+|d+|h+|m+|s+)/g, function(v) { return ((v.length > 1 ? "0" : "") + eval('z.' + v.slice(-1))).slice(-2) });
-            return y.replace(/(y+)/g, function(v) { return x.getFullYear().toString().slice(-v.length) });
+                $("#vincode_table_all").html(html);
+				sethash();
+            }else{
+                layer.msg(data.error,{shade:0.3,icon: 2});
+            }
+        },"json").complete(function (data) {
+            layer.close(s);
+        }).error(function (data) {
+            layer.msg("网络繁忙,请稍后再试",{shade:0.3,icon: 2});
+        });
+    }
+    //汽车搜索
+    function carSearch() {
+        var keyword=$.trim($("#car_form input[name='keyword']").val());
+        $("#car_form input[name='pageNo']").val(1);
+        if(keyword){
+            carNewsSearch();
+            sethash();
+        }else{
+            layer.msg("请输入检索关键词!");
         }
+    }
+    //回车提交搜索
+    $("#carkeyword").keydown(function(event) {
+        if(event.keyCode==13) {
+            carSearch();
+        }
+    })
+    //消费品搜索
+    function consumeSearch() {
+        $("#consume_form input[name='pageNo']").val(1);
+        var keyword=$.trim($("#consume_form input[name='keyword']").val());
+        if(keyword){
+            consumeNewsSearch();
+            sethash();
+        }else{
+            layer.msg("请输入检索关键词!");
+        }
+    }
+    $("#consumeKeyword").keydown(function(event) {
+        if(event.keyCode==13) {
+            consumeSearch();
+        }
+    })
+    //vin查询
+    function vincodeSearch() {
+        var vincode=$.trim($("#vincode_form input[name='vincode']").val());
+        if(vincode&&vincode.length==17&&valid_VIN(vincode)){
+            vincodeNewsSearch();
+            sethash();
+        }else{
+            layer.msg("请输入正确的VIN");
+        }
+    }
+    $("#vinKeyword").keydown(function(event) {
+        if(event.keyCode==13) {
+            vincodeSearch();
+            sethash();
+        }
+    })
 </script>
-    <form name="form1" method="post" action="./show_511074.html?articleID=511074" id="form1">
-<div>
-<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKLTYzMTI0Nzk2OGRkuCQZY+ehcx2y0dZy4206sHsnztpr8jOY9ykF2exlNws=" />
-</div>
 
-<div>
+</body></html>
 
-	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="EC898DA6" />
-</div>
-
-        <table width="999px" cellpadding="0" cellspacing="0">
-            <tr>
-                <td valign="top" align="center">
-                    <br />
-                    <div style="width: 680px; text-align: left;">
-                        <a href="/" target="_blank">首页</a> &gt;&gt;
-                    <a id="hl_paper" target="_blank" />本期首页</a>
-                    &gt;&gt;
-                    <a id="hl_verOrder" target="_blank">当前版面</a>
-                        &gt;&gt;
-                    <span id="lb_title1"></span>
-                        <br />
-                        <br />
-                        <a id="hl_pre" target="_self" style="display: none;">上一篇</a>
-                        <a id="hl_next" target="_self" style="display: none;">下一篇</a>
-                    </div>
-                    <br />
-                </td>
-                <td style="width: 319px">
-                    <div class="f-mt20 f-fr">
-                        <!-- Baidu Button BEGIN -->
-                        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a></div>
-                        <script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "32" }, "share": {}, "image": { "viewList": ["weixin", "sqq", "tsina"], "viewText": "分享到：", "viewSize": "16" }, "selectShare": { "bdContainerClass": null, "bdSelectMiniList": ["weixin", "sqq", "tsina"] } }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
-
-
-                        <!-- Baidu Button END -->
-                    </div>
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    <div style="width: 620px; text-align: center; border: 1px solid #666666; background-image: url(/images/bk_content.jpg); background-repeat: repeat;">
-                        <p align="center" class="title_2">
-                            <span id="Labeltitle0"></span>
-                        </p>
-                        <p class="title_1">
-                            <span id="Labeltitle"></span>&nbsp;
-                        </p>
-                        <p align="center" class="title_2">
-                            <span id="Labeltitle1"></span>
-                        </p>
-                        <div>
-                        </div>
-                        <div style="width: 100%; height: 20px; font-size: 11px; text-align: center; margin-top: 10px;">
-                            <!-- source begin-->
-                            来源：<a href="/" target="_blank">中国经济时报-中国经济新闻网</a>&nbsp;&nbsp;<span id="lbl_date"></span> <span id="lbl_author"></span>
-                            浏览量：<span id="lbl_viewcount"></span>
-                            <!-- source end-->
-                        </div>
-                        <br />
-                        <br />
-                        <div class="div_content">
-
-                            <div style="width: 100%; text-align: center;">
-                                <div id="ltl_pic"></div>
-                            </div>
-                            <br />
-                            <span id="Labelcontent"></span>
-
-                            <img id="paperimg" data-action="zoom" class="span1 f-fl" style="max-width: 80px; max-height: 120px;">
-
-                            <div style="float: right; margin-right: 20px;" id="lbl_zrbj">
-                            </div>
-                        </div>
-
-                    </div>
-                    <br />
-                    <br />
-
-                </td>
-                <td valign="top">
-                    <div style="width: 315px; border: solid 1px #666666; text-align: left;">
-
-
-                        <div id="rep_vername" style="margin-left: 10px; width: 300px; border-bottom: dotted 1px black;"></div>
-                        <div id="rep_article"></div>
-                        <br />
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="div_content_end">
-                        <span style="float: left;">
-                            <a id="hl_pre1" target="_self" style="display: none;">上一篇</a>
-                        </span>
-                        <span style="float: right;">
-                            <a id="hl_next1" target="_self" style="display: none;">下一篇</a>
-                        </span>
-                    </div>
-
-                </td>
-                <td></td>
-            </tr>
-        </table>
-
-        <div style="width: 920px;">
-
-<style type="text/css">
-.div_friendly_link{margin-top: 5px;
-width: 920px; border: solid 1px silver; border-top: solid 2px #A10000;
-font-size: 14px; font-weight:lighter; background-color: #eeeeee;
-line-height: 20px; color: #666; text-align: left;}
-.div_friendly_link a{font-size: 12px;color: #666;}
-</style>
-<table width="920" border="0" align="center" cellpadding="0" cellspacing="0">
-<tr><td><a style="font-size: 12px; font-weight: bold; color: #A10000;" target="_blank" href="https://lib.cet.com.cn/paper/order.aspx">报纸订阅</a>&nbsp;
-<a href="https://www.cet.com.cn/CONTACT/cetwe.html" target="_blank" style="font-size:12px; font-weight:bold; color:#990000; ">关于我们</a>&nbsp;
-<a style="font-size: 12px; font-weight: bold; color: #A10000;" target="_blank" href="http://mail.cet.com.cn">CET邮箱</a>&nbsp;
-
-</td></tr>
-  <tr><td>
-<div class="div_friendly_link">
-    |<a href="www.sina.com.cn" target="_blank">新浪网</a>
-	|<a href="www.sohu.com" target="_blank">搜狐网</a>
-	|<a href="www.qq.com" target="_blank">腾讯网</a>
-	|<a href="www.jrj.com.cn" target="_blank">金融界</a>
-	|<a href="www.soufun.com" target="_blank">搜房网</a>
-	|<a href="www.techweb.com.cn" target="_blank">千钧万博</a>
-	|<a href="www.p5w.net" target="_blank">全景网</a>
-	|<a href="www.zgjrw.com" target="_blank">中国金融网</a>
-	|<a href="www.cnki.net" target="_blank">中国知网</a>
-	|<a href="www.hexun.com" target="_blank">和讯网</a>
-	|<a href="finance.news.tom.com" target="_blank">TOM财经</a>
-	|<a href="www.drcnet.com.cn" target="_blank">国研信息网</a>
-	|<a href="www.hc360.com" target="_blank">慧聪网</a>
-	|<a href="www.xinhuanet.com" target="_blank"> 新华网</a>
-	|<a href="www.kejixun.com" target="_blank">科技讯</a>
-	|<a href="www.glinfo.com" target="_blank">钢联资讯</a>
-	|<a href="www.ifeng.com" target="_blank">凤凰网财经</a>
-	|<a href="www.chinese-no1.com" target="_blank">华商门户网</a>
-	|<a href="oilchem.net" target="_blank">隆众石化商务网</a>
-	|<a href="www.ebrun.com" target="_blank">亿邦动力网</a>
-	|<a href="www.simuwang.com" target="_blank">私募排排网</a>
-	|<a href="www.cnsoftnews.com" target="_blank">中国软件资讯网</a>
-	|<a href="www.lotour.com" target="_blank">乐途旅游网</a>
-	|<a href="www.guzhiwang.com" target="_blank">股指期货</a>
-	|<a href="www.iincn.net" target="_blank">中国产业网</a>
-	|<a href="www.acin.org.cn" target="_blank">中国产业报协会</a>
-	|<a href="www.51cto.com" target="_blank">51CTO</a>
-	|<a href="www.cheshi.com" target="_blank">网上车市</a>
-	|<a href="www.zhongsou.net" target="_blank">行业中国</a>
-	|<a href="www.meadin.com" target="_blank">迈点网</a>
-	|<a href="www.mykuaiji.com" target="_blank">会计家园</a>
-</div>
-<tr><td></table>
-<table width="999" border="0" align="center" cellpadding="0" cellspacing="0">
-  <tr>
-    <td width="264" height="96" align="center"><a href="http://www.hd315.gov.cn/beian/view.asp?bianhao=010202001123000010" target="_blank"><img src="https://www.cet.com.cn/images/wscfy_031.gif" alt="备案" border="0" /></a> <br />
-    <!--京ICP备07019363号-1 --> </td>
-    <td width="441" align="center" class="font_01 lig_hig">中国经济新闻网  版权所有 未经书面允许不得转载、复制或建立镜像<br />
-联系电话：（010）81785256   投稿邮箱:cesnew@163.com   wlzx@cet.com.cn<br />
-中国经济时报社 地址:北京市昌平区平西府王府街  邮政编码：102209 电话：(010)81785188(总机) (010)81785188-5100(编辑部) (010)81785186(广告部) (010)81785178(发行部) 传真：(010)81785121 电邮：info@cet.com.cn
-<a href="/sitemap.xml" target="_blank">站点地图</a>
-Copyright 2011 www.cet.com.cn. All Rights Reserved<br /></td>
-    <td width="294" align="center"><a href="http://net.china.cn/chinese/index.htm" target="_blank"><img src="https://www.cet.com.cn/images/netchina.gif" alt="举报" width="50" height="50" border="0" /></a> <a href="http://net.china.cn/chinese/index.htm" target="_blank"><br />
-    不良信息举报中心</a></td>
-  </tr>
-  <tr><td colspan="3" align="center">京公网安备110114001037号</td></tr>
-</table>
-        </div>
-        <script>
-            function Loading_msg(_msg) {
-                $.blockUI({
-                    message: '<table><tr><td style="vertical-align:middle;text-align:center; width: 100px;"><img src="/Images/Loading.gif" style="width: 60px; height:60px;" width="60" /></td><td style="vertical-align:middle;text-align:center;"> ' + _msg + '</h3><td><tr><table>'
-                    , css: {
-                        backgroundColor: '#eee',
-                        border: '1px solid #0066cc',
-                        color: 'blue',
-                        cursor: 'default'
-                    }
-                });
-            }
-
-            $(function () {
-                //
-                try {
-                    LoadArticle();
-                }
-                catch (e)
-                {
-                    console.log(e);
-                }
-            });
-
-            var curr_paper = null;
-            var curr_art = null;
-
-            function LoadPaper(_pid) {
-                if (undefined == _pid) {
-                    return;
-                }
-                $.ajax({
-                    url: '/ashx/tb_paper.ashx',
-                    type: 'POST',
-                    data: { "cmd": "dispid", "id": _pid },
-                    dataType: 'json',
-                    timeout: 3000,
-                    async: false,
-                    success: function (_dp) {
-                        if ((null == _dp) || (_dp.id == 0)) {
-                            window.location = "http://jjsb.cet.com.cn/404err.htm";
-                            return;
-                        }
-                        curr_paper = _dp;
-                    }
-                });
-            }
-
-            function LoadPreLink(_pid, _aid) {
-                if (undefined == _pid) {
-                    return;
-                }
-                $.ajax({
-                    url: '/ashx/tb_article.ashx',
-                    type: 'POST',
-                    data: { "cmd": "get_preart_link", "pid": _pid, "aid": _aid },
-                    dataType: 'text',
-                    timeout: 3000,
-                    async: false,
-                    success: function (_idx) {
-                        if ((_idx == "0") || (_idx == "")) {
-                            return;
-                        }
-                        $('#hl_pre').attr("href", "show_" + _idx + ".html");
-                        $('#hl_pre1').attr("href", "show_" + _idx + ".html");
-                        $('#hl_pre').show();
-                        $('#hl_pre1').show();
-                    }
-                });
-            }
-
-            function LoadNextLink(_pid, _aid) {
-                if (undefined == _pid) {
-                    return;
-                }
-                $.ajax({
-                    url: '/ashx/tb_article.ashx',
-                    type: 'POST',
-                    data: { "cmd": "get_nextart_link", "pid": _pid, "aid": _aid },
-                    dataType: 'text',
-                    timeout: 3000,
-                    async: false,
-                    success: function (_idx) {
-                        if ((_idx == "0") || (_idx == "")) {
-                            return;
-                        }
-                        $('#hl_next').attr("href", "show_" + _idx + ".html");
-                        $('#hl_next1').attr("href", "show_" + _idx + ".html");
-                        $('#hl_next').show();
-                        $('#hl_next1').show();
-                    }
-                });
-            }
-
-            function LoadOrderList(_pid, _oid) {
-                if (undefined == _pid) {
-                    return;
-                }
-                //grid.datagrid("load", { "cmd": "disporder", "pid": _pid, "oid": _oid });
-
-                $.ajax({
-                    url: '/ashx/tb_article.ashx',
-                    type: 'POST',
-                    data: { "cmd": "disporder", "pid": _pid, "oid": _oid },
-                    dataType: 'json',
-                    timeout: 3000,
-                    success: function (_dx) {
-                        var _str = "";
-                        $.each(_dx, function (idx, rec) {
-                            //if (idx == 0) {
-                            //    //同countinue，返回false同break
-                            //    return true;
-                            //}
-                            if (curr_art.id - rec.id == 1) {
-                                $('#hl_pre').attr("href", "show_" + rec.id + ".html");
-                                $('#hl_pre1').attr("href", "show_" + rec.id + ".html");
-                                $('#hl_pre').show();
-                                $('#hl_pre1').show();
-                            }
-                            if (rec.id - curr_art.id == 1) {
-                                $('#hl_next').attr("href", "show_" + rec.id + ".html");
-                                $('#hl_next1').attr("href", "show_" + rec.id + ".html");
-                                $('#hl_next').show();
-                                $('#hl_next1').show();
-                            }
-                            _str += "<div style=\"width:300px; margin-left: 10px\"><a href=\"show_" + rec.id + ".html\" target=\"_self\"><span style=\"width:100%;font-size:12px;\">" + rec.leadTitle + "<span><br /><span style=\"font-size:14px; font-weight:bold;\">" + rec.title + "</span><br/><span style=\"font-size:12px;\">" + rec.title1 + "</span></a></div>";
-                        });
-                        $("#rep_article").html(_str);
-                        if ($('#hl_pre').attr("href") == undefined) {
-                            LoadPreLink(curr_art.paperId, curr_art.id);
-                        }
-                        if ($('#hl_next').attr("href") == undefined) {
-                            LoadNextLink(curr_art.paperId, curr_art.id);
-                        }
-                    }
-                })
-            }
-
-            function LoadArticle() {
-
-                var _id = "0";
-                var _s1 = window.location.href.match(/\d+\.html/gi);
-                if (_s1 != undefined) {
-                    _id = _s1[0].replace(".html", "");
-                } else {
-                    _id = request("articleID");
-                }
-
-                $.ajax({
-                    url: '/ashx/tb_article.ashx',
-                    type: 'POST',
-                    data: { "cmd": "dispid", "id": _id },
-                    dataType: 'json',
-                    timeout: 6000,
-                    beforeSend: function () {
-                        //异步请求时spinner出现
-                        Loading_msg("正在加载文章，请稍后...");
-                    },
-                    error: function () { $.unblockUI(); $.messager.alert('系统提示', '加载文章时出现错误。'); },
-                    success: function (_d) {
-
-                        curr_art = _d;
-                        document.title = _d.title + "-中国经济时报-中国经济新闻网";
-                        $('#hl_paper').attr("href", "index.html?paperID=" + _d.paperId.toString());
-                        $("#Labeltitle0").text(ReplaceTitleStr(_d.leadTitle));
-                        $("#Labeltitle").text(ReplaceTitleStr(_d.title));
-                        $("#lbl_date").text("日期:" + _d.publishDate.substring(0, 11).replace("-", "年").replace("-", "月") + "日");
-                        $("#Labeltitle1").text(ReplaceTitleStr(_d.title1));
-                        $("#lbl_author").html("作者:" + getAuthorAlbum(_d.author));
-                        $("#hl_verOrder").attr("href", "szb_" + _d.paperId.toString() + "_" + _d.verOrder.toString() + ".html");
-                        $("#paperimg").attr("src", "http://jjsb.cet.com.cn/zgjjsb/" + _d.publishDate.substring(0, 10).replace(/-/g, "") + "/" + _d.perVerImgUrl);
-                        if (!isBlank(_d.images)) {
-                            var _strs = _d.images.split(";");
-                            var infos;
-                            if (!isBlank(_d.imagesInfo))
-                            {
-                                infos = _d.imagesInfo.split(";");
-                            }
-                            var _str = "";
-
-                            for (var i = 0 ; i < _strs.length ; i++) {
-                                _str += '<img width="400" src="http://jjsb.cet.com.cn/zgjjsb/' + _d.publishDate.substring(0, 10).replace(/-/g, "") + '\/' + _strs[i] + '" /><br/>';
-                                if ((infos != undefined) && (infos.length >= i))
-                                {
-                                    _str += "<div style='width:100%; text-align:center; font-family: '楷体;'>" + infos[i] + "</div><br /><br />";
-                                }
-                            }
-
-                            $("#ltl_pic").html(_str);
-                        }
-
-                        $("#Labelcontent").html(ReplaceContentStr(_d.content));
-                        $('#rep_vername').html("<H3>" + _d.verOrder + _d.verName + "<br /><br /></H3>");
-
-                        LoadPaper(_d.paperId);
-
-                        //$("#lbl_zrbj").text("（责任编辑：" + curr_paper.Editor + "）");
-
-                        LoadOrderList(_d.paperId, _d.verOrder);
-                        LoadArticleViews(_id);
-                        $.unblockUI();
-                    }
-                });
-            };
-
-
-            //整理不规则数据
-            function ReplaceAuthorStr(_str) {
-                if (isBlank(_str)) {
-                    return "";
-                }
-                _str = _str.replace(/\/摄/g, " ");
-                _str = _str.replace(/摄/g, " ");
-                _str = _str.replace(/■/g, " ");
-                _str = _str.replace(/□/g, " ");
-                _str = _str.replace(/整理/g, " ");
-
-                return _str;
-            }
-
-            function getAuthorAlbum(strauthor) {
-                if ("" == strauthor) { return "<br />"; }
-                var _strs = ReplaceAuthorStr(strauthor).split(" ");
-                var _str = "";
-                for (i = 0; i < _strs.length; i++) {
-                    if (_strs[i].length < 2) {
-                        _str += _strs[i];
-                    }
-                    else {
-                        _str += "<a href=\"/szb_alb.aspx?author=" + encodeURI(_strs[i]) + "\" target=\"_blank\" class=\"badge\">" + _strs[i] + "</a>&nbsp;";
-                    }
-                }
-                if ("" == _str) { _str = "<br />"; }
-                return _str;
-            }
-
-            function LoadArticleViews(uid) {
-
-                $.ajax({
-                    url: '/ashx/tb_article.ashx',
-                    type: 'POST',
-                    data: { "cmd": "viewcount", "id": uid },
-                    dataType: 'json',
-                    timeout: 3000,
-                    error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        alert(XMLHttpRequest.status);
-                        alert(XMLHttpRequest.readyState);
-                        alert(textStatus);
-                    },
-                    success: function (_d) {
-
-                        $("#lbl_viewcount").text(_d.data);
-
-                        console.log(_d);
-
-                    }
-                });
-            };
-
-
-        </script>
-    </form>
-</body>
-</html>
+进程已结束，退出代码为 0
