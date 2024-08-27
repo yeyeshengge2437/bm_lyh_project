@@ -34,6 +34,7 @@ from chongqingchen_paper import get_chongqingchen_paper  # 重庆晨报
 from qinghaifazhi_paper import get_qinghaifazhi_paper  # 青海法制报
 from guizhoufazhi_paper import get_guizhoufazhi_paper  # 贵州法制报
 from henan_paper import get_henan_paper  # 河南日报
+from guizhou_paper import get_guizhou_paper  # 贵州日报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -70,6 +71,7 @@ methods = {
     '科技金融时报': get_kejijinrong_paper,
     '甘肃法制报': get_gansufazhi_paper,
     '河南日报': get_henan_paper,
+    '贵州日报': get_guizhou_paper,
 }
 
 webpage_url_list = [
@@ -100,7 +102,10 @@ webpage_url_list = [
     'http://epaper.chuxiong.cn',
     'https://newpaper.dahe.cn/jrab/html/2024-07/18/node_2170.htm',
     'https://epaper.bhxww.com/bhrb',
-    'https://newpaper.dahe.cn/hnrb'
+    'https://newpaper.dahe.cn/hnrb',
+    'http://szb.eyesnews.cn',
+    'https://szb.gansudaily.com.cn/gsfzb',
+    'https://szb.fzshb.cn/fzshb',
 ]
 
 
@@ -146,10 +151,10 @@ def get_paper_data():
 
 if __name__ == '__main__':
     """
-    多进程2个
+    多进程1个
     """
     process_list = []
-    for i in range(2):
+    for i in range(1):
         process = Process(target=get_paper_data, args=())
         process_list.append(process)
 

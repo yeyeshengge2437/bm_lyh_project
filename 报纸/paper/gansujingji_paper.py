@@ -1,7 +1,8 @@
 import os
 import time
 from datetime import datetime
-from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
+from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
+    judge_bm_repeat
 import mysql.connector
 import requests
 from lxml import etree
@@ -71,7 +72,7 @@ def get_gansujingji_paper(paper_time, queue_id, webpage_id):
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
 
-                    if original_pdf not in pdf_set and ("公告" in article_name or judging_criteria(article_name, article_content)):
+                    if original_pdf not in pdf_set and ("公告" in article_name or judging_criteria(article_name, article_content)) and judge_bm_repeat(paper, bm_url):
                         pdf_set.add(original_pdf)
                         pdf_url = upload_file_by_url(original_pdf, paper, 'pdf')
                         insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue,create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"

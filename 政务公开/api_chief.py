@@ -198,14 +198,14 @@ def judging_criteria(title, article_content):
         return False
 
 
-def judge_bm_repeat(origin, bm_url):
+def judge_url_repeat(url):
     """
     判断版面是否重复
     :param origin: 原始数据
     :return:
     """
     # 创建版面链接集合
-    bm_url_set = set()
+    url_set = set()
     # 连接数据库
     conn_test = mysql.connector.connect(
         host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -215,13 +215,13 @@ def judge_bm_repeat(origin, bm_url):
     )
     cursor_test = conn_test.cursor()
     # 获取版面来源的版面链接
-    cursor_test.execute(f"SELECT id, page_url FROM col_paper_page WHERE paper = '{origin}'")
+    cursor_test.execute(f"SELECT id, title_url FROM col_chief_public")
     rows = cursor_test.fetchall()
-    for id, page_url in rows:
-        bm_url_set.add(page_url)
+    for id, title_url in rows:
+        url_set.add(title_url)
     cursor_test.close()
     conn_test.close()
-    if bm_url in bm_url_set:
+    if url in url_set:
         return False
     else:
         return True

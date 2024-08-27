@@ -1,7 +1,8 @@
 import re
 import time
 from datetime import datetime
-from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
+from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
+    judge_bm_repeat
 import mysql.connector
 import requests
 from lxml import etree
@@ -126,7 +127,7 @@ def get_gongshangdao_paper(paper_time, queue_id, webpage_id):
                         database="col",
                     )
                     cursor_test = conn_test.cursor()
-                    if bm_img not in pdf_set and ("公告" in article_name or "分类信息" in article_name or judging_criteria(article_name, content)):
+                    if bm_img not in pdf_set and ("公告" in article_name or "分类信息" in article_name or judging_criteria(article_name, content)) and judge_bm_repeat(paper, bm_url):
                         # 将报纸img上传
                         up_img = upload_file_by_url(bm_img, paper, "img", "paper")
                         pdf_set.add(bm_img)

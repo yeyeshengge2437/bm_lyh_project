@@ -6,7 +6,8 @@ import mysql.connector
 import requests
 from PIL import Image
 from lxml import etree
-from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
+from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
+    judge_bm_repeat
 import os
 import json
 import requests
@@ -102,7 +103,7 @@ def get_nongyekeji_paper(paper_time, queue_id, webpage_id):
                         conn_test.commit()
 
                     bm_url = base_url + f"index.htm#page{page_num}"
-                    if bm_url not in img_set:
+                    if bm_url not in img_set and judge_bm_repeat(paper, bm_url):
                         img_set.add(bm_url)
                         img_url = upload_file_by_url(bm_img, paper, 'img')
                         # 存储当前版次图片

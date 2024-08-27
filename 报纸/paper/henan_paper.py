@@ -8,7 +8,7 @@ import mysql.connector
 import requests
 from lxml import etree
 from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
-    parse_pdf
+    parse_pdf, judge_bm_repeat
 
 paper = "河南日报"
 headers = {
@@ -91,7 +91,7 @@ def get_henan_paper(paper_time, queue_id, webpage_id):
                                         (bm_url, day, paper, article_name, content, article_url, create_time, queue_id,
                                          create_date, webpage_id))
                     conn_test.commit()
-                if bm_pdf not in pdf_set:
+                if bm_pdf not in pdf_set and judge_bm_repeat(paper, bm_url):
                     pdf_set.add(bm_pdf)
 
                     up_pdf = upload_file_by_url(bm_pdf, "河南日报", "pdf", "paper")

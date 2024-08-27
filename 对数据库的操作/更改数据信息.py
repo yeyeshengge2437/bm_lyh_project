@@ -3,6 +3,7 @@ import re
 
 import mysql.connector
 import requests
+from lxml import etree
 
 
 def upload_file_by_url(file_url, file_name, file_type, type="paper"):
@@ -55,20 +56,29 @@ def judging_criteria(title, article_content):
     possible_claims = re.compile(r'^(?=.*(公告|公 告|无标题|广告)).{1,10}$')
 
     possible_content = re.compile(r'.*(债权|债务|借款|催收)[^\W_]*(公告|通知)')
-    if (explicit_claims.search(title) or possible_claims.search(title) or possible_content.search(
-            article_content)) and not explicit_not_claims.search(title):
+    # 判断是否为债权公告
+    # 明确为债权公告
+    if explicit_claims.search(title) and not explicit_not_claims.search(title):
+        return True
+    # 可能为债权公告
+    elif possible_claims.search(title) and possible_content.search(article_content) and not explicit_not_claims.search(title):
         return True
     else:
         return False
-cursor_test.execute("SELECT id, title, content FROM col_paper_notice WHERE paper = '证券日报'")
-rows = cursor_test.fetchall()
-for id, title, content in rows:
+papers = ['半岛都市报', '中国环境报', '中国经济时报', '中国企业报', '法制日报', '甘肃经济日报', '广西法制报', '河南商报', '华西都市报', '开封日报', '辽沈晚报', '洛阳日报', '每日新报', '农业科技报', '青岛晚报', '山东商报', '市场星报', '四川经济日报', '天门日报', '潍坊晚报', '新乡日报', '证券日报', '工商导报', '北海日报', '楚雄日报', '河南法制报', '消费日报', '重庆晨报', '青海法制报', '贵州法制报', '科技金融时报', '甘肃法制报', '河南日报', '贵州日报']
+for paper in papers:
 
-    if not judging_criteria(title, content):
-        print(id, title, content)
-        # 删除不符合的内容
-        cursor_test.execute("DELETE FROM col_paper_notice WHERE id = %s", (id,))
-        conn_test.commit()
+    cursor_test.execute(f"SELECT id, title, content FROM col_paper_notice WHERE paper = '{paper}'")
+    rows = cursor_test.fetchall()
+    for id, title, content in rows:
+        # insert_sql = "UPDATE col_paper_notice SET content = %s WHERE id = %s"
+        # cursor_test.execute(insert_sql, (content, id))
+        # conn_test.commit()
+        if not judging_criteria(title, content):
+            print(id, title, content)
+            # # 删除不符合的内容
+            cursor_test.execute("DELETE FROM col_paper_notice WHERE id = %s", (id,))
+            conn_test.commit()
 
 
     # new_original_pdf = re.sub(r'\.\.\/\.\.', '', original_pdf)

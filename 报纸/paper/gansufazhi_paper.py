@@ -1,7 +1,8 @@
 import os
 import time
 from datetime import datetime
-from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
+from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
+    judge_bm_repeat
 import mysql.connector
 import requests
 from lxml import etree
@@ -26,6 +27,7 @@ def get_gansufazhi_paper(paper_time, queue_id, webpage_id):
     target_url = base_url + 'col01.html'
     response = requests.get(target_url, headers=headers)
     pdf_set = set()
+    img_set = set()
     if response.status_code == 200:
         html_data = response.content.decode()
         html_1 = etree.HTML(html_data)
@@ -41,8 +43,9 @@ def get_gansufazhi_paper(paper_time, queue_id, webpage_id):
                 html_2data = bm_res.content.decode()
                 html_2 = etree.HTML(bm_res.content.decode())
                 # 获取该页的PDF
-                pdf_url1 = re.findall(r'<!-- <p id="pdfUrl" style="display:none">(.*?)</p> -->', html_2data)[0]
-                original_pdf = general_url + pdf_url1.strip('../../..')
+                pdf_url1 = ''.join(re.findall(r'<!-- <p id="pdfUrl" style="display:none">(.*?)</p> -->', html_2data))
+                bm_img = "".join(html_2.xpath("//img[@class='preview']/@src"))
+                bm_img = general_url + bm_img.strip('../../..').strip('.1')
 
                 # 获取所有版面下的所有文章
                 articles = html_2.xpath("//div[@class='news-list']/ul/li[@class='resultList']/a")
@@ -73,17 +76,29 @@ def get_gansufazhi_paper(paper_time, queue_id, webpage_id):
 
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
+                    if pdf_url1:
+                        original_pdf = general_url + pdf_url1.strip('../../..')
+                        if original_pdf not in pdf_set and judge_bm_repeat(paper, bm_url):
+                            pdf_set.add(original_pdf)
+                            pdf_url = upload_file_by_url(original_pdf, paper, 'pdf')
+                            insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue,create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
 
-                    if original_pdf not in pdf_set:
-                        pdf_set.add(original_pdf)
-                        pdf_url = upload_file_by_url(original_pdf, paper, 'pdf')
-                        insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue,create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
+                            cursor_test.execute(insert_sql,
+                                                (day, paper, bm_name, original_pdf, bm_url, pdf_url, create_time,
+                                                 queue_id, create_date, webpage_id))
+                            conn_test.commit()
+                            # print(original_pdf)
+                    else:
+                        if bm_img not in img_set and judge_bm_repeat(paper, bm_url):
+                            img_set.add(bm_img)
+                            img_url = upload_file_by_url(bm_img, paper, 'jpg')
+                            insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue,create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
 
-                        cursor_test.execute(insert_sql,
-                                            (day, paper, bm_name, original_pdf, bm_url, pdf_url, create_time,
-                                             queue_id, create_date, webpage_id))
-                        conn_test.commit()
-
+                            cursor_test.execute(insert_sql,
+                                                (day, paper, bm_name, bm_img, bm_url, img_url, create_time,
+                                                 queue_id, create_date, webpage_id))
+                            conn_test.commit()
+                            # print(bm_img)
                     if judging_criteria(article_name, article_content):
                         insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time,from_queue, create_date, webpage_id) VALUES (%s,%s, %s,%s,%s, %s, %s, %s, %s, %s)"
 
@@ -94,6 +109,7 @@ def get_gansufazhi_paper(paper_time, queue_id, webpage_id):
                                                 queue_id, create_date, webpage_id))
 
                         conn_test.commit()
+                        # print(article_name)
 
                     cursor_test.close()
                     conn_test.close()

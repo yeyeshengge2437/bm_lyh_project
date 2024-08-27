@@ -10,7 +10,7 @@ import requests
 from lxml import etree
 
 
-paper = "消费日报"
+paper = "贵州日报"
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'zh-CN,zh;q=0.9',
@@ -20,44 +20,43 @@ headers = {
     'Upgrade-Insecure-Requests': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
 }
-
 today = datetime.now().strftime('%Y-%m-%d')
 
 
-def get_xiaofei_paper(paper_time, queue_id, webpage_id):
+def get_guizhou_paper(paper_time, queue_id, webpage_id):
     # 将today的格式进行改变
     day = paper_time
-    base_url = f'http://dzb.xfrb.com.cn/Html/{paper_time}/'
-    url = base_url + 'Qpaper.html'
+    paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m/%d')
+    base_url = f'http://szb.eyesnews.cn/pc/layout/{paper_time}/'
+    url = base_url + 'node_01.html'
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
         # 获取所有版面的的链接
-        all_bm = html_1.xpath("//div[@id='bancilist']/ul/li/a")
+        all_bm = html_1.xpath("//div[@class='nav-list']/ul/li")
         for bm in all_bm:
             # 版面名称
-            bm_name = "".join(bm.xpath("./text()")).strip()
+            bm_name = "".join(bm.xpath("./a[@class='btn btn-block']/text()")).strip()
             # 版面链接
-            bm_url = base_url + ''.join(bm.xpath("./@href"))
+            bm_url = base_url + ''.join(bm.xpath("./a[@class='btn btn-block']/@href"))
+            # 版面的pdf
+            bm_pdf = 'http://szb.eyesnews.cn/pc/' + "".join(bm.xpath("./a[@class='pdf']/@href")).strip('../../..')
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers)
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
-            # 版面的pdf
-            bm_pdf = 'http://dzb.xfrb.com.cn/' + "".join(bm_html.xpath("//div[@id='map_buttons']/a[@class='button fl']/@href")).strip('../..')
-            # print(bm_name, bm_url, bm_pdf)
-            # return
+
 
             # 获取所有文章的链接
-            all_article = bm_html.xpath("//div[@id='doclist']/ul/li/a")
+            all_article = bm_html.xpath("//ul/li[@class='resultList']/a")
             pdf_set = set()
             for article in all_article:
                 # 获取文章链接
-                article_url = base_url + ''.join(article.xpath("./@href"))
+                article_url = 'http://szb.eyesnews.cn/pc/' + ''.join(article.xpath("./@href")).strip('../../..')
                 # 获取文章名称
-                article_name = ''.join(article.xpath("./text()")).strip()
+                article_name = ''.join(article.xpath("./h4/text()")).strip()
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 获取文章内容
@@ -66,7 +65,7 @@ def get_xiaofei_paper(paper_time, queue_id, webpage_id):
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
-                content = ''.join(article_html.xpath("//div[@id='doccontent']/div[1]//text()")).strip()
+                content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p//text()")).strip()
 
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
@@ -87,9 +86,12 @@ def get_xiaofei_paper(paper_time, queue_id, webpage_id):
                                         (day, paper, bm_name, bm_pdf, bm_url, up_pdf, create_time, queue_id,
                                          create_date, webpage_id))
                     conn_test.commit()
+                    # print(bm_pdf)
 
                 if judging_criteria(article_name, content):
                 # if 1:
+
+                    # print(content)
 
                     # 上传到报纸的内容
                     insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
@@ -113,7 +115,4 @@ def get_xiaofei_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# queue_id = 111
-# webpage_id = 1111
-# time1 = '2024-01-15'
-# get_xiaofei_paper(time1, queue_id, webpage_id)
+

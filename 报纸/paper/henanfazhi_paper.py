@@ -7,10 +7,8 @@ import pdfplumber
 import mysql.connector
 import requests
 from lxml import etree
-from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, parse_pdf
-
-
-
+from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
+    parse_pdf, judge_bm_repeat
 
 paper = "河南法制报"
 headers = {
@@ -72,7 +70,7 @@ def get_henanfazhi_paper(paper_time, queue_id, webpage_id):
                 database="col",
             )
             cursor_test = conn_test.cursor()
-            if bm_pdf not in pdf_set:
+            if bm_pdf not in pdf_set and judge_bm_repeat(paper, bm_url):
                 up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
                 pdf_set.add(bm_pdf)
                 # 上传到报纸的图片或PDF

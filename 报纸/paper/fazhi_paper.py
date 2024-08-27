@@ -6,9 +6,8 @@ from datetime import datetime
 import os
 import json
 import requests
-from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
-
-
+from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
+    judge_bm_repeat
 
 paper = '法制日报'
 
@@ -65,7 +64,7 @@ def get_fazhi_paper(paper_time, queue_id, webpage_id):
                     paper_pdf = ann_html.xpath("//tr[2]/td/table/tbody/tr/td[8]/a[@class='14']/@href")[0]
                     paper_pdf = paper_pdf.strip('../../')
                     paper_pdf_url = 'http://epaper.legaldaily.com.cn/fzrb/' + paper_pdf
-                    if paper_pdf_url not in pdf_path:
+                    if paper_pdf_url not in pdf_path and judge_bm_repeat(paper, bm_link):
                         pdf_path.add(paper_pdf_url)
                         file_name = paper_pdf.strip('.pdf').replace("/", "_")
                         value = upload_file_by_url(paper_pdf_url, file_name=file_name, file_type='pdf')

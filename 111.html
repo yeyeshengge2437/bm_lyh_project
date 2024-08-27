@@ -1,468 +1,421 @@
-﻿<!DOCTYPE html><html><head>
-	<meta charset="utf-8">
-	<title>缺陷产品召回查询</title>
-	<link rel="stylesheet" href="/qxzh/common/css/web_style.css">
-	<style>
-		.page_m a {
-			min-width: 30px;
-			height: 28px;
-			border: 1px solid #dce0e0!important;
-			text-align: center;
-			margin: 0 4px;
-			cursor: pointer;
-			line-height: 28px;
-			color: #666666;
-			font-size: 13px;
-			display: inline-block;
-		}
-		/*.layui-layer-content{
-			background-color: #fff;
-			left: 50%;
-			position: fixed;
-			top: 50%;
-			width: 300px;
-			height: 300px;
-			z-index: 999;
-		}*/
-		.firstPage,.lastPage {
-			width: 50px;
-			color: #0073A9;
-			border: 1px solid #0073A9!important;
-		}
-		.prePage,.nextPage {
-			width: 70px;
-			color: #0073A9;
-			border: 1px solid #0073A9!important;
-		}
-		.page_m .current {
-			background-color: #0073A9;
-			border-color: #0073A9;
-			color: #FFFFFF;
-		}
-		.totalPages {
-			margin: 0 10px;
-		}
+﻿<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>国内召回公告-国家市场监督管理总局缺陷产品召回技术中心</title>
+<link href="../../images/style_new.css" rel="stylesheet" rev="stylesheet">
+<script type="text/javascript" src="../../images/jquery1.42.min.js"></script>
+<script type="text/javascript" src="../../images/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../../images/channel.js"></script>
+<style>
+.page{text-align:center;}
+.page a{color:#333;}
+#focus ul li span{position:inherit;}
+</style>
 
-		.totalPages span,
-		.totalSize span {
-			color: #0073A9;
-			margin: 0 5px;
-		}
+<script type="text/javascript" src="../../images/bdtongji.js"></script>
+</head>
 
-	</style>
-	<script src="https://hm.baidu.com/hm.js?199ba1e1cd989a33d0ee9f9dee1e0196"></script><script>
-	var _hmt = _hmt || [];
-	(function() {
-	  var hm = document.createElement("script");
-	  hm.src = "https://hm.baidu.com/hm.js?199ba1e1cd989a33d0ee9f9dee1e0196";
-	  var s = document.getElementsByTagName("script")[0]; 
-	  s.parentNode.insertBefore(hm, s);
-	})();
-	</script>
+<body class="index">
+      <div class="main">
 
-<link rel="stylesheet" href="http://qxzh.samr.gov.cn/qxzh/cms/js/layer/skin/layer.css" id="layui_layer_skinlayercss" style=""></head>
-<body>
-<div class="wrapper">
-	<div class="w1100">
+<script type="text/javascript">
+ function submitForm(){
+	if($('input[name=searchValue]').val()==''){
+		alert('请输入检索词!');
+		return false;
+	}else{
+		$('#searchForm').submit();
+//
+	}
+}
+</script>
+<div class="so_tool width">
+      <div class="search" style="background: url(/images/search.png) no-repeat 25px 14px / 260px;">
+            <form action="/search/searchlist.jsp" method="post" id="searchForm" target="_blank">
+                	 <input type="text" name="searchValue" value="" class="qxin1" />
+                	 <input type="hidden" name="pageNo" id="pageNo" value="1" />
+            </form>
+            <button name="searchForm" onclick="return submitForm();"></button>
+            <a href="javascript:void(0)" onclick="shoucang(document.title,window.location)" title="加入收藏"></a>
+      </div><!--sousuo-->
+           </div>
 
-		<div class="ad_m">
-			<img src="/qxzh/common/img/ad_2.jpg" width="100%" alt="">
-		</div>
 
-		<div class="explain_m">
-			<p class="indent">
-				缺陷产品召回是生产企业消除产品安全隐患的重要措施，召回的方式主要包括修理、更换、退货、补充标识等。请您关注产品召回信息，并积极配合生产企业实施召回。
-			</p>
-		</div>
+           <div class="logo width" style="padding:0;height:90px;">
+                <a href="../../" class="fl">
+                   <img style="margin-top:-5px;" src="/images/logo_DPRC.png" width="840" />
+                </a>
+                <span class="fr" style="margin:70px 0px 0 0"><img src="/images/hearswf.png" width="140" /></span>
 
-		<dl class="tab">
-			<dt><a href="javascript:sethash();" class="hover"><strong>缺陷汽车产品召回查询</strong></a><a id="tab_consume" href="javascript:sethash();"><strong>缺陷消费品召回查询</strong></a></dt>
-			<dd>
-				<form id="car_form">
-					<div class="search_m">
-						<input id="carkeyword" type="text" name="keyword" placeholder="可输入生产者、品牌、车型系列、缺陷描述等关键字" class="input_ss_m" maxlength="30">
-						<input type="button" value="搜索" class="btn_ss_m" id="car_search" onclick="carSearch();">
-						<div id="beizhuDIV1" style="position: absolute; z-index: 999; width: 310px; border: 1px solid rgb(1, 82, 147); top: 40px; left: 330px; background-color: rgb(225, 241, 255); display: none;">
-        <span class="divTipTitle" style="background-color: #015293;display:  block;color:  #fff;">提示信息</span> <span id="bzSpan" style="word-wrap: break-word; width: 300px; display: block;">可输入生产者、品牌、车型系列、缺陷描述等关键字</span>
-        <img src="" style="display: none;">
-                         </div>
-					</div>
-					<input type="hidden" name="pageNo" value="1">
-					<input type="hidden" name="pageSize" value="10">
-				</form>
-				
-				<div class="news_m">
-					<h3>缺陷汽车召回新闻</h3>
-					<ul id="car_ul"><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240823_111847.html">保时捷（中国）汽车销售有限公司召回部分进口Carrera GT系列汽车</a><span>2024-08-23</span></li><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240823_111846.html">梅赛德斯-奔驰（中国）汽车销售有限公司、北京奔驰汽车有限公司召回部分进口及国产汽车</a><span>2024-08-23</span></li><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240816_111802.html">梅赛德斯-奔驰（中国）汽车销售有限公司召回部分进口汽车</a><span>2024-08-16</span></li><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240816_111800.html">沃尔沃（中国）投资有限公司召回部分进口FH牵引车</a><span>2024-08-16</span></li><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240816_111799.html">一汽-大众汽车有限公司召回部分进口奥迪E-TRON GT系列汽车</a><span>2024-08-16</span></li><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240816_111798.html">捷尼赛思汽车销售（上海）有限公司召回部分进口捷尼赛思G80和GV80系列汽车</a><span>2024-08-16</span></li><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240816_111797.html">梅赛德斯-奔驰（中国）汽车销售有限公司召回部分进口E级、AMG GT汽车</a><span>2024-08-16</span></li><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240816_111796.html">华晨宝马汽车有限公司、宝马（中国）汽车贸易有限公司召回部分国产及进口宝马汽车</a><span>2024-08-16</span></li><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240809_111752.html">捷豹路虎（中国）投资有限公司扩大召回部分进口捷豹I-PACE系列纯电汽车</a><span>2024-08-09</span></li><li><a target="_blank" href="https://www.samrdprc.org.cn/qczh/gnzhqc/202408/t20240802_111704.html">梅赛德斯-奔驰（中国）汽车销售有限公司召回部分进口A级汽车</a><span>2024-08-06</span></li></ul>
-				</div>
+           </div>
+     <!--neirong-->
+     		<div class="box1">
+            	<div class="local">当前位置：<a href="../../" title="首页" class="CurrChnlCls">首页</a>><a href="../" title="汽车产品召回" class="CurrChnlCls">汽车产品召回</a>><a href="./" title="国内召回公告" class="CurrChnlCls">国内召回公告</a></div>
+                <div class="box_main">
+                	<div class="boxl fl">
+                    	<div class="boxl_tit">
+                        	<div class="tita fl">国内召回公告</div>
+                        </div>
+                        <div class="boxl_ul">
+                        	<ul>
 
-				<div class="page_m" id="car_page"><a class="firstPage">首页</a><a class="prePage">上一页</a><a class="current">1</a><a>2</a><a>3</a><a>4</a><a>5</a>. . .<a>212</a><a class="nextPage">下一页</a><a class="lastPage">尾页</a><span class="totalPages"> 共<span>212</span>页 </span><span class="totalSize"> 共<span>2112</span>条记录 </span></div>
+<li><a href="./202408/t20240804_111720.html" title="梅赛德斯-奔驰（中国）汽车销售有限公司召回部分进口汽车">梅赛德斯-奔驰（中国）汽车销售有限公司召回部分进口汽车</a>
+<span>2024-08-06</span></li>
 
-				<div class="recall_m">
-					<h3>缺陷汽车召回范围查询</h3>
-					
-					<form id="vincode_form">
-						<div class="search_n clearfix">
-							<input id="vinKeyword" type="text" name="vincode" value="" placeholder="请输入17位VIN码" class="input_ss_n" maxlength="17">
-							<input type="button" value="查询" class="btn_ss_n" id="vincode_search" onclick="vincodeSearch();">
-						</div>
-						<input type="hidden" name="pageNo" value="1">
-						<input type="hidden" name="pageSize" value="100">
-						<input type="hidden" name="source" value="GOVWEB">
-					</form>
-					<p>车主可通过车辆识别代号（VIN）查询您的车辆是否在召回范围之内。目前您可查询2014年以后（含2014年）的车辆召回信息。</p>
-					<form id="vincode_form_data">
-					</form>
-					<table id="vincode_table_all">
-						
-					</table>
+<li><a href="./202408/t20240804_111721.html" title="特斯拉汽车（北京）有限公司、特斯拉（上海）有限公司召回部分进口Model S、 Model X 及国产Model 3 、Model Y电动汽车（二）">特斯拉汽车（北京）有限公司、特斯拉（上海）有限公司召回部分进口Model S、 M...</a>
+<span>2024-08-06</span></li>
 
-				</div>
-				<form id="car_form_data" data-timestamp="1724404775976"><input type="hidden" name="keyword" value=""><input type="hidden" name="pageNo" value="MQ=="><input type="hidden" name="pageSize" value="MTA="></form> 
-			</dd>
+<li><a href="./202408/t20240804_111722.html" title="特斯拉汽车（北京）有限公司、特斯拉（上海）有限公司召回部分进口Model S、 Model X 及国产Model 3 、Model Y电动汽车（一）">特斯拉汽车（北京）有限公司、特斯拉（上海）有限公司召回部分进口Model S、 M...</a>
+<span>2024-08-06</span></li>
 
-			<dd style="display: none;">
-				<form id="consume_form">
-					<div class="search_m">
-						<input id="consumeKeyword" type="text" name="keyword" value="" placeholder="可输入生产者、品牌、产品名称、缺陷描述等关键字" class="input_ss_m">
-						<input type="button" value="搜索" class="btn_ss_m" id="consume_search" onclick="consumeSearch();">
-								<div id="beizhuDIV2" style="position: absolute; z-index: 999; width: 310px; border: 1px solid rgb(1, 82, 147); top: 40px; left: 330px; background-color: rgb(225, 241, 255); display: none;">
-        <span class="divTipTitle" style="background-color: #015293;display:  block;color:  #fff;">提示信息</span> <span id="bzSpan" style="word-wrap: break-word; width: 300px; display: block;">可输入生产者、品牌、产品名称、缺陷描述等关键字</span>
-        <img src="" style="display: none;">
-                         </div>
-					</div>
-					<input type="hidden" name="pageNo" value="1">
-					<input type="hidden" name="pageSize" value="10">
-					<input type="hidden" name="source" value="GOVWEB">
-				</form>
-				
-				<div class="news_m">
-					<h3>缺陷消费品召回新闻</h3>
-					<ul id="consume_ul">
-					</ul>
-				</div>
+<li><a href="./202407/t20240724_111667.html" title="标致雪铁龙（上海）管理有限公司召回部分谛艾仕DS 7系列汽车">标致雪铁龙（上海）管理有限公司召回部分谛艾仕DS 7系列汽车</a>
+<span>2024-07-19</span></li>
 
-				<div class="page_m" id="consume_page">
-					<a href="#">上一页</a><a href="#">&lt;</a><a href="#" class="hover">1</a><a href="#">2</a><a href="#">3</a><a href="#">4</a><a href="#">5</a><a href="#">6</a><a href="#">7</a><a href="#">8</a><a href="#">9</a><a href="#">10</a><a href="#">下一页</a><a href="#">最后一页</a>
-				</div>
-				<form id="consume_form_data"></form>
-			</dd>
-		</dl>
+<li><a href="./202407/t20240724_111668.html" title="北汽蓝谷麦格纳汽车有限公司召回部分阿尔法T和阿尔法S纯电动汽车">北汽蓝谷麦格纳汽车有限公司召回部分阿尔法T和阿尔法S纯电动汽车</a>
+<span>2024-07-19</span></li>
 
-	</div>
+<li><a href="./202407/t20240724_111669.html" title="福特汽车（中国）有限公司召回部分进口全新F-150猛禽汽车">福特汽车（中国）有限公司召回部分进口全新F-150猛禽汽车</a>
+<span>2024-07-19</span></li>
+
+<li><a href="./202407/t20240724_111670.html" title="斯泰兰蒂斯（上海）汽车有限公司召回部分进口全新大切诺基4xe、角斗士汽车">斯泰兰蒂斯（上海）汽车有限公司召回部分进口全新大切诺基4xe、角斗士汽车</a>
+<span>2024-07-19</span></li>
+
+<li><a href="./202407/t20240705_111536.html" title="广汽丰田汽车有限公司召回部分汉兰达汽车">广汽丰田汽车有限公司召回部分汉兰达汽车</a>
+<span>2024-07-12</span></li>
+
+<li><a href="./202407/t20240705_111537.html" title="丰田汽车（中国）投资有限公司召回部分进口雷克萨斯RX汽车">丰田汽车（中国）投资有限公司召回部分进口雷克萨斯RX汽车</a>
+<span>2024-07-12</span></li>
+
+<li><a href="./202407/t20240712_111566.html" title="北京福田戴姆勒汽车有限公司召回部分仓栅式运输车">北京福田戴姆勒汽车有限公司召回部分仓栅式运输车</a>
+<span>2024-07-12</span></li>
+
+<li><a href="./202407/t20240712_111567.html" title="江苏悦达起亚汽车有限公司召回部分进口起亚纯电EV6汽车">江苏悦达起亚汽车有限公司召回部分进口起亚纯电EV6汽车</a>
+<span>2024-07-12</span></li>
+
+<li><a href="./202407/t20240712_111568.html" title="奇瑞捷豹路虎汽车有限公司召回部分国产捷豹XEL、XFL汽车">奇瑞捷豹路虎汽车有限公司召回部分国产捷豹XEL、XFL汽车</a>
+<span>2024-07-12</span></li>
+
+<li><a href="./202406/t20240628_111485.html" title="克莱斯勒（中国）汽车销售有限公司召回部分进口牧马人4xe混合动力汽车">克莱斯勒（中国）汽车销售有限公司召回部分进口牧马人4xe混合动力汽车</a>
+<span>2024-07-05</span></li>
+
+<li><a href="./202407/t20240705_111538.html" title="斯泰兰蒂斯（上海）汽车有限公司召回部分进口全新大切诺基4xe汽车">斯泰兰蒂斯（上海）汽车有限公司召回部分进口全新大切诺基4xe汽车</a>
+<span>2024-07-05</span></li>
+
+<li><a href="./202407/t20240705_111539.html" title="保时捷（中国）汽车销售有限公司召回部分进口Taycan电动汽车">保时捷（中国）汽车销售有限公司召回部分进口Taycan电动汽车</a>
+<span>2024-07-05</span></li>
+
+<li><a href="./202407/t20240705_111540.html" title="神龙汽车有限公司召回东风雪铁龙世嘉汽车">神龙汽车有限公司召回东风雪铁龙世嘉汽车</a>
+<span>2024-07-05</span></li>
+
+<li><a href="./202406/t20240628_111486.html" title="斯巴鲁汽车（中国）有限公司召回部分进口SOLTERRA（岚鲲）系列汽车">斯巴鲁汽车（中国）有限公司召回部分进口SOLTERRA（岚鲲）系列汽车</a>
+<span>2024-06-28</span></li>
+
+
+
+                            </ul>
+
+                        </div>
+
+
+<div class="page">
+<SCRIPT LANGUAGE="JavaScript">
+
+
+//createPageHTML(59, 0, "index", "html");
+var currentPage = 0;//所在页从0开始
+//var headPage = "index"+"."+"html";//首页
+//var tailPage = "index_" + (countPage-1) + ".html"//尾页
+var prevPage = currentPage-1//上一页
+var nextPage = currentPage+1//下一页
+var countPage = 59//共多少页
+
+document.write("共"+countPage+"页&nbsp;&nbsp;");
+//设置上一页代码
+if(countPage>1&&currentPage!=0&&currentPage!=1)
+	document.write("<a href=\"index.html\">首页</a>&nbsp;<a href=\"index"+"_" + prevPage + "."+"html\">上一页</a>&nbsp;");
+else if(countPage>1&&currentPage!=0&&currentPage==1)
+	document.write("<a href=\"index.html\">首页</a>&nbsp;<a href=\"index.html\">上一页</a>&nbsp;");
+else
+	document.write("首页&nbsp;上一页&nbsp;");
+//循环
+var num = 5;
+for(var i=0+(currentPage-1-(currentPage-1)%num) ; i<=(num+(currentPage-1-(currentPage-1)%num))&&(i<countPage) ; i++){
+	if(currentPage==i)
+		document.write((i+1)+"&nbsp;");
+	else if(i==0){
+		document.write("<a href=\"index.html\">"+1+"</a>&nbsp;");
+	}else
+		document.write("<a href=\"index"+"_" + i + "."+"html\">"+(i+1)+"</a>&nbsp;");
+}
+
+//设置下一页代码
+if(countPage>1&&currentPage!=(countPage-1))
+	document.write("<a href=\"index"+"_" + nextPage + "."+"html\">下一页</a>&nbsp;<a href=\"index_" + (countPage-1) + ".html\">尾页</a>&nbsp;");
+else
+	document.write("下一页&nbsp;尾页&nbsp;");
+
+//跳转页面
+document.write("<font class='9ptb'>转到第<input type='text' id='num' value="+(currentPage+1)+" style='width:30px' />页"+
+		             "&nbsp;<input type='submit' value='GO' onClick=javacript:toPage() class='btn2byte' /></font>");
+
+function toPage(){
+	var _num = document.getElementById("num").value;
+	var str = "index"+"_"+(_num-1)+"."+"html";
+	var url = location.href.substring(0,location.href.lastIndexOf("/")+1);
+	if(_num<=1||_num==null)
+		location.href = url+"index"+"."+"html";
+	else if(_num>countPage)
+		alert("本频道最多"+countPage+"页");
+	else
+		location.href = url+str;
+}
+</SCRIPT>
 </div>
 
-<!--<script src="/qxzh/common/js/jquery-1.12.4.min.js"></script>-->
-<script src="/qxzh/cms/js/jquery-1.7.1.min.js"></script>
-<script src="/qxzh/common/js/web_script.js"></script>
+                    </div><!--boxl-->
+                    <div class="boxr fr">
+                    	<!--div class="boxr_tit">
+                        	<div class="boxrta fl">图片新闻</div>
+                            <div class="boxrtb fr"><a href="../../xwdt/tpxw/">更多 &gt;&gt;</a></div>
+                        </div-->
+                        <div class="boxr_ban" style="margin-top:0">
+                        	<!--dg-->
+                        	<div class="wrapper">
+                                <div id="focus">
+                                    <ul>
 
-<script src="/qxzh/cms/js/baseCode16.js"></script>
-<script src="/qxzh/cms/js/utiltool.js"></script>
-<script src="/qxzh/cms/js/jquery.form.js"></script>
-<script src="/qxzh/cms/js/layer/layer.min.js"></script>
-<script src="/qxzh/cms/js/paging.js"></script>
-<script src="/qxzh/cms/js/jquery.placeholder.min.js"></script>
-<script src="/qxzh/common/js/setHash.js"></script>
-<script>
+<li><a href="../gnzhqc/202408/t20240823_111847.html"><img src="../gnzhqc/202408/W020240823501261889675.png" alt="微信图片_20240822172336.png"/></a><span>保时捷（中国）汽车销售有限...</span></li>
 
-	//解决ie低版本placehoder问题
+<li><a href="../gnzhqc/202408/t20240823_111846.html"><img src="../gnzhqc/202408/W020240823501146751925.png" alt="微信图片_20240822172306.png"/></a><span>梅赛德斯-奔驰（中国）汽车销...</span></li>
 
-(function($) {
-     $.fn.placeholder = function(options) {
-         var opts = $.extend({}, $.fn.placeholder.defaults, options);
-         var isIE = document.all ? true : false;
-         return this.each(function() {
-             var _this = this,
-                 placeholderValue = _this.getAttribute("placeholder"); //缓存默认的placeholder值
-             if (isIE) {
-                 _this.setAttribute("value", placeholderValue);
-                 _this.onfocus = function() {
-                     $.trim(_this.value) == placeholderValue ? _this.value = "" : '';
-                 };
-                 _this.onblur = function() {
-                     $.trim(_this.value) == "" ? _this.value = placeholderValue : '';
-                 };
-             }
-         });
-     };
- })(jQuery);
+<li><a href="../gnzhqc/202408/t20240816_111802.html"><img src="../gnzhqc/202408/W020240816688361121800.png" alt="c071c097f4a78f27b7ea2ede598f1f8.png"/></a><span>梅赛德斯-奔驰（中国）汽车销...</span></li>
+
+<li><a href="../gnzhqc/202408/t20240816_111800.html"><img src="../gnzhqc/202408/W020240816688557538720.png" alt="4ec284c306be8f5842e7a3203d5bb3b.png"/></a><span>沃尔沃（中国）投资有限公司...</span></li>
+
+<li><a href="../gnzhqc/202408/t20240816_111799.html"><img src="../gnzhqc/202408/W020240816687940554550.png" alt="11.png"/></a><span>一汽-大众汽车有限公司召回部...</span></li>
 
 
-    $(function(){ 
-	
- 
-	/*$('input, textarea').placeholder();*/
+                                    </ul>
+                                </div>
 
-	$("#carkeyword").hover(function(){
-				$("#beizhuDIV1").show();
-	},function(){
-	$("#beizhuDIV1").hide();
-	})
-
-	$("#consumeKeyword").hover(function(){
-				$("#beizhuDIV2").show();
-	},function(){
-	$("#beizhuDIV2").hide();
-	})
+                            </div>
+                        <!--dg-->
+                        </div>
+ <!--快速链接-->
+<div class="qlink"></div>
+<div class="qlink_ul">
+     <ul>
+         <li><a target="_blank" href="../gnzhqc/">国内汽车召回新闻</a></li>
+         <li><a target="_blank" href="./">国内汽车召回公告</a></li>
+         <li><a target="_blank" href="../../qxts/">缺陷线索报告</a></li>
+     </ul>
+</div>
+<!--快速链接-->
+                    </div>
+                </div><!--box_main-->
+            </div>
+     <!--neirong-->
 
 
 
+<style>
+.linktxt{line-height:35px;font-size:14px;font-weight:bold;color:#0865b5; padding-left:5px;}
+.linktxt a{color:#0865b5;}
+.third_bg,.foot{clear:both;}
+#container{padding:0;}
+body a,body button{outline:none;blr:expression(this.onFocus=this.blur());}
+div.foot{height: 180px;}
+.map{width:700px;overflow: hidden;margin:0 auto;}
+body .bian{color:#1F8AE6;}
+.map li a{color:#fff;}
+.map li{float:left;color:#fff;padding:0 20px;margin:10px 0;}
+.map li:nth-child(2){border-right: 1px solid #3174B1;border-left: 1px solid #3174B1;}
+.map li:nth-child(4){border-right: 1px solid #3174B1;border-left: 1px solid #3174B1;}
+.map li:nth-child(6){border-right: 1px solid #3174B1;border-left: 1px solid #3174B1;}
+.foot_left p{text-align: center;}
+</style>
+      </div>
+      <div class="foot">
 
-	
-	});
+           <div class="width">
+                <div class="foot_title" style="line-height:18px">
+                     <div class="fooa">
+                           <span class="fl" style="font-size:14px;padding:0 40px 0 15px;font-weight:600;">友情<br>链接</span>
+                           <span class="fl">
+                                  <select name="select3" style="width:190px; height:25px;border:1px solid #0c65b5;background:#085396;color:#fff; margin-bottom: 5px; margin-top: 8px;_margin-bottom:10px;" onchange="javascript:if(this.options[this.selectedIndex].value !=''){window.open(this.options[this.selectedIndex].value)}" >
+<option value="" selected="selected">------国内相关网站------</option>
 
-    $(function(){
-	    init();
-		//消费品页签第一次点击
-		$("#tab_consume").one("click",function(){
-            consumeNewsSearch();
-            sethash();
-				$("#consumeKeyword").placeholder();
-		})
-	})
-    //初始化
-    function init(){
-        //第一次
-        carNewsSearch();
-				$("#carkeyword").placeholder();
-	            $("#vinKeyword").placeholder();
-    }
-    //汽车查询
-    function carNewsSearch(){
 
-		var my_val= $("#carkeyword").val()
+	<option value="http://www.samr.gov.cn/">国家市场监督管理总局</option>
 
-		if(my_val =='可输入生产者、品牌、车型系列、缺陷描述等关键字'){
-			 $("#carkeyword").val("");
-		}
+	<option value="http://www.chinalaw.gov.cn/">中华人民共和国司法部</option>
 
-        base16Form("car_form","car_form_data");
-        var url="/qxzh/frame/car/siteNews";
-        var s=layer.load(2);
-        var html="";
-        $.post(url,$("#car_form_data").serialize(),function (data) {
-            if(data.successful){
-                if(data.rows.length>0){
-                    $.each(data.rows,function (i,item) {
-                        html+='<li><a target="_blank" href="'+item.docpuburl+'">'+item.doctitle.substring(0,60)+'</a><span>'+item.docreltime+'</span>';
-                    })
-                }else{
-                    html+='<li>未查询到相关数据</li>';
-                }
-                $("#car_ul").html(html);
-				sethash();
-                $('#car_page').paging({
-                    totalSize: Number(data.total),
-                    totalPage:Number(data.totalpage),
-                    pageNo: Number($("#car_form input[name='pageNo']").val()),
-                    callback: function (num) {
-                        $("#car_form input[name='pageNo']").val(num);
-                        carNewsSearch();
-                    }
-                });
-            }else{
-                layer.msg(data.error,{shade:0.3,icon: 2});
-            }
-        },"json").complete(function (data) {
-            layer.close(s);
-			$("input[name='keyword']").focus();
-			$("input[name='keyword']").blur();
-			//sethash();
-        }).error(function (data) {
-            layer.msg("网络繁忙,请稍后再试",{shade:0.3,icon:2});
-        });
-    }
-    //消费品查询
-    function consumeNewsSearch(){
+	<option value="https://www.ndrc.gov.cn/">中华人民共和国国家发展和改革委员会</option>
 
-		var my_val= $("#consumeKeyword").val()
+	<option value="http://www.mof.gov.cn">中华人民共和国财政部</option>
 
-		if(my_val =='可输入生产者、品牌、产品名称、缺陷描述等关键字'){
-			  $("#consumeKeyword").val("");
-		}
-        base16Form("consume_form","consume_form_data");
-        var url="/qxzh/frame/car/consumeNews";
-        var s=layer.load(2);
-        var html="";
-        $.post(url,$("#consume_form_data").serialize(),function (data) {
-            if(data.successful){
-                if(data.rows.length>0){
-                    $.each(data.rows,function (i,item) {
-                        html+='<li><a target="_blank" href="'+item.docpuburl+'">'+item.doctitle.substring(0,60)+'</a><span>'+item.docreltime+'</span>';
-                    })
-                }else{
-                    html+='<li>未查询到相关数据</li>';
-                }
-                $("#consume_ul").html(html);
-				sethash();
-                $('#consume_page').paging({
-                    totalSize:Number(data.total),
-                    totalPage:Number(data.totalpage),
-                    pageNo: Number($("#consume_form input[name='pageNo']").val()),
-                    callback: function (num) {
-                        $("#consume_form input[name='pageNo']").val(num);
-                        consumeNewsSearch();
-                    }
-                });
-            }else{
-                layer.msg(data.error,{shade:0.3,icon: 2});
-            }
-        },"json").complete(function (data) {
-            layer.close(s);
-			$("input[name='keyword']").focus();
-			$("input[name='keyword']").blur();
-        }).error(function (data) {
-            layer.msg("网络繁忙,请稍后再试",{shade:0.3,icon: 2});
-        });
-    }
-    /**
-     VIN格式计算规则模块**********START--------------------------------------------------------------------------
-     */
-        //加权系数对应字典
-    var dicWeighCoefficient = { "1": "8", "2": "7", "3": "6", "4": "5", "5": "4", "6": "3", "7": "2", "8": "10", "10": "9", "11": "8", "12": "7", "13": "6", "14": "5", "15": "4", "16": "3", "17": "2" };
-    //字母对应值
-    var dicLetterVal = { "A": "1", "B": "2", "C": "3", "D": "4", "E": "5", "F": "6", "G": "7", "H": "8", "J": "1", "K": "2", "L": "3", "M": "4", "N": "5", "P": "7", "R": "9", "S": "2", "T": "3", "U": "4", "V": "5", "W": "6", "X": "7", "Y": "8", "Z": "9" };
-    function IsLetter(val) {   //是否为字母
-        var patten = new RegExp(/^[A-Za-z]+$/);
-        return patten.test(val);
-    }
-    function VINCalculation(val) {    //VIN检验位计算验证
-        if (val.length != 17) return false;
-        var VINsum = 0;
-        var arr = val.split(""); //VIN字符串集合
-        var isPass = true;
-        for (var i = 0; i < val.length; i++) {
-            if (i == "8") {//校验位跳过
-                continue;
-            }
-            var Corresponding = ""; //对应值
-            if (IsLetter(arr[i])) {
-                if (dicLetterVal[arr[i].toUpperCase()] != undefined) {
-                    Corresponding = dicLetterVal[arr[i].toUpperCase()]
-                }
-                else {//如果此字符在对应字典里不存在则直接退出
-                    isPass = false;
-                    break;
-                }
-            }
-            else if (!isNaN(arr[i])) {
-                Corresponding = arr[i];
-            }
-            var aProduct = Corresponding * dicWeighCoefficient[i + 1]; //每一位的对应值*加权系数
-            VINsum = parseInt(VINsum) + parseInt(aProduct); //乘积相加
-        }
-        if (isPass) {
-            var yushu = VINsum % 11; //获取余数
-            var checkChar = ""; //经过计算获得的检验位值
-            if (yushu == 10) {
-                checkChar = "X";
-            }
-            else {
-                checkChar = yushu;
-            }
-            if (checkChar != arr[8].toUpperCase()) { //计算的校验位值与用户录入的值对比
-                return false;
-            }
-            else {
-                return true;
-            }
-        }
-        else {
-            return false;
-        }
-    }
-    /**
-     VIN格式计算规则模块**********END----------------------------------------------------------------
-     */
-    function valid_VIN(val) {
-        var patten = new RegExp(/^(?!(?:\d+|[a-zA-Z]+)$)[\da-zA-Z]{17}$/);
-        return VINCalculation(val);
-    }
-    //VIN查询
-    function vincodeNewsSearch(){
+	<option value="http://www.miit.gov.cn">中华人民共和国工业和信息化部</option>
 
-        base16Form("vincode_form","vincode_form_data");
-        var url="/qxzh/frame/car/vincodeNews";
-        var s=layer.load(2);
-        var html="<thead><tr><th>序</th><th>发布时间</th><th>品牌</th><th>一级总成</th><th>详情</th></tr></thead><tbody id='vincode_table'>";
-        $.post(url,$("#vincode_form_data").serialize(),function (data) {
-            if(data.successful){
-                if(data.rows.length>0){
-                    $.each(data.rows,function (i,item) {
-                        html+='<tr><td>'+(i+1)+'</td><td>'+item.docreltime+'</td><td>'+item.brandname+'</td>';
-                        if(item.docpuburl!=""){
-                            html+='<td>'+item.dicdesc+'</td><td><a target="_blank" href="'+item.docpuburl+'">查看新闻</a></td>';
-                        }else{
-                            html+='<td>'+item.dicdesc+'</td><td><span>暂无新闻</span></td>';
-                        }
-                    })
-                }else{
-                    html+="<tr><td colspan='5'>未查询到相关数据</td></tr>"
-                }
-				html+="</tbody>";
+	<option value="http://www.mps.gov.cn/">中华人民共和国公安部</option>
 
-                $("#vincode_table_all").html(html);
-				sethash();
-            }else{
-                layer.msg(data.error,{shade:0.3,icon: 2});
-            }
-        },"json").complete(function (data) {
-            layer.close(s);
-        }).error(function (data) {
-            layer.msg("网络繁忙,请稍后再试",{shade:0.3,icon: 2});
-        });
-    }
-    //汽车搜索
-    function carSearch() {
-        var keyword=$.trim($("#car_form input[name='keyword']").val());
-        $("#car_form input[name='pageNo']").val(1);
-        if(keyword){
-            carNewsSearch();
-            sethash();
-        }else{
-            layer.msg("请输入检索关键词!");
-        }
-    }
-    //回车提交搜索
-    $("#carkeyword").keydown(function(event) {
-        if(event.keyCode==13) {
-            carSearch();
-        }
-    })
-    //消费品搜索
-    function consumeSearch() {
-        $("#consume_form input[name='pageNo']").val(1);
-        var keyword=$.trim($("#consume_form input[name='keyword']").val());
-        if(keyword){
-            consumeNewsSearch();
-            sethash();
-        }else{
-            layer.msg("请输入检索关键词!");
-        }
-    }
-    $("#consumeKeyword").keydown(function(event) {
-        if(event.keyCode==13) {
-            consumeSearch();
-        }
-    })
-    //vin查询
-    function vincodeSearch() {
-        var vincode=$.trim($("#vincode_form input[name='vincode']").val());
-        if(vincode&&vincode.length==17&&valid_VIN(vincode)){
-            vincodeNewsSearch();
-            sethash();
-        }else{
-            layer.msg("请输入正确的VIN");
-        }
-    }
-    $("#vinKeyword").keydown(function(event) {
-        if(event.keyCode==13) {
-            vincodeSearch();
-            sethash();
-        }
-    })
+	<option value="http://www.mot.gov.cn/">中华人民共和国交通运输部</option>
+
+	<option value="http://www.mofcom.gov.cn/">中华人民共和国商务部</option>
+
+	<option value="http://www.nhc.gov.cn/">中华人民共和国国家卫生健康委员会</option>
+
+	<option value="http://www.customs.gov.cn/">中华人民共和国海关总署</option>
+
+	<option value="http://www.sac.gov.cn/">国家标准化管理委员会</option>
+
+	<option value="http://www.cnca.gov.cn/">国家认证认可监督管理委员会</option>
+
+	<option value="http://www.cnis.ac.cn/">中国标准化研究院</option>
+
+
+
+
+                </select>
+                <select name="select" style="width: 190px; height:25px;border:1px solid #0c65b5;background:#085396;color:#fff; margin-left:20px; margin-bottom: 5px; _margin-bottom:10px;" onchange="javascript:if(this.options[this.selectedIndex].value !=''){window.open(this.options[this.selectedIndex].value)}" >
+            <option value="" selected="selected">------国外相关网站------</option>
+
+
+	<option value="http://www.nhtsa.gov">美国高速公路交通安全管理局</option>
+
+	<option value="http://www.cpsc.gov">美国消费品安全委员会</option>
+
+	<option value="http://ec.europa.eu/consumers/safety/rapex/index_en.htm">欧盟RAPEX系统</option>
+
+	<option value="https://www.gov.uk/government/organisations/driver-and-vehicle-standards-agency">英国驾驶员和车辆标准局（DVSA）</option>
+
+	<option value="http://www.productsafety.gov.au/">澳大利亚竞争与消费者委员会</option>
+
+
+          </select>
+                  <select name="select" style="width: 190px; height:25px;border:1px solid #0c65b5;background:#085396;color:#fff; margin-left:20px; margin-bottom: 5px; _margin-bottom:10px;" onchange="javascript:if(this.options[this.selectedIndex].value !=''){window.open(this.options[this.selectedIndex].value)}" >
+            <option value="" selected="selected">------其他相关网站------</option>
+
+	<option value="http://www.recall.org.cn/">中国产品安全与召回信息网</option>
+
+          </select>
+                           </span>
+                           <span class="aboutl fr" style="padding-top:3px;"><a style="float:right;padding-right:8px" href="https://www.samrdprc.org.cn/gywm/202403/t20240314_110945.html
+" title="关于我们">关于<br>我们</a></span>
+                     </div>
+                </div>
+                <ul class="map">
+                	<li><a href="../../">网站首页</a></li>
+                	<li><a href="../../qczh/">汽车召回</a></li>
+                	<li><a href="../../xfpzh/">消费品召回</a></li>
+                	<li><a href="../../yjgz/">科学研究</a></li>
+                	<li><a href="../../aqjy/">安全教育</a></li>
+                	<li><a href="../../flfg/">法律法规</a></li>
+                	<li><a href="../../map/">网站地图</a></li>
+                </ul>
+                <div class="foot_box">
+                <div class="foot_left" style="">
+                    <p>版权所有：国家市场监督管理总局缺陷产品召回技术中心</p>
+                    <p><a href="http://beian.miit.gov.cn" style="color:#86b2da;">京ICP备2024053723号</a>   备案号：京公海网安备110108001691号</p>
+                    <br>
+                </div>
+            </div>
+      </div>
+</div>
+<div id="tbox">
+<table width="80" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>
+      <table width="60" border="0" align="right" cellpadding="0" cellspacing="0">
+        <tr>
+          <td align="right"><a onclick="closediv()" style="cursor:pointer"><img src="/images/1986155.png" width="10" height="10" /></a></td>
+          <td width="30" align="right"><a onclick="closediv()" style="cursor:pointer">关闭</a></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding-top:10px">
+      <a href="/qxts/xxcjyd/" target="_blank">
+          <img src="/images/qxxsbg_small.jpg" width="90" border="0" title="缺陷线索报告" />
+      </a>
+    </td>
+  </tr>
+ <tr>
+    <td>
+      <a href="https://www.samrdprc.org.cn/gywm/201503/t20150311_49379.html" target="_blank">
+          <img src="/images/weixin-small.png" width="90" border="0" usemap="#Mapv" title="国家市场监督管理总局缺陷产品管理中心官方微信" />
+      </a>
+<!--
+      <a href="http://sou.zhaopin.com/jobs/searchresult.ashx?jl=北京&kw=中国标准化研究院&sb=0&sm=0&p=1&isfilter=0&fl=530&isadv=0" style="display:block;width:90px;margin-left:-3px;"><img src="../../images/pcImg.png" /></a>
+-->
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://www.samrdprc.org.cn/gywm/202002/t20200217_89416.html" target="_blank">
+          <img src="/images/toutiao_small.png" width="90" border="0" title="国家市场监督管理总局缺陷产品管理中心官方头条号" />
+      </a>
+    </td>
+  </tr>
+</table>
+</div>
+<style type="text/css">
+.about{border-left:3px solid;font-size:14px;background:url(/images/foota_bg.gif) no-repeat 50px 0;padding:3px 0 0 50px;display:block;height:38px;width:70px;}
+.aboutl{font-size:14px;background:url(/images/footb_bg.gif) no-repeat 10px 0;padding:3px 0 0 50px;display:block;height:38px;width:70px;}
+
+div.foot_left p{line-height:18px;}
+.fooa{width:998px;height:41px;border:1px solid #437fb4; margin:20px 0;background:url(/images//foota_bg.gif) no-repeat 50px 0;}
+#tbox{width:80px; float:right; position:fixed; right:30px; bottom:325px;
+_position:absolute;
+_bottom:auto;
+_margin-bottom:25px;
+}
+</style>
+<script type=text/javascript>
+function closediv() {
+ document.getElementById("tbox").style.display='none';
+}
 </script>
 
-</body></html>
+<script>
+function shoucang(sTitle,sURL)
+{
+try
+{
+window.external.addFavorite(sURL, sTitle);
+}
+catch (e)
+{
+try
+{
+window.sidebar.addPanel(sTitle, sURL, "");
+}
+catch (e)
+{
+alert("加入收藏失败，请使用Ctrl+D进行添加");
+}
+}
+}
+$(function(){
+  $('.boxr_video li').eq(1).css("text-align","right");
+  $('.boxr_video li').eq(3).css("text-align","right");
+  $('.boxr_video li img').css({"width":"150px","height":"100px"});
+  $('#focus ul li span').css("position","inherit");
+  $('.page').css("clear","both");
+  $('.sys_box').css("margin","20px auto 0");
+  $("a").attr("target","_blank");
+  $("a.sPrev").attr("target","_self");
+  $("a.sNext").attr("target","_self");
+  $(".page a").attr("target","_self")
 
-进程已结束，退出代码为 0
+});
+</script>
+<script>
+$(function(){
+$(".page a").attr("target","_self")
+})
+</script>
+
+</body>
+</html>

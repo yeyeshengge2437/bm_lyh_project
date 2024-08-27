@@ -3,7 +3,8 @@ import json
 import re
 import time
 from datetime import datetime
-from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
+from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
+    judge_bm_repeat
 import mysql.connector
 import requests
 from lxml import etree
@@ -78,7 +79,7 @@ def get_shichangxing_paper(paper_time, queue_id, webpage_id):
                     database="col"
                 )
                 cursor_test = conn_test.cursor()
-                if pdf_url not in pdf_set and ("公告" in article_name or judging_criteria(article_name, content)):
+                if pdf_url not in pdf_set and ("公告" in article_name or judging_criteria(article_name, content)) and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(pdf_url, "市场星报", "pdf", "paper")
                     pdf_set.add(pdf_url)

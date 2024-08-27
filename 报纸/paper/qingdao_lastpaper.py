@@ -8,7 +8,9 @@ import json
 import mysql.connector
 import requests
 from lxml import etree
-from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
+from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
+    judge_bm_repeat
+
 
 def get_md5_set(database, table_name):
     hash_value_set = set()

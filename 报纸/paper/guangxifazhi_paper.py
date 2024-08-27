@@ -3,7 +3,7 @@ import json
 import re
 import time
 from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
-    parse_pdf
+    parse_pdf, judge_bm_repeat
 from datetime import datetime
 from DrissionPage import ChromiumPage, ChromiumOptions
 import mysql.connector
@@ -56,7 +56,7 @@ def get_guangxifazhi_paper(paper_time, queue_id, webpage_id):
             )
             cursor_test = conn_test.cursor()
 
-            if bm_pdf not in pdf_set:
+            if bm_pdf not in pdf_set and judge_bm_repeat(paper, bm_url):
                 # 将报纸img上传
                 up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
                 pdf_set.add(bm_pdf)
