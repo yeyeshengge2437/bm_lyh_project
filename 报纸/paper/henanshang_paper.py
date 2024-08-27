@@ -38,7 +38,7 @@ def get_henanshang_paper(paper_time, queue_id, webpage_id):
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m/%d')
     base_url = f'https://newpaper.dahe.cn/hnsb/html/{paper_time}/'
     url = base_url + 'node_1.htm'
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, verify=False)
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
@@ -53,7 +53,7 @@ def get_henanshang_paper(paper_time, queue_id, webpage_id):
             bm_pdf = pdf_domain + "".join(bm.xpath("./a[@class='pdf']/@href")).strip('../../..')
 
             # 获取版面详情
-            bm_response = requests.get(bm_url, headers=headers)
+            bm_response = requests.get(bm_url, headers=headers, verify=False)
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
@@ -88,7 +88,7 @@ def get_henanshang_paper(paper_time, queue_id, webpage_id):
                 # 获取文章名称
                 article_name = ''.join(article.xpath("./@title")).strip()
                 # 获取文章内容
-                article_response = requests.get(article_url, headers=headers)
+                article_response = requests.get(article_url, headers=headers, verify=False)
                 time.sleep(2)
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)

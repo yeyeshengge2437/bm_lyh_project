@@ -49,7 +49,10 @@ def get_chinahuanjiang_paper(paper_time, queue_id, webpage_id):
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers)
             time.sleep(1)
-            bm_content = bm_response.content.decode()
+            try:
+                bm_content = bm_response.content.decode()
+            except:
+                continue
             bm_html = etree.HTML(bm_content)
             # 版面PDF
             bm_pdf = pdf_domain + "".join(bm_html.xpath("//td[@class='px12'][3]/a/@href")).strip('../..')
@@ -65,9 +68,14 @@ def get_chinahuanjiang_paper(paper_time, queue_id, webpage_id):
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 获取文章内容
+
                 article_response = requests.get(article_url, headers=headers)
+
                 time.sleep(1)
-                article_content = article_response.content.decode()
+                try:
+                    article_content = article_response.content.decode()
+                except:
+                    continue
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()"))
@@ -80,6 +88,7 @@ def get_chinahuanjiang_paper(paper_time, queue_id, webpage_id):
                 )
                 cursor_test = conn_test.cursor()
                 if bm_pdf not in pdf_set and judging_criteria(article_name, content) and judge_bm_repeat(paper, bm_url):
+
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, "chinahuanjing", "pdf", "paper")
                     pdf_set.add(bm_pdf)
@@ -115,6 +124,8 @@ def get_chinahuanjiang_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
+
+# get_chinahuanjiang_paper("2024-06-05", '1111', '2222')
 # # 设置最大重试次数
 # max_retries = 5
 # retries = 0

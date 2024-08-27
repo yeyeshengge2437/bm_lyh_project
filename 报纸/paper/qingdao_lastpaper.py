@@ -58,12 +58,12 @@ def get_qingdao_lastpaper(paper_time, queue_id, webpage_id):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m/%d')
-    base_url = f'https://epaper.qingdaonews.com/qdwb/html/{paper_time}/'
+    base_url = f'https://epaper.guanhai.com.cn/conpaper/qdwb/html/{paper_time}/'
     url = base_url + 'node_1.htm?v=1'
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
-        content = response.content.decode()
-        html_1 = etree.HTML(content)
+        content1 = response.content.decode()
+        html_1 = etree.HTML(content1)
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//table[@id='bmdhTable']/tbody/tr")
         for bm in all_bm:
@@ -90,7 +90,7 @@ def get_qingdao_lastpaper(paper_time, queue_id, webpage_id):
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 进行数据的去重
-                data_unique = f"文章标题：{article_name}, 版面链接：{bm_url}"
+                data_unique = f"文章标题：{str(article_name)}, 版面链接：{str(bm_url)}"
                 # 数据去重
                 hash_value = hashlib.md5(json.dumps(data_unique).encode('utf-8')).hexdigest()
                 # 获取文章内容
@@ -99,7 +99,7 @@ def get_qingdao_lastpaper(paper_time, queue_id, webpage_id):
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
-                content = ''.join(article_html.xpath("//td/div[@id='ozoom']/founder-content//text()"))
+                content = ''.join(article_html.xpath("//td/div[@id='ozoom']/founder-content//text()")).strip()
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -108,6 +108,7 @@ def get_qingdao_lastpaper(paper_time, queue_id, webpage_id):
                     database="col"
                 )
                 cursor_test = conn_test.cursor()
+                # print(bm_name, article_name, content, bm_pdf)
                 if bm_pdf not in pdf_set and ("公告" in article_name or judging_criteria(article_name, content)) and hash_value not in md5_set:
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, "青岛晚报", "pdf", "paper")
@@ -145,5 +146,5 @@ def get_qingdao_lastpaper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-
+# get_qingdao_lastpaper("2024-08-27", 1111,2222)
 

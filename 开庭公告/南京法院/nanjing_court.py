@@ -121,7 +121,7 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper"):
 
 
 def get_captcha():
-    time.sleep(3)
+
     # 获取验证码图片，并识别验证码
     img_yzm = page.ele(".el-image__inner").attr("src")[23:]
     # 将base64图片转换为图片文件
@@ -136,7 +136,9 @@ def get_captcha():
     # 清空输入框
     yzm_srk.clear()
     yzm_srk.click()
+    time.sleep(3)
     yzm_srk.input(captcha)
+    time.sleep(5)
 
 
 def click_Inquire():
@@ -406,7 +408,10 @@ while attempts < max_attempts:
     from_queue = value['id']
     webpage_id = value["webpage_id"]
     try:
-        run(destination)
+        try:
+            run(destination)
+        except Exception as e:
+            pass
         success_data = {
             'id': from_queue,
         }

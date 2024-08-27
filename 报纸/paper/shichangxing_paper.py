@@ -9,8 +9,6 @@ import mysql.connector
 import requests
 from lxml import etree
 
-
-
 paper = "市场星报"
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -45,7 +43,10 @@ def get_shichangxing_paper(paper_time, queue_id, webpage_id):
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers, verify=False)
             time.sleep(1)
-            bm_content = bm_response.content.decode()
+            try:
+                bm_content = bm_response.content.decode()
+            except:
+                continue
             bm_html = etree.HTML(bm_content)
             # day使用url中的日期
             # day = bm_html.xpath()
@@ -66,7 +67,10 @@ def get_shichangxing_paper(paper_time, queue_id, webpage_id):
                 # 获取文章内容
                 article_response = requests.get(article_url, headers=headers, verify=False)
                 time.sleep(1)
-                article_content = article_response.content.decode()
+                try:
+                    article_content = article_response.content.decode()
+                except:
+                    continue
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()"))
@@ -113,3 +117,5 @@ def get_shichangxing_paper(paper_time, queue_id, webpage_id):
     else:
         raise Exception(f'该日期没有报纸')
 
+
+# get_shichangxing_paper("2024-08-06", 1111, 22222)

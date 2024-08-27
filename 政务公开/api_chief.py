@@ -198,14 +198,14 @@ def judging_criteria(title, article_content):
         return False
 
 
-def judge_url_repeat(url):
+def judge_url_repeat(uni_key):
     """
     判断版面是否重复
     :param origin: 原始数据
     :return:
     """
     # 创建版面链接集合
-    url_set = set()
+    md5_set = set()
     # 连接数据库
     conn_test = mysql.connector.connect(
         host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -215,13 +215,13 @@ def judge_url_repeat(url):
     )
     cursor_test = conn_test.cursor()
     # 获取版面来源的版面链接
-    cursor_test.execute(f"SELECT id, title_url FROM col_chief_public")
+    cursor_test.execute(f"SELECT id, md5_key FROM col_chief_public")
     rows = cursor_test.fetchall()
-    for id, title_url in rows:
-        url_set.add(title_url)
+    for id, md5_key in rows:
+        md5_set.add(md5_key)
     cursor_test.close()
     conn_test.close()
-    if url in url_set:
+    if uni_key in md5_set:
         return False
     else:
         return True

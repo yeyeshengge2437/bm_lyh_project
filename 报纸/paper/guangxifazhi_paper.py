@@ -15,7 +15,7 @@ co = co.set_argument('--no-sandbox')
 co = co.headless()
 co.set_paths(local_port=9118)
 
-paper = "广西法制日报"
+paper = "广西法治日报"
 
 today = datetime.now().strftime('%Y-%m-%d')
 

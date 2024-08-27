@@ -57,7 +57,7 @@ def get_xinwen_queue_url(zhao_type, num=None):
     page.quit()
 
 
-def get_gonggao_data(zhao_type):
+def get_gonggao_data(queue_id, webpage_id, zhao_type, crawl_num=None):
     origin = '国家市场监督管理总局缺陷产品召回技术中心'
     if zhao_type == '汽车':
         url = 'https://www.samrdprc.org.cn/qczh/qczhgg1/'
@@ -85,6 +85,8 @@ def get_gonggao_data(zhao_type):
     html = etree.HTML(res.content.decode())
     page_num = ''.join(html.xpath("//div[@class='page']//text()"))
     page_num = ''.join(re.findall(r'var countPage = (\d+)//共多少页', page_num))
+    if not crawl_num:
+        page_num = int(page_num)
     for i in range(1, int(page_num) + 1):
         if i == 1:
             new_url = url + 'index.html'
@@ -101,12 +103,6 @@ def get_gonggao_data(zhao_type):
             html = etree.HTML(response2.content.decode())
             title = ''.join(html.xpath("//div[@class='show_tit']/h1/text()"))
             content = ''.join(html.xpath("//div[@class='table']/table/tbody//text()")).strip()
-            if content == '':
-                content = ''.join(html.xpath("//div[@class='TRS_Editor']/span//text()")).strip()
-            if content == '':
-                content = ''.join(html.xpath("//div[@class='TRS_Editor']/div/p//text()")).strip()
-            if content == '':
-                content = ''.join(html.xpath("//div[@class='TRS_Editor']/div/span/font//text()")).strip()
             con_html = html.xpath("//div[@class='table']")
             content_html = ''
             for con in con_html:
@@ -128,22 +124,22 @@ def get_gonggao_data(zhao_type):
                 host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
                 user="col2024",
                 password="Bm_a12a06",
-                database='col_test',
+                database='col',
             )
             cursor_test = conn_test.cursor()
             if judge_url_repeat(url):
-                insert_sql = "INSERT INTO col_chief_public (title,title_url, content,content_html, path,  source,pub_date, origin, origin_domain,create_date, MD5) VALUES (%s,%s, %s, %s,%s, %s, %s, %s, %s,%s,%s)"
+                insert_sql = "INSERT INTO col_chief_public (title,title_url, content,content_html, path,  source,pub_date, origin, origin_domain,create_date, md5_key, from_queue, webpage_id) VALUES (%s,%s, %s,%s,%s, %s,%s, %s, %s, %s, %s,%s,%s)"
                 cursor_test.execute(insert_sql, (
                     title, url2, content, content_html, article_path,
                     source, pub_date,
-                    origin, origin_domain, create_date, md5_key))
+                    origin, origin_domain, create_date, md5_key, queue_id, webpage_id))
 
                 conn_test.commit()
             cursor_test.close()
             conn_test.close()
 
 
-def get_xinwen_data(db, queue_id, webpage_id, database="col_test", num_page=None):
+def get_xinwen_data(queue_id, webpage_id, db, database="col_test", num_page=None):
     if redis_conn.llen(db) == 0 and db == 'canquechanpinzhaohui_car':
         get_xinwen_queue_url(zhao_type='汽车', num=num_page)
     if redis_conn.llen(db) == 0 and db == 'canquechanpinzhaohui_xiaofei':
@@ -173,13 +169,26 @@ def get_xinwen_data(db, queue_id, webpage_id, database="col_test", num_page=None
         html = etree.HTML(res.content.decode())
         title = ''.join(html.xpath("//div[@class='show_tit']/h1/text()"))
         content = ''.join(html.xpath("//div[@class='TRS_Editor']/p/text()")).strip()
-        if content == '':
+        if not content:
             content = ''.join(html.xpath("//div[@class='TRS_Editor']/span//text()")).strip()
-        if content == '':
+        if not content:
             content = ''.join(html.xpath("//div[@class='TRS_Editor']/div/p//text()")).strip()
-        if content == '':
+        if not content:
             content = ''.join(html.xpath("//div[@class='TRS_Editor']/div/span/font//text()")).strip()
+        if not content:
+            content = ''.join(html.xpath("//div[@class='TRS_Editor']/div/div/p//text()")).strip()
+        if not content:
+            content = ''.join(html.xpath("//div[@class='TRS_Editor']/div/div/span/span//p//text()")).strip()
+        if not content:
+            content = ''.join(html.xpath("//div[@class='TRS_Editor']/div[@class='TRS_Editor']//text()")).strip()
+        if not content:
+            content = ''.join(html.xpath("//div[@class='show_txt']/div[@class='union']//text()")).strip()
+        if not content:
+            content = ''.join(html.xpath("//div[@class='show_txt']/span//text()")).strip()
+        content = re.sub(r'(.TRS_Editor\s*[^{]*\{.*?})', '', content, flags=re.MULTILINE)
         con_html = html.xpath("//div[@class='TRS_Editor']")
+        if not con_html:
+            con_html = html.xpath("//div[@class='show_txt']")
         content_html = ''
         for con in con_html:
             content_html += etree.tostring(con, encoding='utf-8').decode()
@@ -208,14 +217,25 @@ def get_xinwen_data(db, queue_id, webpage_id, database="col_test", num_page=None
             cursor_test.execute(insert_sql, (
                 title, url, content, content_html, article_path,
                 source, pub_date,
-                origin, origin_domain, create_date, md5_key, queue_id, webpage_id,))
+                origin, origin_domain, create_date, md5_key, queue_id, webpage_id))
 
             conn_test.commit()
         cursor_test.close()
         conn_test.close()
 
 
-def get_data():
-    db_name = ['canquechanpinzhaohui_car', 'canquechanpinzhaohui_xiaofei']
-    for db in db_name:
-        get_xinwen_data(db, database="col_test")
+# 以下是执行函数————————————————————————————————————————
+def get_car_xinwen_data(queue_id, webpage_id):
+    get_xinwen_data(queue_id, webpage_id, db='canquechanpinzhaohui_car', database='col', num_page=10)
+
+
+def get_xiaofei_xinwen_data(queue_id, webpage_id):
+    get_xinwen_data(queue_id, webpage_id, db='canquechanpinzhaohui_xiaofei', database='col', num_page=10)
+
+
+def get_car_gg_data(queue_id, webpage_id):
+    get_gonggao_data(queue_id, webpage_id, zhao_type="汽车")
+
+
+def get_xiaofei_gg_data(queue_id, webpage_id):
+    get_gonggao_data(queue_id, webpage_id, zhao_type="消费品")

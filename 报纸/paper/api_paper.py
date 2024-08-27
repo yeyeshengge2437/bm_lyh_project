@@ -89,13 +89,13 @@ def paper_queue_delay(data=None):
         return None
 
 
-def upload_file_by_url(file_url, file_name, file_type, type="paper"):
+def upload_file_by_url(file_url, file_name, file_type, type="paper", verify=None):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
 
     }
     file_name = file_name + str(random.randint(1, 999999999))
-    r = requests.get(file_url, headers=headers)
+    r = requests.get(file_url, headers=headers, verify=verify)
     if r.status_code != 200:
         return "获取失败"
     pdf_path = f"{file_name}.{file_type}"
@@ -182,7 +182,7 @@ def judging_criteria(title, article_content):
                                  r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
 
     explicit_not_claims = re.compile(
-        r'(法院公告|减资公告|注销公告|清算公告|合并公告|出让公告|重组公告|调查公告|分立公告|重整公告|悬赏公告|注销登记公告)')
+        r'(法院公告|减资公告|注销公告|清算公告|合并公告|出让公告|重组公告|调查公告|分立公告|重整公告|悬赏公告|注销登记公告|施工公告|公益广告)')
 
     possible_claims = re.compile(r'^(?=.*(公告|公 告|无标题|广告)).{1,10}$')
 
