@@ -28,10 +28,12 @@ def get_xinwen_queue_url(zhao_type, num=None):
     if zhao_type == '汽车':
         page_html = etree.HTML(page.html)
         # 获取共有多少页
-        page_num = page_html.xpath("//span[@class='totalPages']/span/text()")
+        page_num = page_html.xpath("//div[@id='car_page']/span[@class='totalPages']/span/text()")
         if num:
             page_num = num
-        for i in range(1, int(page_num[0]) + 1):
+        else:
+            page_num = page_num
+        for i in range(1, int(page_num) + 1):
             url_html = etree.HTML(page.html)
             all_url = url_html.xpath("//ul[@id='car_ul']/li/a")
             for url1 in all_url:
@@ -45,7 +47,11 @@ def get_xinwen_queue_url(zhao_type, num=None):
         page.wait.ele_displayed('.consume_ul')
         page_html = etree.HTML(page.html)
         page_num = page_html.xpath("//div[@id='consume_page']/span[@class='totalPages']/span/text()")
-        for i in range(1, int(page_num[0]) + 1):
+        if num:
+            page_num = num
+        else:
+            page_num = page_num
+        for i in range(1, int(page_num) + 1):
             url_html = etree.HTML(page.html)
             all_url = url_html.xpath("//ul[@id='consume_ul']/li/a")
             for url1 in all_url:
@@ -87,6 +93,8 @@ def get_gonggao_data(queue_id, webpage_id, zhao_type, crawl_num=None):
     page_num = ''.join(re.findall(r'var countPage = (\d+)//共多少页', page_num))
     if not crawl_num:
         page_num = int(page_num)
+    else:
+        page_num = crawl_num
     for i in range(1, int(page_num) + 1):
         if i == 1:
             new_url = url + 'index.html'
@@ -103,7 +111,14 @@ def get_gonggao_data(queue_id, webpage_id, zhao_type, crawl_num=None):
             html = etree.HTML(response2.content.decode())
             title = ''.join(html.xpath("//div[@class='show_tit']/h1/text()"))
             content = ''.join(html.xpath("//div[@class='table']/table/tbody//text()")).strip()
+            if not content:
+                content = ''.join(html.xpath("//div[@class='TRS_Editor']/div[@class='TRS_Editor']/div//text()")).strip()
+            if not content:
+                content = ''.join(html.xpath("//div[@class='TRS_Editor']//table/tbody/tr/td//text()")).strip()
+
             con_html = html.xpath("//div[@class='table']")
+            if not con_html:
+                con_html = html.xpath("//div[@class='TRS_Editor']")
             content_html = ''
             for con in con_html:
                 content_html += etree.tostring(con, encoding='utf-8').decode()
@@ -226,16 +241,16 @@ def get_xinwen_data(queue_id, webpage_id, db, database="col_test", num_page=None
 
 # 以下是执行函数————————————————————————————————————————
 def get_car_xinwen_data(queue_id, webpage_id):
-    get_xinwen_data(queue_id, webpage_id, db='canquechanpinzhaohui_car', database='col', num_page=10)
+    get_xinwen_data(queue_id, webpage_id, db='canquechanpinzhaohui_car', database='col', num_page=4)
 
 
 def get_xiaofei_xinwen_data(queue_id, webpage_id):
-    get_xinwen_data(queue_id, webpage_id, db='canquechanpinzhaohui_xiaofei', database='col', num_page=10)
+    get_xinwen_data(queue_id, webpage_id, db='canquechanpinzhaohui_xiaofei', database='col', num_page=4)
 
 
 def get_car_gg_data(queue_id, webpage_id):
-    get_gonggao_data(queue_id, webpage_id, zhao_type="汽车")
+    get_gonggao_data(queue_id, webpage_id, zhao_type="汽车", crawl_num=4)
 
 
 def get_xiaofei_gg_data(queue_id, webpage_id):
-    get_gonggao_data(queue_id, webpage_id, zhao_type="消费品")
+    get_gonggao_data(queue_id, webpage_id, zhao_type="消费品", crawl_num=4)

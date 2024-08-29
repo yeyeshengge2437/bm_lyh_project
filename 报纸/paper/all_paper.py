@@ -38,7 +38,7 @@ from guizhou_paper import get_guizhou_paper  # 贵州日报
 from sichuanzhengxie_paper import get_sichuanzhenxie_paper  # 四川政协报
 from minzhuxieshang_paper import get_minzhuxieshang_paper  # 民主协商报
 from guizhouminzu_paper import get_guizhouminzu_paper  # 贵州民族报
-from hainannongken_paper import get_hainannongkeng_paper   # 海南农垦报
+from hainannongken_paper import get_hainannongkeng_paper  # 海南农垦报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -86,10 +86,10 @@ webpage_url_list = [
     'https://newpaper.dahe.cn/hnsb/html',
     'https://szb.gansudaily.com.cn/gsjjrb',
     'https://epaper.kf.cn/paper/kfrb',
-    # 'https://lyrb.lyd.com.cn',洛阳日报封ip
+    'https://lyrb.lyd.com.cn',  # 洛阳日报封ip，目前已解除
     'https://epaper.lnd.com.cn',
     'https://www.scxb.com.cn',
-    'https://tmrb.tmwcn.com/tmrb',
+    # 'https://tmrb.tmwcn.com/tmrb',  # 天门日报没有pdf
     'https://epaper.scjjrb.com',
     'https://www.wccdaily.com.cn',
     'https://epaper.cenews.com.cn',
@@ -118,6 +118,9 @@ webpage_url_list = [
     'http://dzb.xfrb.com.cn',
     'https://www.qhfzb.com',
     'https://www.sczx.gov.cn/newspaper',
+    'http://szb.mzxsb.com',
+    'http://47.108.237.88',
+    'http://www.hnnkb.cn',
 ]
 
 

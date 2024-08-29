@@ -97,7 +97,7 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper", verify=None
     file_name = file_name + str(random.randint(1, 999999999))
     r = requests.get(file_url, headers=headers, verify=verify)
     if r.status_code != 200:
-        return "获取失败"
+        return
     pdf_path = f"{file_name}.{file_type}"
     if not os.path.exists(pdf_path):
         fw = open(pdf_path, 'wb')
@@ -193,6 +193,35 @@ def judging_criteria(title, article_content):
         return True
     # 可能为债权公告
     elif possible_claims.search(title) and possible_content.search(article_content) and not explicit_not_claims.search(title):
+        return True
+    else:
+        return False
+
+
+def judging_bm_criteria(title):
+    """
+    判断是否为需要的版面
+    :param title: 文章标题
+    :return:
+    """
+    explicit_claims = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
+                                 r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
+
+    explicit_not_claims = re.compile(
+        r'(法院公告|减资公告|注销公告|清算公告|合并公告|出让公告|重组公告|调查公告|分立公告|重整公告|悬赏公告|注销登记公告|施工公告|公益广告)')
+
+    possible_claims = re.compile(r'(公告|公 告|无标题|广告)')
+    # 匹配汉字数
+    chinese_chars = re.findall(r'[\u4e00-\u9fff]', title)
+    chinese_count = len(chinese_chars)
+    # 若标题为空
+    if not title:
+        return True
+    # 若明确为债权标题
+    if explicit_claims.search(title) and not explicit_not_claims.search(title):
+        return True
+    # 若疑似为债权标题
+    elif possible_claims.search(title) and chinese_count < 10 and not explicit_not_claims.search(title):
         return True
     else:
         return False

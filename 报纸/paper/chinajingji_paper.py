@@ -8,12 +8,12 @@ import mysql.connector
 import requests
 from lxml import etree
 from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
-    judge_bm_repeat
+    judge_bm_repeat, judging_bm_criteria
 
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9117)
+co.set_paths().auto_port()
 
 
 
@@ -43,9 +43,9 @@ today = datetime.now().strftime('%Y-%m-%d')
 
 
 def get_chinajingji_paper(paper_time, queue_id, webpage_id):
+    page = ChromiumPage(co)
+    page.set.load_mode.none()
     try:
-        # 构造实例
-        page = ChromiumPage(co)
         params = {
             'date': paper_time,
             'btn_sch_date': '搜索',
@@ -89,7 +89,7 @@ def get_chinajingji_paper(paper_time, queue_id, webpage_id):
                     article_content = page.html
                     article_html = etree.HTML(article_content)
                     # 获取文章内容
-                    content = ''.join(article_html.xpath("//span[@id='Labelcontent']//text()"))
+                    content = ''.join(article_html.xpath("//div/div[3]/span//text()"))
                     # 上传到测试数据库
                     conn_test = mysql.connector.connect(
                         host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -98,7 +98,8 @@ def get_chinajingji_paper(paper_time, queue_id, webpage_id):
                         database="col",
                     )
                     cursor_test = conn_test.cursor()
-                    if bm_pdf not in pdf_set and ("公告" in article_name or judging_criteria(article_name, content)) and judge_bm_repeat(paper, bm_url):
+                    # print(bm_name, article_name, bm_pdf, content)
+                    if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
                         # 将报纸url上传
                         up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
                         pdf_set.add(bm_pdf)
@@ -135,11 +136,13 @@ def get_chinajingji_paper(paper_time, queue_id, webpage_id):
         else:
             page.quit()
             raise Exception(f'该日期没有报纸')
-    except Exception as e:
+    except:
+        page.quit()
         raise Exception(f'该日期没有报纸')
 
 
 
+get_chinajingji_paper('2024-08-23', 1111,2222)
 
 # # 设置最大重试次数
 # max_retries = 5

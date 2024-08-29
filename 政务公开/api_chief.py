@@ -171,41 +171,16 @@ def parse_pdf(pdf_url, pdf_name):
         return False
 
 
-def judging_criteria(title, article_content):
-    """
-    判断是否为债权公告
-    :param title: 报纸的标题
-    :param article_content: 报纸的内容
-    :return:
-    """
-    explicit_claims = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
-                                 r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
-
-    explicit_not_claims = re.compile(
-        r'(法院公告|减资公告|注销公告|清算公告|合并公告|出让公告|重组公告|调查公告|分立公告|重整公告|悬赏公告|注销登记公告)')
-
-    possible_claims = re.compile(r'^(?=.*(公告|公 告|无标题|广告)).{1,10}$')
-
-    possible_content = re.compile(r'.*(债权|债务|借款|催收)[^\W_]*(公告|通知)')
-    # 判断是否为债权公告
-    # 明确为债权公告
-    if explicit_claims.search(title) and not explicit_not_claims.search(title):
-        return True
-    # 可能为债权公告
-    elif possible_claims.search(title) and possible_content.search(article_content) and not explicit_not_claims.search(title):
-        return True
-    else:
-        return False
 
 
 def judge_url_repeat(uni_key):
     """
-    判断版面是否重复
+    判断链接是否重复
     :param origin: 原始数据
     :return:
     """
     # 创建版面链接集合
-    md5_set = set()
+    url_set = set()
     # 连接数据库
     conn_test = mysql.connector.connect(
         host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -215,13 +190,13 @@ def judge_url_repeat(uni_key):
     )
     cursor_test = conn_test.cursor()
     # 获取版面来源的版面链接
-    cursor_test.execute(f"SELECT id, md5_key FROM col_chief_public")
+    cursor_test.execute(f"SELECT id, title_url FROM col_chief_public")
     rows = cursor_test.fetchall()
-    for id, md5_key in rows:
-        md5_set.add(md5_key)
+    for id, title_url in rows:
+        url_set.add(title_url)
     cursor_test.close()
     conn_test.close()
-    if uni_key in md5_set:
+    if uni_key in url_set:
         return False
     else:
         return True

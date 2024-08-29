@@ -4,7 +4,7 @@ import re
 import time
 from datetime import datetime
 from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
-    judge_bm_repeat
+    judge_bm_repeat, judging_bm_criteria
 import mysql.connector
 import requests
 from lxml import etree
@@ -73,7 +73,7 @@ def get_kaifeng_paper(paper_time, queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
-                if bm_img not in img_set and ("公告" in article_name or judging_criteria(article_name, content)) and judge_bm_repeat(paper, bm_url):
+                if bm_img not in img_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
                     # 将报纸img上传
                     up_img = upload_file_by_url(bm_img, "开封日报", "jpg", "paper")
                     img_set.add(bm_img)

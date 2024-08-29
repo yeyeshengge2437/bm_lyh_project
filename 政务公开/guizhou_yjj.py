@@ -98,6 +98,7 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper"):
     os.remove(pdf_path)
     return result.get("value")["file_url"]
 
+
 def get_md5_set(database):
     hash_value_set = set()
     con_test = mysql.connector.connect(
@@ -114,10 +115,6 @@ def get_md5_set(database):
     return hash_value_set
 
 
-
-
-
-
 # 连接redis
 r = redis.Redis()
 
@@ -129,47 +126,49 @@ headers = {
     'sec-ch-ua-platform': '"Windows"',
 }
 
-hash_value_set = get_md5_set("col")
 
-response = requests.get('https://yjj.guizhou.gov.cn/gsgg/ypscxkgs/', headers=headers)
-if response.status_code == 200:
-    # 获取所有首要的URL
-    html_1 = etree.HTML(response.content.decode())
-    main_urls = html_1.xpath("//ul[@id='Left_Nav']/li/a/@href")
-    main_urls.append('https://yjj.guizhou.gov.cn/xwdt/tzgg/')
-    if not r.llen('guizhou_yjj'):
-        for main in main_urls:
-            if any(s in main for s in ['wtgysxzspsxgs', 'xzcf', 'sfgs']):  # 去除三项不要的数据
-                pass
-            else:
-                res_target = requests.get(main, headers=headers)
-                if res_target.status_code == 200:
-                    html_2 = etree.HTML(res_target.content.decode())
-                    time.sleep(2)
-                    # 获取一共有多少条数据
-                    page = html_2.xpath("//div[3]/div/div[2]/div[2]/script/text()")[0]
-                    page_num = re.findall(r'\d+', page)[0]
-
-                    for i in range(1, int(page_num) + 1):
-                        if i == 1:
-                            url = main + "index.html"
-                        else:
-                            url = main + "index_" + str(i - 1) + ".html"
-
-                        res_notices = requests.get(url, headers=headers)
+def get_url_data():
+    response = requests.get('https://yjj.guizhou.gov.cn/gsgg/ypscxkgs/', headers=headers)
+    if response.status_code == 200:
+        # 获取所有首要的URL
+        html_1 = etree.HTML(response.content.decode())
+        main_urls = html_1.xpath("//ul[@id='Left_Nav']/li/a/@href")
+        main_urls.append('https://yjj.guizhou.gov.cn/xwdt/tzgg/')
+        if not r.llen('guizhou_yjj'):
+            for main in main_urls:
+                if any(s in main for s in ['wtgysxzspsxgs', 'xzcf', 'sfgs']):  # 去除三项不要的数据
+                    pass
+                else:
+                    res_target = requests.get(main, headers=headers)
+                    if res_target.status_code == 200:
+                        html_2 = etree.HTML(res_target.content.decode())
                         time.sleep(2)
-                        html_3 = etree.HTML(res_notices.content.decode())
-                        notices = html_3.xpath("//div[@class='right-list-box']/ul/li/a")
-                        for notice in notices:
-                            title_url = "".join(notice.xpath("./@href")[0])
+                        # 获取一共有多少条数据
+                        page = html_2.xpath("//div[3]/div/div[2]/div[2]/script/text()")[0]
+                        page_num = re.findall(r'\d+', page)[0]
 
-                            r.lpush('guizhou_yjj', title_url)
-else:
-    print("获取任务队列失败")
-    pass
+                        for i in range(1, int(page_num) + 1):
+                            if i == 1:
+                                url = main + "index.html"
+                            else:
+                                url = main + "index_" + str(i - 1) + ".html"
+
+                            res_notices = requests.get(url, headers=headers)
+                            time.sleep(2)
+                            html_3 = etree.HTML(res_notices.content.decode())
+                            notices = html_3.xpath("//div[@class='right-list-box']/ul/li/a")
+                            for notice in notices:
+                                title_url = "".join(notice.xpath("./@href")[0])
+
+                                r.lpush('guizhou_yjj', title_url)
+    else:
+        print("获取任务队列失败")
+        pass
 
 
-def get_yjj_data(database):
+def get_yjj_data(queue_id, webpage_id, ):
+    hash_value_set = get_md5_set("col")
+    get_url_data()
     while r.llen('guizhou_yjj'):
         url = r.rpop('guizhou_yjj').decode()
         for url_key in ['xwdt/tzgg', 'gsgg', 'zwgk/jdhy']:
@@ -264,7 +263,7 @@ def get_yjj_data(database):
                         host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
                         user="col2024",
                         password="Bm_a12a06",
-                        database=database
+                        database='col'
                     )
                     cursor_test = conn_test.cursor()
 
@@ -295,27 +294,27 @@ def get_yjj_data(database):
                     cursor_test.close()
                     conn_test.close()
 
-# 设置最大重试次数
-max_retries = 5
-retries = 0
-while retries < max_retries:
-    value = paper_queue_next(webpage_url_list=['https://yjj.guizhou.gov.cn/xwdt/tzgg'])
-    queue_id = value['id']
-    webpage_id = value["webpage_id"]
-    try:
-        get_yjj_data("col")
-        success_data = {
-            'id': queue_id,
-            'description': '数据获取成功',
-        }
-        paper_queue_success(success_data)
-        break
-    except Exception as e:
-        retries += 1
-        fail_data = {
-            "id": queue_id,
-            "description": f"程序问题:{e}",
-        }
-        paper_queue_fail(fail_data)
-        print(f"第{retries}次获取失败，错误信息：{e}, 1小时后重试")
-        time.sleep(3610)  # 等待1小时后重试
+# # 设置最大重试次数
+# max_retries = 5
+# retries = 0
+# while retries < max_retries:
+#     value = paper_queue_next(webpage_url_list=['https://yjj.guizhou.gov.cn/xwdt/tzgg'])
+#     queue_id = value['id']
+#     webpage_id = value["webpage_id"]
+#     try:
+#         get_yjj_data(queue_id, webpage_id)
+#         success_data = {
+#             'id': queue_id,
+#             'description': '数据获取成功',
+#         }
+#         paper_queue_success(success_data)
+#         break
+#     except Exception as e:
+#         retries += 1
+#         fail_data = {
+#             "id": queue_id,
+#             "description": f"程序问题:{e}",
+#         }
+#         paper_queue_fail(fail_data)
+#         print(f"第{retries}次获取失败，错误信息：{e}, 1小时后重试")
+#         time.sleep(3610)  # 等待1小时后重试

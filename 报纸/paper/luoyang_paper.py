@@ -8,7 +8,7 @@ import mysql.connector
 import requests
 from lxml import etree
 from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
-    judge_bm_repeat
+    judge_bm_repeat, judging_bm_criteria
 
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
@@ -48,6 +48,7 @@ def get_luoyang_paper(paper_time, queue_id, webpage_id):
         base_url = f'https://lyrb.lyd.com.cn/html2/{paper_time}/'
         url = base_url + 'node_3.htm'
         page.get(url)
+        time.sleep(3)
         if page.url_available:
             html_1 = etree.HTML(page.html)
             # 获取所有版面的的链接
@@ -62,7 +63,7 @@ def get_luoyang_paper(paper_time, queue_id, webpage_id):
                 bm_pdf = pdf_domain + "".join(bm.xpath("./td[2]/a/@href")).strip('../../..')
                 # 获取版面详情
                 page.get(bm_url)
-                time.sleep(1)
+                time.sleep(2)
                 bm_content = page.html
                 bm_html = etree.HTML(bm_content)
 
@@ -131,6 +132,7 @@ def get_luoyang_paper(paper_time, queue_id, webpage_id):
 
         url = base_url + 'node_4105.htm'
         page.get(url)
+        time.sleep(3)
         if page.url_available:
             html_1 = etree.HTML(page.html)
             # 获取所有版面的的链接
@@ -145,7 +147,7 @@ def get_luoyang_paper(paper_time, queue_id, webpage_id):
                 bm_pdf = pdf_domain + "".join(bm.xpath("./td[@class='default'][2]/a/@href")).strip('../../..')
                 # 获取版面详情
                 page.get(bm_url)
-                time.sleep(1)
+                time.sleep(2)
                 bm_content = page.html
                 bm_html = etree.HTML(bm_content)
 
@@ -154,7 +156,7 @@ def get_luoyang_paper(paper_time, queue_id, webpage_id):
 
                 for article in all_article:
                     # 获取文章链接
-                    article_url = base_url + ''.join(article.xpath("./@href"))
+                    article_url = base_url + ''.join(article.xpath("./@href")).strip('./')
                     # 获取文章名称
                     article_name = ''.join(article.xpath(".//text()")).strip()
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -175,7 +177,7 @@ def get_luoyang_paper(paper_time, queue_id, webpage_id):
                         database="col",
                     )
                     cursor_test = conn_test.cursor()
-                    if bm_pdf not in pdf_set and ("公告" in article_name or judging_criteria(article_name, content)):
+                    if bm_pdf not in pdf_set and (judging_bm_criteria(article_name)):
                         # 将报纸url上传
                         up_pdf = upload_file_by_url(bm_pdf, "这是报纸", "pdf", "paper")
                         pdf_set.add(bm_pdf)

@@ -9,7 +9,7 @@ import mysql.connector
 import requests
 from lxml import etree
 from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
-    judge_bm_repeat
+    judge_bm_repeat, judging_bm_criteria
 
 
 def get_md5_set(database, table_name):
@@ -109,7 +109,7 @@ def get_qingdao_lastpaper(paper_time, queue_id, webpage_id):
                 )
                 cursor_test = conn_test.cursor()
                 # print(bm_name, article_name, content, bm_pdf)
-                if bm_pdf not in pdf_set and ("公告" in article_name or judging_criteria(article_name, content)) and hash_value not in md5_set:
+                if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and hash_value not in md5_set:
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, "青岛晚报", "pdf", "paper")
                     pdf_set.add(bm_pdf)

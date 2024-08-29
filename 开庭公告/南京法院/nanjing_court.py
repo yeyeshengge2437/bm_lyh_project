@@ -121,7 +121,7 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper"):
 
 
 def get_captcha():
-
+    time.sleep(8)
     # 获取验证码图片，并识别验证码
     img_yzm = page.ele(".el-image__inner").attr("src")[23:]
     # 将base64图片转换为图片文件
@@ -136,9 +136,9 @@ def get_captcha():
     # 清空输入框
     yzm_srk.clear()
     yzm_srk.click()
-    time.sleep(3)
+    time.sleep(8)
     yzm_srk.input(captcha)
-    time.sleep(5)
+
 
 
 def click_Inquire():
@@ -193,13 +193,13 @@ def run(destination_page):
     # 打开目标网页
     page.get("https://ssfw.njfy.gov.cn/#/ktggList")
     time.sleep(10)
-    # 点击日期
-    date = page.ele(".el-input__inner", index=5)
-    date.clear()
-    # 获取两个月之后的日期
-    date.input(time.strftime('%Y-%m-%d', time.localtime(time.time() + 60 * 60 * 24 * 60)))
-    # 点击回车
-    date.tab.actions.key_down('ENTER')
+    # # 点击日期
+    # date = page.ele(".el-input__inner", index=5)
+    # date.clear()
+    # # 获取两个月之后的日期
+    # date.input(time.strftime('%Y-%m-%d', time.localtime(time.time() + 60 * 60 * 24 * 60)))
+    # # 点击回车
+    # date.tab.actions.key_down('ENTER')
 
     page.wait(2)
 
@@ -411,6 +411,7 @@ while attempts < max_attempts:
         try:
             run(destination)
         except Exception as e:
+            page.quit()
             pass
         success_data = {
             'id': from_queue,

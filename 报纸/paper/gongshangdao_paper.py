@@ -2,7 +2,7 @@ import re
 import time
 from datetime import datetime
 from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
-    judge_bm_repeat
+    judge_bm_repeat, judging_bm_criteria
 import mysql.connector
 import requests
 from lxml import etree
@@ -76,7 +76,6 @@ headers = {
 today = datetime.now().strftime('%Y-%m-%d')
 
 
-
 def get_gongshangdao_paper(paper_time, queue_id, webpage_id):
     url = get_date_a(paper_time)
     # 将today的格式进行改变
@@ -127,7 +126,9 @@ def get_gongshangdao_paper(paper_time, queue_id, webpage_id):
                         database="col",
                     )
                     cursor_test = conn_test.cursor()
-                    if bm_img not in pdf_set and ("公告" in article_name or "分类信息" in article_name) and judge_bm_repeat(paper, bm_url):
+                    if bm_img not in pdf_set and (
+                            "分类信息" in article_name or judging_bm_criteria(article_name)) and judge_bm_repeat(paper,
+                                                                                                                 bm_url):
                         # 将报纸img上传
                         up_img = upload_file_by_url(bm_img, paper, "img", "paper")
                         pdf_set.add(bm_img)
@@ -144,7 +145,8 @@ def get_gongshangdao_paper(paper_time, queue_id, webpage_id):
                         insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
 
                         cursor_test.execute(insert_sql,
-                                            (bm_url, day, paper, article_name, content, article_url, create_time, queue_id,
+                                            (bm_url, day, paper, article_name, content, article_url, create_time,
+                                             queue_id,
                                              create_date, webpage_id))
                         conn_test.commit()
 
@@ -161,7 +163,6 @@ def get_gongshangdao_paper(paper_time, queue_id, webpage_id):
             raise Exception(f'该日期没有报纸')
     else:
         raise Exception(f'该日期没有报纸')
-
 
 # paper_queue = paper_queue_next(
 #             webpage_url_list=['https://epaper.lnd.com.cn'])

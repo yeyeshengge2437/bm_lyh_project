@@ -4,7 +4,7 @@ import re
 import time
 from datetime import datetime
 from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
-    judge_bm_repeat
+    judge_bm_repeat, judging_bm_criteria
 import mysql.connector
 import requests
 from lxml import etree
@@ -74,7 +74,7 @@ def get_chuxiong_paper(paper_time, queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
-                if bm_pdf not in pdf_set and ("公告" in article_name or judging_criteria(article_name, content)) and judge_bm_repeat(paper, bm_url):
+                if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
                     pdf_set.add(bm_pdf)
