@@ -171,12 +171,10 @@ def parse_pdf(pdf_url, pdf_name):
         return False
 
 
-
-
-def judge_url_repeat(uni_key):
+def judge_url_repeat(origin):
     """
     判断链接是否重复
-    :param origin: 原始数据
+    :param origin: 数据来源
     :return:
     """
     # 创建版面链接集合
@@ -190,13 +188,12 @@ def judge_url_repeat(uni_key):
     )
     cursor_test = conn_test.cursor()
     # 获取版面来源的版面链接
-    cursor_test.execute(f"SELECT id, title_url FROM col_chief_public")
+    cursor_test.execute(f"SELECT id, title_url FROM col_chief_public WHERE origin='{origin}'")
     rows = cursor_test.fetchall()
     for id, title_url in rows:
         url_set.add(title_url)
     cursor_test.close()
     conn_test.close()
-    if uni_key in url_set:
-        return False
-    else:
-        return True
+    return url_set
+
+

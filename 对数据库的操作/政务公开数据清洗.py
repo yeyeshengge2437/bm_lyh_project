@@ -14,17 +14,24 @@ conn_test = mysql.connector.connect(
 
 cursor_test = conn_test.cursor()
 cursor_test.execute(
-    f"SELECT id, title, content, content_html FROM col_chief_public WHERE origin = '国家市场监督管理总局缺陷产品召回技术中心'")
+    f"SELECT id, title_url, content, content_html FROM col_chief_public WHERE origin = '国家市场监督管理总局缺陷产品召回技术中心'")
 rows = cursor_test.fetchall()
 set_url = set()
-for id, title, content, content_html in rows:
-    if not content:
-        html = etree.HTML(content_html)
-        content = ''.join(html.xpath('//font//text()')).strip()
-        print(content)
-        insert_sql = "UPDATE col_chief_public SET content = %s WHERE id = %s"
-        cursor_test.execute(insert_sql, (content, id))
-        conn_test.commit()
+for id, title_url, content, content_html in rows:
+    if title_url not in set_url:
+        set_url.add(title_url)
+    else:
+        print(id, title_url)
+        # cursor_test.execute("DELETE FROM col_chief_public WHERE id = %s", (id,))
+        # conn_test.commit()
+
+    # if not content:
+    #     html = etree.HTML(content_html)
+    #     content = ''.join(html.xpath('//font//text()')).strip()
+    #     print(content)
+    #     insert_sql = "UPDATE col_chief_public SET content = %s WHERE id = %s"
+    #     cursor_test.execute(insert_sql, (content, id))
+    #     conn_test.commit()
 
         # if content:
 

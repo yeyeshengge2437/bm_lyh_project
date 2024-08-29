@@ -1,6 +1,6 @@
 import hashlib
 import time
-
+from api_chief import judge_url_repeat
 import mysql.connector
 from lxml import etree
 import re
@@ -99,21 +99,6 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper"):
     return result.get("value")["file_url"]
 
 
-def get_md5_set(database):
-    hash_value_set = set()
-    con_test = mysql.connector.connect(
-        host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
-        user="col2024",
-        password="Bm_a12a06",
-        database=database
-    )
-    cursor = con_test.cursor()
-    # 获取表中的MD5值
-    cursor.execute("SELECT MD5 FROM col_chief_public")
-    for row in cursor:
-        hash_value_set.add(row[0])
-    return hash_value_set
-
 
 # 连接redis
 r = redis.Redis()
@@ -166,13 +151,15 @@ def get_url_data():
         pass
 
 
-def get_yjj_data(queue_id, webpage_id, ):
-    hash_value_set = get_md5_set("col")
+def get_yjj_data(queue_id, webpage_id):
     get_url_data()
+    origin = "贵州药品监督管理局"
+    uni_set = judge_url_repeat(origin)
     while r.llen('guizhou_yjj'):
         url = r.rpop('guizhou_yjj').decode()
         for url_key in ['xwdt/tzgg', 'gsgg', 'zwgk/jdhy']:
-            if url_key in url:
+            if url_key in url and str(url) not in uni_set:
+                uni_set.add(url)
                 title_res = requests.get(url, headers=headers)
                 time.sleep(2)
                 if title_res.status_code == 200:
@@ -251,7 +238,7 @@ def get_yjj_data(queue_id, webpage_id, ):
                     origin_annex_data = ''
                     new_annex_data = ''
 
-                    origin = "贵州药品监督管理局"
+
                     origin_domain = 'http://yjj.guizhou.gov.cn/'
                     create_date = time.strftime('%Y-%m-%d', time.localtime(time.time()))
                     # 进行数据的去重
@@ -267,28 +254,25 @@ def get_yjj_data(queue_id, webpage_id, ):
                     )
                     cursor_test = conn_test.cursor()
 
-                    if hash_value not in hash_value_set:
-                        hash_value_set.add(hash_value)
-                        if annex_url_list:
-                            for annex_url in annex_url_list:
-                                try:
-                                    annex_url_type = annex_url.split('.')[-1]
-                                    if annex_url_type == 'html':
-                                        continue
-                                    origin_annex_data += annex_url + ','
-                                    new_annex_url = upload_file_by_url(file_url=annex_url, file_name='yjj',
-                                                                       file_type=annex_url_type,
-                                                                       type='other')
-                                    new_annex_data += new_annex_url + ','
-                                except Exception as e:
+                    if annex_url_list:
+                        for annex_url in annex_url_list:
+                            try:
+                                annex_url_type = annex_url.split('.')[-1]
+                                if annex_url_type == 'html':
                                     continue
-                        # 如果哈希值不在集合中，则进行插入操作
-                        insert_sql = "INSERT INTO col_chief_public (title,title_url, content,content_html, path, summary, annex, origin_annex, source,pub_date, origin, origin_domain, create_date,from_queue, webpage_id,md5_key) VALUES (%s,%s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s)"
-                        cursor_test.execute(insert_sql, (
-                            title_name, url, content, content_html, article_path, summary_str, new_annex_data,
-                            origin_annex_data,
-                            source, pub_date,
-                            origin, origin_domain, create_date, queue_id, webpage_id, hash_value))
+                                origin_annex_data += annex_url + ','
+                                new_annex_url = upload_file_by_url(file_url=annex_url, file_name='yjj',
+                                                                   file_type=annex_url_type,
+                                                                   type='other')
+                                new_annex_data += new_annex_url + ','
+                            except Exception as e:
+                                continue
+                    insert_sql = "INSERT INTO col_chief_public (title,title_url, content,content_html, path, summary, annex, origin_annex, source,pub_date, origin, origin_domain, create_date,from_queue, webpage_id,md5_key) VALUES (%s,%s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s)"
+                    cursor_test.execute(insert_sql, (
+                        title_name, url, content, content_html, article_path, summary_str, new_annex_data,
+                        origin_annex_data,
+                        source, pub_date,
+                        origin, origin_domain, create_date, queue_id, webpage_id, hash_value))
 
                     conn_test.commit()
                     cursor_test.close()

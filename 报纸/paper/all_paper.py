@@ -39,6 +39,7 @@ from sichuanzhengxie_paper import get_sichuanzhenxie_paper  # 四川政协报
 from minzhuxieshang_paper import get_minzhuxieshang_paper  # 民主协商报
 from guizhouminzu_paper import get_guizhouminzu_paper  # 贵州民族报
 from hainannongken_paper import get_hainannongkeng_paper  # 海南农垦报
+from guangzhou_paper import get_guangzhou_paper  # 广州日报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -77,9 +78,10 @@ methods = {
     '河南日报': get_henan_paper,
     '贵州日报': get_guizhou_paper,
     '四川政协报': get_sichuanzhenxie_paper,
-    '民主协商报': get_minzhuxieshang_paper,  # 未添加队列，'http://szb.mzxsb.com'
-    '贵州民族报': get_guizhouminzu_paper,  # 未添加队列，'http://47.108.237.88'
-    '海南农垦报': get_hainannongkeng_paper,  # 未添加队列，'http://www.hnnkb.cn'
+    '民主协商报': get_minzhuxieshang_paper,
+    '贵州民族报': get_guizhouminzu_paper,
+    '海南农垦报': get_hainannongkeng_paper,
+    '广州日报': get_guangzhou_paper,
 }
 
 webpage_url_list = [
@@ -121,6 +123,7 @@ webpage_url_list = [
     'http://szb.mzxsb.com',
     'http://47.108.237.88',
     'http://www.hnnkb.cn',
+    'https://newspaper.gzdaily.cn'
 ]
 
 

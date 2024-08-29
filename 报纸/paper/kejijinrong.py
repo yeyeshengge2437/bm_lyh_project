@@ -61,7 +61,7 @@ def get_kejijinrong_paper(paper_time, queue_id, webpage_id):
     url = base_url + f'{node_key}'
     response = requests.get(url, headers=headers)
     time.sleep(2)
-    if response.status_code == 200:
+    try:
         html = etree.HTML(response.content.decode())
         # 获取当日报纸的所有版面
         all_bm = html.xpath("//div[@class='main-ednav-nav']/dl")
@@ -137,9 +137,8 @@ def get_kejijinrong_paper(paper_time, queue_id, webpage_id):
             'description': '成功',
         }
         paper_queue_success(success_data)
-    else:
-        raise Exception(f'程序出错')
-
+    except Exception as e:
+        raise Exception(e)
 
 # queue_id = 111
 # webpage_id = 1111

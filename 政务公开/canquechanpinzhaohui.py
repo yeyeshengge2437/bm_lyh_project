@@ -15,7 +15,7 @@ from lxml import etree
 redis_conn = redis.Redis()
 
 co = ChromiumOptions()
-co = co.set_paths(local_port=9120)
+co = co.set_paths().auto_port()
 co = co.set_argument('--no-sandbox')  # 关闭沙箱模式, 解决`$DISPLAY`报错
 co = co.headless(True)  # 开启无头模式, 解决`浏览器无法连接`报错
 
@@ -65,6 +65,7 @@ def get_xinwen_queue_url(zhao_type, num=None):
 
 def get_gonggao_data(queue_id, webpage_id, zhao_type, crawl_num=None):
     origin = '国家市场监督管理总局缺陷产品召回技术中心'
+    uni_set = judge_url_repeat(origin)
     if zhao_type == '汽车':
         url = 'https://www.samrdprc.org.cn/qczh/qczhgg1/'
     if zhao_type == '消费品':
@@ -142,7 +143,8 @@ def get_gonggao_data(queue_id, webpage_id, zhao_type, crawl_num=None):
                 database='col',
             )
             cursor_test = conn_test.cursor()
-            if judge_url_repeat(url):
+            if url2 not in uni_set:
+                uni_set.add(url2)
                 insert_sql = "INSERT INTO col_chief_public (title,title_url, content,content_html, path,  source,pub_date, origin, origin_domain,create_date, md5_key, from_queue, webpage_id) VALUES (%s,%s, %s,%s,%s, %s,%s, %s, %s, %s, %s,%s,%s)"
                 cursor_test.execute(insert_sql, (
                     title, url2, content, content_html, article_path,
@@ -160,6 +162,7 @@ def get_xinwen_data(queue_id, webpage_id, db, database="col_test", num_page=None
     if redis_conn.llen(db) == 0 and db == 'canquechanpinzhaohui_xiaofei':
         get_xinwen_queue_url(zhao_type='消费品', num=num_page)
     origin = '国家市场监督管理总局缺陷产品召回技术中心'
+    uni_set = judge_url_repeat(origin)
     while redis_conn.llen(db) != 0:
         url = redis_conn.lpop(db).decode()
         headers = {
@@ -227,7 +230,8 @@ def get_xinwen_data(queue_id, webpage_id, db, database="col_test", num_page=None
             database=database
         )
         cursor_test = conn_test.cursor()
-        if judge_url_repeat(url):
+        if url not in uni_set:
+            uni_set.add(url)
             insert_sql = "INSERT INTO col_chief_public (title,title_url, content,content_html, path,  source,pub_date, origin, origin_domain,create_date, md5_key, from_queue, webpage_id) VALUES (%s,%s, %s,%s,%s, %s,%s, %s, %s,%s, %s, %s,%s)"
             cursor_test.execute(insert_sql, (
                 title, url, content, content_html, article_path,

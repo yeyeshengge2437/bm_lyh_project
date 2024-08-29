@@ -136,13 +136,12 @@ def get_chinajingji_paper(paper_time, queue_id, webpage_id):
         else:
             page.quit()
             raise Exception(f'该日期没有报纸')
-    except:
+    except Exception as e:
         page.quit()
-        raise Exception(f'该日期没有报纸')
 
 
 
-get_chinajingji_paper('2024-08-23', 1111,2222)
+# get_chinajingji_paper('2024-08-23', 1111,2222)
 
 # # 设置最大重试次数
 # max_retries = 5

@@ -3,6 +3,8 @@ import time
 from canquechanpinzhaohui import get_car_xinwen_data, get_xiaofei_xinwen_data, get_car_gg_data, get_xiaofei_gg_data
 from guizhou_yjj import get_yjj_data
 from api_chief import paper_queue_next, paper_queue_success, paper_queue_fail
+from chinadizhikancha import get_quanguoyichangminglu_data, get_quanguodizhikanchadanwei_data, \
+    get_yanzhongshixinmingdan_data
 
 methods = {
     'https://www.samrdprc.org.cn/qczh/gnzhqc/': get_car_xinwen_data,  # 召回汽车新闻
@@ -10,6 +12,9 @@ methods = {
     'https://www.samrdprc.org.cn/qczh/qczhgg1': get_car_gg_data,  # 召回汽车公告
     'https://www.samrdprc.org.cn/xfpzh/xfpzhgg': get_xiaofei_gg_data,  # 召回消费品公告
     'https://yjj.guizhou.gov.cn/xwdt/tzgg': get_yjj_data,  # 贵州省药品监督管理局
+    'https://dkjgfw.mnr.gov.cn/#/site/credit/abnormal': get_quanguoyichangminglu_data,  # 全国异常名录
+    'https://dkjgfw.mnr.gov.cn/#/site/unit/1': get_quanguodizhikanchadanwei_data,  # 全国地质勘查单位
+    'https://dkjgfw.mnr.gov.cn/#/site/credit/blacklist': get_yanzhongshixinmingdan_data,  # 全国地质勘察行业严重失信名单
 }
 
 web_list = [
@@ -17,7 +22,10 @@ web_list = [
     'https://www.samrdprc.org.cn/xfpzh/xfpgnzh',
     'https://www.samrdprc.org.cn/qczh/qczhgg1',
     'https://www.samrdprc.org.cn/xfpzh/xfpzhgg',
-    # 'https://yjj.guizhou.gov.cn/xwdt/tzgg',  # 已在服务器上运行
+    'https://yjj.guizhou.gov.cn/xwdt/tzgg',
+    'https://dkjgfw.mnr.gov.cn/#/site/credit/abnormal',
+    'https://dkjgfw.mnr.gov.cn/#/site/unit/1',
+    'https://dkjgfw.mnr.gov.cn/#/site/credit/blacklist',
 ]
 
 while True:
