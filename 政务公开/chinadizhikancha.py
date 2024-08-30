@@ -38,20 +38,21 @@ headers = {
 
 
 def get_quanguoyichangminglu_data(queue_id, webpage_id):
-    page = ChromiumPage()
-    page.set.load_mode.none()
-    try:
-        json_data = {
-            'dwGuid': None,
-        }
 
-        abnormal_response = requests.post(
-            'https://dkjgfw.mnr.gov.cn/dks-webapi/site/DzkcAbnormalList/listNoLand',
-            headers=headers,
-            json=json_data,
-        )
-        all_datas = abnormal_response.json()
-        if all_datas["succeed"] == "yes":
+    json_data = {
+        'dwGuid': None,
+    }
+
+    abnormal_response = requests.post(
+        'https://dkjgfw.mnr.gov.cn/dks-webapi/site/DzkcAbnormalList/listNoLand',
+        headers=headers,
+        json=json_data,
+    )
+    all_datas = abnormal_response.json()
+    if all_datas["succeed"] == "yes":
+        page = ChromiumPage()
+        page.set.load_mode.none()
+        try:
             origin = "全国地质勘察行业监管服务平台"
             uni_set = judge_url_repeat(origin)
             for data in all_datas["result"]:
@@ -141,10 +142,12 @@ def get_quanguoyichangminglu_data(queue_id, webpage_id):
                     # print(title, title_url, summary, content, cont_html, path)
                     cursor_test.close()
                     conn_test.close()
-        page.quit()
-    except Exception as e:
-        page.quit()
-        raise e
+            page.quit()
+        except Exception as e:
+            page.quit()
+            raise e
+
+
 
 
 def get_quanguodizhikanchadanwei_data(queue_id, webpage_id):
@@ -172,7 +175,6 @@ def get_quanguodizhikanchadanwei_data(queue_id, webpage_id):
                 database='col',
             )
 
-            repeat = -9999
             origin = "全国地质勘察行业监管服务平台"
             uni_set = judge_url_repeat(origin)
             for data in all_datas["result"]:
@@ -256,11 +258,6 @@ def get_quanguodizhikanchadanwei_data(queue_id, webpage_id):
                         origin, origin_domain, create_date, md5_key, queue_id, webpage_id))
                     conn_test.commit()
                     cursor_test.close()
-
-                else:
-                    repeat += 1
-                    if repeat == 100:
-                        break
 
             conn_test.close()
             page.quit()

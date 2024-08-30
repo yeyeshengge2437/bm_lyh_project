@@ -54,12 +54,12 @@ def get_gansujingji_paper(paper_time, queue_id, webpage_id):
                     # 如果文章名中包含关键词，则进行下载
                     art_res = requests.get(article_url, headers=headers)
                     time.sleep(2)
-                    if art_res.status_code == 200:
+                    try:
                         html_3 = etree.HTML(art_res.content.decode())
                         # 获取文章内容
                         article_content = "".join(
                             html_3.xpath("//div[@class='detail-art']/div[@id='ozoom']/founder-content/p/text()"))
-                    else:
+                    except:
                         article_content = ''
                     conn_test = mysql.connector.connect(
                         host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -71,7 +71,7 @@ def get_gansujingji_paper(paper_time, queue_id, webpage_id):
 
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
-
+                    # print(bm_name, article_name, article_url, article_content)
                     if original_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
                         pdf_set.add(original_pdf)
                         pdf_url = upload_file_by_url(original_pdf, paper, 'pdf')
@@ -112,7 +112,7 @@ def get_gansujingji_paper(paper_time, queue_id, webpage_id):
 # webpage_id = paper_queue["webpage_id"]
 # # queue_id = '1111111111'
 # # webpage_id = '2222'
-# get_gansujingji_paper(today, queue_id, webpage_id)
+# get_gansujingji_paper('2024-08-26', 111, 1111)
 
 
 

@@ -45,6 +45,8 @@ today = datetime.now().strftime('%Y-%m-%d')
 def get_chinajingji_paper(paper_time, queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
+    # 取消所有的弹出框
+    page.set.auto_handle_alert()
     try:
         params = {
             'date': paper_time,
@@ -138,6 +140,7 @@ def get_chinajingji_paper(paper_time, queue_id, webpage_id):
             raise Exception(f'该日期没有报纸')
     except Exception as e:
         page.quit()
+        raise Exception(e)
 
 
 

@@ -14,16 +14,14 @@ conn_test = mysql.connector.connect(
 
 cursor_test = conn_test.cursor()
 cursor_test.execute(
-    f"SELECT id, title_url, content, content_html FROM col_chief_public WHERE origin = '国家市场监督管理总局缺陷产品召回技术中心'")
+    f"SELECT id,title, title_url, content, content_html FROM col_chief_public WHERE origin = '全国地质勘察行业监管服务平台'")
 rows = cursor_test.fetchall()
 set_url = set()
-for id, title_url, content, content_html in rows:
-    if title_url not in set_url:
-        set_url.add(title_url)
-    else:
-        print(id, title_url)
-        # cursor_test.execute("DELETE FROM col_chief_public WHERE id = %s", (id,))
-        # conn_test.commit()
+count = 0
+for id, title, title_url, content, content_html in rows:
+    if "全国地质勘查" in title:
+        count += 1
+print(count)
 
     # if not content:
     #     html = etree.HTML(content_html)

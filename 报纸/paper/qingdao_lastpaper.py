@@ -51,7 +51,7 @@ headers = {
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"Windows"',
 }
-pdf_domain = 'https://epaper.guanhai.com.cn/conpaper/'
+pdf_domain = 'https://epaper.guanhai.com.cn/conpaper/qdwb/'
 today = datetime.now().strftime('%Y-%m-%d')
 
 def get_qingdao_lastpaper(paper_time, queue_id, webpage_id):

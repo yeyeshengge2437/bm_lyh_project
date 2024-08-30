@@ -40,6 +40,9 @@ from minzhuxieshang_paper import get_minzhuxieshang_paper  # 民主协商报
 from guizhouminzu_paper import get_guizhouminzu_paper  # 贵州民族报
 from hainannongken_paper import get_hainannongkeng_paper  # 海南农垦报
 from guangzhou_paper import get_guangzhou_paper  # 广州日报
+from shenzhen_lastpaper import get_shenzhen_lastpaper  # 深圳晚报
+from shenzhenshang_paper import get_shenzhenshang_paper  # 深圳商报
+from jingbao_paper import get_jingbao_paper  # 晶报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -82,6 +85,9 @@ methods = {
     '贵州民族报': get_guizhouminzu_paper,
     '海南农垦报': get_hainannongkeng_paper,
     '广州日报': get_guangzhou_paper,
+    '深圳晚报': get_shenzhen_lastpaper,  # 未在队列 'https://wb.sznews.com'
+    '深圳商报': get_shenzhenshang_paper,  # 未在队列 'https://szsb.sznews.com'
+    '晶报': get_jingbao_paper,  # 未在队列 'https://jb.sznews.com'
 }
 
 webpage_url_list = [
@@ -136,7 +142,7 @@ def get_paper_data():
                 webpage_url_list=webpage_url_list)
             # 检查返回值是否符合预期
             if paper_queue is None or len(paper_queue) == 0:
-                time.sleep(30)
+                time.sleep(1800)
                 pass
             else:
                 webpage_name = paper_queue['webpage_name']
@@ -163,7 +169,7 @@ def get_paper_data():
                         paper_queue_fail(fail_data)
 
         except Exception as e:
-            time.sleep(30)
+            time.sleep(3600)
             print(f"解析过程中发生错误: {e}")
 
 
