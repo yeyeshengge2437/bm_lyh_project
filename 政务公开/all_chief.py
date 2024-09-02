@@ -5,6 +5,7 @@ from guizhou_yjj import get_yjj_data
 from api_chief import paper_queue_next, paper_queue_success, paper_queue_fail
 from chinadizhikancha import get_quanguoyichangminglu_data, get_quanguodizhikanchadanwei_data, \
     get_yanzhongshixinmingdan_data
+from shichangjianguanchufawenshu import get_shichangjianguanchufawenshu_data
 
 methods = {
     'https://www.samrdprc.org.cn/qczh/gnzhqc/': get_car_xinwen_data,  # 召回汽车新闻
@@ -15,6 +16,8 @@ methods = {
     'https://dkjgfw.mnr.gov.cn/#/site/credit/abnormal': get_quanguoyichangminglu_data,  # 全国异常名录
     'https://dkjgfw.mnr.gov.cn/#/site/unit/1': get_quanguodizhikanchadanwei_data,  # 全国地质勘查单位
     'https://dkjgfw.mnr.gov.cn/#/site/credit/blacklist': get_yanzhongshixinmingdan_data,  # 全国地质勘察行业严重失信名单
+    'https://cfws.samr.gov.cn/list.html?49_ss=16': get_shichangjianguanchufawenshu_data,  # 中国市场监管行政处罚文书网
+
 }
 
 web_list = [
@@ -26,6 +29,7 @@ web_list = [
     'https://dkjgfw.mnr.gov.cn/#/site/credit/abnormal',
     'https://dkjgfw.mnr.gov.cn/#/site/unit/1',
     'https://dkjgfw.mnr.gov.cn/#/site/credit/blacklist',
+    'https://cfws.samr.gov.cn/list.html?49_ss=16'
 ]
 
 while True:
