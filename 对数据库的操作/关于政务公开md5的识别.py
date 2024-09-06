@@ -15,21 +15,21 @@ conn_test = mysql.connector.connect(
 )
 cursor_test = conn_test.cursor()
 cursor_test.execute(
-    f"SELECT id, title, title_url, content,pub_date,origin_domain, md5_key FROM col_chief_public WHERE origin = '国家市场监督管理总局缺陷产品召回技术中心'")
+    f"SELECT id, title, title_url, content,pub_date,origin_domain, md5_key FROM col_chief_public WHERE id = '112756'")
 rows = cursor_test.fetchall()
 set_url = set()
 for id, title, title_url, content,pub_date,origin_domain, md5_key in rows:
-    if id == 14597:
-        print(title, content, pub_date, origin_domain)
-        uni_data = f'{str(title), str(content), str(pub_date), str(origin_domain)}'
-        md5_key1 = hashlib.md5(json.dumps(uni_data).encode('utf-8')).hexdigest()
-        print(md5_key1)
-        print(id, title_url, md5_key)
-    if id == 21411:
-        uni_data = f'{str(title), str(content), str(pub_date), str(origin_domain)}'
-        md5_key1 = hashlib.md5(json.dumps(uni_data).encode('utf-8')).hexdigest()
-        print(md5_key1)
-        print(id, title_url, md5_key)
+    # if id == 14597:
+    #     print(title, content, pub_date, origin_domain)
+    #     uni_data = f'{str(title), str(content), str(pub_date), str(origin_domain)}'
+    #     md5_key1 = hashlib.md5(json.dumps(uni_data).encode('utf-8')).hexdigest()
+    #     print(md5_key1)
+    #     print(id, title_url, md5_key)
+    # if id == 21411:
+    #     uni_data = f'{str(title), str(content), str(pub_date), str(origin_domain)}'
+    #     md5_key1 = hashlib.md5(json.dumps(uni_data).encode('utf-8')).hexdigest()
+    #     print(md5_key1)
+        print(id, title_url, title)
     # if title_url not in set_url:
     #     set_url.add(title_url)
     # else:

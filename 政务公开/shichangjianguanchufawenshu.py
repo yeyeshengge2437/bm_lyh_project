@@ -52,12 +52,15 @@ def get_data_num(query):
         'ciphertext': get_ciphertext()
     }
     response = requests.post('https://cfws.samr.gov.cn/queryDoc', headers=headers, data=data)
-    time.sleep(1)
+    time.sleep(0.4)
 
     data = response.json()
     if data['result']:
         data = data['result']
-        data_num = data['queryResult']['resultCount']
+        try:
+            data_num = data['queryResult']['resultCount']
+        except:
+            data_num = 0
         return int(data_num)
     else:
         return 0
@@ -98,7 +101,7 @@ def parse_data(url_set, query, queue_id, webpage_id):
         'ciphertext': get_ciphertext()
     }
     response = requests.post('https://cfws.samr.gov.cn/queryDoc', headers=headers, data=data)
-    time.sleep(1)
+    time.sleep(0.5)
     conn_test = mysql.connector.connect(
         host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
         user="col2024",
@@ -107,51 +110,59 @@ def parse_data(url_set, query, queue_id, webpage_id):
     )
     data = response.json()
     if data['result']:
-        data = data['result']
-        data = data['queryResult']['resultList']
-        origin = '中国市场监管行政处罚文书网'
-        origin_domain = 'https://cfws.samr.gov.cn/'
-        for detail in data:
-            wf_fact = ''
-            content_detail = ''
-            title_url = 'https://cfws.samr.gov.cn/detail.html?docid=' + detail['1']
-            if title_url not in url_set:
-                url_set.add(title_url)
+        try:
+            data = data['result']
+            data = data['queryResult']['resultList']
+            print(data)
+            origin = '中国市场监管行政处罚文书网'
+            origin_domain = 'https://cfws.samr.gov.cn/'
+            for detail in data:
+                wf_fact = ''
+                content_detail = ''
+                title_url = 'https://cfws.samr.gov.cn/detail.html?docid=' + detail['1']
+                if title_url not in url_set:
+                    url_set.add(title_url)
 
 
-                if detail.get('1'):
-                    data = {
-                        "ciphertext": get_ciphertext(),
-                        "docid": detail['1']
-                    }
-                    content_res = requests.post('https://cfws.samr.gov.cn/getDoc', headers=headers, data=data)
-                    time.sleep(1)
-                    content_data = content_res.json()
+                    if detail.get('1'):
+                        data = {
+                            "ciphertext": get_ciphertext(),
+                            "docid": detail['1']
+                        }
+                        content_res = requests.post('https://cfws.samr.gov.cn/getDoc', headers=headers, data=data)
+                        time.sleep(0.5)
+                        content_data = content_res.json()
 
-                    if content_data['result']:
-                        value = content_data['result']
-                        content_detail = f"处罚类型:{value['i4']}"
-                        wf_fact = value['i5']
-                content_data = detail['7']
-                decision_wsh = detail['2']
-                punish_organ = detail['14']
-                chufatime = detail['23']
-                # 将格式xxxxxxxx 转为xxxx-xx-xx
-                puish_date = chufatime[:4] + '-' + chufatime[4:6] + '-' + chufatime[6:]
-                name = detail['30']
-                uni_data = f'{str(decision_wsh), str(puish_date)}'
-                md5_key = hashlib.md5(json.dumps(uni_data).encode('utf-8')).hexdigest()
-                create_date = datetime.now().strftime('%Y-%m-%d')
-                print(name, title_url, decision_wsh, content_data, wf_fact, punish_organ, puish_date, content_detail)
-                cursor_test = conn_test.cursor()
-                insert_sql = "INSERT INTO col_punish (name, url, decision_wsh, punish_content,wf_fact, punish_organ, punish_date,content_detail,create_date, origin, origin_domain, md5_key, from_queue, webpage_id) VALUES (%s,%s, %s,%s,%s, %s,%s,%s,%s,%s,%s, %s,%s,%s)"
-                cursor_test.execute(insert_sql, (
-                    name, title_url, decision_wsh, content_data, wf_fact, punish_organ, puish_date, content_detail,
-                    create_date,
-                    origin, origin_domain, md5_key, queue_id, webpage_id))
-                conn_test.commit()
-                cursor_test.close()
+                        if content_data['result']:
+                            value = content_data['result']
+                            content_detail = f"处罚类型:{value['i4']}"
+                            wf_fact = value['i5']
+                    content_data = detail['7']
+                    decision_wsh = detail['2']
+                    punish_organ = detail['14']
+                    chufatime = detail['23']
+                    # 将格式xxxxxxxx 转为xxxx-xx-xx
+                    puish_date = chufatime[:4] + '-' + chufatime[4:6] + '-' + chufatime[6:]
+                    name = detail['30']
+                    uni_data = f'{str(decision_wsh), str(puish_date)}'
+                    md5_key = hashlib.md5(json.dumps(uni_data).encode('utf-8')).hexdigest()
+                    create_date = datetime.now().strftime('%Y-%m-%d')
+                    print(name, title_url, decision_wsh, content_data, wf_fact, punish_organ, puish_date, content_detail)
+                    cursor_test = conn_test.cursor()
+                    insert_sql = "INSERT INTO col_punish (name, url, decision_wsh, punish_content,wf_fact, punish_organ, punish_date,content_detail,create_date, origin, origin_domain, md5_key, from_queue, webpage_id) VALUES (%s,%s, %s,%s,%s, %s,%s,%s,%s,%s,%s, %s,%s,%s)"
+                    cursor_test.execute(insert_sql, (
+                        name, title_url, decision_wsh, content_data, wf_fact, punish_organ, puish_date, content_detail,
+                        create_date,
+                        origin, origin_domain, md5_key, queue_id, webpage_id))
+                    conn_test.commit()
+                    cursor_test.close()
+
+
+        except Exception as e:
+            time.sleep(10)
+            pass
         conn_test.close()
+
 
 
 def get_shichangjianguanchufawenshu_data(queue_id, webpage_id):
@@ -179,4 +190,27 @@ def get_shichangjianguanchufawenshu_data(queue_id, webpage_id):
         query.remove(city)
 
 
-
+while True:
+    paper_queue = paper_queue_next(webpage_url_list=['https://cfws.samr.gov.cn/list.html?49_ss=16'])
+    if paper_queue is None or len(paper_queue) == 0:
+        print('暂无任务')
+        time.sleep(180)
+        pass
+    else:
+        queue_id = paper_queue['id']
+        webpage_id = paper_queue["webpage_id"]
+        webpage_url = paper_queue["webpage_url"]
+        try:
+            get_shichangjianguanchufawenshu_data(queue_id, webpage_id)
+            data = {
+                "id": queue_id,
+                'description': f'数据获取成功',
+            }
+            paper_queue_success(data=data)
+        except Exception as e:
+            print(e)
+            data = {
+                "id": queue_id,
+                'description': f'程序异常:{e}',
+            }
+            paper_queue_fail(data=data)

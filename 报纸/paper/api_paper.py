@@ -178,21 +178,22 @@ def judging_criteria(title, article_content):
     :param article_content: 报纸的内容
     :return:
     """
-    explicit_claims = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
-                                 r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
+    explicit_claims = re.compile(
+        r'(债权|转让|受让|处置|招商|营销|联合|催收|催讨)(信息)?的?(通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)')
 
     explicit_not_claims = re.compile(
-        r'(法院公告|减资公告|注销公告|清算公告|合并公告|出让公告|重组公告|调查公告|分立公告|重整公告|悬赏公告|注销登记公告|施工公告|公益广告)')
+        r'(法院公告|减资公告|注销公告|清算公告|合并公告|出让公告|重组公告|调查公告|分立公告|重整公告|悬赏公告|注销登记公告|施工公告|公益广告|采购信息公告)')
 
     possible_claims = re.compile(r'^(?=.*(公告|公 告|无标题|广告)).{1,10}$')
 
-    possible_content = re.compile(r'.*(债权|债务|借款|催收)[^\W_]*(公告|通知)')
+    possible_content = re.compile(r'(债权|债务|借款|催收)的?(公告|通知)')
     # 判断是否为债权公告
     # 明确为债权公告
     if explicit_claims.search(title) and not explicit_not_claims.search(title):
         return True
     # 可能为债权公告
-    elif possible_claims.search(title) and possible_content.search(article_content) and not explicit_not_claims.search(title):
+    elif possible_claims.search(title) and possible_content.search(article_content) and not explicit_not_claims.search(
+            title):
         return True
     else:
         return False
@@ -204,8 +205,8 @@ def judging_bm_criteria(title):
     :param title: 文章标题
     :return:
     """
-    explicit_claims = re.compile(r'.*(?:债权|转让|受让|处置|招商|营销|信息|联合|催收|催讨).*'
-                                 r'(?:通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)$')
+    explicit_claims = re.compile(
+        r'(债权|转让|受让|处置|招商|营销|联合|催收|催讨)(信息)?的?(通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)')
 
     explicit_not_claims = re.compile(
         r'(法院公告|减资公告|注销公告|清算公告|合并公告|出让公告|重组公告|调查公告|分立公告|重整公告|悬赏公告|注销登记公告|施工公告|公益广告)')
@@ -222,6 +223,20 @@ def judging_bm_criteria(title):
         return True
     # 若疑似为债权标题
     elif possible_claims.search(title) and chinese_count < 10 and not explicit_not_claims.search(title):
+        return True
+    else:
+        return False
+
+
+def zhengquan_criteria(title):
+    """
+    判断证券类报纸是否有债权公告
+    :param title: 文章标题
+    :return:
+    """
+    explicit_claims = re.compile(
+        r'(债权|转让|受让|处置|招商|营销|联合|催收|催讨)(信息)?的?(通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)')
+    if explicit_claims.search(title):
         return True
     else:
         return False

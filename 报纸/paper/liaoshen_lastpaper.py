@@ -68,9 +68,12 @@ def get_liaoshen_lastpaper(paper_time, queue_id, webpage_id):
                 # 获取文章内容
                 article_response = requests.get(article_url, headers=headers, verify=False)
                 time.sleep(2)
-                article_data = article_response.content.decode()
-                article_html = etree.HTML(article_data)
-                content = ''.join(article_html.xpath("//div[@class='newsdetatext']/founder-content/p//text()"))
+                content = ''
+                if article_response.status_code == 200:
+                    article_data = article_response.content.decode()
+                    article_html = etree.HTML(article_data)
+                    if article_html:
+                        content = ''.join(article_html.xpath("//div[@class='newsdetatext']/founder-content/p//text()"))
                 pdf_set = set()
 
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -84,7 +87,8 @@ def get_liaoshen_lastpaper(paper_time, queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
-                if bm_pdf not in pdf_set and (judging_bm_criteria(article_name)) and judge_bm_repeat(paper, bm_url):
+                # print(bm_name, article_name, content, bm_pdf)
+                if bm_pdf not in pdf_set and judge_bm_repeat(paper, bm_url):
                     # 将报纸img上传
                     up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper", verify=False)
                     pdf_set.add(bm_pdf)
@@ -126,4 +130,4 @@ def get_liaoshen_lastpaper(paper_time, queue_id, webpage_id):
 # queue_id = paper_queue['id']
 # webpage_id = paper_queue["webpage_id"]
 # time = '2024-01-11'
-# get_liaoshen_lastpaper(time, queue_id, webpage_id)
+# get_liaoshen_lastpaper('2018-10-18', 111, 111)

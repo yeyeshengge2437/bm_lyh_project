@@ -267,6 +267,8 @@ def get_yjj_data(queue_id, webpage_id):
                                 new_annex_data += new_annex_url + ','
                             except Exception as e:
                                 continue
+                    new_annex_data = new_annex_data.rstrip(',')
+                    origin_annex_data = origin_annex_data.rstrip(',')
                     insert_sql = "INSERT INTO col_chief_public (title,title_url, content,content_html, path, summary, annex, origin_annex, source,pub_date, origin, origin_domain, create_date,from_queue, webpage_id,md5_key) VALUES (%s,%s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s)"
                     cursor_test.execute(insert_sql, (
                         title_name, url, content, content_html, article_path, summary_str, new_annex_data,

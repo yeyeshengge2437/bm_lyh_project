@@ -33,7 +33,7 @@ def get_shandongshang_paper(paper_time, queue_id, webpage_id):
     url = base_url + 'node_2.htm'
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
-        content = response.content.decode()
+        content = response.content
         html_1 = etree.HTML(content)
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//div[@id='scroll']/ul/li/div[@class='l']")
@@ -47,7 +47,7 @@ def get_shandongshang_paper(paper_time, queue_id, webpage_id):
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers)
             time.sleep(1)
-            bm_content = bm_response.content.decode()
+            bm_content = bm_response.content
             bm_html = etree.HTML(bm_content)
 
             # 获取所有文章的链接
@@ -64,10 +64,12 @@ def get_shandongshang_paper(paper_time, queue_id, webpage_id):
                 # 获取文章内容
                 article_response = requests.get(article_url, headers=headers)
                 time.sleep(1)
-                article_content = article_response.content.decode()
+                article_content = article_response.content
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//td/div[@id='ozoom']/founder-content//text()"))
+                if not content:
+                    content = ''.join(article_html.xpath("//div[2]/div[2]/div[2]/text()"))
                 article_title = ''.join(article_html.xpath("//div[@class='content']/h1[@class='tit']/text()"))
 
                 # 上传到测试数据库
@@ -78,6 +80,7 @@ def get_shandongshang_paper(paper_time, queue_id, webpage_id):
                     database="col"
                 )
                 cursor_test = conn_test.cursor()
+                # print(bm_name, article_name, article_url, content, bm_pdf, bm_url)
                 if bm_pdf not in pdf_set and (judging_bm_criteria(article_name) or "分类" in bm_name or "警界" in bm_name or "无标题" in article_name) and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
@@ -114,4 +117,4 @@ def get_shandongshang_paper(paper_time, queue_id, webpage_id):
 
 
 
-
+# get_shandongshang_paper('2012-09-25', 111, 2222)

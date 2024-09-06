@@ -95,26 +95,34 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper"):
 
     }
     file_name = file_name + str(random.randint(1, 999999999))
-    r = requests.get(file_url, headers=headers)
-    if r.status_code != 200:
-        return "获取失败"
-    pdf_path = f"{file_name}.{file_type}"
-    if not os.path.exists(pdf_path):
-        fw = open(pdf_path, 'wb')
-        fw.write(r.content)
-        fw.close()
-    # 上传接口
-    fr = open(pdf_path, 'rb')
-    file_data = {"file": fr}
-    url = produce_url + f"/file/upload/file?type={type}"
-    headers1 = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'
-    }
-    res = requests.post(url=url, headers=headers1, files=file_data)
-    result = res.json()
-    fr.close()
-    os.remove(pdf_path)
-    return result.get("value")["file_url"]
+    try:
+        r = requests.get(file_url, headers=headers)
+        if r.status_code != 200:
+            return None
+        pdf_path = f"{file_name}.{file_type}"
+    except:
+        return None
+    try:
+        if not os.path.exists(pdf_path):
+            fw = open(pdf_path, 'wb')
+            fw.write(r.content)
+            fw.close()
+        # 上传接口
+        fr = open(pdf_path, 'rb')
+        file_data = {"file": fr}
+        url = produce_url + f"/file/upload/file?type={type}"
+        headers1 = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'
+        }
+        res = requests.post(url=url, headers=headers1, files=file_data)
+        result = res.json()
+        fr.close()
+        os.remove(pdf_path)
+        return result.get("value")["file_url"]
+    except Exception as err:
+        if os.path.exists(pdf_path):
+            os.remove(pdf_path)
+        return None
 
 
 def date_conversion(date, origin_date, data_type):

@@ -4,7 +4,7 @@ import re
 import time
 from datetime import datetime
 from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
-    judge_bm_repeat, judging_bm_criteria
+    judge_bm_repeat, judging_bm_criteria, zhengquan_criteria
 import mysql.connector
 import requests
 from lxml import etree
@@ -77,7 +77,7 @@ def get_zhengquan_paper(paper_time,queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
-                if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
+                if bm_pdf not in pdf_set and zhengquan_criteria(article_name) and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
                     pdf_set.add(bm_pdf)
@@ -89,7 +89,7 @@ def get_zhengquan_paper(paper_time,queue_id, webpage_id):
                                          create_date, webpage_id))
                     conn_test.commit()
 
-                if judging_criteria(article_name, content):
+                if zhengquan_criteria(article_name):
 
                     # 上传到报纸的内容
                     insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"

@@ -47,8 +47,12 @@ from guizhoujiankang_paper import get_guizhoujiankang_paper  # 贵州健康报
 from sichuannongcun_paper import get_sichuannongcun_paper  # 四川农村日报
 from qingdaozao_paper import get_qingdaozao_paper  # 青岛早报
 from qinghaikeji_paper import get_qinghaikeji_paper  # 青海科技报
-from sichuankeji_paper import get_sichuankeji_paper # 四川科技报
-from guangxinongken_paper import get_guangxinongken_paper # 广西农垦报
+from sichuankeji_paper import get_sichuankeji_paper  # 四川科技报
+from guangxinongken_paper import get_guangxinongken_paper  # 广西农垦报
+from henankeji_paper import get_henankeji_paper  # 河南科技报
+from gansukeji_paper import get_gansukeji_paper  # 甘肃科技报
+from shenzhentequ_paper import get_shenzhentequ_paper  # 深圳特区报
+from henandahe_paper import get_dahe_paper  # 大河报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -91,15 +95,19 @@ methods = {
     '贵州民族报': get_guizhouminzu_paper,
     '海南农垦报': get_hainannongkeng_paper,
     '广州日报': get_guangzhou_paper,
-    '深圳晚报': get_shenzhen_lastpaper,  # 未在队列 'https://wb.sznews.com'
-    '深圳商报': get_shenzhenshang_paper,  # 未在队列 'https://szsb.sznews.com'
-    '晶报': get_jingbao_paper,  # 未在队列 'https://jb.sznews.com'
-    '贵州健康报': get_guizhoujiankang_paper,  # 未在队列 'http://www.gzswssy.com/paper'
-    '四川农村日报': get_sichuannongcun_paper,  # 未在队列 'https://country.scol.com.cn'
-    '青岛早报': get_qingdaozao_paper,  # 未在队列 'https://epaper.guanhai.com.cn/conpaper/qdzb'
-    '青海科技报': get_qinghaikeji_paper,  # 未在队列 'https://www.xepaper.com/qhkjb'
-    '四川科技报': get_sichuankeji_paper,  # 未在队列 'http://kjb.sckjw.com.cn'
-    '广西农垦报': get_guangxinongken_paper,  # 未在队列 'https://gxnkb.ihwrm.com'
+    '深圳晚报': get_shenzhen_lastpaper,
+    '深圳商报': get_shenzhenshang_paper,
+    '晶报': get_jingbao_paper,
+    '贵州健康报': get_guizhoujiankang_paper,
+    '四川农村日报': get_sichuannongcun_paper,
+    '青岛早报': get_qingdaozao_paper,
+    '青海科技报': get_qinghaikeji_paper,
+    '四川科技报': get_sichuankeji_paper,
+    '广西农垦报': get_guangxinongken_paper,
+    '河南科技报': get_henankeji_paper,  # 未在队列
+    '甘肃科技报': get_gansukeji_paper,  # 未在队列 'http://www.gskjb.cn/gskjb'
+    '深圳特区报': get_shenzhentequ_paper,
+    '大河报': get_dahe_paper,  # 未在队列 'https://newpaper.dahe.cn/dhb'
 }
 
 webpage_url_list = [
@@ -111,7 +119,7 @@ webpage_url_list = [
     'https://www.scxb.com.cn',
     # 'https://tmrb.tmwcn.com/tmrb',  # 天门日报没有pdf
     'https://epaper.scjjrb.com',
-    'https://www.wccdaily.com.cn',
+    # 'https://www.wccdaily.com.cn', # pdf无法获取
     'https://epaper.cenews.com.cn',
     'https://epaper.qingdaonews.com',
     'https://dzb.subaoxw.com',
@@ -141,7 +149,18 @@ webpage_url_list = [
     'http://szb.mzxsb.com',
     'http://47.108.237.88',
     'http://www.hnnkb.cn',
-    'https://newspaper.gzdaily.cn'
+    'https://newspaper.gzdaily.cn',
+    'http://www.gzswssy.com/paper',
+    'https://country.scol.com.cn',
+    'https://epaper.guanhai.com.cn/conpaper/qdzb',
+    'https://www.xepaper.com/qhkjb',
+    'http://kjb.sckjw.com.cn',
+    'https://sztqb.sznews.com',
+    'https://szsb.sznews.com',
+    'https://jb.sznews.com',
+    'https://wb.sznews.com',
+    'https://gxnkb.ihwrm.com',
+    'http://dzb.kjxww.cn',
 ]
 
 

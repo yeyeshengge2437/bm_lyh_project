@@ -1,0 +1,31 @@
+function k(e, n, r, i) {
+                var c, y, v, w, T, N = n;
+                2 !== b && (b = 2,
+                s && clearTimeout(s),
+                u = t,
+                a = i || "",
+                C.readyState = e > 0 ? 4 : 0,
+                c = e >= 200 && 300 > e || 304 === e,
+                r && (w = Mn(p, C, r)),
+                w = On(p, w, C, c),
+                c ? (p.ifModified && (T = C.getResponseHeader("Last-Modified"),
+                T && (x.lastModified[o] = T),
+                T = C.getResponseHeader("etag"),
+                T && (x.etag[o] = T)),
+                204 === e || "HEAD" === p.type ? N = "nocontent" : 304 === e ? N = "notmodified" : (N = w.state,
+                y = w.data,
+                v = w.error,
+                c = !v)) : (v = N,
+                (e || !N) && (N = "error",
+                0 > e && (e = 0))),
+                C.status = e,
+                C.statusText = (n || N) + "",
+                c ? h.resolveWith(f, [y, N, C]) : h.rejectWith(f, [C, N, v]),
+                C.statusCode(m),
+                m = t,
+                l && d.trigger(c ? "ajaxSuccess" : "ajaxError", [C, p, c ? y : v]),
+                g.fireWith(f, [C, N]),
+                l && (d.trigger("ajaxComplete", [C, p]),
+                --x.active || x.event.trigger("ajaxStop")))
+            }
+            return C
