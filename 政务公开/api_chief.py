@@ -205,3 +205,27 @@ def judge_url_repeat(origin):
     return url_set
 
 
+def judge_content_repeat(origin):
+    """
+    判断内容是否重复
+    :param origin: 数据来源
+    :return:
+    """
+    # 创建版面链接集合
+    con_set = set()
+    # 连接数据库
+    conn_test = mysql.connector.connect(
+        host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+        user="col2024",
+        password="Bm_a12a06",
+        database="col",
+    )
+    cursor_test = conn_test.cursor()
+    # 获取版面来源的版面链接
+    cursor_test.execute(f"SELECT id, content FROM col_chief_public WHERE origin='{origin}'")
+    rows = cursor_test.fetchall()
+    for id, content in rows:
+        con_set.add(content)
+    cursor_test.close()
+    conn_test.close()
+    return con_set

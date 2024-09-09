@@ -156,7 +156,7 @@ def get_gonggao_data(queue_id, webpage_id, zhao_type, crawl_num=None):
             conn_test.close()
 
 
-def get_xinwen_data(queue_id, webpage_id, db, database="col_test", num_page=None):
+def get_xinwen_data(queue_id, webpage_id, db, database="col", num_page=None):
     if redis_conn.llen(db) == 0 and db == 'canquechanpinzhaohui_car':
         get_xinwen_queue_url(zhao_type='汽车', num=num_page)
     if redis_conn.llen(db) == 0 and db == 'canquechanpinzhaohui_xiaofei':

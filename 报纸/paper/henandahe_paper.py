@@ -95,7 +95,7 @@ def get_dahe_paper(paper_time, queue_id, webpage_id):
                 if bm_pdf not in pdf_set and judge_bm_repeat(paper, bm_url):
                     pdf_set.add(bm_pdf)
 
-                    up_pdf = upload_file_by_url(bm_pdf, "河南日报", "pdf", "paper")
+                    up_pdf = upload_file_by_url(bm_pdf, "大河报", "pdf", "paper")
 
                     # 上传到报纸的图片或PDF
                     insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"

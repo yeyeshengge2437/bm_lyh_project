@@ -80,6 +80,8 @@ def get_chongqingchen_paper(paper_time, queue_id, webpage_id):
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@id='doccontent']/div[1]//text()")).strip()
+                if not content:
+                    content = ''.join(article_html.xpath("//div[@id='ScroLeft']/div[@class='newsdetatext']//text()")).strip()
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -88,7 +90,9 @@ def get_chongqingchen_paper(paper_time, queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
+                # print(bm_name, bm_url, article_name, article_url, content)
                 if bm_pdf not in pdf_set and judge_bm_repeat(paper, bm_url) and judging_bm_criteria(article_name):
+                    # print(article_name, article_url, bm_pdf)
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
                     pdf_set.add(bm_pdf)
@@ -101,8 +105,6 @@ def get_chongqingchen_paper(paper_time, queue_id, webpage_id):
                     conn_test.commit()
 
                 if judging_criteria(article_name, content):
-                # if 1:
-
 
                     # 上传到报纸的内容
                     insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
@@ -129,4 +131,4 @@ def get_chongqingchen_paper(paper_time, queue_id, webpage_id):
 # queue_id = 111
 # webpage_id = 1111
 # time1 = '2024-08-21'
-# get_chongqingchen_paper(time1, queue_id, webpage_id)
+# get_chongqingchen_paper("2024-03-26", 111, 222)

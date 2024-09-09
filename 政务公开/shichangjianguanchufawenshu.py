@@ -194,7 +194,7 @@ while True:
     paper_queue = paper_queue_next(webpage_url_list=['https://cfws.samr.gov.cn/list.html?49_ss=16'])
     if paper_queue is None or len(paper_queue) == 0:
         print('暂无任务')
-        time.sleep(180)
+        time.sleep(1800)
         pass
     else:
         queue_id = paper_queue['id']

@@ -42,10 +42,7 @@ def get_liaoningzfhcxjst_gonggao(queue_id, webpage_id):
     for i in range(1, int(page_num) + 1):
         response = requests.get(f'https://zjt.ln.gov.cn/zjt/gsgg/5dbcf8b5-{i}.shtml', headers=headers)
         time.sleep(2)
-        try:
-            res = response.content.decode()
-        except:
-            res = response.content.decode('gbk')
+        res = response.content.decode()
         html = etree.HTML(res)
         all_list = html.xpath("//ul[@class='tp-lb-mode']/li[@class='tp-lb-li']")
 
@@ -75,11 +72,14 @@ def get_liaoningzfhcxjst_gonggao(queue_id, webpage_id):
                 try:
                     res_html = title_res.content.decode()
                 except:
-                    res_html = title_res.content.decode('gbk')
+                    print(title_url)
+                    continue
                 title_html = etree.HTML(res_html)
                 content = "".join(title_html.xpath("//div[@class='xqy-xl-room']/p//text()")).strip()
                 if not content:
                     content = "".join(title_html.xpath("//div[@class='xqy-xl-room']//p//text()")).strip()
+                if not content:
+                    content = "".join(title_html.xpath("//div[@class='xqy-xl-room']//text()")).strip()
                 content_htmls = title_html.xpath("//div[@class='xqy-xl-cont']")
                 content_html = ""
                 for content_data in content_htmls:
@@ -92,7 +92,7 @@ def get_liaoningzfhcxjst_gonggao(queue_id, webpage_id):
                 if not annexs:
                     annexs = title_html.xpath("//div[@class='xqy-xl-room']//a/@href")
                 annexs_num = len(annexs)
-
+                # print(title, title_url, content)
                 if annexs_num > 0:
                     for annex in annexs:
                         if "htm" not in annex:

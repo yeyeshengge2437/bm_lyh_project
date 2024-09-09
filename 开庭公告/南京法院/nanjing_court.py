@@ -250,7 +250,7 @@ def run(destination_page):
             # 设置创建日期
             create_date = datetime.now().strftime('%Y-%m-%d')
             # 来源
-            origin = "南京中级人民法院开庭公告"
+            origin = "南京中级人民法院网上诉讼服务中心法院公告"
             # 来源域名
             origin_domain = "ssfw.njfy.gov.cn"
             if len(value) == 10:

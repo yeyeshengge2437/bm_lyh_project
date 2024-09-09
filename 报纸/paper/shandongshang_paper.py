@@ -81,17 +81,20 @@ def get_shandongshang_paper(paper_time, queue_id, webpage_id):
                 )
                 cursor_test = conn_test.cursor()
                 # print(bm_name, article_name, article_url, content, bm_pdf, bm_url)
-                if bm_pdf not in pdf_set and (judging_bm_criteria(article_name) or "分类" in bm_name or "警界" in bm_name or "无标题" in article_name) and judge_bm_repeat(paper, bm_url):
-                    # 将报纸url上传
-                    up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
-                    pdf_set.add(bm_pdf)
-                    # 上传到报纸的图片或PDF
-                    insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
+                if bm_pdf not in pdf_set and (judging_bm_criteria(article_name) or "分类" in bm_name or "警界" in bm_name) and judge_bm_repeat(paper, bm_url):
+                    try:
+                        # 将报纸url上传
+                        up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
+                        pdf_set.add(bm_pdf)
+                        # 上传到报纸的图片或PDF
+                        insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
 
-                    cursor_test.execute(insert_sql,
-                                        (day, paper, bm_name, bm_pdf, bm_url, up_pdf, create_time, queue_id,
-                                         create_date, webpage_id))
-                    conn_test.commit()
+                        cursor_test.execute(insert_sql,
+                                            (day, paper, bm_name, bm_pdf, bm_url, up_pdf, create_time, queue_id,
+                                             create_date, webpage_id))
+                        conn_test.commit()
+                    except:
+                        pass
 
                 if judging_criteria(article_name, content):
 
@@ -117,4 +120,4 @@ def get_shandongshang_paper(paper_time, queue_id, webpage_id):
 
 
 
-# get_shandongshang_paper('2012-09-25', 111, 2222)
+# get_shandongshang_paper('2012-09-22', 111, 2222)

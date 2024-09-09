@@ -53,6 +53,19 @@ from henankeji_paper import get_henankeji_paper  # 河南科技报
 from gansukeji_paper import get_gansukeji_paper  # 甘肃科技报
 from shenzhentequ_paper import get_shenzhentequ_paper  # 深圳特区报
 from henandahe_paper import get_dahe_paper  # 大河报
+from liaoningfazhi_paper import get_liaoningfazhi_paper  # 辽宁法治报
+from dalian_paper import get_dalian_paper  # 大连日报
+from dalian_lastpaper import get_dalian_lastpaper  # 大连晚报
+from shenyang_lastpaper import get_shenyang_lastpaper  # 沈阳晚报
+from chinazhishi_paper import get_chinazhishi_paper  # 中国知识产权报
+from chinafangdichan_paper import get_chinafangdichan_paper  # 中国房地产报
+from chinajijin_paper import get_chinajijin_paper  # 中国基金报
+from chinagaoxinjishu_paper import get_chinagaoxinjishu_paper  # 中国高新技术产业导报
+from chinalvyou_paper import get_chinalvyou_paper  # 中国旅游报
+from chinawenwu_paper import get_chinawenwu_paper  # 中国文物报
+from beijing_paper import get_beijing_paper  # 北京日报
+from nongmin_paper import get_nongmin_paper  # 农民日报
+from guangxizhengxie_paper import get_guangxizhengxie_paper  # 广西政协报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -104,10 +117,24 @@ methods = {
     '青海科技报': get_qinghaikeji_paper,
     '四川科技报': get_sichuankeji_paper,
     '广西农垦报': get_guangxinongken_paper,
-    '河南科技报': get_henankeji_paper,  # 未在队列
-    '甘肃科技报': get_gansukeji_paper,  # 未在队列 'http://www.gskjb.cn/gskjb'
+    '河南科技报': get_henankeji_paper,
+    '甘肃科技报': get_gansukeji_paper,
     '深圳特区报': get_shenzhentequ_paper,
-    '大河报': get_dahe_paper,  # 未在队列 'https://newpaper.dahe.cn/dhb'
+    '大河报': get_dahe_paper,
+    '辽宁法治报': get_liaoningfazhi_paper,
+    '大连日报': get_dalian_paper,
+    '大连晚报': get_dalian_lastpaper,
+    '沈阳晚报': get_shenyang_lastpaper,
+    '中国知识产权报': get_chinazhishi_paper,  # 未添加队列， 'http://sz.iprchn.com/bz/html/index.html'
+    '中国房地产报': get_chinafangdichan_paper,  # 未添加队列， 'https://flbook.com.cn/c/fhFB9tLQvm'
+    '中国基金报': get_chinajijin_paper,  # 未添加队列， 'https://www.chnfund.com/epaper'
+    '中国高新技术产业导报': get_chinagaoxinjishu_paper,  # 未添加队列， 'http://paper.chinahightech.com/pc/layout'
+    '中国旅游报': get_chinalvyou_paper,  # 未添加队列， 'https://www.ctnews.com.cn/paper', '2020-01-01'
+    '中国文物报': get_chinawenwu_paper,  # 未添加队列， 'http://www.zhongguowenwubao.com', '2022-07-01'
+    '北京日报': get_beijing_paper,  # 未添加队列， 'https://bjrbdzb.bjd.com.cn/bjrb', '2020-07-13'
+    '农民日报': get_nongmin_paper,  # 未添加队列， 'https://szb.farmer.com.cn', '2010-12-14'
+    '广西政协报': get_guangxizhengxie_paper,  # 未添加队列， 'http://www.gxzxbxwzx.com.cn/dzszb/szbcf/index.html', '2022-01-01'
+
 }
 
 webpage_url_list = [
@@ -161,6 +188,12 @@ webpage_url_list = [
     'https://wb.sznews.com',
     'https://gxnkb.ihwrm.com',
     'http://dzb.kjxww.cn',
+    'http://www.gskjb.cn/gskjb',
+    'https://newpaper.dahe.cn/dhb',
+    'https://epaper.lnd.com.cn/lnfzbpaper/pc/layout',
+    'http://szb.dltv.cn/epaper/dlrb/pc/layout',
+    'http://szb.dltv.cn/epaper/dlwb/pc/layout',
+    'https://epaper.syd.com.cn/sywb',
 ]
 
 
