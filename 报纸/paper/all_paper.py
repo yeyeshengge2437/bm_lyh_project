@@ -66,6 +66,10 @@ from chinawenwu_paper import get_chinawenwu_paper  # 中国文物报
 from beijing_paper import get_beijing_paper  # 北京日报
 from nongmin_paper import get_nongmin_paper  # 农民日报
 from guangxizhengxie_paper import get_guangxizhengxie_paper  # 广西政协报
+from changchun_lastpaper import get_changchun_lastpaper  # 长春晚报
+from yunnan_paper import get_yunnan_paper  # 云南日报
+from wulumuqi_lastpaper import get_wulumuqi_lastpaper  # 乌鲁木齐晚报
+from lasa_paper import get_lasa_paper  # 拉萨日报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -125,15 +129,19 @@ methods = {
     '大连日报': get_dalian_paper,
     '大连晚报': get_dalian_lastpaper,
     '沈阳晚报': get_shenyang_lastpaper,
-    '中国知识产权报': get_chinazhishi_paper,  # 未添加队列， 'http://sz.iprchn.com/bz/html/index.html'
-    '中国房地产报': get_chinafangdichan_paper,  # 未添加队列， 'https://flbook.com.cn/c/fhFB9tLQvm'
-    '中国基金报': get_chinajijin_paper,  # 未添加队列， 'https://www.chnfund.com/epaper'
-    '中国高新技术产业导报': get_chinagaoxinjishu_paper,  # 未添加队列， 'http://paper.chinahightech.com/pc/layout'
+    '中国知识产权报': get_chinazhishi_paper,
+    '中国房地产报': get_chinafangdichan_paper,
+    '中国基金报': get_chinajijin_paper,
+    '中国高新技术产业导报': get_chinagaoxinjishu_paper,
     '中国旅游报': get_chinalvyou_paper,  # 未添加队列， 'https://www.ctnews.com.cn/paper', '2020-01-01'
     '中国文物报': get_chinawenwu_paper,  # 未添加队列， 'http://www.zhongguowenwubao.com', '2022-07-01'
     '北京日报': get_beijing_paper,  # 未添加队列， 'https://bjrbdzb.bjd.com.cn/bjrb', '2020-07-13'
     '农民日报': get_nongmin_paper,  # 未添加队列， 'https://szb.farmer.com.cn', '2010-12-14'
     '广西政协报': get_guangxizhengxie_paper,  # 未添加队列， 'http://www.gxzxbxwzx.com.cn/dzszb/szbcf/index.html', '2022-01-01'
+    '长春晚报': get_changchun_lastpaper,  # 未添加队列， 'http://epaper.changchunews.com/ccwb/pc/paper/layout', '2017-04-22'
+    '云南日报': get_yunnan_paper,  # 未添加队列， 'https://yndaily.yunnan.cn', '2019-01-01'
+    '乌鲁木齐晚报': get_wulumuqi_lastpaper,  # '2024-06-07'
+    '拉萨日报': get_lasa_paper,  # '2024-01-01'
 
 }
 
@@ -141,7 +149,7 @@ webpage_url_list = [
     'https://newpaper.dahe.cn/hnsb/html',
     'https://szb.gansudaily.com.cn/gsjjrb',
     'https://epaper.kf.cn/paper/kfrb',
-    'https://lyrb.lyd.com.cn',  # 洛阳日报封ip，目前已解除
+    # 'https://lyrb.lyd.com.cn',  # 洛阳日报封ip，目前已解除
     'https://epaper.lnd.com.cn',
     'https://www.scxb.com.cn',
     # 'https://tmrb.tmwcn.com/tmrb',  # 天门日报没有pdf
@@ -194,6 +202,12 @@ webpage_url_list = [
     'http://szb.dltv.cn/epaper/dlrb/pc/layout',
     'http://szb.dltv.cn/epaper/dlwb/pc/layout',
     'https://epaper.syd.com.cn/sywb',
+    'http://sz.iprchn.com/bz/html/index.html',
+    'https://flbook.com.cn/c/fhFB9tLQvm',
+    'https://www.chnfund.com/epaper',
+    'http://paper.chinahightech.com/pc/layout',
+    'http://wlmqszb.womob.cn',
+    'http://www.lasaribao.cn',
 ]
 
 
@@ -239,10 +253,10 @@ def get_paper_data():
 
 if __name__ == '__main__':
     """
-    多进程1个
+    多进程3个
     """
     process_list = []
-    for i in range(1):
+    for i in range(3):
         process = Process(target=get_paper_data, args=())
         process_list.append(process)
 

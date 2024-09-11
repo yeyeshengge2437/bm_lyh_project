@@ -47,8 +47,8 @@ def get_guizhou_paper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
-
-
+            if not bm_html:
+                continue
             # 获取所有文章的链接
             all_article = bm_html.xpath("//ul/li[@class='resultList']/a")
             pdf_set = set()
@@ -75,6 +75,7 @@ def get_guizhou_paper(paper_time, queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
+                # print(bm_name, bm_pdf, article_name, article_url, content)
                 if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
@@ -114,5 +115,6 @@ def get_guizhou_paper(paper_time, queue_id, webpage_id):
     else:
         raise Exception(f'该日期没有报纸')
 
+# get_guizhou_paper('2022-07-07', 111, 222)
 
 

@@ -1,0 +1,14 @@
+一，使用xpath时：
+    1.基本用法
+        contains(string, substring)
+        string: 要搜索的原始字符串。
+        substring: 要检查是否存在于原始字符串中的子字符串。
+        例如：//div[contains(@class, 'header')]
+    2.检查文本内容是否包含特定的字符串：
+        //div[contains(text(), '特定字符串')]
+    3.使用 contains 与属性
+        在处理 XML 或 HTML 时，经常需要根据属性值的一部分来进行元素选择，contains 在这种情况下非常有用。
+        //tag[contains(@attribute, 'value')]
+            //tag: 选择所有名为 tag 的元素。
+            @attribute: 指定要检查的属性。
+            'value': 子字符串，我们想检查它是否存在于属性值中。

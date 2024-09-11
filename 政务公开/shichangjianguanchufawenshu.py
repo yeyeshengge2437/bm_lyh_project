@@ -170,23 +170,25 @@ def get_shichangjianguanchufawenshu_data(queue_id, webpage_id):
     url_set = judge_url_repeat('中国市场监管行政处罚文书网')
     for city in city_data:
         query.append(city)
+        parse_data(url_set, query, queue_id, webpage_id)
         if get_data_num(query) > 200:
             for year in year_data:
                 query.append(year)
+                parse_data(url_set, query, queue_id, webpage_id)
                 if get_data_num(query) > 200:
                     for chufa in chufa_type:
                         query.append(chufa)
                         parse_data(url_set, query, queue_id, webpage_id)
                         query.remove(chufa)
-                elif 0 < get_data_num(query) <= 200:
-                    parse_data(url_set, query, queue_id, webpage_id)
-                else:
-                    pass
+                # elif 0 < get_data_num(query) <= 200:
+                #     parse_data(url_set, query, queue_id, webpage_id)
+                # else:
+                #     pass
                 query.remove(year)
-        elif 0 < get_data_num(query) <= 200:
-            parse_data(url_set, query, queue_id, webpage_id)
-        else:
-            pass
+        # elif 0 < get_data_num(query) <= 200:
+        #     parse_data(url_set, query, queue_id, webpage_id)
+        # else:
+        #     pass
         query.remove(city)
 
 

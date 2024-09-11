@@ -30,7 +30,7 @@ def get_hainannongkeng_paper(paper_time, queue_id, webpage_id):
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m/%d')
     base_url = f'http://epaper.hnnkb.cn/hnnkb/html/{paper_time}/'
-    url = base_url + 'node_108477.htm'
+    url = base_url + 'node_1.htm'
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         content = response.content.decode()
