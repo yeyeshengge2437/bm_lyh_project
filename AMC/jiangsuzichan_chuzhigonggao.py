@@ -8,7 +8,7 @@ from lxml import etree
 import requests
 from DrissionPage import ChromiumPage, ChromiumOptions
 
-from AMC.api_paper import judge_bm_repeat, upload_file, judge_title_repeat, get_image, get_now_image
+from AMC.api_paper import judge_bm_repeat, upload_file, judge_title_repeat, get_image, get_now_image, upload_file_by_url
 
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
@@ -41,7 +41,7 @@ def get_jiangsuzichan_chuzhigonggao(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
     try:
-        for count in range(1, 36 + 1):
+        for count in range(20, 36 + 1):
             json_data = {
                 'body': {
                     'showStatus': 2,
@@ -65,8 +65,26 @@ def get_jiangsuzichan_chuzhigonggao(queue_id, webpage_id):
                     res_title_html = etree.HTML(res_title)
                     title_content = ''.join(res_title_html.xpath("//div[@class='assetsPost_contentContainer__EoCnw']//text()"))
                     annex = res_title_html.xpath("//div[@class='assetsPost_contentContainer__EoCnw']//a/@href")
+                    annex = res_title_html.xpath("//div[@class='wrapper']//a/@src")
                     if annex:
-                        print(annex)
+                        files = []
+                        original_url = []
+                        for ann in annex:
+                            if 'http' not in ann:
+                                ann = "https://www.jsamc.com.cn" + ann
+                                file_type = ann.split('.')[-1]
+                                if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z']:
+                                    file_url = upload_file_by_url(ann, "ningbofujian", file_type)
+                                    files.append(file_url)
+                                    original_url.append(ann)
+                    else:
+                        files = ''
+                        original_url = ''
+                    if not files:
+                        files = ''
+                        original_url = ''
+                    files = str(files)
+                    original_url = str(original_url)
                     title_html_info = res_title_html.xpath(
                         "//div[@class='assetsPost_postHeaderContainer__1M8R8']/h4")
                     content_1 = res_title_html.xpath("//div[@class='assetsPost_contentContainer__EoCnw']")
@@ -75,10 +93,7 @@ def get_jiangsuzichan_chuzhigonggao(queue_id, webpage_id):
                         content_html += etree.tostring(con, encoding='utf-8').decode()
                     for con in content_1:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
-                    try:
-                        image = get_image(page, title_url, "xpath=//div[@class='container detail']")
-                    except:
-                        image = get_now_image(page, title_url)
+                    image = get_image(page, title_url, "xpath=//div[@class='assetsPost_postContainer__2ziyr']")
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
                     # 上传到测试数据库
