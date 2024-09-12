@@ -8,12 +8,12 @@ import mysql.connector
 import requests
 from lxml import etree
 from DrissionPage import ChromiumPage, ChromiumOptions
-from AMC.api_paper import get_image, judge_bm_repeat, upload_file, judge_title_repeat
+from AMC.api_paper import get_image, judge_bm_repeat, upload_file, judge_title_repeat, upload_file_by_url, get_now_image
 
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9127)
+co.set_paths(local_port=9136)
 
 
 headers = {
@@ -22,55 +22,85 @@ headers = {
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
     'Pragma': 'no-cache',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'none',
+    'Sec-Fetch-User': '?1',
     'Upgrade-Insecure-Requests': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+    'sec-ch-ua': '"Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
 }
 
 
-def sichuanfazhan_chuzhigonggao(queue_id, webpage_id):
+def get_guangzhouzichan_chuzhigonggao(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
     try:
-        count = 1
-        while True:
-            page_url = f'http://www.scdamc.com/chuzhigonggao/p{count}.html'
+        for count in range(1, 2 + 1):
+            if count == 1:
+                page_url = f'https://www.guangzhouamc.com/asset/chuzhigonggao.html'
+            else:
+                page_url = f'https://www.guangzhouamc.com/asset/chuzhigonggao-{count}.html'
             response = requests.get(page_url, headers=headers)
             res = response.content.decode()
             res_html = etree.HTML(res)
-            title_list = res_html.xpath("//div[@class='gsgg_lb']/ul/li")
-            if len(title_list) == 0:
-                break
-            else:
-                count += 1
+            title_list = res_html.xpath("//ul[@class='block_list']/li[@class='slide-top']/a")
             img_set = set()
-            name = '四川发展资产管理有限公司'
+            name = '广州资产管理有限公司'
             title_set = judge_title_repeat(name)
             for title in title_list:
-                title_name = "".join(title.xpath(".//div[@class='gs_right']/h2//text()"))
-                # title_date = "".join(title.xpath("./a[1]/div[@class='right_nr fl']/em/text()"))
-                title_url = "http://www.scdamc.com/" + "".join(title.xpath("./a/@href"))
+                title_name = "".join(
+                    title.xpath("./h2/text()"))
+                title_date = "".join(title.xpath("./p/text()"))
+                # 使用re模块提取日期
+                title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
+                if title_date:
+                    title_date = title_date[0]
+                else:
+                    title_date = ''
+                title_url = "https://www.guangzhouamc.com" + "".join(title.xpath("./@href"))
                 # print(title_name,title_url)
                 # return
                 res_title = requests.get(title_url, headers=headers)
                 res_title_html1 = res_title.content.decode()
                 res_title_html = etree.HTML(res_title_html1)
-                title_date = "".join(res_title_html.xpath("//span[@class='fr']//text()"))
-                # 使用re模块提取日期
-                title_date = re.findall(r'\d{4}-\d{2}-\d{2}', title_date)
-                if title_date:
-                    title_date = title_date[0]
+
+                title_content = "".join(res_title_html.xpath(
+                    "//div[@class='wrapper']//text()"))
+
+                annex = res_title_html.xpath("//div[@class='wrapper']//a/@src")
+                if annex:
+                    files = []
+                    original_url = []
+                    for ann in annex:
+                        ann = "https://www.guangzhouamc.com" + ann
+                        file_type = ann.split('.')[-1]
+                        if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z', ]:
+                            file_url = upload_file_by_url(ann, "ningbofujian", file_type)
+                            files.append(file_url)
+                            original_url.append(ann)
                 else:
-                    title_date = ''
-                title_content = "".join(res_title_html.xpath("//div[contains(@class, 'wznr')]//text()")).strip()
-                title_html_info = res_title_html.xpath("//div[@class='wzxq_title wow fadeInUp animated']")
-                content_1 = res_title_html.xpath("//div[@class='wzxq_nr']")
+                    files = ''
+                    original_url = ''
+                files = str(files)
+                original_url = str(original_url)
+
+                title_html_info = res_title_html.xpath(
+                    "//div[@class='wrapper']")
+                # content_1 = res_title_html.xpath("//div[@class='Introduce_details_nr wow fadeInUp animation']")
                 content_html = ''
                 for con in title_html_info:
                     content_html += etree.tostring(con, encoding='utf-8').decode()
-                for con in content_1:
-                    content_html += etree.tostring(con, encoding='utf-8').decode()
-
-                image = get_image(page, title_url, '.wzxq', down_offset=10)
+                # for con in content_1:
+                #     content_html += etree.tostring(con, encoding='utf-8').decode()
+                try:
+                    image = get_image(page, title_url,
+                                      "xpath=//div[@class='wrapper']",
+                                      left_offset=10, right_offset=20)
+                except:
+                    image = get_now_image(page, title_url)
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 上传到测试数据库
@@ -99,11 +129,11 @@ def sichuanfazhan_chuzhigonggao(queue_id, webpage_id):
 
                 if title_url not in title_set:
                     # 上传到报纸的内容
-                    insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
+                    insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time,original_files, files, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
 
                     cursor_test.execute(insert_sql,
                                         (page_url, title_date, name, title_name, title_content, title_url, content_html,
-                                         create_time, queue_id,
+                                         create_time, original_url, files, queue_id,
                                          create_date, webpage_id))
                     conn_test.commit()
                     title_set.add(title_url)
@@ -115,5 +145,4 @@ def sichuanfazhan_chuzhigonggao(queue_id, webpage_id):
         page.close()
         raise Exception(e)
 
-# sichuanfazhan_chuzhigonggao(111, 222)
-
+# get_guangzhouzichan_chuzhigonggao(111, 222)

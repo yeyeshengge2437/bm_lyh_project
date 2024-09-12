@@ -8,7 +8,13 @@ from fujiantouzi_chuzhigonggao import fujiantouzi_chuzhigonggao  # 福建闽投�
 from sichuanfazhan_chuzhigonggao import sichuanfazhan_chuzhigonggao  # 四川发展资产管理有限公司
 from huarunyukang_chuzhigonggao import huarunyukang_chuzhigonggao  # 华润渝康资产管理有限公司
 from hubeizichan_chuzhigonggao import hubeizichan_chuzhigonggao  # 湖北省资产管理有限公司 --模板(全都从页面中获取)
-from jiangxizichan_chuzhigonggao import get_jiangxizichan_chuzhigonggao  # 江西省金融资产管理股份有限公司
+from jiangxizichan_chuzhigonggao import get_jiangxizichan_chuzhigonggao  # 江西省金融资产管理股份有限公司  --模板(全都从接口中获取)
+from ningbozichan_chuzhigonggao import get_ningbozichan_chuzhigonggao  # 宁波金融资产管理股份有限公司 --含有附件
+from suzhouzichan_chuzhigonggao import get_suzhouzichan_chuzhigonggao  # 苏州资产管理有限公司
+from jiangsuzichan_chuzhigonggao import get_jiangsuzichan_chuzhigonggao  # 江苏资产管理有限公司
+from ningxiajinrong_chuzhigonggao import get_ningxiajinrong_chuzhigonggao  # 宁夏金融资产管理有限公司
+from shanxijinrong_chuzhigonggao import get_shanxijinrong_chuzhigonggao  # 陕西金融资产管理股份有限公司
+from guangzhouzichan_chuzhigonggao import get_guangzhouzichan_chuzhigonggao  # 广州资产管理有限公司 --模板(全都从页面中获取)含有附件, 增加判断截图出错情况
 
 methods = {
     'https://www.zsamc.com/index.php/infor/index/20.html#tabNav': get_zhejiangzheshang_chuzhigonggao,  # 浙江省浙商资产管理有限公司
@@ -19,6 +25,13 @@ methods = {
     'https://crykasset.com/Assets/index.html': huarunyukang_chuzhigonggao,  # 华润渝康资产管理有限公司
     'https://hubeiamc.com/Asset_Disposal_Announcement.html': hubeizichan_chuzhigonggao,  # 湖北省资产管理有限公司
     'https://www.jxfamc.com/jxjrzc/chuzhigonggao/czgg.shtml': get_jiangxizichan_chuzhigonggao,  # 江西省金融资产管理股份有限公司
+    'http://www.nbfamc.com/List.html?menuId=44': get_ningbozichan_chuzhigonggao,  # 宁波金融资产管理股份有限公司
+    'https://www.sz-amc.com/business/Publicity?id=3': get_suzhouzichan_chuzhigonggao,  # 苏州资产管理有限公司
+    'https://www.jsamc.com.cn/assets-promote/promote-information#处置公告': get_jiangsuzichan_chuzhigonggao,
+    # 江苏资产管理有限公司
+    'https://nxfamc.com/jyzx/blzcczyw1.htm': get_ningxiajinrong_chuzhigonggao,  # 宁夏金融资产管理有限公司
+    'https://www.snfamc.com/news/notice': get_shanxijinrong_chuzhigonggao,  # 陕西金融资产管理股份有限公司
+    'https://www.guangzhouamc.com/asset/chuzhigonggao.html': get_guangzhouzichan_chuzhigonggao,  # 广州资产管理有限公司
 }
 
 web_list = [
@@ -29,14 +42,20 @@ web_list = [
     'http://www.scdamc.com/chuzhigonggao',
     'https://crykasset.com/Assets/index.html',
     'https://hubeiamc.com/Asset_Disposal_Announcement.html',
-    'https://www.jxfamc.com/jxjrzc/chuzhigonggao/czgg.shtml'
+    'https://www.jxfamc.com/jxjrzc/chuzhigonggao/czgg.shtml',
+    'http://www.nbfamc.com/List.html?menuId=44',
+    'https://www.sz-amc.com/business/Publicity?id=3',
+    'https://www.jsamc.com.cn/assets-promote/promote-information#处置公告',
+    'https://nxfamc.com/jyzx/blzcczyw1.htm',
+    'https://www.snfamc.com/news/notice',
+    'https://www.guangzhouamc.com/asset/chuzhigonggao.html',
 ]
 
 while True:
     try:
         paper_queue = paper_queue_next(webpage_url_list=web_list)
         if paper_queue is None or len(paper_queue) == 0:
-            time.sleep(1800)
+            time.sleep(600)
             pass
         else:
             queue_id = paper_queue['id']

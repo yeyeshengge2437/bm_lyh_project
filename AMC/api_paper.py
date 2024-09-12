@@ -338,3 +338,16 @@ def get_image(page, url, element, left_offset=0, right_offset=0, up_offset=0, do
         f.write(bytes_str)
     tab.close()
     return random_int
+
+
+def get_now_image(page, url):
+    tab = page.new_tab()
+    tab.get(url)
+    time.sleep(2)
+    bytes_str = tab.get_screenshot(as_bytes='png')
+    # 随机的整数
+    random_int = random.randint(0, 1000000)
+    with open(f'{random_int}.png', 'wb') as f:
+        f.write(bytes_str)
+    tab.close()
+    return random_int

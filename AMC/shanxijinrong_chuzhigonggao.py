@@ -13,7 +13,7 @@ from AMC.api_paper import get_image, judge_bm_repeat, upload_file, judge_title_r
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9127)
+co.set_paths(local_port=9135)
 
 
 headers = {
@@ -21,56 +21,65 @@ headers = {
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
+    # 'Cookie': '__jsluid_s=cdfab3d82845437d2566ae0973248874; Hm_lvt_15f7cbbd8a4562c45b5b1e4ee76ed715=1726125558; HMACCOUNT=FDD970C8B3C27398; Hm_lpvt_15f7cbbd8a4562c45b5b1e4ee76ed715=1726126240; XSRF-TOKEN=eyJpdiI6IndmM28xR0xDYkdvQVdwVkg1K1pjakE9PSIsInZhbHVlIjoiNmZkQXFrQ3Z4aVROaDh5Mk4rSzZNbGFSRnlXRERja1RwcnV6TWpyVjRLUTMxZWdFZm5ZUHE3QUNYV2NBaTlrYiIsIm1hYyI6ImZkNTUyYjk2ODRhNDIxYjhhNzE1M2U2MWE4NGY5NTYxNjRhYzkyODliN2IzMmQ5OWI3Zjc4MTRiYTk4NGE4NGIifQ%3D%3D; alps_session=eyJpdiI6IkxNTlNmVWtFU2FUWUtOY2lcL3Y1UmlBPT0iLCJ2YWx1ZSI6ImxrMVQ3eEdcLzFkdXE1K3MwTkRFcUJWRmN5UkhqNkZvR1pJU2Nzckh3b042b0s5aVhSUXRJNXYyOWs5YUpGV3ZIIiwibWFjIjoiNWY2MjUyY2ZkODhjZDBmOTVkMzM1OGY3NDNkOWM2ZmFjMjQ2MWU3ZjkwYzYxNzcxMmFlOTI4YzA0MjE3Y2ZkYSJ9',
     'Pragma': 'no-cache',
+    'Referer': 'https://www.snfamc.com/news/notice',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'same-origin',
+    'Sec-Fetch-User': '?1',
     'Upgrade-Insecure-Requests': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+    'sec-ch-ua': '"Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
 }
 
 
-def sichuanfazhan_chuzhigonggao(queue_id, webpage_id):
+def get_shanxijinrong_chuzhigonggao(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
     try:
-        count = 1
-        while True:
-            page_url = f'http://www.scdamc.com/chuzhigonggao/p{count}.html'
+        for count in range(1, 18 + 1):
+            page_url = f'https://www.snfamc.com/news/notice?page={count}'
             response = requests.get(page_url, headers=headers)
             res = response.content.decode()
             res_html = etree.HTML(res)
-            title_list = res_html.xpath("//div[@class='gsgg_lb']/ul/li")
-            if len(title_list) == 0:
-                break
-            else:
-                count += 1
+            title_list = res_html.xpath("//div[@class='zixun-2 wow fadeInUp']/ul[@class='list-unstyled']/li")
             img_set = set()
-            name = '四川发展资产管理有限公司'
+            name = '陕西金融资产管理股份有限公司'
             title_set = judge_title_repeat(name)
             for title in title_list:
-                title_name = "".join(title.xpath(".//div[@class='gs_right']/h2//text()"))
-                # title_date = "".join(title.xpath("./a[1]/div[@class='right_nr fl']/em/text()"))
-                title_url = "http://www.scdamc.com/" + "".join(title.xpath("./a/@href"))
-                # print(title_name,title_url)
-                # return
-                res_title = requests.get(title_url, headers=headers)
-                res_title_html1 = res_title.content.decode()
-                res_title_html = etree.HTML(res_title_html1)
-                title_date = "".join(res_title_html.xpath("//span[@class='fr']//text()"))
+                title_name = "".join(
+                    title.xpath("./a/text()"))
+                title_date = "".join(title.xpath("./span/text()"))
                 # 使用re模块提取日期
                 title_date = re.findall(r'\d{4}-\d{2}-\d{2}', title_date)
                 if title_date:
                     title_date = title_date[0]
                 else:
                     title_date = ''
-                title_content = "".join(res_title_html.xpath("//div[contains(@class, 'wznr')]//text()")).strip()
-                title_html_info = res_title_html.xpath("//div[@class='wzxq_title wow fadeInUp animated']")
-                content_1 = res_title_html.xpath("//div[@class='wzxq_nr']")
+                title_url = "https://www.snfamc.com" + "".join(title.xpath("./a/@href"))
+                # print(title_name,title_url)
+                # return
+                res_title = requests.get(title_url, headers=headers)
+                res_title_html1 = res_title.content.decode()
+                res_title_html = etree.HTML(res_title_html1)
+
+                title_content = "".join(res_title_html.xpath(
+                    "//div[@class='about-right-p']/p//text()"))
+                title_html_info = res_title_html.xpath(
+                    "//div[@class='about-right-p']")
+                # content_1 = res_title_html.xpath("//div[@class='Introduce_details_nr wow fadeInUp animation']")
                 content_html = ''
                 for con in title_html_info:
                     content_html += etree.tostring(con, encoding='utf-8').decode()
-                for con in content_1:
-                    content_html += etree.tostring(con, encoding='utf-8').decode()
+                # for con in content_1:
+                #     content_html += etree.tostring(con, encoding='utf-8').decode()
 
-                image = get_image(page, title_url, '.wzxq', down_offset=10)
+                image = get_image(page, title_url,
+                                  "xpath=//div[@class='about-right-p']",
+                                  left_offset=10, down_offset=40)
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 上传到测试数据库
@@ -115,5 +124,4 @@ def sichuanfazhan_chuzhigonggao(queue_id, webpage_id):
         page.close()
         raise Exception(e)
 
-# sichuanfazhan_chuzhigonggao(111, 222)
-
+# get_shanxijinrong_chuzhigonggao(111, 222)

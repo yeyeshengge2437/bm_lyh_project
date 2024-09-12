@@ -133,11 +133,11 @@ methods = {
     '中国房地产报': get_chinafangdichan_paper,
     '中国基金报': get_chinajijin_paper,
     '中国高新技术产业导报': get_chinagaoxinjishu_paper,
-    '中国旅游报': get_chinalvyou_paper,  # 未添加队列， 'https://www.ctnews.com.cn/paper', '2020-01-01'
-    '中国文物报': get_chinawenwu_paper,  # 未添加队列， 'http://www.zhongguowenwubao.com', '2022-07-01'
-    '北京日报': get_beijing_paper,  # 未添加队列， 'https://bjrbdzb.bjd.com.cn/bjrb', '2020-07-13'
-    '农民日报': get_nongmin_paper,  # 未添加队列， 'https://szb.farmer.com.cn', '2010-12-14'
-    '广西政协报': get_guangxizhengxie_paper,  # 未添加队列， 'http://www.gxzxbxwzx.com.cn/dzszb/szbcf/index.html', '2022-01-01'
+    '中国旅游报': get_chinalvyou_paper,  # '2020-01-01'
+    '中国文物报': get_chinawenwu_paper,  # '2022-07-01'
+    '北京日报': get_beijing_paper,  # '2020-07-13'
+    '农民日报': get_nongmin_paper,  # '2010-12-14'
+    '广西政协报': get_guangxizhengxie_paper,  # '2022-01-01'
     '长春晚报': get_changchun_lastpaper,  # 未添加队列， 'http://epaper.changchunews.com/ccwb/pc/paper/layout', '2017-04-22'
     '云南日报': get_yunnan_paper,  # 未添加队列， 'https://yndaily.yunnan.cn', '2019-01-01'
     '乌鲁木齐晚报': get_wulumuqi_lastpaper,  # '2024-06-07'
@@ -149,7 +149,7 @@ webpage_url_list = [
     'https://newpaper.dahe.cn/hnsb/html',
     'https://szb.gansudaily.com.cn/gsjjrb',
     'https://epaper.kf.cn/paper/kfrb',
-    # 'https://lyrb.lyd.com.cn',  # 洛阳日报封ip，目前已解除
+    # 'https://lyrb.lyd.com.cn',  # 洛阳日报封ip严重
     'https://epaper.lnd.com.cn',
     'https://www.scxb.com.cn',
     # 'https://tmrb.tmwcn.com/tmrb',  # 天门日报没有pdf
@@ -208,6 +208,11 @@ webpage_url_list = [
     'http://paper.chinahightech.com/pc/layout',
     'http://wlmqszb.womob.cn',
     'http://www.lasaribao.cn',
+    'https://www.ctnews.com.cn/paper',
+    'http://www.zhongguowenwubao.com',
+    'https://bjrbdzb.bjd.com.cn/bjrb',
+    'https://szb.farmer.com.cn',
+    'http://www.gxzxbxwzx.com.cn/dzszb/szbcf/index.html',
 ]
 
 
@@ -220,7 +225,7 @@ def get_paper_data():
                 webpage_url_list=webpage_url_list)
             # 检查返回值是否符合预期
             if paper_queue is None or len(paper_queue) == 0:
-                time.sleep(1800)
+                time.sleep(30)
                 pass
             else:
                 webpage_name = paper_queue['webpage_name']

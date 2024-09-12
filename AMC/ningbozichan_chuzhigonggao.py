@@ -8,90 +8,74 @@ from lxml import etree
 import requests
 from DrissionPage import ChromiumPage, ChromiumOptions
 
-from AMC.api_paper import judge_bm_repeat, upload_file, judge_title_repeat
+from AMC.api_paper import judge_bm_repeat, upload_file, judge_title_repeat, get_image, upload_file_by_url
 
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9124)
-
-
-
-
-def get_image(page, url, element):
-    tab = page.new_tab()
-    tab.get(url)
-    tab.wait.ele_displayed(element)
-    time.sleep(2)
-    value = tab.ele(element).rect.corners
-    top_left = value[0]
-    bottom_right = value[2]
-    # 将top_left元组中的浮点数转换为整数
-    top_left1 = (int(top_left[0]), int(top_left[1]))
-    # 将bottom_right元组中的浮点数转换为整数
-    bottom_right1 = (int(bottom_right[0]), int(bottom_right[1]))
-    length = bottom_right1[1] - top_left1[1]
-    if length < 16000:
-        bytes_str = tab.get_screenshot(as_bytes='png', left_top=top_left1, right_bottom=bottom_right1)
-    else:
-        bottom_right1 = (int(bottom_right[0]), 8000)
-        bytes_str = tab.get_screenshot(as_bytes='png', left_top=top_left1, right_bottom=bottom_right1)
-    # 随机的整数
-    random_int = random.randint(0, 1000000)
-    with open(f'{random_int}.png', 'wb') as f:
-        f.write(bytes_str)
-    tab.close()
-    return random_int
-
+co.set_paths(local_port=9131)
 
 headers = {
     'Accept': 'application/json, text/plain, */*',
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
-    'Content-Type': 'application/json',
-    'Origin': 'https://www.zyamc.net',
+    # 'Content-Length': '0',
+    # 'Cookie': 'Hm_lvt_95c247cff9bc1f5531523b6efabbe798=1726107052; Hm_lpvt_95c247cff9bc1f5531523b6efabbe798=1726107052; HMACCOUNT=FDD970C8B3C27398',
+    'Origin': 'http://www.nbfamc.com',
     'Pragma': 'no-cache',
-    'Referer': 'https://www.zyamc.net/',
-    'Sec-Fetch-Dest': 'empty',
-    'Sec-Fetch-Mode': 'cors',
-    'Sec-Fetch-Site': 'same-origin',
+    'Referer': 'http://www.nbfamc.com/List.html?menuId=44',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-    'sec-ch-ua': '"Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
 }
 
-json_data = {
-    'pageNum': 1,
-    'pageSize': 1000,
-    'newsType': 4,
+params = {
+    'limit': '400',
+    'menuId': '44',
+    'page': '1',
 }
 
-def get_zhongyuanzichan_chuzhigonggao(queue_id, webpage_id):
+
+def get_ningbozichan_chuzhigonggao(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
     try:
-        response = requests.post('https://www.zyamc.net/api/portal/news/list', headers=headers, json=json_data)
+        response = requests.post('http://www.nbfamc.com/queryArtList', params=params, headers=headers, verify=False)
         res_json = response.json()
-        title_list = res_json["data"]["content"]
+        title_list = res_json["page"]["list"]
         img_set = set()
-        page_url = 'https://www.zyamc.net/#/asset-zone/4'
-        name = "中原资产管理有限公司"
+        page_url = 'http://www.nbfamc.com/List.html?menuId=44'
+        name = "宁波金融资产管理股份有限公司"
         title_set = judge_title_repeat(name)
         for title in title_list:
-            title_name = title["newsTitle"]
-            title_date = title["dateIssued"]
-            title_url = f"https://www.zyamc.net/#/detail/{title['newsId']}"
+            title_name = title["title"]
+            title_date = title["pubDate"]
+            title_url = f"http://www.nbfamc.com/zixunList.html?menuId=44&id={title['id']}"
             if title_url not in title_set:
-                title_url1 = f"https://www.zyamc.net/api/portal/news/{title['newsId']}"
-                title_res = requests.get(title_url1, headers=headers)
+                title_url1 = f"http://www.nbfamc.com/queryArticle?id={title['id']}"
+                title_res = requests.post(title_url1, headers=headers, verify=False)
                 res_title_json = title_res.json()
-                content_html = res_title_json["data"]["newsContent"]
-                content_etree = etree.HTML(content_html)
-                title_content = ''.join(content_etree.xpath('//text()')).strip()
-
-                image = get_image(page, title_url, '.news-container')
+                content_html = res_title_json["jgSubject"]["content"]
+                title_ht = etree.HTML(content_html)
+                title_content = ''.join(title_ht.xpath("//text()"))
+                annex = title_ht.xpath("//a/@href")
+                if annex:
+                    files = []
+                    original_url = []
+                    for ann in annex:
+                        file_type = ann.split('.')[-1]
+                        if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z', ]:
+                            file_url = upload_file_by_url(ann, "ningbofujian", file_type)
+                            files.append(file_url)
+                            original_url.append(ann)
+                else:
+                    files = ''
+                    original_url = ''
+                files = str(files)
+                original_url = str(original_url)
+                try:
+                    image = get_image(page, title_url, "xpath=//div[@id='article']")
+                except:
+                    image = ''
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 上传到测试数据库
@@ -120,11 +104,11 @@ def get_zhongyuanzichan_chuzhigonggao(queue_id, webpage_id):
 
                 if title_url not in title_set:
                     # 上传到报纸的内容
-                    insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
+                    insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time,original_files, files, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
 
                     cursor_test.execute(insert_sql,
                                         (page_url, title_date, name, title_name, title_content, title_url, content_html,
-                                         create_time, queue_id,
+                                         create_time, original_url, files, queue_id,
                                          create_date, webpage_id))
                     conn_test.commit()
                     title_set.add(title_url)
@@ -136,4 +120,4 @@ def get_zhongyuanzichan_chuzhigonggao(queue_id, webpage_id):
         page.close()
         raise Exception(e)
 
-# get_zhongyuanzichan_chuzhigonggao(111,222)
+# get_ningbozichan_chuzhigonggao(111, 222)

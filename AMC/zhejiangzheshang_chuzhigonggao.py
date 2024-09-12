@@ -1,6 +1,7 @@
 """
 浙江浙商证券股份有限公司,每日更新时获取前50页的数据
 """
+import os
 import random
 import re
 import time
@@ -144,6 +145,9 @@ def get_zhejiangzheshang_chuzhigonggao(queue_id, webpage_id):
                                         (title_date, name, title_name, up_img, title_url, up_img, create_time, queue_id,
                                          create_date, webpage_id))
                     conn_test.commit()
+                else:
+                    if os.path.exists(f'{image}.png'):
+                        os.remove(f'{image}.png')
 
                 if title_url not in title_set:
                     # 上传到报纸的内容

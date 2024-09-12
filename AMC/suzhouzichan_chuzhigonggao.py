@@ -13,7 +13,7 @@ from AMC.api_paper import get_image, judge_bm_repeat, upload_file, judge_title_r
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9127)
+co.set_paths(local_port=9132)
 
 
 headers = {
@@ -21,56 +21,73 @@ headers = {
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
+    # 'Cookie': 'acw_tc=2760820617261086453028950e14451199475ed356bd9d44c76354c970a588; JSESSIONID=d298bdc0-a825-4587-95e5-fa609e45b418; sl-session=KCl7ZGWl42baWIXnIJcZvw==',
     'Pragma': 'no-cache',
+    'Referer': 'https://www.sz-amc.com/business/Publicity?id=3&page=1',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'same-origin',
+    'Sec-Fetch-User': '?1',
     'Upgrade-Insecure-Requests': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+    'sec-ch-ua': '"Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
 }
 
-
-def sichuanfazhan_chuzhigonggao(queue_id, webpage_id):
+def get_suzhouzichan_chuzhigonggao(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
     try:
-        count = 1
-        while True:
-            page_url = f'http://www.scdamc.com/chuzhigonggao/p{count}.html'
+        for count in range(0, 40):
+            page_url = f'https://www.sz-amc.com/business/Publicity?id=3&page={count}'
             response = requests.get(page_url, headers=headers)
             res = response.content.decode()
             res_html = etree.HTML(res)
-            title_list = res_html.xpath("//div[@class='gsgg_lb']/ul/li")
-            if len(title_list) == 0:
-                break
-            else:
-                count += 1
+            title_list = res_html.xpath("//div[@class='detail']/ul")
             img_set = set()
-            name = '四川发展资产管理有限公司'
+            name = '苏州资产管理有限公司'
             title_set = judge_title_repeat(name)
             for title in title_list:
-                title_name = "".join(title.xpath(".//div[@class='gs_right']/h2//text()"))
-                # title_date = "".join(title.xpath("./a[1]/div[@class='right_nr fl']/em/text()"))
-                title_url = "http://www.scdamc.com/" + "".join(title.xpath("./a/@href"))
-                # print(title_name,title_url)
-                # return
-                res_title = requests.get(title_url, headers=headers)
-                res_title_html1 = res_title.content.decode()
-                res_title_html = etree.HTML(res_title_html1)
-                title_date = "".join(res_title_html.xpath("//span[@class='fr']//text()"))
+                title_name = "".join(
+                    title.xpath("./li/a/div[@class='title-small']/h5/text()"))
+                title_date = "".join(title.xpath(".//div[@class='date']/text()"))
                 # 使用re模块提取日期
                 title_date = re.findall(r'\d{4}-\d{2}-\d{2}', title_date)
                 if title_date:
                     title_date = title_date[0]
                 else:
                     title_date = ''
-                title_content = "".join(res_title_html.xpath("//div[contains(@class, 'wznr')]//text()")).strip()
-                title_html_info = res_title_html.xpath("//div[@class='wzxq_title wow fadeInUp animated']")
-                content_1 = res_title_html.xpath("//div[@class='wzxq_nr']")
+                title_url = "https://www.sz-amc.com" + "".join(title.xpath("./li/a/@href"))
+                # print(title_name,title_date, title_url)
+                # return
+                res_title = requests.get(title_url, headers=headers)
+                res_title_html1 = res_title.content.decode()
+                res_title_html = etree.HTML(res_title_html1)
+
+                title_content_html = re.findall(r'<script>(.*?)</script>', res_title_html1, re.S)[0]
+                title_content_html = re.findall(r'"noticeContent":(.*?),"status"', title_content_html, re.S)[0]
+                # 将字符串转为b''
+                title_content_html = title_content_html.encode()
+                # 将Unicode转义序列（如\u4E00）转换
+                title_content_html = title_content_html.decode('unicode_escape')
+                title_content_html = re.sub(r'\\', '', title_content_html)
+                title_content_html2 = etree.HTML(title_content_html)
+
+                title_content = "".join(title_content_html2.xpath(
+                    "//text()"))
+                annex = res_title_html.xpath("//div[@class='detail']//a/@href")
+                if annex:
+                    print(annex)
+                title_html_info = res_title_html.xpath(
+                    "//h4[@class='list-title']")
                 content_html = ''
                 for con in title_html_info:
                     content_html += etree.tostring(con, encoding='utf-8').decode()
-                for con in content_1:
-                    content_html += etree.tostring(con, encoding='utf-8').decode()
+                content_html = content_html + title_content_html.strip('\"')
 
-                image = get_image(page, title_url, '.wzxq', down_offset=10)
+                image = get_image(page, title_url,
+                                  "xpath=//div[@class='description news-detail']", down_offset=80)
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 上传到测试数据库
@@ -115,5 +132,4 @@ def sichuanfazhan_chuzhigonggao(queue_id, webpage_id):
         page.close()
         raise Exception(e)
 
-# sichuanfazhan_chuzhigonggao(111, 222)
-
+# get_suzhouzichan_chuzhigonggao(111, 222)

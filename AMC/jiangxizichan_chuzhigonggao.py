@@ -1,3 +1,4 @@
+import os
 import random
 import time
 from datetime import datetime
@@ -87,6 +88,9 @@ def get_jiangxizichan_chuzhigonggao(queue_id, webpage_id):
                                         (title_date, name, title_name, up_img, title_url, up_img, create_time, queue_id,
                                          create_date, webpage_id))
                     conn_test.commit()
+                else:
+                    if os.path.exists(f'{image}.png'):
+                        os.remove(f'{image}.png')
 
                 if title_url not in title_set:
                     # 上传到报纸的内容
