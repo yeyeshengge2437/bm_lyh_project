@@ -8,77 +8,54 @@ from lxml import etree
 import requests
 from DrissionPage import ChromiumPage, ChromiumOptions
 
-from AMC.api_paper import judge_bm_repeat, upload_file, judge_title_repeat, get_image, upload_file_by_url
+from AMC.api_paper import judge_bm_repeat, upload_file, judge_title_repeat, get_image
 
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9131)
+co.set_paths(local_port=9143)
+
 
 headers = {
     'Accept': 'application/json, text/plain, */*',
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
-    # 'Content-Length': '0',
-    # 'Cookie': 'Hm_lvt_95c247cff9bc1f5531523b6efabbe798=1726107052; Hm_lpvt_95c247cff9bc1f5531523b6efabbe798=1726107052; HMACCOUNT=FDD970C8B3C27398',
-    'Origin': 'http://www.nbfamc.com',
+    # 'Cookie': 'BMAP_SECKEY=iWqrkVy0Q7kYJzZvdMKuGbgPBlxL42nokaqG2cZmo9ushx2ynZAHcb0KVujaIfsQoM9Vbp_XvGnGr3N5HZG7s7D1guyacrMs0ZPYimgaymJsARXm8857jsXGa75rrnF3mV1jGlhCT6alLswOlo7b70Z43z9SwViQ8t7T3E3JfL2dfcTwry0lseqZfvWHXFvo; SECKEY_ABVK=iWqrkVy0Q7kYJzZvdMKuGd7CYGlk0aI0lsUdmh9rK2U%3D',
     'Pragma': 'no-cache',
-    'Referer': 'http://www.nbfamc.com/List.html?menuId=44',
+    'Referer': 'https://www.cebamc.com/',
+    'Sec-Fetch-Dest': 'empty',
+    'Sec-Fetch-Mode': 'cors',
+    'Sec-Fetch-Site': 'same-origin',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-}
-
-params = {
-    'limit': '400',
-    'menuId': '44',
-    'page': '1',
+    'sec-ch-ua': '"Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
 }
 
 
-def get_ningbozichan_chuzhigonggao(queue_id, webpage_id):
+def get_guangdazichan_chuzhigonggao(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
     try:
-        response = requests.post('http://www.nbfamc.com/queryArtList', params=params, headers=headers, verify=False)
+        response = requests.post('https://www.cebamc.com/api/v1/JO/NewsList.ashx?cPath=25,26,&CurrentPage=1&PageSize=300',  headers=headers)
         res_json = response.json()
-        title_list = res_json["page"]["list"]
+        title_list = res_json["NewsList"]
         img_set = set()
-        page_url = 'http://www.nbfamc.com/List.html?menuId=44'
-        name = "宁波金融资产管理股份有限公司"
+        name = "光大金瓯资产管理有限公司"
         title_set = judge_title_repeat(name)
         for title in title_list:
-            title_name = title["title"]
-            title_date = title["pubDate"]
-            title_url = f"http://www.nbfamc.com/zixunList.html?menuId=44&id={title['id']}"
+            title_name = title["cTitle"]
+            title_date = title["changeDate"]
+            title_url = f"https://www.cebamc.com/#/assets/detail/{title['id']}?type=0"
             if title_url not in title_set:
-                title_url1 = f"http://www.nbfamc.com/queryArticle?id={title['id']}"
-                title_res = requests.post(title_url1, headers=headers, verify=False)
+                title_url1 = f"https://www.cebamc.com/api/v1/JO/NewsDetail.ashx?id={title['id']}"
+                title_res = requests.get(title_url1, headers=headers)
                 res_title_json = title_res.json()
-                content_html = res_title_json["jgSubject"]["content"]
-                title_ht = etree.HTML(content_html)
-                title_content = ''.join(title_ht.xpath("//text()"))
-                annex = title_ht.xpath("//a/@href")
-                if annex:
-                    files = []
-                    original_url = []
-                    for ann in annex:
-                        file_type = ann.split('.')[-1]
-                        if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z', ]:
-                            file_url = upload_file_by_url(ann, "ningbofujian", file_type)
-                            files.append(file_url)
-                            original_url.append(ann)
-                else:
-                    files = ''
-                    original_url = ''
-                if not files:
-                    files = ''
-                    original_url = ''
-                files = str(files)
-                original_url = str(original_url)
-                try:
-                    image = get_image(page, title_url, "xpath=//div[@id='article']")
-                except:
-                    image = ''
+                content_html = res_title_json["NewsDetail"][0]["cContent"]
+                title_content = ''.join(etree.HTML(content_html).xpath("//text()"))
+
+                image = get_image(page, title_url, "xpath=//div[@class='article-container']")
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 上传到测试数据库
@@ -107,11 +84,11 @@ def get_ningbozichan_chuzhigonggao(queue_id, webpage_id):
 
                 if title_url not in title_set:
                     # 上传到报纸的内容
-                    insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time,original_files, files, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
+                    insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
 
                     cursor_test.execute(insert_sql,
                                         (title_url, title_date, name, title_name, title_content, title_url, content_html,
-                                         create_time, original_url, files, queue_id,
+                                         create_time, queue_id,
                                          create_date, webpage_id))
                     conn_test.commit()
                     title_set.add(title_url)
@@ -123,4 +100,4 @@ def get_ningbozichan_chuzhigonggao(queue_id, webpage_id):
         page.close()
         raise Exception(e)
 
-# get_ningbozichan_chuzhigonggao(111, 222)
+# get_guangdazichan_chuzhigonggao(111, 222)

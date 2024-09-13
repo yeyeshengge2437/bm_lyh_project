@@ -1,5 +1,6 @@
 import os
 import random
+import re
 import time
 from datetime import datetime
 
@@ -13,60 +14,68 @@ from AMC.api_paper import judge_bm_repeat, upload_file, judge_title_repeat, get_
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9131)
+co.set_paths(local_port=9150)
+
 
 headers = {
-    'Accept': 'application/json, text/plain, */*',
-    'Accept-Language': 'zh-CN,zh;q=0.9',
-    'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive',
-    # 'Content-Length': '0',
-    # 'Cookie': 'Hm_lvt_95c247cff9bc1f5531523b6efabbe798=1726107052; Hm_lpvt_95c247cff9bc1f5531523b6efabbe798=1726107052; HMACCOUNT=FDD970C8B3C27398',
-    'Origin': 'http://www.nbfamc.com',
-    'Pragma': 'no-cache',
-    'Referer': 'http://www.nbfamc.com/List.html?menuId=44',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+    'accept': 'application/json, text/javascript, */*; q=0.01',
+    'accept-language': 'zh-CN,zh;q=0.9',
+    'cache-control': 'no-cache',
+    # 'cookie': 'sl-session=m9oQYDJV5WYNvULJ+kqzUg==',
+    'pragma': 'no-cache',
+    'priority': 'u=1, i',
+    'referer': 'https://www.szamc.net/home/zcDispose',
+    'sec-ch-ua': '"Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-origin',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+    'x-requested-with': 'XMLHttpRequest',
 }
 
-params = {
-    'limit': '400',
-    'menuId': '44',
-    'page': '1',
-}
-
-
-def get_ningbozichan_chuzhigonggao(queue_id, webpage_id):
+def get_shenzenzichan_chuzhigonggao(queue_id, webpage_id):
+    params = {
+        'noticeType': '1',
+        'pageIndex': '1',
+        'pageSize': '10',
+    }
     page = ChromiumPage(co)
     page.set.load_mode.none()
     try:
-        response = requests.post('http://www.nbfamc.com/queryArtList', params=params, headers=headers, verify=False)
+        response = requests.get('https://www.szamc.net/index/notice/getNoticeIndexList',  headers=headers, params=params)
         res_json = response.json()
-        title_list = res_json["page"]["list"]
+        title_list = res_json["data"]
         img_set = set()
-        page_url = 'http://www.nbfamc.com/List.html?menuId=44'
-        name = "宁波金融资产管理股份有限公司"
+        name = "深圳资产管理有限公司"
         title_set = judge_title_repeat(name)
         for title in title_list:
             title_name = title["title"]
-            title_date = title["pubDate"]
-            title_url = f"http://www.nbfamc.com/zixunList.html?menuId=44&id={title['id']}"
+            title_date = title["addTime"]
+            title_url = f"https://www.szamc.net/home/noticeInfo?id={title['id']}&noticeType=1"
             if title_url not in title_set:
-                title_url1 = f"http://www.nbfamc.com/queryArticle?id={title['id']}"
-                title_res = requests.post(title_url1, headers=headers, verify=False)
+                title_url1 = f'https://www.szamc.net/index/notice/getNoticeByIdList?id={title["id"]}&noticeType=1'
+                title_res = requests.get(title_url1, headers=headers)
                 res_title_json = title_res.json()
-                content_html = res_title_json["jgSubject"]["content"]
+                content_html = res_title_json["data"]["data"]["contents"]
+                content_html = re.sub(r'＜', '<', content_html)
+                content_html = re.sub(r'＞', '>', content_html)
                 title_ht = etree.HTML(content_html)
-                title_content = ''.join(title_ht.xpath("//text()"))
+                title_content = "".join(title_ht.xpath("//text()"))
                 annex = title_ht.xpath("//a/@href")
                 if annex:
                     files = []
                     original_url = []
                     for ann in annex:
+                        if "http" not in ann:
+                            ann = "https://www.szamc.net" + ann
                         file_type = ann.split('.')[-1]
-                        if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z', ]:
-                            file_url = upload_file_by_url(ann, "ningbofujian", file_type)
+                        if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z']:
+                            file_url = upload_file_by_url(ann, "shenzen", file_type)
                             files.append(file_url)
                             original_url.append(ann)
+                    print(original_url)
                 else:
                     files = ''
                     original_url = ''
@@ -75,10 +84,8 @@ def get_ningbozichan_chuzhigonggao(queue_id, webpage_id):
                     original_url = ''
                 files = str(files)
                 original_url = str(original_url)
-                try:
-                    image = get_image(page, title_url, "xpath=//div[@id='article']")
-                except:
-                    image = ''
+
+                image = get_image(page, title_url, "xpath=//div[@class='newsdetails ullist']")
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 上传到测试数据库
@@ -110,9 +117,10 @@ def get_ningbozichan_chuzhigonggao(queue_id, webpage_id):
                     insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time,original_files, files, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
 
                     cursor_test.execute(insert_sql,
-                                        (title_url, title_date, name, title_name, title_content, title_url, content_html,
-                                         create_time, original_url, files, queue_id,
-                                         create_date, webpage_id))
+                                        (
+                                        title_url, title_date, name, title_name, title_content, title_url, content_html,
+                                        create_time, original_url, files, queue_id,
+                                        create_date, webpage_id))
                     conn_test.commit()
                     title_set.add(title_url)
 
@@ -123,4 +131,4 @@ def get_ningbozichan_chuzhigonggao(queue_id, webpage_id):
         page.close()
         raise Exception(e)
 
-# get_ningbozichan_chuzhigonggao(111, 222)
+# get_shenzenzichan_chuzhigonggao(111, 222)

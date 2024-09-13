@@ -13,7 +13,7 @@ from AMC.api_paper import get_image, judge_bm_repeat, upload_file, judge_title_r
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9136)
+co.set_paths(local_port=9138)
 
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -51,85 +51,86 @@ def get_changshaxiangjiang_chuzhigonggao(queue_id, webpage_id):
                 else:
                     title_date = ''
                 title_url = "".join(title.xpath("./@href")).strip()
-                # print(title_name,title_url)
-                # return
-                res_title = requests.get(title_url, headers=headers)
-                res_title_html1 = res_title.content.decode()
-                res_title_html = etree.HTML(res_title_html1)
-
-                title_content = "".join(res_title_html.xpath(
-                    "//div[@id='content_text']//text()"))
-
-                annex = res_title_html.xpath("//div[@id='content_text']//a/@href")
-                if annex:
-                    files = []
-                    original_url = []
-                    for ann in annex:
-                        ann = ann
-                        file_type = ann.split('.')[-1]
-                        if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z', ]:
-                            file_url = upload_file_by_url(ann, "ningbofujian", file_type)
-                            files.append(file_url)
-                            original_url.append(ann)
-                else:
-                    files = ''
-                    original_url = ''
-                if not files:
-                    files = ''
-                    original_url = ''
-                files = str(files)
-                original_url = str(original_url)
-
-                title_html_info = res_title_html.xpath("//div[@class='shownews-header']/h1")
-                content_1 = res_title_html.xpath("//div[@class='shownews_row']/div[@id='content_text']")
-                content_html = ''
-                for con in title_html_info:
-                    content_html += etree.tostring(con, encoding='utf-8').decode()
-                for con in content_1:
-                    content_html += etree.tostring(con, encoding='utf-8').decode()
-                try:
-                    image = get_image(page, title_url, ".shownews_row", left_offset=10)
-                except:
-                    image = get_now_image(page, title_url)
-                create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                create_date = datetime.now().strftime('%Y-%m-%d')
-                # 上传到测试数据库
-                conn_test = mysql.connector.connect(
-                    host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
-                    user="col2024",
-                    password="Bm_a12a06",
-                    database="col",
-                )
-                cursor_test = conn_test.cursor()
-                # print(bm_name, article_name, article_url, bm_pdf, content)
-                if image not in img_set and judge_bm_repeat(name, title_url):
-                    # 将报纸url上传
-                    up_img = upload_file(image, "png", "paper")
-                    img_set.add(image)
-                    # 上传到报纸的图片或PDF
-                    insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
-
-                    cursor_test.execute(insert_sql,
-                                        (title_date, name, title_name, up_img, title_url, up_img, create_time, queue_id,
-                                         create_date, webpage_id))
-                    conn_test.commit()
-                else:
-                    if os.path.exists(f'{image}.png'):
-                        os.remove(f'{image}.png')
-
                 if title_url not in title_set:
-                    # 上传到报纸的内容
-                    insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time,original_files, files, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
+                    # print(title_name,title_url)
+                    # return
+                    res_title = requests.get(title_url, headers=headers)
+                    res_title_html1 = res_title.content.decode()
+                    res_title_html = etree.HTML(res_title_html1)
 
-                    cursor_test.execute(insert_sql,
-                                        (page_url, title_date, name, title_name, title_content, title_url, content_html,
-                                         create_time, original_url, files, queue_id,
-                                         create_date, webpage_id))
-                    conn_test.commit()
-                    title_set.add(title_url)
+                    title_content = "".join(res_title_html.xpath(
+                        "//div[@id='content_text']//text()"))
 
-                cursor_test.close()
-                conn_test.close()
+                    annex = res_title_html.xpath("//div[@id='content_text']//a/@href")
+                    if annex:
+                        files = []
+                        original_url = []
+                        for ann in annex:
+                            ann = ann
+                            file_type = ann.split('.')[-1]
+                            if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z', ]:
+                                file_url = upload_file_by_url(ann, "ningbofujian", file_type)
+                                files.append(file_url)
+                                original_url.append(ann)
+                    else:
+                        files = ''
+                        original_url = ''
+                    if not files:
+                        files = ''
+                        original_url = ''
+                    files = str(files)
+                    original_url = str(original_url)
+
+                    title_html_info = res_title_html.xpath("//div[@class='shownews-header']/h1")
+                    content_1 = res_title_html.xpath("//div[@class='shownews_row']/div[@id='content_text']")
+                    content_html = ''
+                    for con in title_html_info:
+                        content_html += etree.tostring(con, encoding='utf-8').decode()
+                    for con in content_1:
+                        content_html += etree.tostring(con, encoding='utf-8').decode()
+                    try:
+                        image = get_image(page, title_url, ".shownews_row", left_offset=10)
+                    except:
+                        image = get_now_image(page, title_url)
+                    create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    create_date = datetime.now().strftime('%Y-%m-%d')
+                    # 上传到测试数据库
+                    conn_test = mysql.connector.connect(
+                        host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                        user="col2024",
+                        password="Bm_a12a06",
+                        database="col",
+                    )
+                    cursor_test = conn_test.cursor()
+                    # print(bm_name, article_name, article_url, bm_pdf, content)
+                    if image not in img_set and judge_bm_repeat(name, title_url):
+                        # 将报纸url上传
+                        up_img = upload_file(image, "png", "paper")
+                        img_set.add(image)
+                        # 上传到报纸的图片或PDF
+                        insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
+
+                        cursor_test.execute(insert_sql,
+                                            (title_date, name, title_name, up_img, title_url, up_img, create_time, queue_id,
+                                             create_date, webpage_id))
+                        conn_test.commit()
+                    else:
+                        if os.path.exists(f'{image}.png'):
+                            os.remove(f'{image}.png')
+
+                    if title_url not in title_set:
+                        # 上传到报纸的内容
+                        insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time,original_files, files, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
+
+                        cursor_test.execute(insert_sql,
+                                            (title_url, title_date, name, title_name, title_content, title_url, content_html,
+                                             create_time, original_url, files, queue_id,
+                                             create_date, webpage_id))
+                        conn_test.commit()
+                        title_set.add(title_url)
+
+                    cursor_test.close()
+                    conn_test.close()
         page.close()
     except Exception as e:
         page.close()

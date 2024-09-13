@@ -1,5 +1,5 @@
-一，使用xpath时：
-    1.基本用法
+一，xpath：
+    1.用法
         contains(string, substring)
         string: 要搜索的原始字符串。
         substring: 要检查是否存在于原始字符串中的子字符串。
@@ -12,3 +12,4 @@
             //tag: 选择所有名为 tag 的元素。
             @attribute: 指定要检查的属性。
             'value': 子字符串，我们想检查它是否存在于属性值中。
+

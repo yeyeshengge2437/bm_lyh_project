@@ -28,7 +28,7 @@ def get_md5_set(database, table_name):
     return hash_value_set
 
 
-md5_set = get_md5_set("col", "col_paper_notice")
+
 
 
 
@@ -55,6 +55,7 @@ pdf_domain = 'https://epaper.guanhai.com.cn/conpaper/qdwb/'
 today = datetime.now().strftime('%Y-%m-%d')
 
 def get_qingdao_lastpaper(paper_time, queue_id, webpage_id):
+    md5_set = get_md5_set("col", "col_paper_notice")
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m/%d')

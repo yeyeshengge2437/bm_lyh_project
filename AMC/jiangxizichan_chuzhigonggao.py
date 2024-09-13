@@ -97,7 +97,7 @@ def get_jiangxizichan_chuzhigonggao(queue_id, webpage_id):
                     insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
 
                     cursor_test.execute(insert_sql,
-                                        (page_url, title_date, name, title_name, title_content, title_url, content_html,
+                                        (title_url, title_date, name, title_name, title_content, title_url, content_html,
                                          create_time, queue_id,
                                          create_date, webpage_id))
                     conn_test.commit()

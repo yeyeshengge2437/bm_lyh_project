@@ -17,6 +17,18 @@ from shanxijinrong_chuzhigonggao import get_shanxijinrong_chuzhigonggao  # 陕�
 from guangzhouzichan_chuzhigonggao import get_guangzhouzichan_chuzhigonggao  # 广州资产管理有限公司 --模板(全都从页面中获取)含有附件, 增加判断截图出错情况
 from changshaxiangjiang_chuzhigonggao import get_changshaxiangjiang_chuzhigonggao  # 长沙湘江资产管理有限公司
 from hunancaixin_chuzhigonggao import get_hunancaixin_chuzhigonggao  # 湖南省财信资产管理有限公司
+from henanzichan_chuzhigonggao import get_henanzichan_chuzhigonggao  # 河南资产管理有限公司
+from zhongxinqinggao_chuzhigonggao import get_zhongxinqingdao_chuzhigonggao  # 中信青岛资产管理有限公司
+from xingyezichan_chuzhigonggao import get_xinyezichan_chuzhigonggao  # 兴业资产管理有限公司
+from azhuizhongan_chuzhigonggao import get_anhuizhongan_chuzhigonggao  # 安徽省中安金融资产管理股份有限公司
+from guangdazichan_chuzhigonggao import get_guangdazichan_chuzhigonggao  # 光大金瓯资产管理有限公司
+from jilinshengrong_chuzhigonggao import get_jilinshengrong_chuzhigonggao  # 吉林省盛融资产管理有限责任公司
+from shanghaiguoyou_chuzhigonggao import get_shanghaiguoyou_chuzhigonggao  # 上海国有资产经营有限公司
+from neimenggujinrong_chuzhigonggao import get_neimenggujinrong_chuzhigonggao  # 内蒙古金融资产管理有限公司
+from hebeiziguan_chuzhigonggao import get_hebeiziguan_chuzhigonggao  # 河北省资产管理有限公司
+from yunnanzichan_chuzhigonggao import get_yunnanzichan_chuzhigonggao  # 云南省资产管理有限公司
+from hainanlianhe_chuzhigonggao import get_hainanzichan_chuzhigonggao  # 海南联合资产管理有限公司
+from shenzenzichan_chuzhigonggao import get_shenzenzichan_chuzhigonggao  # 深圳资产管理有限公司
 
 methods = {
     'https://www.zsamc.com/index.php/infor/index/20.html#tabNav': get_zhejiangzheshang_chuzhigonggao,  # 浙江省浙商资产管理有限公司
@@ -36,6 +48,20 @@ methods = {
     'https://www.guangzhouamc.com/asset/chuzhigonggao.html': get_guangzhouzichan_chuzhigonggao,  # 广州资产管理有限公司
     'http://www.xiangjiang-amc.com/zcczgg/31617': get_changshaxiangjiang_chuzhigonggao,  # 长沙湘江资产管理有限公司
     'https://amc.hnchasing.com/cxamc/zcxx53/zcczgg79/index.html': get_hunancaixin_chuzhigonggao,  # 湖南省财信资产管理有限公司
+    'http://www.henanamc.com.cn/czgg19': get_henanzichan_chuzhigonggao,  # 河南资产管理有限公司
+    'http://www.qdamc.citic/announcement-54-1.html': get_zhongxinqingdao_chuzhigonggao,  # 中信青岛资产管理有限公司
+    'http://www.ciamc.com.cn/ciamc/insetInfo/disposal-Notice.html': get_xinyezichan_chuzhigonggao,  # 兴业资产管理有限公司
+    'https://www.amcah.com/new.php?class_id=102102': get_anhuizhongan_chuzhigonggao,  # 安徽省中安金融资产管理股份有限公司
+    'https://www.cebamc.com/#/assets/list/0': get_guangdazichan_chuzhigonggao,  # 光大金瓯资产管理有限公司
+    'http://srzcamc.com/index/lists/listss.html?type=258&t=237': get_jilinshengrong_chuzhigonggao,  # 吉林省盛融资产管理有限责任公司
+    'https://www.ssaocorp.com/site/information_report': get_shanghaiguoyou_chuzhigonggao,  # 上海国有资产经营有限公司
+    'https://www.amcim.com/cms/about/4.html': get_neimenggujinrong_chuzhigonggao,  # 内蒙古金融资产管理有限公司
+    'https://www.hebamc.com/index.php/Cn/Info/index/classid/61.html': get_hebeiziguan_chuzhigonggao,  # 河北省资产管理有限公司
+    'http://www.yndamc.com/list/cnPC/1/20/auto/12/0.html': get_yunnanzichan_chuzhigonggao,  # 云南省资产管理有限公司
+    'http://www.hnlhzc.com/index.php?m=content&c=index&a=lists&catid=30': get_hainanzichan_chuzhigonggao,
+    # 海南联合资产管理有限公司
+    'https://www.szamc.net/home/zcDispose': get_shenzenzichan_chuzhigonggao,  # 深圳资产管理有限公司
+
 }
 
 web_list = [
@@ -55,6 +81,18 @@ web_list = [
     'https://www.guangzhouamc.com/asset/chuzhigonggao.html',
     'http://www.xiangjiang-amc.com/zcczgg/31617',
     'https://amc.hnchasing.com/cxamc/zcxx53/zcczgg79/index.html',
+    'http://www.henanamc.com.cn/czgg19',
+    'http://www.qdamc.citic/announcement-54-1.html',
+    'http://www.ciamc.com.cn/ciamc/insetInfo/disposal-Notice.html',
+    'https://www.amcah.com/new.php?class_id=102102',
+    'https://www.cebamc.com/#/assets/list/0',
+    'http://srzcamc.com/index/lists/listss.html?type=258&t=237',
+    'https://www.ssaocorp.com/site/information_report',
+    'https://www.amcim.com/cms/about/4.html',
+    'https://www.hebamc.com/index.php/Cn/Info/index/classid/61.html',
+    'http://www.yndamc.com/list/cnPC/1/20/auto/12/0.html',
+    'http://www.hnlhzc.com/index.php?m=content&c=index&a=lists&catid=30',
+    'https://www.szamc.net/home/zcDispose',
 ]
 
 while True:

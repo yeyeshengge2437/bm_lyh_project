@@ -314,10 +314,12 @@ def judge_title_repeat(origin):
     return title_url_set
 
 
-def get_image(page, url, element, left_offset=0, right_offset=0, up_offset=0, down_offset=0):
+def get_image(page, url, element, is_to_bottom=False, left_offset=0, right_offset=0, up_offset=0, down_offset=0):
     tab = page.new_tab()
     tab.get(url)
     tab.wait.ele_displayed(element)
+    if is_to_bottom:
+        tab.scroll.to_bottom()
     time.sleep(2)
     value = tab.ele(element).rect.corners
     top_left = value[0]

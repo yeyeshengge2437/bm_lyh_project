@@ -1,72 +1,80 @@
 import os
 import random
+import re
 import time
 from datetime import datetime
 
 import mysql.connector
-from lxml import etree
 import requests
+from lxml import etree
 from DrissionPage import ChromiumPage, ChromiumOptions
-
-from AMC.api_paper import judge_bm_repeat, upload_file, judge_title_repeat, get_image, upload_file_by_url
+from AMC.api_paper import get_image, judge_bm_repeat, upload_file, judge_title_repeat, upload_file_by_url, get_now_image
 
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9131)
+co.set_paths(local_port=9139)
+
 
 headers = {
-    'Accept': 'application/json, text/plain, */*',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
-    # 'Content-Length': '0',
-    # 'Cookie': 'Hm_lvt_95c247cff9bc1f5531523b6efabbe798=1726107052; Hm_lpvt_95c247cff9bc1f5531523b6efabbe798=1726107052; HMACCOUNT=FDD970C8B3C27398',
-    'Origin': 'http://www.nbfamc.com',
+    'Cookie': 'Secure; yfx_c_g_u_id_10000064=_ck24091309102811177925073253751; yfx_f_l_v_t_10000064=f_t_1726189828106__r_t_1726189828106__v_t_1726189828106__r_c_0; Secure',
     'Pragma': 'no-cache',
-    'Referer': 'http://www.nbfamc.com/List.html?menuId=44',
+    'Upgrade-Insecure-Requests': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
 }
 
-params = {
-    'limit': '400',
-    'menuId': '44',
-    'page': '1',
-}
 
-
-def get_ningbozichan_chuzhigonggao(queue_id, webpage_id):
+def get_henanzichan_chuzhigonggao(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
     try:
-        response = requests.post('http://www.nbfamc.com/queryArtList', params=params, headers=headers, verify=False)
-        res_json = response.json()
-        title_list = res_json["page"]["list"]
+        page_url = f'http://www.henanamc.com.cn/czgg19/'
+        response = requests.get(page_url, headers=headers, verify=False)
+        res = response.content.decode()
+        res_html = etree.HTML(res)
+        title_list = res_html.xpath("//li[@class='cl']/div[@class='news_title fl']/a")
         img_set = set()
-        page_url = 'http://www.nbfamc.com/List.html?menuId=44'
-        name = "宁波金融资产管理股份有限公司"
+        name = '河南资产管理有限公司'
         title_set = judge_title_repeat(name)
         for title in title_list:
-            title_name = title["title"]
-            title_date = title["pubDate"]
-            title_url = f"http://www.nbfamc.com/zixunList.html?menuId=44&id={title['id']}"
+
+            title_url = "".join(title.xpath("./@href"))
             if title_url not in title_set:
-                title_url1 = f"http://www.nbfamc.com/queryArticle?id={title['id']}"
-                title_res = requests.post(title_url1, headers=headers, verify=False)
-                res_title_json = title_res.json()
-                content_html = res_title_json["jgSubject"]["content"]
-                title_ht = etree.HTML(content_html)
-                title_content = ''.join(title_ht.xpath("//text()"))
-                annex = title_ht.xpath("//a/@href")
+                # print(title_name,title_url)
+                # return
+                res_title = requests.get(title_url, headers=headers)
+                res_title_html1 = res_title.content.decode()
+                res_title_html = etree.HTML(res_title_html1)
+                title_name = "".join(
+                    res_title_html.xpath("//div[@class='information_title']/h3/text()"))
+                title_date = "".join(res_title_html.xpath("//div[@class='information_title']//span/text()"))
+                # 使用re模块提取日期
+                title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
+                if title_date:
+                    title_date = title_date[0]
+                else:
+                    title_date = ''
+
+                title_content = "".join(res_title_html.xpath(
+                    "//div[@class='list_info']/div[@class='information_info']//text()"))
+
+                annex = res_title_html.xpath("//div[@class='list_info']/div[@class='information_info']//a/@href")
                 if annex:
                     files = []
                     original_url = []
                     for ann in annex:
+                        if "http" not in ann:
+                            ann = "http://www.henanamc.com.cn" + ann
                         file_type = ann.split('.')[-1]
                         if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z', ]:
                             file_url = upload_file_by_url(ann, "ningbofujian", file_type)
                             files.append(file_url)
                             original_url.append(ann)
+                    print(original_url)
                 else:
                     files = ''
                     original_url = ''
@@ -75,10 +83,20 @@ def get_ningbozichan_chuzhigonggao(queue_id, webpage_id):
                     original_url = ''
                 files = str(files)
                 original_url = str(original_url)
+
+                title_html_info = res_title_html.xpath(
+                    "//div[@class='information_title']/h3")
+                content_1 = res_title_html.xpath("//div[@class='information_info']")
+                content_html = ''
+                for con in title_html_info:
+                    content_html += etree.tostring(con, encoding='utf-8').decode()
+                for con in content_1:
+                    content_html += etree.tostring(con, encoding='utf-8').decode()
                 try:
-                    image = get_image(page, title_url, "xpath=//div[@id='article']")
+                    image = get_image(page, title_url, "xpath=//div[@class='list_con fr']")
                 except:
-                    image = ''
+                    print('截取当前显示区域')
+                    image = get_now_image(page, title_url)
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 上传到测试数据库
@@ -123,4 +141,4 @@ def get_ningbozichan_chuzhigonggao(queue_id, webpage_id):
         page.close()
         raise Exception(e)
 
-# get_ningbozichan_chuzhigonggao(111, 222)
+# get_henanzichan_chuzhigonggao(111, 222)

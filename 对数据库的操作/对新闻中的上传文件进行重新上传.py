@@ -17,9 +17,9 @@ cursor_test = conn_test.cursor()
 
 # 查询时间为2024-8-20到2024-8-21之间的数据
 cursor_test.execute(
-    "select id, paper from col_paper_notice where paper = '江苏资产管理有限公司'")
+    "select id, page_url, content_url from col_paper_notice where paper = '兴业资产管理有限公司'")
 rows = cursor_test.fetchall()
-for id, paper in rows:
+for id, page_url, content_url in rows:
 
     # html = etree.HTML(content_html)
     # #
@@ -27,14 +27,13 @@ for id, paper in rows:
     # insert_sql = "UPDATE col_paper_notice SET content = %s WHERE id = %s"
     # cursor_test.execute(insert_sql, (title_content, id))
     # conn_test.commit()
-    # insert_sql = "UPDATE col_paper_notice SET paper = %s WHERE id = %s"
-    # cursor_test.execute(insert_sql, ('浙江省浙商资产管理有限公司', id))
-    # conn_test.commit()
-    # 删除
-    print(id, paper)
-    delete_sql = "DELETE FROM col_paper_notice WHERE id = %s"
-    cursor_test.execute(delete_sql, (id,))
+    insert_sql = "UPDATE col_paper_notice SET page_url = %s WHERE id = %s"
+    cursor_test.execute(insert_sql, (content_url, id))
     conn_test.commit()
+    print(id, page_url, content_url)
+    # delete_sql = "DELETE FROM col_paper_page WHERE id = %s"
+    # cursor_test.execute(delete_sql, (id,))
+    # conn_test.commit()
 
 
 
