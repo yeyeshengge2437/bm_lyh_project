@@ -29,6 +29,8 @@ from hebeiziguan_chuzhigonggao import get_hebeiziguan_chuzhigonggao  # 河北省
 from yunnanzichan_chuzhigonggao import get_yunnanzichan_chuzhigonggao  # 云南省资产管理有限公司
 from hainanlianhe_chuzhigonggao import get_hainanzichan_chuzhigonggao  # 海南联合资产管理有限公司
 from shenzenzichan_chuzhigonggao import get_shenzenzichan_chuzhigonggao  # 深圳资产管理有限公司
+from shenzhenzhaoshang_chuzhigonggao import get_shenzhenzhaoshang_chuzhigonggao  # 深圳市招商平安资产管理有限责任公司
+from liaoningzichan_chuzhigonggao import get_liaoningzichan_chuzhigonggao  # 辽宁资产管理有限公司
 
 methods = {
     'https://www.zsamc.com/index.php/infor/index/20.html#tabNav': get_zhejiangzheshang_chuzhigonggao,  # 浙江省浙商资产管理有限公司
@@ -61,6 +63,8 @@ methods = {
     'http://www.hnlhzc.com/index.php?m=content&c=index&a=lists&catid=30': get_hainanzichan_chuzhigonggao,
     # 海南联合资产管理有限公司
     'https://www.szamc.net/home/zcDispose': get_shenzenzichan_chuzhigonggao,  # 深圳资产管理有限公司
+    'https://www.cmamc.net.cn/zichan_ye.php?fid=8': get_shenzhenzhaoshang_chuzhigonggao,  # 深圳市招商平安资产管理有限责任公司
+    'https://www.lnzcgs.cn/list_34': get_liaoningzichan_chuzhigonggao,  # 辽宁资产管理有限公司
 
 }
 
@@ -93,6 +97,8 @@ web_list = [
     'http://www.yndamc.com/list/cnPC/1/20/auto/12/0.html',
     'http://www.hnlhzc.com/index.php?m=content&c=index&a=lists&catid=30',
     'https://www.szamc.net/home/zcDispose',
+    'https://www.cmamc.net.cn/zichan_ye.php?fid=8',
+    'https://www.lnzcgs.cn/list_34',
 ]
 
 while True:

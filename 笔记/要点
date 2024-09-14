@@ -12,4 +12,6 @@
             //tag: 选择所有名为 tag 的元素。
             @attribute: 指定要检查的属性。
             'value': 子字符串，我们想检查它是否存在于属性值中。
+    4.从第n个开始往后取
+        //div[contains(@class, 'header')][position() >= n]
 
