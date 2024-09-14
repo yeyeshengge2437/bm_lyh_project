@@ -63,7 +63,8 @@ def get_shenzenzichan_chuzhigonggao(queue_id, webpage_id):
                 content_html = re.sub(r'＞', '>', content_html)
                 title_ht = etree.HTML(content_html)
                 title_content = "".join(title_ht.xpath("//text()"))
-                annex = title_ht.xpath("//a/@href")
+                title_content = re.sub(r'＆nbsp;', '', title_content)
+                annex = title_ht.xpath("//a/@href | //img/@src")
                 if annex:
                     files = []
                     original_url = []
@@ -71,7 +72,7 @@ def get_shenzenzichan_chuzhigonggao(queue_id, webpage_id):
                         if "http" not in ann:
                             ann = "https://www.szamc.net" + ann
                         file_type = ann.split('.')[-1]
-                        if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z']:
+                        if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z', 'jpg']:
                             file_url = upload_file_by_url(ann, "shenzen", file_type)
                             files.append(file_url)
                             original_url.append(ann)

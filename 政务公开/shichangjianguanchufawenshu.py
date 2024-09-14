@@ -141,9 +141,12 @@ def parse_data(url_set, query, queue_id, webpage_id):
                     decision_wsh = detail['2']
                     punish_organ = detail['14']
                     chufatime = detail['23']
-                    # 将格式xxxxxxxx 转为xxxx-xx-xx
-                    puish_date = chufatime[:4] + '-' + chufatime[4:6] + '-' + chufatime[6:]
                     name = detail['30']
+                    puish_date = chufatime[:4] + '-' + chufatime[4:6] + '-' + chufatime[6:]
+                    content_detail = f'当事人名称:{name},处罚机关:{decision_wsh}, 处罚日期:{puish_date}, 处罚内容:{content_data}, 处罚依据:{wf_fact}' + content_detail
+                    # 将格式xxxxxxxx 转为xxxx-xx-xx
+
+
                     uni_data = f'{str(decision_wsh), str(puish_date)}'
                     md5_key = hashlib.md5(json.dumps(uni_data).encode('utf-8')).hexdigest()
                     create_date = datetime.now().strftime('%Y-%m-%d')

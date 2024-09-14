@@ -14,15 +14,15 @@ conn_test = mysql.connector.connect(
 
 cursor_test = conn_test.cursor()
 cursor_test.execute(
-    f"SELECT id,title, title_url, content, content_html FROM col_chief_public WHERE origin = '全国地质勘察行业监管服务平台'")
+    f"SELECT id,name, punish_organ, punish_content, wf_fact, punish_date, content_detail FROM col_punish WHERE origin = '中国市场监管行政处罚文书网'")
 rows = cursor_test.fetchall()
-set_url = set()
 count = 0
-for id, title, title_url, content, content_html in rows:
-    if "全国地质勘查" in title:
-        count += 1
-print(count)
-
+for id,name, punish_organ, punish_content, wf_fact, punish_date, content_detail in rows:
+    content_detail = f'当事人名称:{name},处罚机关:{punish_organ}, 处罚日期:{punish_date}, 处罚内容:{punish_content}, 处罚依据:{wf_fact}' + content_detail
+    print(content_detail)
+    insert_sql = "UPDATE col_punish SET content_detail = %s WHERE id = %s"
+    cursor_test.execute(insert_sql, (content_detail, id))
+    conn_test.commit()
     # if not content:
     #     html = etree.HTML(content_html)
     #     content = ''.join(html.xpath('//font//text()')).strip()

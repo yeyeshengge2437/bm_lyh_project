@@ -70,6 +70,8 @@ from changchun_lastpaper import get_changchun_lastpaper  # 长春晚报
 from yunnan_paper import get_yunnan_paper  # 云南日报
 from wulumuqi_lastpaper import get_wulumuqi_lastpaper  # 乌鲁木齐晚报
 from lasa_paper import get_lasa_paper  # 拉萨日报
+from chinahezuo_paper import get_chinahezuo_paper  # 中华合作时报
+from huashang_paper import get_huashang_paper  # 华商报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -138,11 +140,12 @@ methods = {
     '北京日报': get_beijing_paper,  # '2020-07-13'
     '农民日报': get_nongmin_paper,  # '2010-12-14'
     '广西政协报': get_guangxizhengxie_paper,  # '2022-01-01'
-    '长春晚报': get_changchun_lastpaper,  # 未添加队列， 'http://epaper.changchunews.com/ccwb/pc/paper/layout', '2017-04-22'
-    '云南日报': get_yunnan_paper,  # 未添加队列， 'https://yndaily.yunnan.cn', '2019-01-01'
+    '长春晚报': get_changchun_lastpaper,  # '2017-04-22'
+    '云南日报': get_yunnan_paper,  #  '2019-01-01'
     '乌鲁木齐晚报': get_wulumuqi_lastpaper,  # '2024-06-07'
     '拉萨日报': get_lasa_paper,  # '2024-01-01'
-
+    '中华合作时报': get_chinahezuo_paper,
+    '华商报': get_huashang_paper,
 }
 
 webpage_url_list = [
@@ -213,6 +216,10 @@ webpage_url_list = [
     'https://bjrbdzb.bjd.com.cn/bjrb',
     'https://szb.farmer.com.cn',
     'http://www.gxzxbxwzx.com.cn/dzszb/szbcf/index.html',
+    'http://epaper.changchunews.com/ccwb/pc/paper/layout',
+    'https://yndaily.yunnan.cn',
+    'http://www.zh-hz.com',
+    'http://ehsb.hspress.net',
 ]
 
 
@@ -258,10 +265,10 @@ def get_paper_data():
 
 if __name__ == '__main__':
     """
-    多进程3个
+    多进程4个
     """
     process_list = []
-    for i in range(3):
+    for i in range(4):
         process = Process(target=get_paper_data, args=())
         process_list.append(process)
 

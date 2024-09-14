@@ -31,6 +31,7 @@ from hainanlianhe_chuzhigonggao import get_hainanzichan_chuzhigonggao  # 海南�
 from shenzenzichan_chuzhigonggao import get_shenzenzichan_chuzhigonggao  # 深圳资产管理有限公司
 from shenzhenzhaoshang_chuzhigonggao import get_shenzhenzhaoshang_chuzhigonggao  # 深圳市招商平安资产管理有限责任公司
 from liaoningzichan_chuzhigonggao import get_liaoningzichan_chuzhigonggao  # 辽宁资产管理有限公司
+from azhuiguohou_chuzhigonggao import get_azhuiguohou_chuzhigonggao  # 安徽国厚金融资产管理有限公司
 
 methods = {
     'https://www.zsamc.com/index.php/infor/index/20.html#tabNav': get_zhejiangzheshang_chuzhigonggao,  # 浙江省浙商资产管理有限公司
@@ -65,6 +66,7 @@ methods = {
     'https://www.szamc.net/home/zcDispose': get_shenzenzichan_chuzhigonggao,  # 深圳资产管理有限公司
     'https://www.cmamc.net.cn/zichan_ye.php?fid=8': get_shenzhenzhaoshang_chuzhigonggao,  # 深圳市招商平安资产管理有限责任公司
     'https://www.lnzcgs.cn/list_34': get_liaoningzichan_chuzhigonggao,  # 辽宁资产管理有限公司
+    'http://www.gohoamc.com/info.php?class_id=102104': get_azhuiguohou_chuzhigonggao,  # 安徽国厚金融资产管理有限公司
 
 }
 
@@ -99,6 +101,7 @@ web_list = [
     'https://www.szamc.net/home/zcDispose',
     'https://www.cmamc.net.cn/zichan_ye.php?fid=8',
     'https://www.lnzcgs.cn/list_34',
+    'http://www.gohoamc.com/info.php?class_id=102104',
 ]
 
 while True:
