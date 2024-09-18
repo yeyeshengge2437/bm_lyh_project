@@ -1,0 +1,13 @@
+{
+  "name": "baimi_project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "private": true,
+  "dependencies": {
+    "jsdom": "^25.0.0"
+  }
+}

@@ -72,6 +72,18 @@ from wulumuqi_lastpaper import get_wulumuqi_lastpaper  # 乌鲁木齐晚报
 from lasa_paper import get_lasa_paper  # 拉萨日报
 from chinahezuo_paper import get_chinahezuo_paper  # 中华合作时报
 from huashang_paper import get_huashang_paper  # 华商报
+from geermu_paper import get_geermu_paper  # 格尔木日报
+from jiatingyisheng_paper import get_jiatingyisheng_paper  # 家庭医生报
+from shangrao_paper import get_shangrao_paper  # 上饶日报
+from qiaoxiangkeji_paper import get_qiaoxiangkeji_paper  # 侨乡科技报
+from wenzhou_lastpaper import get_wenzhou_lastpaper  # 温州晚报
+from wenzhou_paper import get_wenzhou_paper  # 温州日报
+from wenzhoudushi_paper import get_wenzhoudushi_paper  # 温州都市报
+from wenzhoushang_paper import get_wenzhoushang_paper  # 温州商报
+from yiwushang_paper import get_yiwushang_paper  # 义务商报
+from shichangdao_paper import get_shichangdao_paper  # 市场导报
+from zhengquanshi_paper import get_zhengquanshi_paper  # 证券时报
+from lianyi_paper import get_lianyi_paper  # 联谊报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -146,6 +158,18 @@ methods = {
     '拉萨日报': get_lasa_paper,  # '2024-01-01'
     '中华合作时报': get_chinahezuo_paper,
     '华商报': get_huashang_paper,
+    '格尔木日报': get_geermu_paper,
+    '家庭医生报': get_jiatingyisheng_paper,
+    '上饶日报': get_shangrao_paper,
+    '侨乡科技报': get_qiaoxiangkeji_paper,
+    '温州晚报': get_wenzhou_lastpaper,
+    '温州日报': get_wenzhou_paper,
+    '温州都市报': get_wenzhoudushi_paper,
+    '温州商报': get_wenzhoushang_paper,
+    '义务商报': get_yiwushang_paper,
+    '市场导报': get_shichangdao_paper,
+    '证券时报': get_zhengquanshi_paper,
+    '联谊报': get_lianyi_paper,
 }
 
 webpage_url_list = [
@@ -172,7 +196,7 @@ webpage_url_list = [
     'https://jjsb.cet.com.cn',
     'http://kjb.zjol.com.cn',
     'http://epaper.zqcn.com.cn',
-    'https://ipaper.pagx.cn',
+    'https://ipaper.pagx.cn',   # 广西法治日报暂停处理
     'http://epaper.chuxiong.cn',
     'https://newpaper.dahe.cn/jrab/html/2024-07/18/node_2170.htm',
     'https://epaper.bhxww.com/bhrb',
@@ -220,6 +244,18 @@ webpage_url_list = [
     'https://yndaily.yunnan.cn',
     'http://www.zh-hz.com',
     'http://ehsb.hspress.net',
+    'https://www.geermurb.com',
+    'http://jyb.ncrbw.cn',
+    'http://paper.srxww.com',
+    'https://www.xepaper.com/qxkjb',
+    'http://szb.66wz.com/newspaper?mediaKey=wzwb',
+    'http://szb.66wz.com/newspaper?mediaKey=wzrb',
+    'http://szb.66wz.com/newspaper?mediaKey=wzdsb',
+    'http://szb.66wz.com/newspaper?mediaKey=wzsb',
+    'http://szb1.ywcity.cn/layout',
+    'https://epaper.zjscdb.com',
+    'https://epaper.stcn.com',
+    'http://www.lybs.com.cn',
 ]
 
 

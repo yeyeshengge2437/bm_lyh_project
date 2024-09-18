@@ -58,6 +58,8 @@ def get_kaifeng_paper(paper_time, queue_id, webpage_id):
                 article_url = bm_area.get('shareLink')
                 # 获取文章内容
                 content = bm_area.get('html')
+                if not content:
+                    continue
                 html = etree.HTML(content)
                 content = ''.join(html.xpath('//text()'))
                 img_set = set()
@@ -73,6 +75,7 @@ def get_kaifeng_paper(paper_time, queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
+                # print(bm_name, article_name, article_url, bm_img, content)
                 if bm_img not in img_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
                     # 将报纸img上传
                     up_img = upload_file_by_url(bm_img, "开封日报", "jpg", "paper")
@@ -108,4 +111,4 @@ def get_kaifeng_paper(paper_time, queue_id, webpage_id):
     else:
         raise Exception(f'该日期没有报纸')
 
-
+# get_kaifeng_paper('2022-12-12', 1111, 3333)
