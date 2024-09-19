@@ -84,6 +84,17 @@ from yiwushang_paper import get_yiwushang_paper  # 义务商报
 from shichangdao_paper import get_shichangdao_paper  # 市场导报
 from zhengquanshi_paper import get_zhengquanshi_paper  # 证券时报
 from lianyi_paper import get_lianyi_paper  # 联谊报
+from xiaofeizhiliang_paper import get_xiaofeizhiliang_paper  # 消费质量报
+from huaxishequ_paper import get_huaxishequ_paper  # 华西社区报
+from yuncheng_lastpaper import get_yuncheng_lastpaper  # 运城晚报
+from shenghuo_paper import get_shenghuo_paper  # 生活报
+from tumenjiang_paper import get_tumenjiang_paper  # 图们江报
+from chinazhiliang_paper import get_chinazhiliang_paper  # 中国质量报
+from chinaxiaofeizhe_paper import get_chinaxiaofei_paper  # 中国消费者报
+from chinashiyou_paper import get_chinashiyou_paper  # 中国石油报
+from linzhi_paper import get_linzhi_paper  # 林芝报
+from shannan_paper import get_shannan_paper  # 山南报
+from changdu_paper import get_changdu_paper  # 昌都报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -170,6 +181,17 @@ methods = {
     '市场导报': get_shichangdao_paper,
     '证券时报': get_zhengquanshi_paper,
     '联谊报': get_lianyi_paper,
+    '消费质量报': get_xiaofeizhiliang_paper,
+    '华西社区报': get_huaxishequ_paper,
+    '运城晚报': get_yuncheng_lastpaper,
+    '生活报': get_shenghuo_paper,
+    '图们江报': get_tumenjiang_paper,
+    '中国质量报': get_chinazhiliang_paper,
+    '中国消费者报': get_chinaxiaofei_paper,
+    '中国石油报': get_chinashiyou_paper,
+    '林芝报': get_linzhi_paper,
+    '山南报': get_shannan_paper,
+    '昌都报': get_changdu_paper,
 }
 
 webpage_url_list = [
@@ -196,7 +218,7 @@ webpage_url_list = [
     'https://jjsb.cet.com.cn',
     'http://kjb.zjol.com.cn',
     'http://epaper.zqcn.com.cn',
-    'https://ipaper.pagx.cn',   # 广西法治日报暂停处理
+    'https://ipaper.pagx.cn',   # 广西法治日报暂停处理, 请求头动态密码
     'http://epaper.chuxiong.cn',
     'https://newpaper.dahe.cn/jrab/html/2024-07/18/node_2170.htm',
     'https://epaper.bhxww.com/bhrb',
@@ -256,6 +278,17 @@ webpage_url_list = [
     'https://epaper.zjscdb.com',
     'https://epaper.stcn.com',
     'http://www.lybs.com.cn',
+    'https://xzb.scol.com.cn',
+    'https://www.wccdaily.com.cn/shtml/index_hxdsbsq.shtml',
+    'http://epaper.sxycrb.com/wbpaper/pc/layout',
+    'http://epaper.hljnews.cn/shb/pc/layout',
+    'http://www.tmjnews.net/newspaper.asp',
+    'http://zgzlb.183read.cc',
+    'https://zxb.ccn.com.cn',
+    'http://epaper.cnpc.com.cn/zgsyb',
+    'http://www.linzhinews.com/portal/#/list',
+    'http://epaper.xzsnw.com/snbhw/html',
+    'http://sz.cdbao.cn/cdb',
 ]
 
 
@@ -301,10 +334,10 @@ def get_paper_data():
 
 if __name__ == '__main__':
     """
-    多进程4个
+    多进程5个
     """
     process_list = []
-    for i in range(4):
+    for i in range(5):
         process = Process(target=get_paper_data, args=())
         process_list.append(process)
 

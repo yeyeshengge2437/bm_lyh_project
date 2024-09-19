@@ -81,6 +81,7 @@ def get_xinxiang_paper(paper_time, queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
+                # print(bm_name,'111' , article_name, '222', article_url, '333', bm_pdf, content)
                 if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
@@ -117,4 +118,4 @@ def get_xinxiang_paper(paper_time, queue_id, webpage_id):
 
 
 
-
+# get_xinxiang_paper('2023-07-10', 111, 222)
