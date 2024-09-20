@@ -71,16 +71,19 @@ def get_shenzhenzhaoshang_chuzhigonggao(queue_id, webpage_id):
                         "//div[@class='con']//text()"))
                     title_content = re.sub(r'＆nbsp;', '', title_content)
 
-                    annex = res_title_html.xpath("//div[@class='con']//@src|//div[@class='con']//@href")
+                    annex = res_title_html.xpath("//div[@class='con']//@src|//div[@class='con']//@href | //div[@class='con']//@src|//div[@class='con']//@src")
                     if annex:
+                        # print(page_url, annex)
                         files = []
                         original_url = []
                         for ann in annex:
                             if "http" not in ann:
-                                ann = "https://www.cmamc.net.cn/" + ann
+                                ann = 'https://www.cmamc.net.cn' + ann
                             file_type = ann.split('.')[-1]
-                            if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z', 'jpg'] and "upload" in ann:
-                                file_url = upload_file_by_url(ann, "shenzhanzhao", file_type)
+                            if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
+                                             'png', 'jpg', 'jpeg']:
+                                file_url = upload_file_by_url(ann, "yunnan", file_type)
+                                # file_url = 111
                                 files.append(file_url)
                                 original_url.append(ann)
                     else:

@@ -8,7 +8,7 @@ from lxml import etree
 import requests
 from DrissionPage import ChromiumPage, ChromiumOptions
 
-from AMC.api_paper import judge_bm_repeat, upload_file, judge_title_repeat
+from AMC.api_paper import judge_bm_repeat, upload_file, judge_title_repeat, upload_file_by_url
 
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
@@ -88,6 +88,30 @@ def get_zhongyuanzichan_chuzhigonggao(queue_id, webpage_id):
                 title_res = requests.get(title_url1, headers=headers)
                 res_title_json = title_res.json()
                 content_html = res_title_json["data"]["newsContent"]
+                html = etree.HTML(content_html)
+                annex = html.xpath("//@href | //@src")
+                if annex:
+                    # print(page_url, annex)
+                    files = []
+                    original_url = []
+                    for ann in annex:
+                        if "http" not in ann:
+                            ann = 'https://www.zyamc.net' + ann
+                        file_type = ann.split('.')[-1]
+                        if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z', 'png',
+                                         'jpg', 'jpeg']:
+                            file_url = upload_file_by_url(ann, "anhui", file_type)
+                            # file_url = 111
+                            files.append(file_url)
+                            original_url.append(ann)
+                else:
+                    files = ''
+                    original_url = ''
+                if not files:
+                    files = ''
+                    original_url = ''
+                files = str(files)
+                original_url = str(original_url)
                 content_etree = etree.HTML(content_html)
                 title_content = ''.join(content_etree.xpath('//text()')).strip()
 
@@ -120,11 +144,12 @@ def get_zhongyuanzichan_chuzhigonggao(queue_id, webpage_id):
 
                 if title_url not in title_set:
                     # 上传到报纸的内容
-                    insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
+                    insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time,original_files, files, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
 
                     cursor_test.execute(insert_sql,
-                                        (title_url, title_date, name, title_name, title_content, title_url, content_html,
-                                         create_time, queue_id,
+                                        (title_url, title_date, name, title_name, title_content, title_url,
+                                         content_html,
+                                         create_time, original_url, files, queue_id,
                                          create_date, webpage_id))
                     conn_test.commit()
                     title_set.add(title_url)

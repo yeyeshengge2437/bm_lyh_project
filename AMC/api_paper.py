@@ -98,7 +98,7 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper", verify=None
     file_name = file_name + str(random.randint(1, 999999999))
     r = requests.get(file_url, headers=headers, verify=verify)
     if r.status_code != 200:
-        raise Exception(f'pdf或图片下载失败')
+        return None
     pdf_path = f"{file_name}.{file_type}"
     if not os.path.exists(pdf_path):
         fw = open(pdf_path, 'wb')

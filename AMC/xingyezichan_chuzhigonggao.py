@@ -62,16 +62,29 @@ def get_xinyezichan_chuzhigonggao(queue_id, webpage_id):
                     title_content = "".join(res_title_html.xpath(
                         "//div[@class='detail']/div[@class='detail-body']//text()"))
 
-                    annex = res_title_html.xpath("//div[@class='detail']/div[@class='detail-body']//a/@src")
+
+                    title_html_info = res_title_html.xpath(
+                        "//div[@class='detail']/div[@class='detail-title']")
+                    content_1 = res_title_html.xpath("//div[@class='detail']/div[@class='detail-body']")
+                    content_html = ''
+                    for con in title_html_info:
+                        content_html += etree.tostring(con, encoding='utf-8').decode()
+                    for con in content_1:
+                        content_html += etree.tostring(con, encoding='utf-8').decode()
+                    html = etree.HTML(content_html)
+                    annex = html.xpath("//@href | //@src")
                     if annex:
+                        # print(page_url, annex)
                         files = []
                         original_url = []
                         for ann in annex:
                             if "http" not in ann:
-                                ann = "http://www.ciamc.com.cn" + ann
+                                ann = 'http://www.ciamc.com.cn' + ann
                             file_type = ann.split('.')[-1]
-                            if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z', ]:
-                                file_url = upload_file_by_url(ann, "ningbofujian", file_type)
+                            if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
+                                             'png', ] and 'ciamc' in ann:
+                                file_url = upload_file_by_url(ann, "xingye", file_type)
+                                # file_url = 111
                                 files.append(file_url)
                                 original_url.append(ann)
                     else:
@@ -82,15 +95,6 @@ def get_xinyezichan_chuzhigonggao(queue_id, webpage_id):
                         original_url = ''
                     files = str(files)
                     original_url = str(original_url)
-
-                    title_html_info = res_title_html.xpath(
-                        "//div[@class='detail']/div[@class='detail-title']")
-                    content_1 = res_title_html.xpath("//div[@class='detail']/div[@class='detail-body']")
-                    content_html = ''
-                    for con in title_html_info:
-                        content_html += etree.tostring(con, encoding='utf-8').decode()
-                    for con in content_1:
-                        content_html += etree.tostring(con, encoding='utf-8').decode()
                     try:
                         image = get_image(page, title_url,
                                           "xpath=//div[@class='detail']",

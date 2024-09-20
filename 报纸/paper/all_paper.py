@@ -95,6 +95,13 @@ from chinashiyou_paper import get_chinashiyou_paper  # 中国石油报
 from linzhi_paper import get_linzhi_paper  # 林芝报
 from shannan_paper import get_shannan_paper  # 山南报
 from changdu_paper import get_changdu_paper  # 昌都报
+from tulufan_paper import get_tulufan_paper  # 吐鲁番日报
+from kezile_paper import get_kezile_paper  # 克孜勒苏日报
+from boerta_paper import get_boerta_paper  # 博尔塔拉报
+from tacheng_paper import get_tacheng_paper  # 塔城日报
+from changji_paper import get_changji_paper  # 昌吉日报
+from yili_paper import get_yili_paper  # 伊犁日报
+from azletai_paper import get_aletai_paper  # 阿勒泰日报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -192,6 +199,13 @@ methods = {
     '林芝报': get_linzhi_paper,
     '山南报': get_shannan_paper,
     '昌都报': get_changdu_paper,
+    '吐鲁番日报': get_tulufan_paper,
+    '克孜勒苏日报': get_kezile_paper,
+    '博尔塔拉报': get_boerta_paper,
+    '塔城日报': get_tacheng_paper,
+    '昌吉日报': get_changji_paper,
+    '伊犁日报': get_yili_paper,
+    '阿勒泰日报': get_aletai_paper,
 }
 
 webpage_url_list = [
@@ -289,6 +303,12 @@ webpage_url_list = [
     'http://www.linzhinews.com/portal/#/list',
     'http://epaper.xzsnw.com/snbhw/html',
     'http://sz.cdbao.cn/cdb',
+    'http://appepaper.tlfw.net:8080/epaper/cn-pc/tlfrb',
+    'https://www.xepaper.com/kz/html',
+    'http://szb.tcxw.cc/pc/layout',
+    'http://pcepaper.cjxww.cn',
+    'https://www.ylxw.com.cn/epaper/ylrb',
+    'https://alt-szb.xjmty.com',
 ]
 
 

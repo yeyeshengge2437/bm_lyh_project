@@ -69,19 +69,21 @@ def get_hebeiziguan_chuzhigonggao(queue_id, webpage_id):
                     title_content = "".join(res_title_html.xpath(
                         "//div[@class='n_right']/div[@id='body_con']//text()"))
 
-                    annex = res_title_html.xpath("//div[@class='n_right']/div[@id='body_con']//a/@href")
+                    annex = res_title_html.xpath("//div[@class='n_right']/div[@id='body_con']//a/@href | //div[@class='n_right']/div[@id='body_con']//@src")
                     if annex:
+                        # print(page_url, annex)
                         files = []
                         original_url = []
                         for ann in annex:
                             if "http" not in ann:
-                                ann = "https://www.hebamc.com" + ann
+                                ann = 'https://www.hebamc.com' + ann
                             file_type = ann.split('.')[-1]
-                            if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z', ]:
-                                file_url = upload_file_by_url(ann, "ningbofujian", file_type)
+                            if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
+                                             'png', 'jpg', 'jpeg'] and 'upload' in ann:
+                                file_url = upload_file_by_url(ann, "anhui", file_type)
+                                # file_url = 111
                                 files.append(file_url)
                                 original_url.append(ann)
-                            print(original_url)
                     else:
                         files = ''
                         original_url = ''

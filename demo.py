@@ -1,33 +1,54 @@
-import json
+import os
+import re
 
+import mysql.connector
 import requests
+from lxml import etree
 
+from AMC.api_paper import upload_file_by_url
 
-headers = {
-    'ADMIN_ALLOW': '',
-    'Accept': 'application/json, text/javascript, */*; q=0.01',
-    'Accept-Language': 'zh-CN,zh;q=0.9',
-    'BROWER_LANGUAGE': 'zh-CN',
-    'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive',
-    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    # 'Cookie': 'Hm_lvt_9b2a01de93671e1d3edfbffeda9b89f9=1724146656; VISIT_TAG=1726623174026; JSESSIONID=AF604898867BC95AFD5439EFDD2C7057',
-    'Origin': 'http://ipaper.pagx.cn',
-    'Pragma': 'no-cache',
-    'Referer': 'http://ipaper.pagx.cn/bz/html/index.html?date=2024-04-08&pageIndex=4&cid=1',
-    'SCREEN': '900x1440',
-    'SITE': 'gxfzb',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-    'X-Requested-With': 'XMLHttpRequest',
-    'myIdentity': '9195459e-c0be-47fd-8c0f-552e11cba122',
-}
-paper_time = "2024-04-08"
-data_json = {"from":0,"size":999,"query":{"bool":{"must":[{"term":{"columns.id":1}},{"term":{"bz.date_date_sore":paper_time}}]}},"sort":[{"index_int_sore":{"order":"asc"}}]}
-data_json = json.dumps(data_json)
-data = {
-    'index': 'bz_page',
-    'query': data_json,
-}
+# 连接到测试库
+conn_test = mysql.connector.connect(
+    host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+    user="col2024",
+    password="Bm_a12a06",
+    database="col"
+)
 
-response = requests.post('http://ipaper.pagx.cn/data/query', headers=headers, data=data, verify=False)
-print(response.json())
+cursor_test = conn_test.cursor()
+cursor_test.execute(
+    "select id, page_url, content_html from col_paper_notice where paper = '深圳市招商平安资产管理有限责任公司'")
+rows = cursor_test.fetchall()
+for id, page_url, content_html in rows:
+    html = etree.HTML(content_html)
+    annex = html.xpath("//@href | //@src")
+    if annex:
+        # print(page_url, annex)
+        files = []
+        original_url = []
+        for ann in annex:
+            if "http" not in ann:
+                ann = 'https://www.cmamc.net.cn' + ann
+            file_type = ann.split('.')[-1]
+            if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z', 'png', 'jpg', 'jpeg']:
+                file_url = upload_file_by_url(ann, "yunnan", file_type)
+                # file_url = 111
+                files.append(file_url)
+                original_url.append(ann)
+    else:
+        files = ''
+        original_url = ''
+    if not files:
+        files = ''
+        original_url = ''
+    files = str(files)
+    original_url = str(original_url)
+    if original_url:
+        print(page_url, original_url)
+    #
+    insert_sql = "UPDATE col_paper_notice SET original_files = %s,files = %s WHERE id = %s"
+    cursor_test.execute(insert_sql, (original_url, files, id))
+    conn_test.commit()
+
+cursor_test.close()
+conn_test.close()

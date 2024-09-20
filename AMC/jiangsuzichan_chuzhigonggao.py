@@ -64,27 +64,6 @@ def get_jiangsuzichan_chuzhigonggao(queue_id, webpage_id):
                     res_title = title_res.content.decode()
                     res_title_html = etree.HTML(res_title)
                     title_content = ''.join(res_title_html.xpath("//div[@class='assetsPost_contentContainer__EoCnw']//text()"))
-                    annex = res_title_html.xpath("//div[@class='assetsPost_contentContainer__EoCnw']//a/@href")
-                    annex = res_title_html.xpath("//div[@class='wrapper']//a/@src")
-                    if annex:
-                        files = []
-                        original_url = []
-                        for ann in annex:
-                            if 'http' not in ann:
-                                ann = "https://www.jsamc.com.cn" + ann
-                                file_type = ann.split('.')[-1]
-                                if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z']:
-                                    file_url = upload_file_by_url(ann, "ningbofujian", file_type)
-                                    files.append(file_url)
-                                    original_url.append(ann)
-                    else:
-                        files = ''
-                        original_url = ''
-                    if not files:
-                        files = ''
-                        original_url = ''
-                    files = str(files)
-                    original_url = str(original_url)
                     title_html_info = res_title_html.xpath(
                         "//div[@class='assetsPost_postHeaderContainer__1M8R8']/h4")
                     content_1 = res_title_html.xpath("//div[@class='assetsPost_contentContainer__EoCnw']")
@@ -93,6 +72,32 @@ def get_jiangsuzichan_chuzhigonggao(queue_id, webpage_id):
                         content_html += etree.tostring(con, encoding='utf-8').decode()
                     for con in content_1:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
+                    html = etree.HTML(content_html)
+                    annex = html.xpath("//@href | //@src")
+                    if annex:
+                        # print(page_url, annex)
+                        files = []
+                        original_url = []
+                        for ann in annex:
+                            if "http" not in ann:
+                                ann = 'https://www.jsamc.com.cn' + ann
+                            else:
+                                continue
+                            file_type = ann.split('.')[-1]
+                            if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
+                                             'png', ] and 'file' in ann:
+                                file_url = upload_file_by_url(ann, "jiangsu", file_type)
+                                # file_url = 111
+                                files.append(file_url)
+                                original_url.append(ann)
+                    else:
+                        files = ''
+                        original_url = ''
+                    if not files:
+                        files = ''
+                        original_url = ''
+                    files = str(files)
+                    original_url = str(original_url)
                     image = get_image(page, title_url, "xpath=//div[@class='assetsPost_postContainer__2ziyr']")
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
@@ -122,11 +127,12 @@ def get_jiangsuzichan_chuzhigonggao(queue_id, webpage_id):
 
                     if title_url not in title_set:
                         # 上传到报纸的内容
-                        insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
+                        insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time,original_files, files, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
 
                         cursor_test.execute(insert_sql,
-                                            (title_url, title_date, name, title_name, title_content, title_url, content_html,
-                                             create_time, queue_id,
+                                            (title_url, title_date, name, title_name, title_content, title_url,
+                                             content_html,
+                                             create_time, original_url, files, queue_id,
                                              create_date, webpage_id))
                         conn_test.commit()
                         title_set.add(title_url)

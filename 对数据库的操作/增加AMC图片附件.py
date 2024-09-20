@@ -17,21 +17,21 @@ conn_test = mysql.connector.connect(
 
 cursor_test = conn_test.cursor()
 cursor_test.execute(
-    "select id, page_url, content_html from col_paper_notice where paper = '陕西金融资产管理股份有限公司'")
+    "select id, page_url, content_html from col_paper_notice where paper = '内蒙古金融资产管理有限公司'")
 rows = cursor_test.fetchall()
 for id, page_url, content_html in rows:
     html = etree.HTML(content_html)
-    annex = html.xpath("//div[@class='about-right-p']//@href | //div[@class='about-right-p']//@src")
+    annex = html.xpath("//@href | //@src")
     if annex:
         files = []
         original_url = []
         for ann in annex:
             if "http" not in ann:
-                ann = "https://www.snfamc.com" + ann
+                ann = "https://www.amcim.com" + ann
             file_type = ann.split('.')[-1]
             if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
-                             'png', 'jpeg'] and "posts" in ann:
-                file_url = upload_file_by_url(ann, "shanxijin", file_type)
+                             'png', 'jpeg'] and "uploads" in ann:
+                file_url = upload_file_by_url(ann, "neimenggu", file_type)
                 files.append(file_url)
                 original_url.append(ann)
     else:
@@ -42,7 +42,8 @@ for id, page_url, content_html in rows:
         original_url = ''
     files = str(files)
     original_url = str(original_url)
-    print(original_url)
+    if original_url:
+        print(original_url)
 
     insert_sql = "UPDATE col_paper_notice SET original_files = %s,files = %s WHERE id = %s"
     cursor_test.execute(insert_sql, (original_url, files, id))

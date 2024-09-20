@@ -68,7 +68,7 @@ def get_neimenggujinrong_chuzhigonggao(queue_id, webpage_id):
                     title_content = "".join(res_title_html.xpath(
                         "//div[@class='com-cnt page-content bp-content']//text()"))
 
-                    annex = res_title_html.xpath("//div[@class='com-cnt page-content bp-content']//a/@href")
+                    annex = res_title_html.xpath("//div[@class='com-cnt page-content bp-content']//a/@href | //div[@class='com-cnt page-content bp-content']//@src")
                     if annex:
                         files = []
                         original_url = []
@@ -76,11 +76,11 @@ def get_neimenggujinrong_chuzhigonggao(queue_id, webpage_id):
                             if "http" not in ann:
                                 ann = "https://www.amcim.com" + ann
                             file_type = ann.split('.')[-1]
-                            if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z', ]:
-                                file_url = upload_file_by_url(ann, "ningbofujian", file_type)
+                            if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
+                                             'png', 'jpeg'] and "uploads" in ann:
+                                file_url = upload_file_by_url(ann, "neimenggu", file_type)
                                 files.append(file_url)
                                 original_url.append(ann)
-                            print(original_url)
                     else:
                         files = ''
                         original_url = ''
