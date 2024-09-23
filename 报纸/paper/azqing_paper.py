@@ -1,6 +1,3 @@
-import os
-import json
-import re
 import time
 from datetime import datetime
 from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
@@ -9,56 +6,83 @@ import mysql.connector
 import requests
 from lxml import etree
 
-
-paper = "贵州日报"
+paper = "安庆日报"
 headers = {
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept': 'application/json, text/javascript, */*',
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
+    'Content-Type': 'application/x-www-form-urlencoded',
+    # 'Cookie': 'JSESSIONID=940EF1F206DE093D0A5C17C02E6D1C25; __jsluid_h=92ff81d7aa10f5a71f49a101695489eb',
+    'Origin': 'http://aqdzb.aqnews.com.cn',
     'Pragma': 'no-cache',
-    'Upgrade-Insecure-Requests': '1',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
+    'Referer': 'http://aqdzb.aqnews.com.cn/epaper/read.do?m=i&iid=10720&idate=1_2022-08-05',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+    'X-Requested-With': 'XMLHttpRequest',
 }
-today = datetime.now().strftime('%Y-%m-%d')
+
+def get_date(paper_time):
+    params = {
+        'm': 'getIssueByMonth',
+    }
+
+    data = {
+        'newspaperId': '1',
+        'date': f'{paper_time}',
+    }
+
+    response = requests.post(
+        'http://aqdzb.aqnews.com.cn/epaper/read.do',
+        params=params,
+        headers=headers,
+        # cookies=cookies,
+        data=data,
+        verify=False,
+    )
+    res_json = response.json()["data"]
+    for res in res_json:
+        date = res["idateDisp"]
+        if date == paper_time:
+            url_path = 'http://aqdzb.aqnews.com.cn' + res["path"]
+            return url_path
+    raise Exception(f'该日期没有报纸')
 
 
-def get_guizhou_paper(paper_time, queue_id, webpage_id):
+# print(get_date('2022-10-01'))
+
+
+def get_anqing_paper(paper_time, queue_id, webpage_id):
     # 将today的格式进行改变
     day = paper_time
-    paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m/%d')
-    base_url = f'http://szb.eyesnews.cn/pc/layout/{paper_time}/'
-    url = base_url + 'node_01.html'
+    url = get_date(paper_time)
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
-        if not html_1:
-            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
-        all_bm = html_1.xpath("//div[@class='nav-list']/ul/li")
+        all_bm = html_1.xpath("//span[@class='listTitleL']/a")
         for bm in all_bm:
             # 版面名称
-            bm_name = "".join(bm.xpath("./a[@class='btn btn-block']/text()")).strip()
+            bm_name = "".join(bm.xpath("./text()")).strip()
             # 版面链接
-            bm_url = base_url + ''.join(bm.xpath("./a[@class='btn btn-block']/@href"))
-            # 版面的pdf
-            bm_pdf = 'http://szb.eyesnews.cn/pc/' + "".join(bm.xpath("./a[@class='pdf']/@href")).strip('../../..')
+            bm_url = 'http://aqdzb.aqnews.com.cn' + ''.join(bm.xpath("./@href"))
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers)
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
-            if not bm_html:
-                continue
+            # 版面的pdf
+            bm_pdf = 'http://aqdzb.aqnews.com.cn' + "".join(
+                bm_html.xpath("//div[@class='leftTitle']/a/@href"))
+
             # 获取所有文章的链接
-            all_article = bm_html.xpath("//ul/li[@class='resultList']/a")
+            all_article = bm_html.xpath("//div[@id='link']/a")
             pdf_set = set()
             for article in all_article:
                 # 获取文章链接
-                article_url = 'http://szb.eyesnews.cn/pc/' + ''.join(article.xpath("./@href")).strip('../../..')
+                article_url = 'http://aqdzb.aqnews.com.cn' + ''.join(article.xpath("./@href"))
                 # 获取文章名称
-                article_name = ''.join(article.xpath("./h4/text()")).strip()
+                article_name = ''.join(article.xpath("./@title")).strip()
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 获取文章内容
@@ -67,8 +91,7 @@ def get_guizhou_paper(paper_time, queue_id, webpage_id):
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
-                content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p//text()")).strip()
-
+                content = ''.join(article_html.xpath("//div[@id='article_content']//text()")).strip()
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -77,7 +100,7 @@ def get_guizhou_paper(paper_time, queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
-                # print(bm_name, bm_pdf, article_name, article_url, content)
+                # print(bm_name, article_name, article_url, bm_pdf, content)
                 if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
@@ -89,12 +112,12 @@ def get_guizhou_paper(paper_time, queue_id, webpage_id):
                                         (day, paper, bm_name, bm_pdf, bm_url, up_pdf, create_time, queue_id,
                                          create_date, webpage_id))
                     conn_test.commit()
-                    # print(bm_pdf)
 
                 if judging_criteria(article_name, content):
-                # if 1:
+                    # if 1:
 
                     # print(content)
+                    # return
 
                     # 上传到报纸的内容
                     insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
@@ -107,7 +130,6 @@ def get_guizhou_paper(paper_time, queue_id, webpage_id):
                 cursor_test.close()
                 conn_test.close()
 
-
         success_data = {
             'id': queue_id,
             'description': '数据获取成功',
@@ -117,6 +139,4 @@ def get_guizhou_paper(paper_time, queue_id, webpage_id):
     else:
         raise Exception(f'该日期没有报纸')
 
-# get_guizhou_paper('2024-04-16', 111, 222)
-
-
+# get_anqing_paper('2022-10-01', 111, 1111)

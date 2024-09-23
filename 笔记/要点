@@ -15,3 +15,14 @@
     4.从第n个开始往后取
         //div[contains(@class, 'header')][position() >= n]
 
+    5.元素的兄弟
+        在XPath中，您可以使用following-sibling::轴来选择某个节点之后的所有兄弟节点，或者使用preceding-sibling::轴来选择某个节点之前的所有兄弟节点。如果您想选择具有特定类名的<td>元素的所有兄弟<td>元素，可以这样做：
+
+        //tr/td[@class='default']/following-sibling::td
+        这个表达式将选择所有<tr>元素下，具有class='default'属性的<td>元素之后的所有<td>兄弟元素。
+
+        xpath
+        //tr/td[@class='default']/following-sibling::td | //tr/td[@class='default']/preceding-sibling::td
+
+    6.上一个节点
+        ../

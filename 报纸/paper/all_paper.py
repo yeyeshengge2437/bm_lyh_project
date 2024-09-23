@@ -102,6 +102,24 @@ from tacheng_paper import get_tacheng_paper  # 塔城日报
 from changji_paper import get_changji_paper  # 昌吉日报
 from yili_paper import get_yili_paper  # 伊犁日报
 from azletai_paper import get_aletai_paper  # 阿勒泰日报
+from chaidamu_paper import get_chaidamu_paper  # 柴达木日报
+from guoluo_paper import get_guoluo_paper  # 果洛报
+from nanhuang_paper import get_nanhuang_paper  # 黄南报
+from haidong_paper import get_haidong_paper  # 海东日报
+from lanzhouxinqu_paper import get_lanzhouxinqu_paper  # 兰州新区报
+from lanzhou_paper import get_lanzhou_paper  # 兰州日报
+from xian_paper import get_xian_paper  # 西安日报
+from nanshaxinqu_paper import get_nanshaxiqu_paper  # 南沙新区报
+from chaozhou_paper import get_chaozhou_paper  # 潮州日报
+from changsha_lastpaper import get_changsha_lastpaper  # 长沙晚报
+from zhangjiajie_paper import get_zhangjiajie_lastpaper  # 张家界日报
+from changde_paper import get_changde_paper  # 常德日报
+from yiyang_paper import get_yiyang_paper  # 益阳日报
+from minnan_paper import get_minnan_paper  # 闽南日报
+from taizhou_lastpaper import get_taizhou_lastpaper  # 泰州晚报
+from taizhou_paper import get_taizhou_paper  # 泰州日报
+from azqing_paper import get_anqing_paper  # 安庆日报
+from taigu_paper import get_taigu_paper  # 太谷报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -206,6 +224,24 @@ methods = {
     '昌吉日报': get_changji_paper,
     '伊犁日报': get_yili_paper,
     '阿勒泰日报': get_aletai_paper,
+    '柴达木日报': get_chaidamu_paper,
+    '果洛报': get_guoluo_paper,
+    '黄南报': get_nanhuang_paper,
+    '海东日报': get_haidong_paper,
+    '兰州新区报': get_lanzhouxinqu_paper,
+    '兰州日报': get_lanzhou_paper,
+    '西安日报': get_xian_paper,
+    '南沙新区报': get_nanshaxiqu_paper,
+    '潮州日报': get_chaozhou_paper,
+    '长沙晚报': get_changsha_lastpaper,
+    '张家界日报': get_zhangjiajie_lastpaper,
+    '常德日报': get_changde_paper,
+    '益阳日报': get_yiyang_paper,
+    '闽南日报': get_minnan_paper,
+    '泰州晚报': get_taizhou_lastpaper,
+    '泰州日报': get_taizhou_paper,
+    '安庆日报': get_anqing_paper,
+    '太谷报': get_taigu_paper,
 }
 
 webpage_url_list = [
@@ -309,6 +345,25 @@ webpage_url_list = [
     'http://pcepaper.cjxww.cn',
     'https://www.ylxw.com.cn/epaper/ylrb',
     'https://alt-szb.xjmty.com',
+    'https://www.cdmrb.com.cn',  # 未开始处理
+    'http://files.eguoluo.com',
+    'http://hnb.huangnan.gov.cn',
+    'http://epaper.dbcsq.com',
+    'https://szb.gansudaily.com.cn/lzxqb',
+    'https://lzrb.lzbs.com.cn',
+    'https://epaper.xiancn.com/newxarb',
+    'https://www.cnepaper.com/nsxqb',
+    'http://www.chaozhoudaily.com/upload/czrb/html',
+    'https://www.icswb.com/default.php?mod=newspaper&a=gen_one&channel_id=15',
+    'http://paper.zjjnews.cn:8081/zjjrbpc/layout',
+    'http://rb.cdyee.com',
+    'https://epaper.yyrb.cn',
+    'http://zzxww.com',
+    'http://sz.tznews.cn/tzwb/pc/layout',
+    'http://sz.tznews.cn/tzrb/pc/layout',
+    'http://aqdzb.aqnews.com.cn/epaper/read.do',
+    'https://www.tgxcw.gov.cn/tgblink',
+
 ]
 
 
