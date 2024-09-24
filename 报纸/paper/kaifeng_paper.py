@@ -38,8 +38,13 @@ def get_kaifeng_paper(paper_time, queue_id, webpage_id):
     url = base_url + 'data.js'
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
-        data = response.text
-        data = re.findall(r'var data = (.*?) var', data, re.S)[0]
+        data1 = response.text
+        data = re.findall(r'var data = (.*?) var', data1, re.S)
+        if data:
+            data = data[0]
+        else:
+            data = re.findall(r'var data = \[(.*)]', data1, re.S)[0]
+            data = "[" + data + "]"
         datas = json.loads(data)
         for data in datas:
             # 获取版面名称
@@ -111,4 +116,4 @@ def get_kaifeng_paper(paper_time, queue_id, webpage_id):
     else:
         raise Exception(f'该日期没有报纸')
 
-# get_kaifeng_paper('2022-12-12', 1111, 3333)
+# get_kaifeng_paper('2020-12-30', 1111, 3333)

@@ -120,6 +120,21 @@ from taizhou_lastpaper import get_taizhou_lastpaper  # 泰州晚报
 from taizhou_paper import get_taizhou_paper  # 泰州日报
 from azqing_paper import get_anqing_paper  # 安庆日报
 from taigu_paper import get_taigu_paper  # 太谷报
+from chinarenshizuzhi_paper import get_chinarenshizuzhi_paper  # 组织人事报
+from azhuinongcun_paper import get_anhuinongcun_paper  # 安徽日报.农村版
+from beifangshucai_paper import get_beifangshucai_paper  # 北方蔬菜报
+from shouguang_paper import get_shouguang_paper  # 寿光日报
+from shichangxinxi_paper import get_shichangxinxi_paper  # 市场信息报
+from dongfangchengxiang_paper import get_dongfangchengxiang_paper  # 东方城乡报
+from guangdongkeji_paper import get_guangdongkeji_paper  # 广东科技报
+from wuhankeji_paper import get_wuhankeji_paper  # 武汉科技报
+from kexuedao_paper import get_kexuedao_paper  # 科学导报
+from kepushi_paper import get_kepushi_paper  # 科普时报
+from yinchuan_paper import get_yinchuan_paper  # 银川日报
+from yinchuan_lastpaper import get_yinchuan_lastpaper  # 银川晚报
+from xizangshang_paper import get_xizangshang_paper  # 西藏商报
+from chuncheng_lastpaper import get_chuncheng_lastpaper  # 春城晚报
+from xihaidushi_paper import get_xihaidushi_paper  # 西海都市报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -242,6 +257,21 @@ methods = {
     '泰州日报': get_taizhou_paper,
     '安庆日报': get_anqing_paper,
     '太谷报': get_taigu_paper,
+    '组织人事报': get_chinarenshizuzhi_paper,
+    '安徽日报.农村版': get_anhuinongcun_paper,
+    '北方蔬菜报': get_beifangshucai_paper,
+    '寿光日报': get_shouguang_paper,
+    '市场信息报': get_shichangxinxi_paper,
+    '东方城乡报': get_dongfangchengxiang_paper,
+    '广东科技报': get_guangdongkeji_paper,
+    '武汉科技报': get_wuhankeji_paper,
+    '科学导报': get_kexuedao_paper,
+    '科普时报': get_kepushi_paper,
+    '银川日报': get_yinchuan_paper,
+    '银川晚报': get_yinchuan_lastpaper,
+    '西藏商报': get_xizangshang_paper,
+    '春城晚报': get_chuncheng_lastpaper,
+    '西海都市报': get_xihaidushi_paper,
 }
 
 webpage_url_list = [
@@ -363,6 +393,21 @@ webpage_url_list = [
     'http://sz.tznews.cn/tzrb/pc/layout',
     'http://aqdzb.aqnews.com.cn/epaper/read.do',
     'https://www.tgxcw.gov.cn/tgblink',
+    'https://www.zuzhirenshi.com/newspaper/index',
+    'https://szb.ahnews.com.cn/ncb/pad/layout',
+    'https://szb.sgnet.cc/sgrb/bfscb/pc/layout',
+    'https://szb.sgnet.cc/sgrb/sgrb/pc/layout',
+    'http://sz.scxxb.com.cn',
+    'https://www.dfcxb.com',
+    'https://epaper.gdkjb.com/epaper/index.html',
+    'http://kj.kexing100.com',
+    'http://www.kxdb.com/dzbk/list.php?catid=33',
+    'https://digitalpaper.stdaily.com/http_www.kjrb.com/kjwzb/html',
+    'https://szb.ycfbapp.com',
+    'https://szb.ycfbapp.com/ycwb/pc/layout',
+    'http://e.xzxw.com/xzsb',
+    'https://ccwb.yunnan.cn',
+    'https://epaper.tibet3.com/xhdsb',
 
 ]
 
