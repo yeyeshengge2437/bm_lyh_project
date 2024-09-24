@@ -91,29 +91,29 @@ def get_chongqingchen_paper(paper_time, queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
-                print(bm_name, bm_url, article_name, article_url, content)
-                # if bm_pdf not in pdf_set and judge_bm_repeat(paper, bm_url) and judging_bm_criteria(article_name):
-                #     # print(article_name, article_url, bm_pdf)
-                #     # 将报纸url上传
-                #     up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
-                #     pdf_set.add(bm_pdf)
-                #     # 上传到报纸的图片或PDF
-                #     insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
-                #
-                #     cursor_test.execute(insert_sql,
-                #                         (day, paper, bm_name, bm_pdf, bm_url, up_pdf, create_time, queue_id,
-                #                          create_date, webpage_id))
-                #     conn_test.commit()
-                #
-                # if judging_criteria(article_name, content):
-                #
-                #     # 上传到报纸的内容
-                #     insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
-                #
-                #     cursor_test.execute(insert_sql,
-                #                         (bm_url, day, paper, article_name, content, article_url, create_time, queue_id,
-                #                          create_date, webpage_id))
-                #     conn_test.commit()
+                # print(bm_name, bm_url, article_name, article_url, content)
+                if bm_pdf not in pdf_set and judge_bm_repeat(paper, bm_url) and judging_bm_criteria(article_name):
+                    # print(article_name, article_url, bm_pdf)
+                    # 将报纸url上传
+                    up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
+                    pdf_set.add(bm_pdf)
+                    # 上传到报纸的图片或PDF
+                    insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
+
+                    cursor_test.execute(insert_sql,
+                                        (day, paper, bm_name, bm_pdf, bm_url, up_pdf, create_time, queue_id,
+                                         create_date, webpage_id))
+                    conn_test.commit()
+
+                if judging_criteria(article_name, content):
+
+                    # 上传到报纸的内容
+                    insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
+
+                    cursor_test.execute(insert_sql,
+                                        (bm_url, day, paper, article_name, content, article_url, create_time, queue_id,
+                                         create_date, webpage_id))
+                    conn_test.commit()
 
                 cursor_test.close()
                 conn_test.close()
@@ -130,4 +130,4 @@ def get_chongqingchen_paper(paper_time, queue_id, webpage_id):
 
 
 
-get_chongqingchen_paper("2023-09-12", 111, 222)
+# get_chongqingchen_paper("2023-09-12", 111, 222)
