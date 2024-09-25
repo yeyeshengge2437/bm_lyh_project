@@ -42,6 +42,8 @@ def get_chongqingchen_paper(paper_time, queue_id, webpage_id):
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
+        if not html_1:
+            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//div[@class='Chunkiconlist']/p")
         for bm in all_bm:
@@ -130,4 +132,4 @@ def get_chongqingchen_paper(paper_time, queue_id, webpage_id):
 
 
 
-# get_chongqingchen_paper("2023-09-12", 111, 222)
+# get_chongqingchen_paper("2023-08-26", 111, 222)

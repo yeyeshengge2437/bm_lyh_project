@@ -45,7 +45,10 @@ def get_chinazhishi_paper(paper_time, queue_id, webpage_id):
     response = requests.post('https://sz.iprchn.com/bz/queryPageByDate', headers=headers, data=data)
     time.sleep(1)
     res_data = response.json()
-    jsons_data = res_data["data"]
+    try:
+        jsons_data = res_data["data"]
+    except:
+        raise Exception(f'该日期没有报纸')
     if jsons_data:
         jsons_data = jsons_data["pages"]
         pdf_set = set()
@@ -86,32 +89,32 @@ def get_chinazhishi_paper(paper_time, queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
-                print(bm_name, article_name, article_url, bm_pdf, content)
-                # if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
-                #     # 将报纸url上传
-                #     up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
-                #     pdf_set.add(bm_pdf)
-                #     # 上传到报纸的图片或PDF
-                #     insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
-                #
-                #     cursor_test.execute(insert_sql,
-                #                         (paper_time, paper, bm_name, bm_pdf, bm_url, up_pdf, create_time, queue_id,
-                #                          create_date, webpage_id))
-                #     conn_test.commit()
-                #
-                # if judging_criteria(article_name, content):
-                #     # if 1:
-                #
-                #     # print(content)
-                #     # return
-                #
-                #     # 上传到报纸的内容
-                #     insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
-                #
-                #     cursor_test.execute(insert_sql,
-                #                         (bm_url, paper_time, paper, article_name, content, article_url, create_time, queue_id,
-                #                          create_date, webpage_id))
-                #     conn_test.commit()
+                # print(bm_name, article_name, article_url, bm_pdf, content)
+                if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
+                    # 将报纸url上传
+                    up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
+                    pdf_set.add(bm_pdf)
+                    # 上传到报纸的图片或PDF
+                    insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
+
+                    cursor_test.execute(insert_sql,
+                                        (paper_time, paper, bm_name, bm_pdf, bm_url, up_pdf, create_time, queue_id,
+                                         create_date, webpage_id))
+                    conn_test.commit()
+
+                if judging_criteria(article_name, content):
+                    # if 1:
+
+                    # print(content)
+                    # return
+
+                    # 上传到报纸的内容
+                    insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
+
+                    cursor_test.execute(insert_sql,
+                                        (bm_url, paper_time, paper, article_name, content, article_url, create_time, queue_id,
+                                         create_date, webpage_id))
+                    conn_test.commit()
 
                 cursor_test.close()
                 conn_test.close()
@@ -121,4 +124,4 @@ def get_chinazhishi_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_chinazhishi_paper("2014-08-01", 111, 222)
+# get_chinazhishi_paper("2023-12-03", 111, 222)

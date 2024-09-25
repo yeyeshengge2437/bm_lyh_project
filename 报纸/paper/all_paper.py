@@ -135,6 +135,21 @@ from yinchuan_lastpaper import get_yinchuan_lastpaper  # 银川晚报
 from xizangshang_paper import get_xizangshang_paper  # 西藏商报
 from chuncheng_lastpaper import get_chuncheng_lastpaper  # 春城晚报
 from xihaidushi_paper import get_xihaidushi_paper  # 西海都市报
+from xining_lastpaper import get_xining_lastpaper  # 西宁晚报
+from lanzhouchen_paper import get_lanzhouchen_paper  # 兰州晨报
+from lanzhou_lastpaper import get_lanzhou_lastpaper  # 兰州晚报
+from xian_lastpaper import get_xian_lastpaper  # 西安晚报
+from xiaoxiangchen_paper import get_xiaoxiangchen_paper  # 潇湘晨报
+from yueyang_paper import get_yueyang_paper  # 岳阳日报
+from zhengzhou_lastpaper import get_zhengzhou_lastpaper  # 郑州晚报
+from qianjiang_lastpaper import get_qianjiang_lastpaper  # 钱江晚报
+from lianyungang_paper import get_lianyungang_paper  # 连云港日报
+from wuxi_paper import get_wuxi_paper  # 无锡日报
+from jiangnan_lastpaper import get_jiangnan_lastpaper  # 江南晚报
+from yangzi_lastpaper import get_yangzi_lastpaper  # 扬子晚报
+from binzhou_paper import get_binzhou_paper  # 滨州日报
+from fuzhou_paper import get_fuzhou_paper  # 福州日报
+from fuzhou_lastpaper import get_fuzhou_lastpaper  # 福州晚报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -272,6 +287,21 @@ methods = {
     '西藏商报': get_xizangshang_paper,
     '春城晚报': get_chuncheng_lastpaper,
     '西海都市报': get_xihaidushi_paper,
+    '西宁晚报': get_xining_lastpaper,
+    '兰州晨报': get_lanzhouchen_paper,
+    '兰州晚报': get_lanzhou_lastpaper,
+    '西安晚报': get_xian_lastpaper,
+    '潇湘晨报': get_xiaoxiangchen_paper,
+    '岳阳日报': get_yueyang_paper,
+    '郑州晚报': get_zhengzhou_lastpaper,
+    '钱江晚报': get_qianjiang_lastpaper,
+    '连云港日报': get_lianyungang_paper,
+    '无锡日报': get_wuxi_paper,
+    '江南晚报': get_jiangnan_lastpaper,
+    '扬子晚报': get_yangzi_lastpaper,
+    '滨州日报': get_binzhou_paper,
+    '福州日报': get_fuzhou_paper,
+    '福州晚报': get_fuzhou_paper,
 }
 
 webpage_url_list = [
@@ -408,6 +438,21 @@ webpage_url_list = [
     'http://e.xzxw.com/xzsb',
     'https://ccwb.yunnan.cn',
     'https://epaper.tibet3.com/xhdsb',
+    'http://www.xnwbw.com',
+    'http://lzcbszb.benliuxinwen.com',
+    'https://lzwb.lzbs.com.cn',
+    'http://epaper.xiancn.com/newxawb',
+    'http://epaper.xxcb.cn/xxcba',
+    'https://papers.803.com.cn/yyrb',
+    'https://zzwb.zynews.cn/html',
+    'http://qjwb.thehour.cn',
+    'http://lygrbepaper.lygfb.cn',
+    'http://szb.wxrb.com',
+    'http://szb.wxrb.com/jnwb/pc/layout',
+    'https://epaper.yzwb.net/pc/layout',
+    'http://paper.bzrb.net/bzrb',
+    'https://mag.fznews.com.cn',
+    'https://mag.fznews.com.cn/fzwb',
 
 ]
 

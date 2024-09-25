@@ -114,6 +114,8 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper", verify=None
     result = res.json()
     fr.close()
     os.remove(pdf_path)
+    if os.path.exists(pdf_path):
+        os.remove(pdf_path)
     return result.get("value")["file_url"]
 
 

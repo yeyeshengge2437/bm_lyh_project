@@ -1,465 +1,554 @@
-﻿<!DOCTYPE html>
-<html lang="zh-CN">
+﻿<html  xmlns:v>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=gbk">
+<META content=blendTrans(duration=0.1) http-equiv=Page-Enter>
+<META content=blendTrans(duration=0.1) http-equiv=Page-Exit>
+<title>福州日报社数字报</title>
+<meta name="robots" content="all" />
+<meta name="author" content="fuzhouribao" />
+<meta name="description" content="中办国办关于完善市场准入制度的意见公布">
+<meta name="Keywords" content="中办国办,市场准入,完善,意见,制度,公布">
 
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="description" content="">
-		<meta name="keywords" content="">
-		<title>安徽日报农村版</title>
-		<link type="text/css" rel="stylesheet" href="../../../../tqPaper/webcss/global.css">
-		<link type="text/css" rel="stylesheet" href="../../../../tqPaper/webcss/layout.css">
-		<link href="../../../../tqPaper/webcss/laydate.css" rel="stylesheet" type="text/css" />
-		<link href="../../../../tqPaper/webcss/calendar.css" rel="stylesheet" type="text/css" />
-		<script type="text/javascript" src="../../../../tqPaper/webjs/jquery-V30.min.js"></script>
-		<script type="text/javascript" src="../../../../tqPaper/webjs/layout.js"></script>
-		<script type="text/javascript" src="../../../../tqPaper/webjs/jquery.validate.js"></script>
-		<script type="text/javascript" src="../../../../tqPaper/webjs/jquery.metadata.js"></script>
-		<script type="text/javascript" src="../../../../tqPaper/webjs/laydate.js"></script>
-		<script src="../../../../tqPaper/webjs/calendar.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../../../tqPaper/webjs/index.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../../../tqPaper/webjs/index1.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../../../tqPaper/webjs/common.js" type="text/javascript" charset="utf-8"></script>
-        <script type="text/javascript">
-	function searchBaiduByText() {
-            var s = document.getElementById("bdcsMain");
-            if (s.value.trim().length <= 0) {
-                alert("请输入搜索内容!");
-                return;
-            }
-            var siteid = "13265343469541541223";
-            var targeturl = "http://znsv.baidu.com/customer_search/api/js?q=" + s.value.trim() + "&s=" + siteid + "&nsid=0&isNeedCheckDomain=1&jump=1";
-            window.open(targeturl, "_blank");
-        }
-</script>
+<link rel="stylesheet" href="../../../css/displayblock.css" type="text/css"/>
+<link rel="stylesheet" href="../../../css/tooltip.css" type="text/css"/>
+
+<script type="text/javascript" src="//img.fznews.com.cn/plugin/jquery/jquery.min.js"></script>
+<script src="../../../js/date.js" type="text/javascript" ></script>
+<script src="../../../js/displayblock.js" type="text/javascript" ></script>
+<script src="../../../js/tooltip.js" type="text/javascript" ></script>
+
 <style type="text/css">
-<!--
-.bd_weixin_popup { z-index:110000 !important}
--->
+v\:* {behavior:url(#default#VML);}
+#IECN {
+	 FILTER: progid:DXImageTransform.Microsoft.Shadow(color=#636363,direction=120,strength=5);  COLOR: #585858;
+}
+.i {  font-size: 10pt;font-family:Arial;color:2D2D2D;
+
+}
+a:link {
+	text-decoration: none;
+	color: #920500;
+}
+a:visited {
+	text-decoration: none;
+	color:#920500;
+}
+a:hover {
+	text-decoration: none;
+	color:#E62705;
+}
+a:active {
+	text-decoration: none;
+	color: #F58309;
+}
+
+.style5 {
+	color:#A93000;
+	font-size: 18px;
+}
+.style6 {
+	font-size: 12px; color:#192ACA;cursor:pointer;
+}
+
+.areablock{
+  cursor:pointer;
+}
+
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	background-color: #CCCCCC;
+}
+html,body,table,div,p,ul,ol,li,h1,h2,h3,h4,h5,h6,img,form{
+	margin:0;
+	padding:0;
+	list-style:none;
+	border:0;
+	font-size:13px
+
+}
+
 </style>
-	</head>
+<script>
+if(top.location != location){   location.href= 'about:blank'; }//防止被框架
+</script>
+</head>
 
-	<body>
+<body onselectstart="return false" oncontextmenu="return true"  style="background-color:#;">
+ <script>
+ function  stoperr(){return true; }
+ window.onerror=stoperr;
+</script>
+	<center>
+  <table width="100%" height="55" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td width="25%" background="../../../images/top.jpg"></td>
+      <td width="34%" background="../../../images/top.jpg"><div align="left"><img src="../../../images/top2.jpg" width="600" height="55"></div></td>
+      <td width="37%" background="../../../images/top.jpg"><a href="../../../../index.html" style="font-size:16pt">返回</a>
+          <span id="showpanel"></span>
+      </td>
+	  <td width="4%" background="../../../images/top.jpg"></td>
+    </tr>
+  </table>
+  <p style="display:none">&nbsp;第<span id="curbanci">001</span>版：<STRONG>要闻</STRONG></p>
+  <table width="800px"  border="0px" bordercolor="" align="center" cellpadding="0" cellspacing="0" style="border-bottom:#DDDDDD 2px double;border:0px  solid red">
+  <tr>
 
-		<!--head-->
-	<div class="head headlist clearfix">
-			<div class="nav">
-				<ul class="clearfix">
-					<li>
-						<a  href="../../../../../ahrb/layout/index.html">安徽日报&nbsp;|</a>
-					</li>
-					<li>
-						<a href="http://epaper.ahwang.cn/">&nbsp;新安晚报&nbsp;|</a>
-					</li>
-					<li>
-						<a href="../../../../../ahsb/pc/layout/index.html">&nbsp;安徽商报&nbsp;|</a>
-					</li>
-					<li>&nbsp;文摘周刊&nbsp;|
-					</li>
-					<li>&nbsp;新闻世界&nbsp;|
-					</li>
+    <td width="374" rowspan="3" valign="top"  style="padding-top:5px;">
 
-					<li>
-						<a class="cur" href="index.html">&nbsp;安徽日报农村版&nbsp;|</a>
-					</li>
-					<li>
-						<a href="../../../../../fzb/pc/layout/index.html">&nbsp;安徽法治报&nbsp;|
-					</li>
-					<li>
-						<a href="../../../../../jhsb/pc/layout/index.html">&nbsp;江淮时报&nbsp;|</a>
-					</li>
-					<li>&nbsp;徽商&nbsp;|
-					</li>
-                                         <li>
-						<a href="http://szb.bozhou.cn/">&nbsp;亳州晚报&nbsp;|</a>
-					</li>
-                                         <li>
-						<a  href="https://www.ahnews.com.cn/"style="color:#ff0000">&nbsp;安徽新闻网</a>
-					</li>
+    <div  id="IECN" class="main" _width="" _height="" jqimg="" align="center"  style="width:780;height:1213;border:1px double #f6f6f6">
+    <img id="imageth" src="news-fzrb-9455-20240822-m-001-001-300.jpg" border="0" usemap="#map_of_yyb" title="报名：福州日报 版次：第001版：版名：要闻 日期：20240822" alt="报名：福州日报 版次：第001版：版名：要闻 日期：20240822">
+    </div>
 
-				</ul>
-			</div>
-		<a class="logo" href="javascript:;"><img src="../../../../tqPaper/webimages/pic09.png"  /></a>	  </div>
-		<!--head-->
+    <script language="javascript">
+  var banciArray="001,002,003,004,005,006,007,008".split(",");
+  var YMD="20240822";
+</script>
 
-		<!--content-->
-		<div class="Newslistbox" style=" background:url(../../../../tqPaper/webimages/ahrbncb-bj.jpg) center top no-repeat;">
-			<div class="Newsmain">
-				<div class="Newsboxtit clearfix">
-					<form name="form1" action="http://220.178.12.46:8080/servlet/SearchServlet.do" onSubmit="per_submit();" method="POST"  target="_blank">
-						<label class="newssearch" hidden>
-							<input name="contentKey" id="bdcsMain"  type="text" size="20" maxlength="50" class="newstxt"  value="" />
-							<input class="newsbut" type="button" value="" onClick="per_submit()"/>
-						</label>
-						<h3><img src="../../../../tqPaper/webimages/ahrbncb.png" width="320" height="45" /></h3>
-					</form>
-				</div>
-				<div class="newscon clearfix">
-					<div class="newsside">
-						<ul>
-							<li class="oneclick1">
-								<a class="Chunkicon" href="javascript:;"></a>
-								<div class="Chunkiconbox">
-									<em class="Chunem"></em>
-									<img class="Chunkiconimg" src="../../../../tqPaper/webimages/pic21.png" />
-									<div class="Chunkiconlist">
+<map name="map_of_yyb">
+<AREA id="items1"  name="中办国办关于完善市场准入制度的意见公布" alt="中办国办关于完善市场准入制度的意见公布" title="中办国办关于完善市场准入制度的意见公布" onmouseover="draw(this,'429.08,12.74,764.87,12.74,764.87,131.73,429.08,131.73');" onmouseout="undraw();" class="areablock" shape=POLY coords="429.08,12.74,764.87,12.74,764.87,131.73,429.08,131.73" href="../20240822_001/20240822_001_1.htm">
+<AREA id="items2"  name="深化生态文明建设　加快乡村全面振兴　以高质量党建引领保障高质量发展" alt="深化生态文明建设　加快乡村全面振兴　以高质量党建引领保障高质量发展" title="深化生态文明建设　加快乡村全面振兴　以高质量党建引领保障高质量发展" onmouseover="draw(this,'9.52,180.62,568.54,180.62,568.54,589.15,9.52,589.15');" onmouseout="undraw();" class="areablock" shape=POLY coords="9.52,180.62,568.54,180.62,568.54,589.15,9.52,589.15" href="../20240822_001/20240822_001_2.htm">
+<AREA id="items3"  name="市十六届人大常委会第十九次会议29日召开" alt="市十六届人大常委会第十九次会议29日召开" title="市十六届人大常委会第十九次会议29日召开" onmouseover="draw(this,'590.38,183.65,775.79,183.65,775.79,443.47,590.38,443.47');" onmouseout="undraw();" class="areablock" shape=POLY coords="590.38,183.65,775.79,183.65,775.79,443.47,590.38,443.47" href="../20240822_001/20240822_001_3.htm">
+<AREA id="items4"  name="滨海快线全线“洞通”" alt="滨海快线全线“洞通”" title="滨海快线全线“洞通”" onmouseover="draw(this,'9.52,623.48,568.54,623.48,568.54,1184.13,9.52,1184.13');" onmouseout="undraw();" class="areablock" shape=POLY coords="9.52,623.48,568.54,623.48,568.54,1184.13,9.52,1184.13" href="../20240822_001/20240822_001_4.htm">
+<AREA id="items5"  name="让好政策真正惠及农民" alt="让好政策真正惠及农民" title="让好政策真正惠及农民" onmouseover="draw(this,'589.45,466.76,775.79,466.76,775.79,1186.44,589.45,1186.44');" onmouseout="undraw();" class="areablock" shape=POLY coords="589.45,466.76,775.79,466.76,775.79,1186.44,589.45,1186.44" href="../20240822_001/20240822_001_5.htm">
+<AREA id="items6"  name="编辑" alt="编辑" title="编辑" onmouseover="draw(this,'182.44,1204.51,594.36,1204.51,594.36,1211.06,182.44,1211.06');" onmouseout="undraw();" class="areablock" shape=POLY coords="182.44,1204.51,594.36,1204.51,594.36,1211.06,182.44,1211.06" href="../20240822_001/20240822_001_6.htm">
+</map>
+<script language="javascript">
+simple_tooltip("AREA.areablock");
+</script>
 
-																							<p>
-													<a href="node_1.html">第1版：</a>
-													<a href="../../../att/202409/20/b08d5fdd-a3f1-4a56-bb87-25ee0d43d374.pdf" target=_blank></a>
-												</p>
-												<p>
-													<a href="node_2.html">第2版：</a>
-													<a href="../../../att/202409/20/20b4ea4a-1b13-4201-91aa-1206affc1c95.pdf" target=_blank></a>
-												</p>
-												<p>
-													<a href="node_3.html">第3版：</a>
-													<a href="../../../att/202409/20/46393db3-047a-4d70-b18b-903c00a109fd.pdf" target=_blank></a>
-												</p>
-												<p>
-													<a href="node_4.html">第4版：</a>
-													<a href="../../../att/202409/20/4b2e922a-a6ab-493a-abd6-1f62c0c84363.pdf" target=_blank></a>
-												</p>
-												<p>
-													<a href="node_5.html">第5版：</a>
-													<a href="../../../att/202409/20/529a4319-d018-42b8-992f-64383d450b12.pdf" target=_blank></a>
-												</p>
-												<p>
-													<a href="node_6.html">第6版：</a>
-													<a href="../../../att/202409/20/b0549bd0-9a2d-497b-b006-c227d531f7c9.pdf" target=_blank></a>
-												</p>
-												<p>
-													<a href="node_7.html">第7版：</a>
-													<a href="../../../att/202409/20/676d984c-0431-4244-8e38-7afa15b34ec3.pdf" target=_blank></a>
-												</p>
-												<p>
-													<a href="node_8.html">第8版：</a>
-													<a href="../../../att/202409/20/b191a50b-962b-4ed3-9cb4-2c4f2a4efca2.pdf" target=_blank></a>
-												</p>
+    </td>
 
-									</div>
-									<img class="Chunkiconimg" src="../../../../tqPaper/webimages/pic22.png" />
-								</div>
-							</li>
-							<li class="oneclick2">
-								<a class="Calendar" href="javascript:;"></a>
-								<div class="Datebox"><input type="button" id="startDate" value=""> </div>
-							</li>
-							<li class="oneclick3">
-								<a class="Share" href="javascript:;"></a>
-								<div id="Sharelist" class="bdsharebuttonbox">
-									<a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
-									<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
-									<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
-								</div>
-							</li>
-							<li class="oneclick4">
-								<a class="Phone" href="javascript:;"></a>
-								<div class="Phonecode">
-									<img src="" />
-								</div>
-							</li>
-						</ul>
-					</div>
 
-					<div class="+div">
-						<a class="newsreturn" href="javascript:void(0)"></a>
-						<div class="newsconimg" style="position: relative;">
+  </tr>
 
-								<img src="../../../pic/202409/20/c5776ec7-ee0b-4028-b91b-319ee4f6d8a7.jpg.2" USEMAP=#PagePicMap>
-								<MAP NAME="PagePicMap"><Area coords="80.8385853,132.0132,80.8385853,87.32123125,2.1088318,87.32123125,2.1088318,132.0132,2.1088318,270.9020875,80.8385853,270.9020875" shape="polygon" href="../../../con/202409/20/c1051934.html"><Area coords="91.38274860000001,87.32123125,425.2812531,87.32123125,425.2812531,443.48185000000007,91.38274860000001,443.48185000000007" shape="polygon" href="../../../con/202409/20/c1051935.html"><Area coords="80.8385853,313.53135625,80.8385853,274.33993124999995,2.1088318,274.33993124999995,2.1088318,313.53135625,2.1088318,426.29263125000006,80.8385853,426.29263125000006" shape="polygon" href="../../../con/202409/20/c1051936.html"><Area coords="80.8385853,466.17161875,80.8385853,433.16831875,2.1088318,433.16831875,2.1088318,466.17161875,2.1088318,550.05500625,80.8385853,550.05500625" shape="polygon" href="../../../con/202409/20/c1051937.html"><Area coords="425.2812531,455.85808749999995,91.38274860000001,455.85808749999995,91.38274860000001,507.42574375000004,91.38274860000001,620.18701875,425.2812531,620.18701875" shape="polygon" href="../../../con/202409/20/c1051938.html"><Area coords="17.5736055,551.4301437500001,66.7797009,551.4301437500001,66.7797009,596.1221125,17.5736055,596.1221125" shape="polygon" href="../../../con/202409/20/c1051939.html"></MAP>
+    <td  valign="top" bordercolor="#FFFFFF" bordercolorlight="#FFFFFF" bordercolordark="#FFFFFF" style="padding-left:10px">
 
-							<!--日历 begin-->
-		<div class="time-control" style="position: absolute;">
-				<div class="data_box" id="data_box">
-			 	 	<table cellspacing="0" cellpadding="0" style="background-color:#fff;width:213px;">
-						<tbody>
-							<tr>
-								<td  style="background: #f6f6f6; text-align: center;border: 1px solid #ddd;padding: 0 2px;">
-									<!--<img src="pre_year.gif" id="pre_y" onclick="changeY(-1);">-->
-									<span style="margin-left: -3px;margin-right: 5px;" class="ft18 pointer ft18 arrow-left"   onclick="changeY(-1);"></span>
-									<!--<img id="pre_m" src="pre_month.gif">-->
-								</td>
-			 					<td>
-			 						<table cellspacing="0" cellpadding="0">
-			 							<tbody>
-			 								<tr>
-								 				<td>
-								 					<select style="width: 64px; height: 24px; border: 1px solid #ddd;" id="year_box" onchange="changeDate();">
-													<script type="text/javascript">
-														yearList();
-													</script>
-												</td>
-												<td  align="center" style="background: #f6f6f6; text-align: center;border: 1px solid #ddd;padding: 0 2px;display: block;height: 22px;margin-right: 8px;"><span style="margin-left: 5px; margin-top: 6px;" class="ft18 pointer arrow-right"  onclick="changeY(1);"></span></td>
-												<td  style="background: #f6f6f6; text-align: center;border: 1px solid #ddd;padding: 0 2px;" align="center"><span style="margin-right: 6px;" class="ft18 pointer arrow-left"  onclick="changeMn(-1);"></span></td>
-			 								</tr>
-			 							</tbody>
-			 						</table>
-			 					</td>
-			 					<td>
-									<table  cellspacing="0" cellpadding="0">
-								 		<tbody>
-								 			<tr>
-									 			<td>
-									 				<select style="width: 59px; height: 24px; border: 1px solid #ddd;" id="month_box" onchange="changeDate();">
-											 		<script type="text/javascript">
-											 			monthList();
-											 		</script>
-										 		</td>
-									 		</tr>
-			 							</tbody>
-									</table>
-								</td>
-							 	<td  style="background: #f6f6f6; text-align: center;border: 1px solid #ddd;padding: 0 2px;">
-							 		<span style="margin-left: 5px;" class="ft18 pointer arrow-right"  onclick="changeMn(1);"></span>
+    <style>
+      a.funcbtn{font-size:11pt}
+      a.pgbtn{cursor:pointer}
 
-							 	</td>
-							</tr>
-			 			</tbody>
-			 	 	</table>
-					<table  cellspacing="0" cellpadding="0" class="data_table" id="data_table">
-						<thead>
-							<tr>
-								<th>日</th>
-								<th>一</th>
-								<th>二</th>
-								<th>三</th>
-								<th>四</th>
-								<th>五</th>
-								<th>六</th>
-							</tr>
-						</thead>
-						<tbody>
-							<script type="text/javascript">
-								tdlist();
-							 	loadCalendar();
-							</script>
-						</tbody>
-					</table>
-			</div>
+   </style>
+
+	<table id="floattable" width="203px"  cellpadding="0" cellspacing="0" style="margin-top:5px;">
+      <tr>
+        <td width="97%" align=center>
+        	<div style="height:434px; overflow-y:scroll; width:100%;display:none">
+						<iframe  id="iframe1" src="../20240822_plist.htm"  scrolling="no" frameborder=0 height="350px" width="100%"></iframe></div>
+
+       <div align="center">
+       <fieldset style="border:0px solid #999;width:auto;color: #F6F6F6;font-family:Arial;background-color:#ffffff;padding-left:0px;padding-right:0px;padding-top:3px;padding-bottom:10px;padding-right:0px;margin:0px">
+<fieldset style="border:0px solid #999;width:100%;color: #920500;background-color:#FFFFFF;font-family:Arial;padding-top:3px;padding-bottom:6px;padding-left:0px;padding-right:0px;margin-left:0px">
+		 <!--显示日历//-->
+		<form name=CLD style="padding:0px;margin:0px;">
+                                    <table cellspacing=0 cellpadding=0 width="100%" align=center border=0>
+                                      <tr>
+                                        <td><table width="100%" align=center border="0"  bordercolor="#f0e"   cellpadding="0" cellspacing="0">
+                                            <tr class="default" align=center><img src="../../../images/searchbydate.jpg" width="201px" border=0>
+                                              <td height=15 colspan=7 bgcolor="#FFFFFF"><table width="100%" border="0" cellpadding="2" cellspacing="0">
+                                                  <tr align="center">
+                                                    <td align="left" nowrap><img src="../../../images/d1.gif" width="7" height="11" style="cursor:pointer;" onClick="goPrevYear()"></td>
+                                                    <td><select class=jumpmenu onChange="setAllDays()" name="mYear" id="mYear">
+                                                        <script language=JavaScript>
+
+					for(i=2017;i<2030;i++)
+					document.write('<option value='+i+'>'+i+'</option>')
+        			</script>
+                                                      </select>                                                    </td>
+                                                    <td><img src="../../../images/d.gif" width="7" height="11" style="cursor:pointer;" onClick="goNextYear()"></td>
+                                                    <td align="center" nowrap><img src="../../../images/d1.gif" width="7" height="11" style="cursor:pointer;" onClick="goPrevMonth()"></td>
+                                                    <td><select class=jumpmenu onChange="setAllDays()" name="mMonth" id="mMonth">
+
+                                                        <script language=JavaScript>
+				<!--
+					for(i=1;i<13;i++) document.write('<option value='+i+'>'+i+'</option>')
+				//-->
+        			</script>
+                                                      </select>                                                    </td>
+                                                    <td><img src="../../../images/d.gif" width="7" height="11" style="cursor:pointer;" onClick="goNextMonth()"></td>
+                                                    <td align="right" nowrap><strong><font id=GZ face="Arial, Helvetica, sans-serif"></font></strong></td>
+                                                  </tr>
+                                              </table></td>
+                                            </tr>
+                                            <tr align=middle bgcolor="#e8e8e8" class="default">
+                                              <td align="center" class="default" width="14%"><b><font face="Arial, Helvetica, sans-serif">日</font></b></td>
+                                              <td align="center" class="default" width="14%"><b><font face="Arial, Helvetica, sans-serif">一</font></b></td>
+                                              <td align="center" class="default" width="14%"><b><font face="Arial, Helvetica, sans-serif">二</font></b></td>
+                                              <td align="center" class="default" width="14%"><b><font face="Arial, Helvetica, sans-serif">三</font></b></td>
+                                              <td align="center" class="default" width="14%"><b><font face="Arial, Helvetica, sans-serif">四</font></b></td>
+                                              <td align="center" class="default" width="14%"><b><font face="Arial, Helvetica, sans-serif">五</font></b></td>
+                                              <td align="center" class="default" width="14%"><b><font face="Arial, Helvetica, sans-serif">六</font></b> </td>
+                                            </tr>
+                                            <tr><td colspan=7>
+                                            <script language=JavaScript>
+
+			///////
+       document.write('<table id="calendarTable" width="100%" align=left style="font-family:宋体;border:1px solid #EFF2F7;background-color:#DDD;font-size:12px" border="0" cellpadding="0" cellspacing="1">');
+document.write( '<tr>');
+document.write( ' </tr>');
+for(var i = 0; i < 6;i++){
+document.write( ' <tr align="center">');
+
+for(var j = 0; j < 7; j++) {
+  if (j == 0){
+  document.write( ' <td style="cursor:default;color:red;" bgcolor="#EFF2F7" class="default" align=center width="13%"></td>');//星期天
+  } else if(j == 6) {
+  document.write( ' <td style="cursor:default;color:red;" bgcolor="#EFF2F7" class="default" align=center width="13%"></td>');//星期六
+  } else {
+     document.write( ' <td style="cursor:default;" bgcolor="#EFF2F7" class="default" align=center width="13%"></td>');
+  }
+}
+document.write( ' </tr>');
+}
+document.write( ' </table>');
+
+
+			var beginYear=2017;
+			 var endYear=2030;
+
+			   function changeSelect(thisdate) {
+
+var cy = document.getElementById("mYear");
+var cm = document.getElementById("mMonth");
+
+for (var i= 0; i < cy.length; i++){
+if (cy.options[i].value == thisdate.getFullYear()){
+cy[i].selected = true;
+break;
+}
+}
+
+
+for (var i= 0; i < cm.length; i++){
+if (cm.options[i].value == thisdate.getMonth()+1){
+cm[i].selected = true;
+break;
+}
+}
+}
+      //向前一年
+    function goPrevYear(){
+       var thisYear=jQuery("select#mYear").val();
+       var thisMonth=jQuery("select#mMonth").val()-1;
+       if ( thisYear== beginYear){return;}
+       thisYear--;
+
+       thisdate = new Date(thisYear, thisMonth, 1);
+       changeSelect(thisdate);
+      setAllDays();
+
+    }
+
+   function goNextYear(){
+       var thisYear=jQuery("select#mYear").val();
+       var thisMonth=jQuery("select#mMonth").val()-1;
+       if ( thisYear== endYear){return;}
+       thisYear++;
+
+       thisdate = new Date(thisYear, thisMonth, 1);
+       changeSelect(thisdate);
+       setAllDays();
+
+    }
+
+
+			//向前一月
+
+             function goPrevMonth(){
+             var thisMonth=jQuery("select#mMonth").val()-1;
+             var thisYear=jQuery("select#mYear").val();
+            if ( thisYear== beginYear &&  thisMonth== 0){return;}
+            thisMonth--;
+            if (thisMonth == -1) {
+            thisYear--;
+            thisMonth = 11;
+            }
+            thisdate = new Date(thisYear, thisMonth, 1);
+            changeSelect(thisdate);
+            setAllDays();
+
+            }
+
+
+            //向后一月
+             function goNextMonth()
+            {
+                var thisMonth=jQuery("select#mMonth").val()-1;
+                var thisYear=jQuery("select#mYear").val();
+
+                if (thisYear == endYear && thisMonth == 11){return;}
+                thisMonth++;
+                if (thisMonth== 12) {
+                thisYear++;
+                thisMonth = 0;
+                }
+                thisdate= new Date(thisYear, thisMonth, 1);
+                changeSelect(thisdate);
+                setAllDays();
+
+
+            }
+
+
+
+
+			  function getMonthViewArray(y, m) {
+          var mvArray = [];
+          var dayOfFirstDay = new Date(y, m, 1).getDay();
+          var daysOfMonth = new Date(y, m + 1, 0).getDate();
+          for (var i = 0; i < 42; i++) {
+          mvArray[i] = " ";
+          }
+          for (var i = 0; i < daysOfMonth; i++){
+          mvArray[i + dayOfFirstDay] = i + 1;
+          }
+          return mvArray;
+       }
+
+
+    //  var curdate = new Date("2015","9", 1);
+
+       function setAllDays()
+       {
+            if(globalDates&&globalDates.length>0)  globalDates=[];
+            var curdate = new Date(jQuery("select#mYear").val(),jQuery("select#mMonth").val()-1, 1);
+            var dayArray=getMonthViewArray(curdate.getFullYear(),curdate.getMonth());
+            var tds = document.getElementById("calendarTable").getElementsByTagName("td");
+            for(var i = 0; i < tds.length; i++)
+            {
+                // tds[i].style.backgroundColor ="";
+
+                //初始化
+                tds[i].onclick = function () {return;}
+                tds[i].onmouseover = function () {return;}
+                tds[i].onmouseout = function () {return;}
+                if (i > dayArray.length - 1) break;
+
+                //
+                /*控制默认今天日期的样式*/
+                var todayDate=new Date();
+                today_year=todayDate.getFullYear();
+                today_month=todayDate.getMonth()+1;
+                today_day=todayDate.getDate();
+
+                if(today_day==dayArray[i] && curdate.getFullYear()==today_year && today_month==(curdate.getMonth()+1))
+                {
+
+                   tds[i].innerHTML =dayArray[i];
+                   tds[i].style.cssText="font-family:Verdana, Arial;font-size:12px;";
+
+                   tds[i].style.backgroundColor= "";
+                   tds[i].onmouseover = function () {this.style.backgroundColor =""; }
+                   tds[i].onmouseout = function () {this.style.backgroundColor ="";}
+                 }
+                else
+                {
+
+                  tds[i].innerHTML = dayArray[i];//显示日数
+                  tds[i].style.cssText="font-family:Verdana, Arial;font-size:12px;";
+                //  tds[i].onmouseover = function () {this.style.backgroundColor = "";}
+               //   tds[i].onmouseout = function () {this.style.backgroundColor = "";}
+
+
+
+
+
+
+                }
+
+                //绑定单击事件
+                if (dayArray[i] != " ")
+                {
+
+
+                  var strYear=curdate.getFullYear()+"";
+                   var strMonth=(curdate.getMonth()+1)+"";
+                   if(strMonth.length==1) strMonth='0'+strMonth;
+                   var strDay=dayArray[i]+"";
+
+                   if(strDay.length==1) strDay='0'+strDay;
+
+                //  if(YMD.substring(0,6)==strYear+strMonth)
+                 // {
+                      if (hasData(strYear,strMonth,strDay))
+                      {
+
+
+                           if(YMD==strYear+strMonth+strDay)
+                              tds[i].style.cssText="font-family:Verdana, Arial;font-size:12px;color:#000;cursor:pointer;background:#A8DAFF;font-weight:bold";
+                           else
+                              tds[i].style.cssText="font-family:Verdana, Arial;font-size:12px;color:#000;cursor:pointer;background:;font-weight:bold";
+
+
+                           tds[i].onclick = function ()
+                          {
+                           var curYear=jQuery("select#mYear").val();
+                           var curMonth=jQuery("select#mMonth").val();
+                           var curDay=this.innerHTML;
+                           if(curMonth.length==1) curMonth='0'+curMonth;
+                           if(curDay.length==1) curDay='0'+curDay;
+
+                        var firstpage=getFirstPage(curYear,curMonth,curDay);
+
+                      //  window.location.href="../../../"+curYear+"/"+curYear+curMonth+curDay+"/"+curYear+curMonth+curDay+"_001/"+curYear+curMonth+curDay+"_001.html";
+
+                         window.location.href="../../../"+curYear+"/"+curYear+curMonth+curDay+"/"+curYear+curMonth+curDay+"_"+firstpage+"/"+curYear+curMonth+curDay+"_"+firstpage+".html";
+
+
+                          }
+                     }
+                     else
+                      {
+                        tds[i].style.cssText="font-family:Verdana, Arial;font-size:12px;color:#666";
+                      }
+                 // }
+                }
+            }//for i end
+      }
+
+		//-->
+        	</script></td></tr>
+               </table></td>
+                                      </tr>
+                                    </table>
+                                </form>
+
+		</fieldset>
+        <div align="center" style="margin-top:12px;">
+		<fieldset style="border:0px solid #999;width:199px;color: #0033CC;font-family:Arial;background-color:#F6F6F6;padding-left:0px;padding-right:0px;">
+			<select id="page_Num_Name" style="width:200px;margin-top:10px;margin-bottom:10px;margin-left:0px"></select></fieldset>
+        	</div>
+
+        	<div align="center" style="margin-top:12px;">
+        	<fieldset style="display:none;border:1px solid #999;width:199px;color: #920500;font-family:Arial;background-color:#F6F6F6;padding-top:10px;padding-bottom:10px;margin:0px;padding-left:5px;padding-right:5px;">
+        	<a onClick="GotoPervPage();" class="pgbtn" style=" font-size:14px">上一版</a>&nbsp;&nbsp;<a onClick="GotoNextPage();" class="pgbtn" style=" font-size:14px">下一版</a>&nbsp;&nbsp;<label style="border:1px solid #cccccc;width:1px;margin-right:2px;height:2px;line-height:100%"></label><a  id="prevday"  class="pgbtn" onClick="goPrevPeriod(YMD)">上期</a>&nbsp;&nbsp;&nbsp;<a id="nextday"  class="pgbtn"  onClick="goNextPeriod(YMD)">下期</a>
+        	</fieldset>
+
+
+        <div style="width:100%;margin-bottom:15px;cursor:pointer" onClick="GotoPervPage();"><img src="../../../images/prev_page.jpg" border=0></div>
+        	<div style="width:100%;;cursor:pointer" onClick="GotoNextPage();" ><img src="../../../images/next_page.jpg" border=0></div>
+        	<div style="width:100%;margin-bottom:15px;margin-top:15px"><img src="../../../images/hr.jpg" border=0></div>
+        <div style="width:100%;margin-bottom:15px;margin-top:15px;cursor:pointer" onClick="goPrevPeriod(YMD)"><img src="../../../images/prev_date.jpg" border=0></div>
+        <div style="width:100%;;cursor:pointer" onClick="goNextPeriod(YMD)"><img src="../../../images/next_date.jpg" border=0></div>
+
+
+        	</div>
+		 </fieldset>
 		</div>
-				<!--日历 end-->
-						</div>
-						<div class="newsconright">
-							<div class="Scrollbox" id="Scroll">
-								<div class="newsshow" id="ScroLeft">
-									<div class="newslisttit">
+			<div style="width:100%;margin-top:15px;cursor:pointer" onClick="window.location.href='../20240822_001/news-fzrb-9455-20240822-m-001-001-300.pdf'"><img src="../../../images/pdf.jpg" border=0></div>
+			<div style="width:100%;margin-top:15px;display:none"><a href="http://epaper.fznews.com.cn:81/search?channelid=1888" target="_blank"><img src="../../../images/search.jpg" border=0></a></div>
+<div style="width:100%;margin-top:15px;"><img src="../../../images/call.jpg" border=0></div>
+		</td>
+      </tr>
+    </table></td>
+  </tr>
+</table>
 
-											<span class="newstime">2024年09月20日</span>
-											<img class="newstitimg" src="../../../../tqPaper/webimages/img18.jpg" />
-											<em>第1版：</em>
+<script>  //用于定位版面列表.注意版名后面的值应该与Pagelist里面定义的一样.
+var  pagename='第001版：要闻';
+function findme(){
+var ni=0;mi=-1;
+jQuery("iframe#iframe1").contents().find("div").find("div#bancititle").find("span").each(
+  function(){
+      if (pagename==jQuery(this).text())
+       {   mi=ni;  }
+       ni=ni+1;
+  }
+ );
+if (mi>-1) {return mi;}
+else  return 0;
+}
+</script>
 
-									</div>
-									<div class="newslist">
-										<ul>
+<script src="../../../js/iframe.js" type="text/javascript" ></script>
 
-																									<li>
-														<h3><a href="../../../con/202409/20/c1051934.html" >我省将在蚌埠举办 丰收节主场活动</a></h3>
-														<p>
-															<p> 本报讯 今年9月22日是第七个中国农民丰收节。近日，省农业农村厅发布消息，今年中国农民丰收节安徽主场活动将在蚌埠市固镇县举办，主题为“学用‘千万工程’ 礼赞丰收中国”，将开展1项群众庆祝联欢活动、9项系列活动，全面展示我省“三农”发展成就、新时代农民精神风貌、农耕文化传承与发展。</p>
-														</p>
-													</li>
-													<li>
-														<h3><a href="../../../con/202409/20/c1051935.html" >“和美”之笔绘就湾沚“新风情”</a></h3>
-														<p>
-															<p> ■ 本报记者 祁海群 王展</p><p> 9月6日至8日，本报“‘皖美’乡村入画来”大型全媒体系列报道活动开启第五站——芜湖市湾沚区，报道组通过现场绘画、直播、文图报道方式，全景式展现“共富共享、和合共融”的湾沚和美乡村浪漫风情。</p><p> 近年来，湾沚区持续深化“千万工程”，通过加快农业全产业链发展、打造生态绿色乡村、加强农村精神文明建设等，全域建设和美乡村，让群众幸福感与日俱增，其中，所辖花桥镇横岗社区、湾沚镇桃园村、六郎镇北陶村、陶辛镇沙墩村、红杨镇周桥村等相继入选“和美乡村精品示范村”，乡村振兴建设取得了令人瞩目的成就。</p>
-														</p>
-													</li>
-													<li>
-														<h3><a href="../../../con/202409/20/c1051936.html" >我省高标准完成农村 宅基地改革试点任务</a></h3>
-														<p>
-															<p> 本报讯 日前，记者从省农业农村厅获悉，近年来，我省高度重视农村宅基地制度改革试点工作，高标准完成农村宅基地改革试点任务。全面摸清试点地区农村宅基地底数，1403个行政村编制了“多规合一”实用性村庄规划，房地一体宅基地确权登记82.03万宗，房地一体不动产证书颁证率99.32%。</p>
-														</p>
-													</li>
-													<li>
-														<h3><a href="../../../con/202409/20/c1051937.html" >台风携雨袭皖 气温显著下降</a></h3>
-														<p>
-															<p> 预计今年第14号台风“普拉桑”预计20日凌晨穿过浙江进入我省宣城境内，将给我省带来较强降水。受台风“普拉桑”和冷空气共同影响，20日至21日我省有强降水：淮河以南部分地区有大雨，其中马鞍山、芜湖、滁州、宣城、黄山、池州等市局部有暴雨和大暴雨；最大雨强30～50毫米/小时。</p>
-														</p>
-													</li>
-													<li>
-														<h3><a href="../../../con/202409/20/c1051938.html" >“村超”进城“逛”出新花样</a></h3>
-														<p>
-															<p> ■ 本报记者 许雅婷 通讯员 赵怀勇</p><p> 农村大批优质农产品如何推向市场？城市居民需要的优质商品去哪里寻找？价廉物美商品低价销售怎么维系？优质服务和优良购物体验能否持续？针对这一系列问题，临泉县滑集镇南杨小村通过在城里创办“村超”，给出了自己的答案。</p>
-														</p>
-													</li>
-													<li>
-														<h3><a href="../../../con/202409/20/c1051939.html" >  </a></h3>
-														<p>
+<script>
 
-														</p>
-													</li>
+jQuery(document).ready(
+function(){
+jQuery("AREA.areablock").hover(function(){
+                 jQuery("span."+jQuery(this).attr("id")).highText2(jQuery("span."+jQuery(this).attr("id")).text(), {color : "#Fff", "background" : "","font-weight":"bold"});
+    jQuery("tr."+jQuery(this).attr("id")).css({"background":"#F3F3F3"});
+	},function(){
+		jQuery(this).html("");
+                jQuery("span."+jQuery(this).attr("id")).highText2(jQuery("span."+jQuery(this).attr("id")).text(), {color : "", "font-size" : ""});
+				jQuery("tr."+jQuery(this).attr("id")).css({"background":"","font-weight":"normal"});
+	}).click(function(){jQuery(this).addClass("active").siblings(".areablock").removeClass("active");}).eq(0)},
+	jQuery(document).find("span.i").css({ color:'#009'}));
+</script>
 
+<script>
 
-										</ul>
-									</div>
-								</div>
-								<div class="Roller" id="ScroRight"><span id="ScroLine"></span></div>
-							</div>
-                            <div class="newsconrightcontent">
-                            <iframe name="tqb" id="" class="Ciframe" width="100%" height="100%" marginheight="0" marginwidth="0" scrolling="no" frameborder="0"><!--123--></iframe>
-                            </div>
-						</div>
-					</div>
-					<div class="newsnextleft" id="">
+var selectedIndex=-1;
+function initSelectBox()
+{
+	var selbox=document.getElementById("page_Num_Name");
+            selbox.options.length=0;
+            selbox.onchange=function(){//change事件
+               var index=this.selectedIndex;
+               var selHref=this.options[index].value;
+               var selName=escape(this.options[index].text);
+           //    parent.window.location.href=selHref+"#"+selName;
+               parent.window.location.href="."+selHref;
+		       }
 
-
-					</div>
-                    <div class="newsnextright" id="">
-
-															<a href="node_2.html">&nbsp;</a>
-
-					</div>
-				</div>
-			</div>
-
-			<div class="Therest">
-				<div class="Therestcon clearfix">
-					<a class="restleft" href="javascript:;"></a>
-					<a class="restright" href="javascript:;"></a>
-					<div class="Therestlist">
-						<ul class="clearfix">
-
-																	<li>
-
-										<a href="node_1.html">
-											<img src="../../../pic/202409/20/c5776ec7-ee0b-4028-b91b-319ee4f6d8a7.jpg.2">
-                                            <span class="restmask"></span>
-										</a>
-										<p>
-											第<span class="layoutNum">1</span>版
-											<a href="../../../att/202409/20/b08d5fdd-a3f1-4a56-bb87-25ee0d43d374.pdf" target="_blank"></a>
-										</p>
-									</li>
-									<li>
-
-										<a href="node_2.html">
-											<img src="../../../pic/202409/20/93d27462-1f40-420e-aa7f-aabe3f528958.jpg.2">
-                                            <span class="restmask"></span>
-										</a>
-										<p>
-											第<span class="layoutNum">2</span>版
-											<a href="../../../att/202409/20/20b4ea4a-1b13-4201-91aa-1206affc1c95.pdf" target="_blank"></a>
-										</p>
-									</li>
-									<li>
-
-										<a href="node_3.html">
-											<img src="../../../pic/202409/20/f225472c-fcfe-484b-adcd-8cf3822a00ef.jpg.2">
-                                            <span class="restmask"></span>
-										</a>
-										<p>
-											第<span class="layoutNum">3</span>版
-											<a href="../../../att/202409/20/46393db3-047a-4d70-b18b-903c00a109fd.pdf" target="_blank"></a>
-										</p>
-									</li>
-									<li>
-
-										<a href="node_4.html">
-											<img src="../../../pic/202409/20/150bb50d-c7ce-44ca-bf47-8b62cadb6fdf.jpg.2">
-                                            <span class="restmask"></span>
-										</a>
-										<p>
-											第<span class="layoutNum">4</span>版
-											<a href="../../../att/202409/20/4b2e922a-a6ab-493a-abd6-1f62c0c84363.pdf" target="_blank"></a>
-										</p>
-									</li>
-									<li>
-
-										<a href="node_5.html">
-											<img src="../../../pic/202409/20/0ffd62df-67ab-42b1-8a42-48379c5aa533.jpg.2">
-                                            <span class="restmask"></span>
-										</a>
-										<p>
-											第<span class="layoutNum">5</span>版
-											<a href="../../../att/202409/20/529a4319-d018-42b8-992f-64383d450b12.pdf" target="_blank"></a>
-										</p>
-									</li>
-									<li>
-
-										<a href="node_6.html">
-											<img src="../../../pic/202409/20/8f43b8a1-1bf1-4fef-b236-2d96c0e96e6b.jpg.2">
-                                            <span class="restmask"></span>
-										</a>
-										<p>
-											第<span class="layoutNum">6</span>版
-											<a href="../../../att/202409/20/b0549bd0-9a2d-497b-b006-c227d531f7c9.pdf" target="_blank"></a>
-										</p>
-									</li>
-									<li>
-
-										<a href="node_7.html">
-											<img src="../../../pic/202409/20/88d7952f-ebcb-4a46-9545-c25be55f441c.jpg.2">
-                                            <span class="restmask"></span>
-										</a>
-										<p>
-											第<span class="layoutNum">7</span>版
-											<a href="../../../att/202409/20/676d984c-0431-4244-8e38-7afa15b34ec3.pdf" target="_blank"></a>
-										</p>
-									</li>
-									<li>
-
-										<a href="node_8.html">
-											<img src="../../../pic/202409/20/2f6c27e7-cf9e-495b-b43e-7c4fc27f9e48.jpg.2">
-                                            <span class="restmask"></span>
-										</a>
-										<p>
-											第<span class="layoutNum">8</span>版
-											<a href="../../../att/202409/20/b191a50b-962b-4ed3-9cb4-2c4f2a4efca2.pdf" target="_blank"></a>
-										</p>
-									</li>
-
-						</ul>
-					</div>
-				</div>
-			</div>
-
-		</div>
-
-		<!--content-->
+		   //填充版名列表
+        jQuery("iframe").contents().find("a").each(function(i){
+		    var A_Obj=jQuery(this);
+		    var A_target=A_Obj.attr("target");
+		    var A_title=A_Obj.text();
+		    var A_href=A_Obj.attr("href");
+		    if('_top'==A_target.toLowerCase())
+		    {
+		       //添加option
+		       A_title=A_title.replace("第","");//删除“第”字
+		    //   selbox.options.add(new Option(custring(A_title,10),A_href));
+		      selbox.options.add(new Option(A_title,A_href));
+		    }
+		   });
+}
 
 
-	</body>
-	<script type="text/javascript">
 
+var  iframe=document.getElementById("iframe1");
+if (iframe.addEventListener)
+{
+  iframe.addEventListener("load",function(){
+  selectedIndex=findme();
+  jQuery("iframe").contents().find("div").find("div#bancititle").eq(selectedIndex).highText(pagename, {"color" : "#fff", "background":"#3972cd"});
+	initSelectBox();
+  },false);
+}
+else
+if (iframe.attachEvent){//IE
+    iframe.attachEvent("onload", function(){
+	       selectedIndex=findme();
+           jQuery("iframe").contents().find("div").find("div#bancititle").eq(selectedIndex).highText(pagename, {"color" : "#fff", "background":"#3972cd"});
+           initSelectBox();
+    });
+}
 
-        $(".newslist a").click(function(event){
-		var href = $(this).attr("href");
-		$(".Ciframe").attr("src",href);
-		$(".newsreturn").show();
-		$(".newsconrightcontent").show();
-		event.preventDefault();
-	    })
+setTimeout(function(){ initSelectBox();},0);
 
-		$(".newsreturn").click(function(){
-		$(".newsreturn").hide();
-		$(".newsconrightcontent").hide();
-	})
+</script>
 
-		laydate({
-			elem: '#startDate'
-		})
-	</script>
-
-	<script>
-		window._bd_share_config = {
-			"common": {
-				"bdSnsKey": {},
-				"bdText": "",
-				"bdMini": "2",
-				"bdMiniList": false,
-				"bdPic": "",
-				"bdStyle": "0",
-				"bdSize": "16"
-			},
-			"share": {}
-		};
-		with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
-	</script>
 
 <!--
-	<script type="text/javascript">(function(){document.write(unescape('%3Cdiv id="bdcs"%3E%3C/div%3E'));var bdcs = document.createElement('script');bdcs.type = 'text/javascript';bdcs.async = true;bdcs.src = 'http://znsv.baidu.com/customer_search/api/js?sid=13265343469541541223' + '&plate_url=' + encodeURIComponent(window.location.href) + '&t=' + Math.ceil(new Date()/3600000);var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(bdcs, s);})();</script>
+<script src="../../../js/turn.js" type="text/javascript" ></script>
 -->
- <!--用于实现数字报对文章页的分享功能 tip:请先引入jQuery框架-->
-    <script src="http://app.ahrb.com.cn/js/szb/share_all_page.js"></script>
+<script type="text/javascript" language="javascript">document.write("<" + "script language='javascript' type='text/javascript' src='../../../js/turn.js?"+Math.random()+"'><" + "/script>");</script>
+
+
+</center>
+<DIV class=showRedpop id=showRedpops style="height:32px;DISPLAY: none; LEFT: -9999px; POSITION: absolute"></DIV>
+
+<center>
+<div align="center"  style="align:center;margin-top:30px;width:70%">
+<div id="footer"  style="margin-left:30px" align="center">
+<script language="javascript" src="//www.fznews.com.cn/TopMenu/footer.js"></script>
+</div>
+</div>
+</center>
+<script src="//img.fznews.com.cn/www/javascript/webterren.js"></script>
+</body>
 </html>

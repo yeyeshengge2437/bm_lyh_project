@@ -75,6 +75,11 @@ def get_chinajijin_paper(paper_time, queue_id, webpage_id):
                 conn_test.commit()
             cursor_test.close()
             conn_test.close()
+        success_data = {
+            'id': queue_id,
+            'description': '数据获取成功',
+        }
+        paper_queue_success(success_data)
 
     else:
         raise Exception(f'该日期没有报纸')

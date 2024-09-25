@@ -33,7 +33,10 @@ def get_dalian_lastpaper(paper_time, queue_id, webpage_id):
     url = base_url + 'node_A01.html'
     response = requests.get(url, headers=headers, verify=False)
     if response.status_code == 200:
-        content = response.content.decode()
+        try:
+            content = response.content.decode()
+        except:
+            content = response.content.decode('gbk')
         html_1 = etree.HTML(content)
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//div[@class='Chunkiconbox']/div[@class='Chunkiconlist']/p")
@@ -118,4 +121,4 @@ def get_dalian_lastpaper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_dalian_lastpaper('2024-09-06', 111, 1111)
+# get_dalian_lastpaper('2024-08-20', 111, 1111)

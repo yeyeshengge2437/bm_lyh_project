@@ -24,6 +24,7 @@ headers = {
     'SITE': 'zghzsb',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
     'X-Requested-With': 'XMLHttpRequest',
+    # '_identity': '5f6ed905-26cd-48c2-b7b4-63aa3ede4484',
     '_identity': '5f6ed905-26cd-48c2-b7b4-63aa3ede4484',
 }
 
@@ -53,16 +54,21 @@ def get_chinahezuo_paper(paper_time, queue_id, webpage_id):
             bm_pdf = bm["_source"]["pdf"]["url_no_analyzer_sore"]
             bm_id = bm["_id"]
             # 获取版面详情链接
-            data_json = {"from":0,"size":15,"query":{"bool":{"must":[{"term":{"bz_page.id_no_analyzer_sore":bm_id}}]}},"sort":[{"index_int_sore":{"order":"asc"}}]}
+            data_json = {"from": 0, "size": 15,
+                         "query": {"bool": {"must": [{"term": {"bz_page.id_no_analyzer_sore": bm_id}}]}},
+                         "sort": [{"index_int_sore": {"order": "asc"}}]}
             data_json = json.dumps(data_json)
             data = {
                 'index': 'bz_article',
                 'query': data_json,
             }
-            bm_response = requests.post('http://szb.zh-hz.com/data/query',  headers=headers, data=data, verify=False)
+            bm_response = requests.post('http://szb.zh-hz.com/data/query', headers=headers, data=data, verify=False)
             if bm_response.status_code == 200:
                 bm_content = bm_response.json()
-                article_list = bm_content["hits"]["hits"]
+                try:
+                    article_list = bm_content["hits"]["hits"]
+                except:
+                    article_list = []
                 for article in article_list:
                     article_id = article["_id"]
                     article_url = bm_url + f"&articleId={article_id}&articleIndex=1"
@@ -111,15 +117,9 @@ def get_chinahezuo_paper(paper_time, queue_id, webpage_id):
             'description': '数据获取成功',
         }
         paper_queue_success(success_data)
-        success_data = {
-            'id': queue_id,
-            'description': '数据获取成功',
-        }
-        paper_queue_success(success_data)
 
     else:
         raise Exception(f'该日期没有报纸')
 
 
-
-# get_chinahezuo_paper('2024-09-13', 111, 1111)
+# get_chinahezuo_paper('2023-11-21', 111, 1111)
