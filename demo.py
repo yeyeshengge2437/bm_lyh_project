@@ -1,16 +1,12 @@
 import requests
 
-cookies = {
-    'zycna': 'JwwyRIkbYF0BAXPBuY3dtKaX',
-}
-
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
-    # 'Cookie': 'zycna=JwwyRIkbYF0BAXPBuY3dtKaX',
     'Pragma': 'no-cache',
+    'Referer': 'https://times.clzg.cn/html/2024-09/26/node_301.htm',
     'Sec-Fetch-Dest': 'document',
     'Sec-Fetch-Mode': 'navigate',
     'Sec-Fetch-Site': 'same-origin',
@@ -22,5 +18,5 @@ headers = {
     'sec-ch-ua-platform': '"Windows"',
 }
 
-response = requests.get('https://jiangxi.jxnews.com.cn/system/count//0002056/003000000000/000/000/c0002056003000000000_000000001.shtml', cookies=cookies, headers=headers, verify=False)
+response = requests.get('https://times.clzg.cn/html/2024-09/25/node_301.htm', headers=headers)
 print(response.text)

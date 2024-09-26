@@ -205,14 +205,14 @@ def get_minnan_paper_old(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 def get_minnan_paper(paper_time, queue_id, webpage_id):
-    paper_time = datetime.strptime(paper_time, '%Y-%m-%d').date()
+    paper_time1 = datetime.strptime(paper_time, '%Y-%m-%d').date()
     date_str = '2019-11-21'
 
     # 将字符串转换为日期对象
     date_str = datetime.strptime(date_str, '%Y-%m-%d').date()
 
     # 判断日期是否在范围内
-    if paper_time <= date_str:
+    if paper_time1 <= date_str:
         # print('使用旧方法')
         get_minnan_paper_old(paper_time, queue_id, webpage_id)
     else:

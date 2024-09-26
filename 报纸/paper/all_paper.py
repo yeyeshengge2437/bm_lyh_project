@@ -150,6 +150,22 @@ from yangzi_lastpaper import get_yangzi_lastpaper  # 扬子晚报
 from binzhou_paper import get_binzhou_paper  # 滨州日报
 from fuzhou_paper import get_fuzhou_paper  # 福州日报
 from fuzhou_lastpaper import get_fuzhou_lastpaper  # 福州晚报
+from zhaotong_paper import get_zhaotong_paper  # 昭通日报
+from langfang_paper import get_langfang_paper  # 廊坊日报
+from langfangdushi_paper import get_langfangdushi_paper  # 廊坊都市报
+from jiatingyushenghuo_paper import get_jiatingyuyisheng_paper  # 家庭与生活报
+from nanchong_paper import get_nanchong_paper  # 南充日报
+from luoyang_lastpaper import get_luoyang_lastpaper  # 洛阳晚报
+from qinzhou_paper import get_qinzhou_paper  # 钦州日报
+from zhengzhou_paper import get_zhengzhou_paper  # 郑州日报
+from jianghuaichen_paper import get_jianghuaichen_paper  # 江淮晨报
+from dajiang_lastpaper import get_dajiang_lastpaper  # 大江晚报
+from wuhu_paper import get_wuhu_paper  # 芜湖日报
+from hefei_lastpaper import get_hefei_lastpaper  # 合肥晚报
+from hefei_paper import get_hefei_paper  # 合肥日报
+from qingniaozao_paper import get_qingniaozao_paper  # 青鸟早报
+from zhihuishenghuo_paper import get_zhihuishenghuo_paper  # 智慧生活报
+from shijiazhuang_paper import get_shijiazhuang_paper  # 石家庄日报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -301,14 +317,30 @@ methods = {
     '扬子晚报': get_yangzi_lastpaper,
     '滨州日报': get_binzhou_paper,
     '福州日报': get_fuzhou_paper,
-    '福州晚报': get_fuzhou_paper,
+    '福州晚报': get_fuzhou_lastpaper,
+    '昭通日报': get_zhaotong_paper,
+    '廊坊日报': get_langfang_paper,
+    '廊坊都市报': get_langfangdushi_paper,
+    '家庭与生活报': get_jiatingyuyisheng_paper,
+    '南充日报': get_nanchong_paper,
+    '洛阳晚报': get_luoyang_lastpaper,
+    '钦州日报': get_qinzhou_paper,
+    '郑州日报': get_zhengzhou_paper,
+    '江淮晨报': get_jianghuaichen_paper,
+    '大江晚报': get_dajiang_lastpaper,
+    '芜湖日报': get_wuhu_paper,
+    '合肥晚报': get_hefei_lastpaper,
+    '合肥日报': get_hefei_paper,
+    '青鸟早报': get_qingniaozao_paper,
+    '智慧生活报': get_zhihuishenghuo_paper,
+    '石家庄日报': get_shijiazhuang_paper,
 }
 
 webpage_url_list = [
     'https://newpaper.dahe.cn/hnsb/html',
     'https://szb.gansudaily.com.cn/gsjjrb',
     'https://epaper.kf.cn/paper/kfrb',
-    # 'https://lyrb.lyd.com.cn',  # 洛阳日报封ip严重
+    'https://lyrb.lyd.com.cn',  # 洛阳日报封ip严重
     'https://epaper.lnd.com.cn',
     'https://www.scxb.com.cn',
     # 'https://tmrb.tmwcn.com/tmrb',  # 天门日报没有pdf
@@ -453,7 +485,22 @@ webpage_url_list = [
     'http://paper.bzrb.net/bzrb',
     'https://mag.fznews.com.cn',
     'https://mag.fznews.com.cn/fzwb',
-
+    'https://dubao.ztnews.net',
+    'http://epaper.lfcmw.com/rbpaper/pc/layout',
+    'http://epaper.lfcmw.com/dsbpaper/pc/layout',
+    'https://homelife.scol.com.cn',
+    'http://xncrb.cnncw.cn',
+    'https://lywb.lyd.com.cn',
+    'https://qzrb.gxqzxw.com',
+    'https://zzrb.zynews.cn',
+    'https://newspaper.hf365.com/jhcb/pc/layout',
+    'https://epaper.wuhunews.cn/pc/djwb/layout',
+    'https://epaper.wuhunews.cn/pc/whrb/layout',
+    'https://newspaper.hf365.com/hfwb/pc/layout',
+    'https://newspaper.hf365.com/hfrb/pc/layout',
+    'https://epaper.qingdaonews.com/qdzb',
+    'http://shcb.x-publish.com',
+    'http://sjzrb.sjzdaily.com.cn/sjzrbpaper/pc/layout',
 ]
 
 
