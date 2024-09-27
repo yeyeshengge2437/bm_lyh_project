@@ -14,6 +14,8 @@
             'value': 子字符串，我们想检查它是否存在于属性值中。
     4.从第n个开始往后取
         //div[contains(@class, 'header')][position() >= n]
+      共有多少个  last()函数返回当前节点集的总个数。
+        //li[position() >= 2 and position() < last()]  # 从第二个开始取，取到倒数第二个
 
     5.元素的兄弟
         在XPath中，您可以使用following-sibling::轴来选择某个节点之后的所有兄弟节点，或者使用preceding-sibling::轴来选择某个节点之前的所有兄弟节点。如果您想选择具有特定类名的<td>元素的所有兄弟<td>元素，可以这样做：

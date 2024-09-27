@@ -166,6 +166,18 @@ from hefei_paper import get_hefei_paper  # 合肥日报
 from qingniaozao_paper import get_qingniaozao_paper  # 青鸟早报
 from zhihuishenghuo_paper import get_zhihuishenghuo_paper  # 智慧生活报
 from shijiazhuang_paper import get_shijiazhuang_paper  # 石家庄日报
+from hebeiqingnian_paper import get_hebeiqingnian_paper  # 河北青年报
+from yanzhao_lastpaper import get_yanzhao_lastpaper  # 燕赵晚报
+from yanzhaodushi_paper import get_yanzhaodushi_paper  # 燕赵都市报
+from bandaochen_paper import get_bandaochen_paper  # 半岛晨报
+from xinmin_lastpaper import get_xinmin_lastpaper  # 新民晚报
+from beijing_lastpaper import get_beijing_lastpaper  # 北京晚报
+from xinanshang_paper import get_xinanshang_paper  # 西南商报
+from changjiangshang_paper import get_changjiangshang_paper  # 长江商报
+from henanjingji_paper import get_henanjingji_paper  # 河南经济报
+from pudongshi_paper import get_pudongshi_paper  # 浦东时报
+from diyicaijing_paper import get_diyicaijing_paper  # 第一财经日报
+from qiyeguancha_paper import get_qiyeguancha_paper  # 企业观察报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -334,6 +346,18 @@ methods = {
     '青鸟早报': get_qingniaozao_paper,
     '智慧生活报': get_zhihuishenghuo_paper,
     '石家庄日报': get_shijiazhuang_paper,
+    '河北青年报': get_hebeiqingnian_paper,
+    '燕赵晚报': get_yanzhao_lastpaper,
+    '燕赵都市报': get_yanzhaodushi_paper,
+    '半岛晨报': get_bandaochen_paper,
+    '新民晚报': get_xinmin_lastpaper,
+    '北京晚报': get_beijing_lastpaper,
+    '西南商报': get_xinanshang_paper,
+    '长江商报': get_changjiangshang_paper,
+    '河南经济报': get_henanjingji_paper,
+    '浦东时报': get_pudongshi_paper,
+    '第一财经日报': get_diyicaijing_paper,
+    '企业观察报': get_qiyeguancha_paper,
 }
 
 webpage_url_list = [
@@ -501,6 +525,18 @@ webpage_url_list = [
     'https://epaper.qingdaonews.com/qdzb',
     'http://shcb.x-publish.com',
     'http://sjzrb.sjzdaily.com.cn/sjzrbpaper/pc/layout',
+    'https://www.hbynet.net/html/heqing/daohang/dianzibao/index.html',
+    'http://yzwb.sjzdaily.com.cn/yzwbpaper/pc/layout',
+    'https://yzdsb.hebnews.cn/pc/paper/layout',
+    'http://www.bdcb.cn',
+    'https://paper.xinmin.cn',
+    'https://bjrbdzb.bjd.com.cn/bjwb',
+    'http://www.xnsbdzb.com/xnsb',
+    'http://www.changjiangtimes.com/szb',
+    'https://dzb.zyjjw.cn',
+    'http://www.pdtimes.com.cn',
+    'https://www.yicai.com/epaper/pc',
+    'http://baozhi.cneo.com.cn',
 ]
 
 
