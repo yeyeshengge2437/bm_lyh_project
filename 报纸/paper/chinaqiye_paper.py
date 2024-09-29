@@ -56,7 +56,10 @@ def get_chinaqiye_paper(paper_time, queue_id, webpage_id):
                 # 获取文章内容
                 article_response = requests.get(article_url, headers=headers, verify=False)
                 time.sleep(2)
-                article_data = article_response.content.decode()
+                try:
+                    article_data = article_response.content.decode()
+                except:
+                    continue
                 article_html = etree.HTML(article_data)
                 content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()"))
                 pdf_set = set()
@@ -106,31 +109,4 @@ def get_chinaqiye_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-
-# # 设置最大重试次数
-# max_retries = 5
-# retries = 0
-# while retries < max_retries:
-#     value = paper_queue_next(webpage_url_list=['http://epaper.zqcn.com.cn'])
-#     queue_id = value['id']
-#     webpage_id = value["webpage_id"]
-#     try:
-#         get_chinaqiye_paper(today)
-#         break
-#     except Exception as e:
-#         retries += 1
-#         if retries == max_retries and "目前未有报纸" in str(e):
-#             success_data = {
-#                 'id': queue_id,
-#                 'description': '今天没有报纸',
-#             }
-#             paper_queue_success(success_data)
-#             break
-#         else:
-#             fail_data = {
-#                 "id": queue_id,
-#                 "description": f"出现问题:{e}",
-#             }
-#             paper_queue_fail(fail_data)
-#             print(f'{e},等待一小时后重试...')
-#             time.sleep(3610)  # 等待1小时后重试
+# get_chinaqiye_paper("2011-11-22", 11,  11)

@@ -38,7 +38,6 @@ headers = {
 
 
 def get_quanguoyichangminglu_data(queue_id, webpage_id):
-
     json_data = {
         'dwGuid': None,
     }
@@ -146,8 +145,6 @@ def get_quanguoyichangminglu_data(queue_id, webpage_id):
         except Exception as e:
             page.quit()
             raise e
-
-
 
 
 def get_quanguodizhikanchadanwei_data(queue_id, webpage_id):
@@ -380,3 +377,5 @@ def get_yanzhongshixinmingdan_data(queue_id, webpage_id):
             page.quit()
             raise e
 
+
+# get_quanguodizhikanchadanwei_data(111, 2222)

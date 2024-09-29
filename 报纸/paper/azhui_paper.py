@@ -7,13 +7,12 @@ import requests
 from lxml import etree
 
 
-paper = "西藏商报"
+paper = "安徽日报"
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
-    # 'Cookie': 'sajssdk_2015_cross_new_user=1; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%2219222f3b4cd57d-00aecf78074de38-26001151-1296000-19222f3b4cea6c%22%2C%22first_id%22%3A%22%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E7%9B%B4%E6%8E%A5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%89%93%E5%BC%80%22%2C%22%24latest_referrer%22%3A%22%22%7D%2C%22identities%22%3A%22eyIkaWRlbnRpdHlfY29va2llX2lkIjoiMTkyMjJmM2I0Y2Q1N2QtMDBhZWNmNzgwNzRkZTM4LTI2MDAxMTUxLTEyOTYwMDAtMTkyMjJmM2I0Y2VhNmMifQ%3D%3D%22%2C%22history_login_id%22%3A%7B%22name%22%3A%22%22%2C%22value%22%3A%22%22%7D%2C%22%24device_id%22%3A%2219222f3b4cd57d-00aecf78074de38-26001151-1296000-19222f3b4cea6c%22%7D',
     'Pragma': 'no-cache',
     'Sec-Fetch-Dest': 'document',
     'Sec-Fetch-Mode': 'navigate',
@@ -26,44 +25,43 @@ headers = {
     'sec-ch-ua-platform': '"Windows"',
 }
 
-cookies = {
-    'sajssdk_2015_cross_new_user': '1',
-    'sensorsdata2015jssdkcross': '%7B%22distinct_id%22%3A%2219222f3b4cd57d-00aecf78074de38-26001151-1296000-19222f3b4cea6c%22%2C%22first_id%22%3A%22%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E7%9B%B4%E6%8E%A5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%89%93%E5%BC%80%22%2C%22%24latest_referrer%22%3A%22%22%7D%2C%22identities%22%3A%22eyIkaWRlbnRpdHlfY29va2llX2lkIjoiMTkyMjJmM2I0Y2Q1N2QtMDBhZWNmNzgwNzRkZTM4LTI2MDAxMTUxLTEyOTYwMDAtMTkyMjJmM2I0Y2VhNmMifQ%3D%3D%22%2C%22history_login_id%22%3A%7B%22name%22%3A%22%22%2C%22value%22%3A%22%22%7D%2C%22%24device_id%22%3A%2219222f3b4cd57d-00aecf78074de38-26001151-1296000-19222f3b4cea6c%22%7D',
-}
 
-def get_xizangshang_paper(paper_time, queue_id, webpage_id):
+def get_anhui_paper(paper_time, queue_id, webpage_id):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m/%d')
-    base_url = f'https://e.xzxw.com/xzsb/{paper_time}/'
+    # base_url = f'https://szb.ahnews.com.cn/ncb/pc/layout/{paper_time}/'
+    base_url = f'https://szb.ahnews.com.cn/ahrb/layout/{paper_time}/'
     url = base_url + 'node_01.html'
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
         # 获取所有版面的的链接
-        all_bm = html_1.xpath("//div[@class='nav-list']/ul/li")
+        all_bm = html_1.xpath("//div[@class='Chunkiconlist']/p")
         for bm in all_bm:
             # 版面名称
-            bm_name = "".join(bm.xpath("./a[@class='btn btn-block']/text()")).strip()
+            bm_name = "".join(bm.xpath("./a[1]/text()")).strip()
             # 版面链接
-            bm_url = base_url + ''.join(bm.xpath("./a[@class='btn btn-block']/@href"))
+            bm_url = base_url + ''.join(bm.xpath("./a[1]/@href"))
+            # 版面的pdf
+            bm_pdf = 'https://szb.ahnews.com.cn/ahrb/' + "".join(
+                bm.xpath("./a[2]/@href")).strip('../../..')
+
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers)
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
-            # 版面的pdf
-            bm_pdf = "".join(bm_html.xpath("//a[@class='pdf']/@href"))
 
             # 获取所有文章的链接
-            all_article = bm_html.xpath("//ul/li[@class='resultList']/a")
+            all_article = bm_html.xpath("//div[@class='newslist']/ul/li/h3/a")
             pdf_set = set()
             for article in all_article:
                 # 获取文章链接
-                article_url = ''.join(article.xpath("./@href")).strip('../..')
+                article_url = 'https://szb.ahnews.com.cn/ahrb/' + ''.join(article.xpath("./@href")).strip('../../..')
                 # 获取文章名称
-                article_name = ''.join(article.xpath("./h4/text()")).strip()
+                article_name = ''.join(article.xpath("./text()")).strip()
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 获取文章内容
@@ -72,7 +70,7 @@ def get_xizangshang_paper(paper_time, queue_id, webpage_id):
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
-                content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
+                content = ''.join(article_html.xpath("//div[@class='content']/founder-content/p/text()")).strip()
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -122,4 +120,4 @@ def get_xizangshang_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_xizangshang_paper('2024-08-22', 111, 1111)
+# get_anhui_paper('2024-09-20', 111, 1111)

@@ -178,6 +178,18 @@ from henanjingji_paper import get_henanjingji_paper  # 河南经济报
 from pudongshi_paper import get_pudongshi_paper  # 浦东时报
 from diyicaijing_paper import get_diyicaijing_paper  # 第一财经日报
 from qiyeguancha_paper import get_qiyeguancha_paper  # 企业观察报
+from chinagaige_paper import get_chinagaige_paper  # 中国改革报
+from gansunongmin_paper import get_gansunongmin_paper  # 甘肃农民报
+from azhui_paper import get_anhui_paper  # 安徽日报
+from minzushi_paper import get_minzushi_paper  # 民族时报
+from fazhishi_paper import get_fazhishi_paper  # 法治时报
+from xizangfazhi_paper import get_xizangfazhi_paper  # 西藏法制报
+from zhishibolanguofang_paper import get_zhishibolanguofang_paper  # 知识博览报.国防教育周刊
+from haisishang_paper import get_haisishang_paper  # 海丝商报
+from shishi_paper import get_shishi_paper  # 石狮日报
+from jingshenwenming_paper import get_jingshenwenming_paper  # 精神文明报
+from jilinnongcun_paper import get_jilinnongcun_paper  # 吉林农村报
+from xuexishi_paper import get_xuexishi_paper  # 学习时报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -358,13 +370,25 @@ methods = {
     '浦东时报': get_pudongshi_paper,
     '第一财经日报': get_diyicaijing_paper,
     '企业观察报': get_qiyeguancha_paper,
+    '中国改革报': get_chinagaige_paper,
+    '甘肃农民报': get_gansunongmin_paper,
+    '安徽日报': get_anhui_paper,
+    '民族时报': get_minzushi_paper,
+    '法治时报': get_fazhishi_paper,
+    '西藏法制报': get_xizangfazhi_paper,
+    '知识博览报.国防教育周刊': get_zhishibolanguofang_paper,
+    '海丝商报': get_haisishang_paper,
+    '石狮日报': get_shishi_paper,
+    '精神文明报': get_jingshenwenming_paper,
+    '吉林农村报': get_jilinnongcun_paper,
+    '学习时报': get_xuexishi_paper,
 }
 
 webpage_url_list = [
     'https://newpaper.dahe.cn/hnsb/html',
     'https://szb.gansudaily.com.cn/gsjjrb',
     'https://epaper.kf.cn/paper/kfrb',
-    'https://lyrb.lyd.com.cn',  # 洛阳日报封ip严重
+    # 'https://lyrb.lyd.com.cn',  # 洛阳日报封ip严重
     'https://epaper.lnd.com.cn',
     'https://www.scxb.com.cn',
     # 'https://tmrb.tmwcn.com/tmrb',  # 天门日报没有pdf
@@ -537,6 +561,18 @@ webpage_url_list = [
     'http://www.pdtimes.com.cn',
     'https://www.yicai.com/epaper/pc',
     'http://baozhi.cneo.com.cn',
+    'http://www.cfgw.net.cn/epaper',
+    'https://szb.gansudaily.com.cn/gsnmb',
+    'https://szb.ahnews.com.cn/ahrb/layout',
+    'https://mzsb.yunnan.cn',
+    'https://szb.hnfazhi.com',
+    'https://e.xzxw.com/fzb',
+    'https://www.icswb.com/default.php?mod=newspaper&a=gen_one&channel_id=101058',
+    'https://hssb.fjdaily.com/pc/col',
+    'https://ssrb.fjdaily.com/pc/col',
+    'https://www.jswmb.cn',
+    'http://www.jlncb.cn/jlncb/pc/paper/layout',
+    'https://paper.cntheory.com/html',
 ]
 
 

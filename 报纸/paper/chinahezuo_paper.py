@@ -32,7 +32,7 @@ headers = {
 def get_chinahezuo_paper(paper_time, queue_id, webpage_id):
     # 将today的格式进行改变
     day = paper_time
-    paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m-%d')
+    paper_time = str(datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m-%d'))
     base_url = f'http://epaper.chuxiong.cn/{paper_time}/'
     url = base_url + 'node_01.html'
     data_json = {"from": 0, "size": 100, "query": {
@@ -122,4 +122,4 @@ def get_chinahezuo_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_chinahezuo_paper('2023-11-21', 111, 1111)
+# get_chinahezuo_paper('2024-03-15', 111, 1111)
