@@ -9,7 +9,6 @@ import mysql.connector
 import requests
 from lxml import etree
 
-
 paper = "广西农垦报"
 headers = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -80,7 +79,7 @@ def get_guangxinongken_paper(paper_time, queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
-                # print(bm_name, article_name, bm_pdf, content)
+                # print(bm_name, article_name, article_url, bm_pdf, content)
                 if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
@@ -110,7 +109,6 @@ def get_guangxinongken_paper(paper_time, queue_id, webpage_id):
                 cursor_test.close()
                 conn_test.close()
 
-
         success_data = {
             'id': queue_id,
             'description': '数据获取成功',
@@ -121,4 +119,4 @@ def get_guangxinongken_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_guangxinongken_paper('2023-08-30', 111, 1111)
+# get_guangxinongken_paper('2020-03-03', 111, 1111)

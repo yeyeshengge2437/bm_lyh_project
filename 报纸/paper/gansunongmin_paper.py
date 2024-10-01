@@ -118,6 +118,8 @@ def get_gansunongmin_paper_old(paper_time, queue_id, webpage_id):
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
+        if not html_1:
+            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//ul[@id='layoutlist']/li[@class='posRelative']")
         for bm in all_bm:
@@ -154,6 +156,8 @@ def get_gansunongmin_paper_old(paper_time, queue_id, webpage_id):
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content//text()")).strip()
+                # print(bm_name, article_name, article_url, bm_pdf, content)
+
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -162,7 +166,6 @@ def get_gansunongmin_paper_old(paper_time, queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
-                # print(bm_name, article_name, article_url, bm_pdf, content)
                 if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
@@ -216,4 +219,4 @@ def get_gansunongmin_paper(paper_time, queue_id, webpage_id):
         get_gansunongmin_paper_new(paper_time, queue_id, webpage_id)
 
 
-# get_gansunongmin_paper('2024-08-22', 1, 1)
+# get_gansunongmin_paper('2021-08-06', 1, 1)

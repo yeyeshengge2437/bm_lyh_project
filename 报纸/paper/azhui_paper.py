@@ -49,7 +49,10 @@ def get_anhui_paper(paper_time, queue_id, webpage_id):
                 bm.xpath("./a[2]/@href")).strip('../../..')
 
             # 获取版面详情
-            bm_response = requests.get(bm_url, headers=headers)
+            try:
+                bm_response = requests.get(bm_url, headers=headers)
+            except Exception as e:
+                continue
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
@@ -65,12 +68,16 @@ def get_anhui_paper(paper_time, queue_id, webpage_id):
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 获取文章内容
-                article_response = requests.get(article_url, headers=headers)
+                try:
+                    article_response = requests.get(article_url, headers=headers)
+                except Exception as e:
+                    continue
                 time.sleep(1)
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@class='content']/founder-content/p/text()")).strip()
+                # print(bm_name, article_name, article_url, bm_pdf, content)
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -79,7 +86,7 @@ def get_anhui_paper(paper_time, queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
-                # print(bm_name, article_name, article_url, bm_pdf, content)
+
                 if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
@@ -120,4 +127,4 @@ def get_anhui_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_anhui_paper('2024-09-20', 111, 1111)
+# get_anhui_paper('2024-07-03', 111, 1111)

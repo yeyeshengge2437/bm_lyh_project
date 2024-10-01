@@ -66,8 +66,11 @@ def get_zhengquan_paper(paper_time,queue_id, webpage_id):
                 time.sleep(1)
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
+                if not article_html:
+                    continue
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@class='neiye']/div[@class='neiyee']/p/text()"))
+                # print(bm_name, article_name, article_url, bm_pdf, content)
 
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
@@ -112,4 +115,4 @@ def get_zhengquan_paper(paper_time,queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-
+# get_zhengquan_paper('2020-11-13', 111, 222)

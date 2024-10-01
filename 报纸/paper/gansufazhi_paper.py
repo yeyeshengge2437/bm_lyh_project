@@ -60,11 +60,15 @@ def get_gansufazhi_paper(paper_time, queue_id, webpage_id):
                     time.sleep(2)
                     if art_res.status_code == 200:
                         html_3 = etree.HTML(art_res.content.decode())
-                        # 获取文章内容
-                        article_content = "".join(
-                            html_3.xpath("//div[@class='detail-art']/div[@id='ozoom']/founder-content/p/text()"))
+                        if html_3:
+                            # 获取文章内容
+                            article_content = "".join(
+                                html_3.xpath("//div[@class='detail-art']/div[@id='ozoom']/founder-content/p/text()"))
+                        else:
+                            article_content = ''
                     else:
                         article_content = ''
+                    # print(bm_name, article_name, article_url, bm_img, article_content)
 
                     conn_test = mysql.connector.connect(
                         host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -76,6 +80,7 @@ def get_gansufazhi_paper(paper_time, queue_id, webpage_id):
 
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
+
                     if pdf_url1:
                         original_pdf = general_url + pdf_url1.strip('../../..')
                         if original_pdf not in pdf_set and judge_bm_repeat(paper, bm_url):
@@ -109,7 +114,7 @@ def get_gansufazhi_paper(paper_time, queue_id, webpage_id):
                                                 queue_id, create_date, webpage_id))
 
                         conn_test.commit()
-                        # print(article_name)
+                    # print(article_name)
 
                     cursor_test.close()
                     conn_test.close()
@@ -122,10 +127,5 @@ def get_gansufazhi_paper(paper_time, queue_id, webpage_id):
     else:
         raise Exception(f'该日期没有报纸')
 
-# paper_queue = paper_queue_next(
-#             webpage_url_list=['https://szb.gansudaily.com.cn/gsjjrb'])
-# queue_id = paper_queue['id']
-# webpage_id = paper_queue["webpage_id"]
-# queue_id = '1111111111'
-# webpage_id = '2222'
-# get_gansufazhi_paper('2024-08-19', queue_id, webpage_id)
+
+# get_gansufazhi_paper('2023-01-16', 111, 222)

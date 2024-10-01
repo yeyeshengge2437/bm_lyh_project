@@ -150,8 +150,12 @@ def get_gansujingji_paper_old(paper_time, queue_id, webpage_id):
                 time.sleep(1)
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
+                if not article_html:
+                    continue
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content//text()")).strip()
+                # print(bm_name, article_name, article_url, bm_pdf, content)
+
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -160,7 +164,6 @@ def get_gansujingji_paper_old(paper_time, queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
-                # print(bm_name, article_name, article_url, bm_pdf, content)
                 if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
@@ -216,4 +219,4 @@ def get_gansujingji_paper(paper_time, queue_id, webpage_id):
     else:
         get_gansujingji_paper_new(paper_time, queue_id, webpage_id)
 
-
+# get_gansujingji_paper('2022-01-18', 1, 1)

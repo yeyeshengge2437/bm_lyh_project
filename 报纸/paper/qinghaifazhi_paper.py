@@ -41,6 +41,8 @@ def get_qinghaifazhi_paper(paper_time, queue_id, webpage_id):
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
+        if not html_1:
+            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//div[@class='Chunkiconlist']/p")
         for bm in all_bm:
@@ -77,6 +79,7 @@ def get_qinghaifazhi_paper(paper_time, queue_id, webpage_id):
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@class='newsdetatext']/founder-content/p//text()")).strip()
+                # print(bm_name, article_name, article_url, bm_pdf, content)
 
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
@@ -123,7 +126,5 @@ def get_qinghaifazhi_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# queue_id = 111
-# webpage_id = 1111
-# time1 = '2022-11-07'
-# get_chongqingchen_paper(time1, queue_id, webpage_id)
+
+# get_qinghaifazhi_paper('2019-07-01', 1, 1)
