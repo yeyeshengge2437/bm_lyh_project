@@ -69,11 +69,11 @@ def get_linzhi_paper(paper_time, queue_id, webpage_id):
                 cursor_test.close()
                 conn_test.close()
 
-            success_data = {
-                'id': queue_id,
-                'description': '数据获取成功',
-            }
-            paper_queue_success(success_data)
+    success_data = {
+        'id': queue_id,
+        'description': '数据获取成功',
+    }
+    paper_queue_success(success_data)
 
 
 
