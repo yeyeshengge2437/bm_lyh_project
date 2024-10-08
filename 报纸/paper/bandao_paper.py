@@ -75,6 +75,8 @@ def get_bandao_paper(paper_time, queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
+                # print(bm_name, article_name, article_url, bm_pdf)
+
                 if bm_pdf not in pdf_set and ("公告" in article_name and len(article_name) < 10) and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, "半岛都市", "pdf", "paper")
@@ -115,33 +117,4 @@ def get_bandao_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# paper_claims(today)
-
-# # 设置最大重试次数
-# max_retries = 5
-# retries = 0
-# while retries < max_retries:
-#     value = paper_queue_next(webpage_url_list=['https://bddsb.bandao.cn'])
-#     queue_id = value['id']
-#     webpage_id = value["webpage_id"]
-#     try:
-#         get_bandao_paper(today)
-#         break
-#     except Exception as e:
-#         retries += 1
-#         if retries == max_retries and "目前暂未有报纸" in str(e):
-#             success_data = {
-#                 'id': queue_id,
-#                 'description': '今天没有报纸',
-#             }
-#             paper_queue_success(success_data)
-#             break
-#         else:
-#
-#             fail_data = {
-#                 "id": queue_id,
-#                 "description": f"出现问题:{e}",
-#             }
-#             paper_queue_fail(fail_data)
-#             print(f"第{retries}次重试，等待1小时后重试")
-#             time.sleep(3610)  # 等待1小时后重试
+# get_bandao_paper('2019-08-12', 111, 2222)

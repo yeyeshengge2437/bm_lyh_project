@@ -46,6 +46,8 @@ def get_chinahezuo_paper(paper_time, queue_id, webpage_id):
     response = requests.post('http://szb.zh-hz.com/data/query', headers=headers, data=data, verify=False)
     if response.status_code == 200:
         content = response.json()
+        if content.get("hits") is None:
+            raise Exception(f'该日期没有报纸')
         bm_list = content["hits"]["hits"]
         pdf_set = set()
         for bm in bm_list:
@@ -122,4 +124,4 @@ def get_chinahezuo_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_chinahezuo_paper('2024-03-15', 111, 1111)
+# get_chinahezuo_paper('2024-04-02', 111, 1111)

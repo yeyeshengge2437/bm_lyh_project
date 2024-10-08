@@ -190,6 +190,13 @@ from shishi_paper import get_shishi_paper  # 石狮日报
 from jingshenwenming_paper import get_jingshenwenming_paper  # 精神文明报
 from jilinnongcun_paper import get_jilinnongcun_paper  # 吉林农村报
 from xuexishi_paper import get_xuexishi_paper  # 学习时报
+from yantai_paper import get_yantai_paper  # 烟台日报
+from jingjicankao_paper import get_jingjicankao_paper  # 经济参考报
+from tengzhou_paper import get_tengzhou_paper  # 滕州日报
+from linanminzu_paper import get_linanminzu_paper  # 临夏民族日报
+from lianhe_paper import get_lianhe_paper  # 联合日报
+from renminzhengxie_paper import get_renminzhengxie_paper  # 人民政协报
+from xizang_paper import get_xizang_paper  # 西藏日报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -382,6 +389,13 @@ methods = {
     '精神文明报': get_jingshenwenming_paper,
     '吉林农村报': get_jilinnongcun_paper,
     '学习时报': get_xuexishi_paper,
+    '烟台日报': get_yantai_paper,
+    '经济参考报': get_jingjicankao_paper,
+    '滕州日报': get_tengzhou_paper,
+    '临夏民族日报': get_linanminzu_paper,
+    '联合日报': get_lianhe_paper,
+    '人民政协报': get_renminzhengxie_paper,
+    '西藏日报': get_xizang_paper,
 }
 
 webpage_url_list = [
@@ -573,6 +587,14 @@ webpage_url_list = [
     'https://www.jswmb.cn',
     'http://www.jlncb.cn/jlncb/pc/paper/layout',
     'https://paper.cntheory.com/html',
+    'https://www.shm.com.cn/szb/ytrb/paper/pc/layout',
+    'http://dz.jjckb.cn/www/pages',
+    'https://www.tzdaily.com.cn',
+    'http://szb.chinalxnet.com/pc/layout',
+    'https://app.lhwww.com.cn/dzb',
+    'http://dzb.rmzxb.com.cn/rmzxbPaper/pc/layout',
+    'http://www.jjckb.cn/www/pages',
+    'https://e.xzxw.com/xzrb',
 ]
 
 

@@ -1,651 +1,118 @@
 ﻿<!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-	<script src="/assets/yc_autologin.js"></script>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="description" content="">
-    <meta name="keywords" content="">
-    <title>第一财经日报</title>
-    <link type="text/css" rel="stylesheet" href="/newspapersrc/pc/css/global.css">
-    <link type="text/css" rel="stylesheet" href="/newspapersrc/pc/css/layout.css">
-    <link href="/newspapersrc/pc/css/calendar.css" rel="stylesheet" type="text/css" />
-    <link href="/css/epaper_pc.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="/newspapersrc/pc/js/jquery-V30.min.js"></script>
-    <script src="/newspapersrc/pc/js/calendar.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/newspapersrc/pc/js/index.js" type="text/javascript" charset="utf-8"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BW57C8STG3"></script>
-    <script type="text/javascript">
-        var _pb = _pb || [];
-        var _hmt = _hmt || [];
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-BW57C8STG3');
-    </script>
-    <script src="/js/common.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/js/epaper_pc.js" type="text/javascript" charset="utf-8"></script>
-    <script src="https://g.alicdn.com/AWSC/AWSC/awsc.js"></script>
+<meta charset="utf-8"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>滨城时报</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- styles -->
+<link href="../../css/bootstrap.min.css" rel="stylesheet"><link href="../../css/bootstrap-datepicker.min.css" rel="stylesheet">
+<link href="../../css/pcss.css" rel="stylesheet">
+<!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+
 </head>
 
 <body>
-<!--header-->
-<div class="g-hd" id="pcHeader"></div>
-<!--content-->
-<div class="Newslistbox" style="background-color: #f3f4f9;">
-    <div class="Newsmain">
-        <div class="newscon clearfix">
-            <div class="newsside">
-                <ul>
-                    <li class="oneclick1">
-                        <a class="Chunkicon" href="javascript:;"></a>
-                        <div class="Chunkiconbox">
-                            <em class="Chunem"></em>
-                            <img class="Chunkiconimg" src="/newspapersrc/pc/webimages/pic21.png" />
-                            <div class="Chunkiconlist">
-                                
-                                                                        <p>
-                                        <a href="node_A01.html">第A01版：头版</a>
-                                    </p>
-                                    <p>
-                                        <a href="node_A02.html">第A02版：大事件</a>
-                                    </p>
-                                    <p>
-                                        <a href="node_A03.html">第A03版：大事件</a>
-                                    </p>
-                                    <p>
-                                        <a href="node_A04.html">第A04版：广告</a>
-                                    </p>
-                                    <p>
-                                        <a href="node_A05.html">第A05版：国际视野</a>
-                                    </p>
-                                    <p>
-                                        <a href="node_A06.html">第A06版：大政观</a>
-                                    </p>
-                                    <p>
-                                        <a href="node_A07.html">第A07版：金融观察</a>
-                                    </p>
-                                    <p>
-                                        <a href="node_A08.html">第A08版：广告</a>
-                                    </p>
-                                    <p>
-                                        <a href="node_A09.html">第A09版：公司密钥</a>
-                                    </p>
-                                    <p>
-                                        <a href="node_A10.html">第A10版：产业纵深</a>
-                                    </p>
-                                    <p>
-                                        <a href="node_A11.html">第A11版：第一评论</a>
-                                    </p>
-                                    <p>
-                                        <a href="node_A12.html">第A12版：商业人文</a>
-                                    </p>
+<div class="container">
+   <div class="row">
+      <div class="col-md-12">
+      	<img src="../../img/logo.jpg">
+      </div>
 
-                            </div>
-                            <img class="Chunkiconimg" src="/newspapersrc/pc/webimages/pic22.png" />
-                        </div>
-                    </li>
-                    <li class="oneclick2">
-                        <a class="Calendar" href="javascript:;"></a>
-                        <div class="Datebox"><input type="button" id="startDate" value=""> </div>
-                    </li>
-                    <li class="oneclick3">
-                        <a class="UserCenter" href="javascript:;"></a>
-                    </li>
-                </ul>
+      <div class="col-md-4">
+	      <ul class="nav nav-pills" role="tablist">
+             <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">第一版</a></li>
+        	<li role="presentation"><a class="b" href="#profile" aria-controls="profile" role="tab" data-toggle="tab">第二版</a></li>
+        	<li role="presentation"><a class="b" href="#messages" aria-controls="messages" role="tab" data-toggle="tab">第三版</a></li>
+        	<li role="presentation"><a class="b" href="#settings" aria-controls="settings" role="tab" data-toggle="tab">第四版</a></li>
+		</ul>
+
+      <div class="tab-content">
+          <div role="tabpanel" class="tab-pane active" id="home">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+               <img class="map1" src="1.jpg" width="358" height="545" border="0" usemap="#Map1" />
+                <map name="Map1" id="Map1">
+
+                </map>
+        <li class="list-group-item b1"><span class="b"></span></li>
+              </div>
+              <ul class="list-group" id="l-1">
+
+              </ul>
             </div>
+         </div>
+         <div role="tabpanel" class="tab-pane" id="profile">
+			<div class="panel panel-default">
+			  <div class="panel-heading">
+                 <img class="map2" src="2.jpg" width="358" height="545" border="0" usemap="#Map2" />
+                <map name="Map2" id="Map2">
 
-            <div class="+div">
-                <a class="newsreturn" href="javascript:void(0)"></a>
-                <div class="newsconimg" style="position: relative;">
-                    
-                        <img src="../../images/202408/22/c8f9a838-b1ea-4da3-bbf0-f247438bda0a.jpg.1" USEMAP=#PagePicMap>
-                        <MAP NAME="PagePicMap"><Area coords="99.8074548,84.42265625,328.65169180000004,84.42265625,328.65169180000004,241.69390000000004,99.8074548,241.69390000000004" shape="polygon" href="https://www.yicai.com/epaper/pc/202408/22/content_39082.html"><Area coords="347.900272,113.69825625000001,428.45914659999994,113.69825625000001,428.45914659999994,617.51089375,347.900272,617.51089375" shape="polygon" href="https://www.yicai.com/epaper/pc/202408/22/content_39083.html"><Area coords="99.8074548,252.58714375000002,330.0775116,252.58714375000002,330.0775116,501.089325,99.8074548,501.089325" shape="polygon" href="https://www.yicai.com/epaper/pc/202408/22/content_39084.html"></MAP>
+                </map>
+                <li class="list-group-item b2"><span class="b"></span></li>
+			  </div>
+			  <ul class="list-group" id="l-2">
 
-                    <!--日历 begin-->
-                    <div class="time-control" style="position: absolute;">
-                        <div class="data_box" id="data_box">
-                            <table cellspacing="0" cellpadding="0" style="background-color:#fff;width:213px;">
-                                <tbody>
-                                <tr>
-                                    <td  style="background: #f6f6f6; text-align: center;border: 1px solid #ddd;padding: 0 2px;">
-                                        <!--<img src="pre_year.gif" id="pre_y" onclick="changeY(-1);">-->
-                                        <span style="margin-left: -3px;margin-right: 5px;" class="ft18 pointer ft18 arrow-left"   onclick="changeY(-1);"></span>
-                                        <!--<img id="pre_m" src="pre_month.gif">-->
-                                    </td>
-                                    <td>
-                                        <table cellspacing="0" cellpadding="0">
-                                            <tbody>
-                                            <tr>
-                                                <td>
-                                                    <select style="width: 64px; height: 24px; border: 1px solid #ddd;" id="year_box" onchange="changeDate();"></select>
-                                                </td>
-                                                <td  align="center" style="background: #f6f6f6; text-align: center;border: 1px solid #ddd;padding: 0 2px;display: block;height: 22px;margin-right: 8px;"><span style="margin-left: 5px; margin-top: 6px;" class="ft18 pointer arrow-right"  onclick="changeY(1);"></span></td>
-                                                <td  style="background: #f6f6f6; text-align: center;border: 1px solid #ddd;padding: 0 2px;" align="center"><span style="margin-right: 6px;" class="ft18 pointer arrow-left"  onclick="changeMn(-1);"></span></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table  cellspacing="0" cellpadding="0">
-                                            <tbody>
-                                            <tr>
-                                                <td>
-                                                    <select style="width: 59px; height: 24px; border: 1px solid #ddd;" id="month_box" onchange="changeDate();"></select>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                    <td  style="background: #f6f6f6; text-align: center;border: 1px solid #ddd;padding: 0 2px;">
-                                        <span style="margin-left: 5px;" class="ft18 pointer arrow-right"  onclick="changeMn(1);"></span>
-
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <table  cellspacing="0" cellpadding="0" class="data_table" id="data_table">
-                                <thead>
-                                <tr>
-                                    <th>日</th>
-                                    <th>一</th>
-                                    <th>二</th>
-                                    <th>三</th>
-                                    <th>四</th>
-                                    <th>五</th>
-                                    <th>六</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <script type="text/javascript">
-                                    tdlist();
-                                    loadCalendar();
-                                </script>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <!--日历 end-->
-                </div>
-                <div class="newsconright">
-                    <div class="Scrollbox" id="Scroll">
-                        <div class="newsshow" id="ScroLeft">
-                            <div class="newslisttit">
-                                
-                                    <span class="newstime">2024年08月22日</span>
-                                    <em>第A01版：头版</em>
-
-                            </div>
-                            <div class="newslist">
-                                <ul>
-                                    
-                                                                                <li>
-                                            <h3><a href="https://www.yicai.com/epaper/pc/202408/22/content_39082.html">我国对原产于欧盟进口乳制品 进行反补贴立案调查</a></h3>
-                                            <p>
-                                                <p>     商务部21日发布公告，决定自当日起对原产于欧盟的进口相关乳制品进行反补贴立案调查。商务部贸易救济调查局负责人表示，此次调查是应国内产业申请发起的。相关乳制品包括鲜乳酪及凝乳、经加工的乳酪等。在提交的申请书中，申请人主张欧盟
-                                            </p>
-                                        </li>
-                                        <li>
-                                            <h3><a href="https://www.yicai.com/epaper/pc/202408/22/content_39083.html">越南榴莲向北中国铁路向南 连通东南亚的大项目近了</a></h3>
-                                            <p>
-                                                <p>     在中国和越南之间修建三条标准轨铁路，提上了议事日程。</p><p>    据新华社报道，中国和越南8月20日发表了“关于进一步加强全面战略合作伙伴关系、推进中越命运共同体建设的联合声明”（下称“声明”），其中表示，加快推进
-                                            </p>
-                                        </li>
-                                        <li>
-                                            <h3><a href="https://www.yicai.com/epaper/pc/202408/22/content_39084.html">金融监管总局重磅发声 回应银行业利润增速放缓</a></h3>
-                                            <p>
-                                                <p>     21日，国新办举行“推动高质量发展”系列主题新闻发布会，国家金融监督管理总局副局长肖远企以及主要司局负责人就银行业利润增速放缓、中小金融机构改革化险、房地产融资协调机制最新进展、金融消费者保护等众多热点问题作出回应。</p
-                                            </p>
-                                        </li>
-
-
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="Roller" id="ScroRight"><span id="ScroLine"></span></div>
-                    </div>
-                    <div class="newsconrightcontent">
-                        <iframe name="tqb" id="" class="Ciframe" width="100%" height="100%" marginheight="0" marginwidth="0" scrolling="no" frameborder="0"><!--123--></iframe>
-                    </div>
-                </div>
+              </ul>
             </div>
-            
-                                <a class="newsnextright" href="node_A02.html">&nbsp;</a>
+		</div>
+        <div role="tabpanel" class="tab-pane" id="messages"><div class="panel panel-default">
+			  <div class="panel-heading">
+                  <img class="map3" src="3.jpg" width="358" height="545" border="0" usemap="#Map3" />
+                <map name="Map3" id="Map3">
 
-        </div>
-    </div>
-
-    <div class="Therest">
-        <div class="Therestcon clearfix">
-            <a class="restleft" href="javascript:;"></a>
-            <a class="restright" href="javascript:;"></a>
-            <div class="Therestlist">
-                <ul class="clearfix">
-                    
-                                                <li>
-
-                            <a href="node_A01.html">
-                                <img src="../../images/202408/22/c8f9a838-b1ea-4da3-bbf0-f247438bda0a.jpg.1">
-                                <span class="restmask"></span>
-                            </a>
-                            <p>
-                                第<span class="layoutNum">A01</span>版
-                            </p>
-                        </li>
-                        <li>
-
-                            <a href="node_A02.html">
-                                <img src="../../images/202408/22/2760cada-eccf-49d2-9259-797064693578.jpg.1">
-                                <span class="restmask"></span>
-                            </a>
-                            <p>
-                                第<span class="layoutNum">A02</span>版
-                            </p>
-                        </li>
-                        <li>
-
-                            <a href="node_A03.html">
-                                <img src="../../images/202408/22/a9ebd636-884a-434d-bf44-7fff18fe7d35.jpg.1">
-                                <span class="restmask"></span>
-                            </a>
-                            <p>
-                                第<span class="layoutNum">A03</span>版
-                            </p>
-                        </li>
-                        <li>
-
-                            <a href="node_A04.html">
-                                <img src="../../images/202408/22/f74b9daf-4ee8-4b59-97a8-74db2cc0bb8b.jpg.1">
-                                <span class="restmask"></span>
-                            </a>
-                            <p>
-                                第<span class="layoutNum">A04</span>版
-                            </p>
-                        </li>
-                        <li>
-
-                            <a href="node_A05.html">
-                                <img src="../../images/202408/22/058cb1f9-2d6b-4baf-9063-599e71c1eb30.jpg.1">
-                                <span class="restmask"></span>
-                            </a>
-                            <p>
-                                第<span class="layoutNum">A05</span>版
-                            </p>
-                        </li>
-                        <li>
-
-                            <a href="node_A06.html">
-                                <img src="../../images/202408/22/001dadf2-130a-4173-9ca4-9cc39819279f.jpg.1">
-                                <span class="restmask"></span>
-                            </a>
-                            <p>
-                                第<span class="layoutNum">A06</span>版
-                            </p>
-                        </li>
-                        <li>
-
-                            <a href="node_A07.html">
-                                <img src="../../images/202408/22/c79b5cde-2051-40cb-b3d5-56601f1f52dd.jpg.1">
-                                <span class="restmask"></span>
-                            </a>
-                            <p>
-                                第<span class="layoutNum">A07</span>版
-                            </p>
-                        </li>
-                        <li>
-
-                            <a href="node_A08.html">
-                                <img src="../../images/202408/22/40c284e0-56cf-415c-b5de-c5d98d755efe.jpg.1">
-                                <span class="restmask"></span>
-                            </a>
-                            <p>
-                                第<span class="layoutNum">A08</span>版
-                            </p>
-                        </li>
-                        <li>
-
-                            <a href="node_A09.html">
-                                <img src="../../images/202408/22/b54bb8df-09c5-4448-a603-7fe2d5d8fc45.jpg.1">
-                                <span class="restmask"></span>
-                            </a>
-                            <p>
-                                第<span class="layoutNum">A09</span>版
-                            </p>
-                        </li>
-                        <li>
-
-                            <a href="node_A10.html">
-                                <img src="../../images/202408/22/13ece22d-b4e0-4ccd-a7e5-fe583c684970.jpg.1">
-                                <span class="restmask"></span>
-                            </a>
-                            <p>
-                                第<span class="layoutNum">A10</span>版
-                            </p>
-                        </li>
-                        <li>
-
-                            <a href="node_A11.html">
-                                <img src="../../images/202408/22/c8a5e6bc-aceb-4482-af1a-edc64d2f8ce1.jpg.1">
-                                <span class="restmask"></span>
-                            </a>
-                            <p>
-                                第<span class="layoutNum">A11</span>版
-                            </p>
-                        </li>
-                        <li>
-
-                            <a href="node_A12.html">
-                                <img src="../../images/202408/22/5f6e858d-0fd4-4f6b-b4bf-0283f540fd4d.jpg.1">
-                                <span class="restmask"></span>
-                            </a>
-                            <p>
-                                第<span class="layoutNum">A12</span>版
-                            </p>
-                        </li>
-
-                </ul>
+                </map>
+                <li class="list-group-item b3"><span class="b"></span></li>
+			  </div>
+			  <ul class="list-group" id="l-3"></ul>
             </div>
-        </div>
-    </div>
+		</div>
+        <div role="tabpanel" class="tab-pane" id="settings"><div class="panel panel-default">
+			  <div class="panel-heading">
+                 <img class="map4" src="4.jpg" width="358" height="545" border="0" usemap="#Map4" />
+                <map name="Map4" id="Map4">
+
+                </map>
+                <li class="list-group-item b4"><span class="b"></span></li>
+			  </div>
+			  <ul class="list-group" id="l-4"></ul>
+            </div>
+		</div>
+	</div>
+</div>
+    <div class="col-md-8">
+      <nav class="navbar navbar-default">
+       <div class="container-fluid">
+         <div class="navbar-header">
+           <span id="rq" class="navbar-brand"></span>
+		</div>
+        <div class="collapse navbar-collapse">
+           <form class="navbar-form navbar-left">
+               <input type="text" class="form-control" placeholder="查看往期，请选择日期"  data-date-end-date="0d">
+         	   <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+			</form>
+		</div>
+	  </div>
+	</nav>
+    <iframe name="coms" frameborder="0" height="820px" width="100%" scrolling="auto" src="ml.html">
+</iframe>
+</div>
+    <div class="col-md-12 text-center alert alert-inf">
+		<h5>津滨网版权所有，未经书面授权禁止使用 服务邮箱：jinbinwang2015@163.com  举报电话：25204288</h5>
+		<h5>互联网新闻信息服务许可证：12120170004 <a href="http://beian.miit.gov.cn" target="_blank">备案序号：津ICP备2021001896号-1</a><a href="#" target="_blank" \=""><img src="http://www.tjbh.com/bh_libs/img/beian.jpg" alt="" width="26" height="26"></a>津公网安备 12010702000020号</h5>
+		<p id="f-img" class="ydh">
+                  <a href="http://www.12377.cn/" target="_blank"><img src="http://www.tjbh.com/zcms/preview/jbw/zxjb/20220524224448.jpg" alt=""></a> <a href="http://www.12377.cn/node_548446.htm" target="_blank"><img src="http://www.tjbh.com/zcms/preview/jbw/zxjb/20220525110353.jpg" alt=""></a> <a href="https://www.qinglangtianjin.com/" target="_blank"><img src="http://www.tjbh.com/zcms/preview/jbw/zxjb/20220525110333.jpg" alt="天津互联网违法和不良信息举报中心"></a> <a href="http://www.tjbh.com/zxjb/" target="_blank"><img src="http://www.tjbh.com/zcms/preview/jbw/zxjb/20220525110342.jpg" alt="举报入口"></a>
+</p>
 
 </div>
-<div class="g-ft" id="gocFt"></div>
-<script type="text/template" id="modal">
-    <div class="m-layer" id="<?=id?>">
-        <table>
-            <tbody>
-            <tr>
-                <td>
-                    <div class="lywrap <?= typeof(classname) != 'undefined' ? classname : ''?>">
-                        <?if(typeof isAlert == 'undefined'){?>
-                        <div class="lytt">
-                            <h2 class="u-tt"><?-title?></h2>
-                            <span class="lyclose" onclick="CloseThisLayer(this,<?=typeof closetype == 'undefined' ? 0 : 1?>);"></span>
-                        </div>
-                        <?}?>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</script>
-<input type="hidden" id="tempid">
-<script type="text/template" id="loginPannel">
-    <div class="lyct">
-        <table class="m-table" cellpadding="0" cellspacing="0" data-title="手机号快捷登录" id="quickLogin">
-            <tr>
-                <td class="td1of2" colspan="2"><input class="u-ipt" type="number" name="sendmobile" id="yclogin_mobile" placeholder="请输入手机号"></td>
-            </tr>
-            <tr>
-                <td class="td1of2"><input type="number" class="u-ipt u-ipt-w" name="yclogin_snscode" id="yclogin_snscode" placeholder="请输入验证码"></td>
-                <td class="td1of2">
-                    <button class="u-yzm btngetcode" id="btn1" onclick="GetSMCode(1,'quickLogin')">获取验证码</button>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <button class="u-btn1" onclick="YCLogin(1);">登录</button>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" align="center"><span class="span-1 span-1-1">未注册手机验证后自动注册</span></td>
-            </tr>
-        </table>
-        <table class="m-table" cellpadding="0" cellspacing="0" style="display: none;" data-title="帐号密码登录">
-            <tr>
-                <td class="td1of2" colspan="2"><input class="u-ipt" type="text" name="yclogin_username" id="yclogin_username" placeholder="用户名/手机号/邮箱" value=""></td>
-            </tr>
-            <tr>
-                <td class="td1of2"><input class="u-ipt u-ipt-w" type="password" name="yclogin_password" id="yclogin_password" placeholder="请输入密码"></td>
-                <td class="td1of2">
-                    <span class="span-3"><a href="javascript:showForgetPWD();">忘记密码</a></span>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <button class="u-btn1" id="btn2" onclick="YCLogin(2);">登录</button>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" align="center"><span class="span-1 span-1-1">&nbsp;</span></td>
-            </tr>
-        </table>
-    </div>
-    <div class="lybt">
-        <span class="span-1"></span>
-        <table class="m-table1" cellpadding="0" cellspacing="0">
-            <tr>
-                <td>
-                    <button class="u-btn2"><?=showindex === 0? "帐号密码登录" : "手机号快捷登录"?></button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <p class="p-1">点击<a href="javascript:;">登录</a>即表示已同意<br><a href="javascript:;">《第一财经网注册用户协议》</a></p>
-                </td>
-            </tr>
-        </table>
-    </div>
-</script>
-<script type="text/template" id="yclicense">
-    <div class="m-agreement"><ul><li><span>1.</span>第一财经网向注册用户提供用户评论留言、社区发帖跟帖等服务。未实名注册的用户仅可浏览第一财经网内容，不可使用上述服务。</li>
-        <li><span>2.</span>用户注册时须提交中国境内手机号。</li>
-        <li><span>3.</span>注册用户可自主选择昵称、上传头像，昵称和头像经审核通过后显示在前端。</li>
-        <li><span>4.</span>注册用户可修改昵称和头像，每30天可修改一次。</li>
-        <li><span>5.</span>注册用户发布的内容经审核通过后显示。</li>
-        <li><span>6.</span>注册用户发布在第一财经网的内容，其知识产权属于发布有关内容的用户，第一财经网有权记录、保存、展示有关内容。</li>
-        <li><span>7.</span>第一财经网严格保护用户个人隐私，除法律规定的情况之外，不向第三方透露用户注册账号及使用账号过程中产生的个人信息。</li>
-        <li><span>8.</span>注册用户在第一财经网/APP上的一切活动、发布的一切内容，均须遵守中国法律和互联网信息管理规定。对于违反法律和规定的用户，将采取冻结账号、移交司法等措施。</li>
-        <li><span>9.</span>用户注册第一财经网账号，视为同意以上协议。</li>
-        </li></ul></div>
-</script>
-<script type="text/template" id="fogetpwdPannel">
-    <div class="lyct">
-        <table class="m-table" cellpadding="0" cellspacing="0">
-            <tr>
-                <td class="td1of2 f-pr"><p class="p-2">+86</p><input class="u-ipt u-ipt-1" placeholder="输入注册手机号" type="number" id="ycforget_mobile" name="sendmobile"></td>
-            </tr>
-            <tr>
-                <td>
-                    <button class="u-btn1 u-btn1-1" id="btn3" onclick="forgetPwd(1)">下一步</button>
-                </td>
-            </tr>
-        </table>
-        <table class="m-table" cellpadding="0" cellspacing="0" style="display: none;">
-            <tr><td colspan="2" align="center"><p class="p-1">我们已发送了验证码到您的手机<br>+86<span id="span_forgetpwd"></span></p></td></tr>
-            <tr>
-                <td class="td1of2"><input class="u-ipt u-ipt-w" type="number" id="ycforget_snscode" name="ycforget_snscode" placeholder="请输入验证码"></td>
-                <td class="td1of2">
-                    <button class="u-yzm btngetcode" id="btn4" onclick="GetSMCode(3,'forgetpwd')">重新发送</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="td1of2" colspan="2">
-                    <input class="u-ipt" name="ycforget_newpassword" id="ycforget_newpassword" type="password" placeholder="请输入新密码">
-                    <p class="f-red" style="margin-top: 5px; font-size: 12px;">6-16位数字、英文、符号，至少两种组合的字符</p>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <input id="fogetpwduid" type="hidden" />
-                    <button class="u-btn1 u-btn1-1" onclick="forgetPwd(2)">重置密码</button>
-                </td>
-            </tr>
-        </table>
-    </div>
-</script>
-<script type="text/template" id="verifycodeTPL">
-    <span class="lyclose" onclick="CloseThisLayer(this,1);"></span>
-    <div class="m-modifyhead">
-        <p id="verifycodetips"></p>
-        <img src="" onclick="myImagePst()" id="verifyImage">
-    </div>
-</script>
-<script type="text/template" id="alertTPL" >
-    <div class="m-modifyhead">
-        <img src="/newspapersrc/pc/webimages/index_68.png">
-        <p><?=AlertText?></p>
-        <button class="u-btn3 u-btn3-3" id="alertbutton" onclick="CloseThisLayer(this,1);"><?= typeof(ButtonText) != 'undefined' ?  ButtonText : "确定"?></button>
-    </div>
-</script>
-<script type="text/template" id="submenuTPL"><p class="p1"></p>
-<div class="drop-down">
-    <div>
-        <ul class="f-cb"> <?nav.forEach(function(item){?> <li><a href="https://www.yicai.com/<?=rootpath?>/<?=item.EnglishName.toLowerCase().replace(/\s/g,'')?>/"><?=item.ChannelName?></a></li> <?})?> <?if(rootpath === 'data'){?><li><a href="https://www.yicai.com/data/yiwu/">义乌指数</a></li><?}?> </ul>
-    </div>
 </div>
-</script>
-<script type="text/template" id="myepaperPannel">
-    <div class="lyct" style="width: 375px">
-        <div class="user-head">
-            <img class="myavatar" onerror="imgError(this,1)" />
-            <p><span class="mynickname"></span></p>
-            <a class="closebtn" onclick="CloseThisLayer(this)"></a>
-        </div>
-        <ul class="user-list">
-            <li class="li-icon1">阅读有效期<span class="validtype"></span><span class="validtime"></span></li>
-            <li class="li-icon2" onclick="location.href='/users/orderlist20'">我的数字报</li>
-            <li class="li-icon3" onclick="location.href='/taste'">权益兑换</li>
-        </ul>
-    </div>
-</script>
-<script type="text/template" id="createOrderLayer">
-    <div class="m-price">
-        <div class="time">付费版面内容，请选择订阅时限：<span>&yen;<i class="minprice"><?=minprice?></i>起</span></div>
-        <?if(pricelist.length){?>
-        <table cellspacing="0" cellpadding="0">
-            <tbody>
-            <?pricelist.forEach(function(price,index){?>
-            <tr>
-                <td>
-                    <h2><?=price.priceName?></h2>
-                    <p>&yen;<?=price.otherPrice?>
-                        <?if(price.otherOrigPrice > price.otherPrice){?><span>原价&yen;<?=price.otherOrigPrice?></span><?}?>
-                    </p>
-                    <?if(price.priceNote){?><i><?=price.priceNote?></i><?}?>
-                </td>
-                <td align="right"><input type="radio" value="<?=index?>" name="priceindex"></td>
-            </tr>
-            <?})?>
-            </tbody></table>
-        <?}?>
-        <div class="dy">订阅可畅读数字报所有版面内容！
-            <button></button>
-        </div>
-    </div>
-    <div class="m-firmorder f-pr" style="display: none;">
-        <div class="flow f-cb">
-            <ul>
-                <li class="li-1 z-crt"><span>1</span><p>订单确认</p></li>
-                <li class="li-2"><span>2</span><p>订单支付</p></li>
-                <li class="li-3"><span>3</span><p>购买成功</p></li>
-            </ul>
-        </div>
-		<div class="fixheightDiv">
-        <div class="service"><p>购买后，您可以享受的服务：</p>
-            <div class="serviceinfo">阅读期限内畅读数字报所有版面内容！</div>
-        </div>
-        <div class="zx"><h2>《第一财经日报》数字报</h2>
-            <table>
-                <tr>
-                    <td>服务期限<p class="ptype"></p></td>
-                    <td>数量<br>
-                        <p>1</p></td>
-                    <td>单价<br>
-                        <p>&yen;<i class="minprice"></i></p></td>
-                </tr>
-            </table>
-        </div>
-        <div class="price"><h2>总金额：</h2>
-            <h3>&yen;<i class="minprice"></i></h3></div>
-        </div>
-		<div class="agreement">
-            <input type="radio" name="agreetoagreement"  />已查看并同意<a href="/static/epaperagreement.html" target="_blank">《第一财经日报》数字报及网站VIP用户服务协议</a><br><i>如有问题请拨打客服电话</i>&nbsp;<span>400-606-0101</span>
-        </div>
-        <div class="submit"><p>需支付：<span>￥<i class="minprice"><?=minprice?></i></span></p>
-            <button class="btncreate">提交订单</button>
-        </div>
-    </div>
-</script>
-<script type="text/template" id="selectPayLayer">
-    <div class="m-firmorder f-pr">
-        <div class="flow f-cb">
-            <ul>
-                <li class="li-1 z-crt"><span>1</span><p>订单确认</p></li>
-                <li class="li-2 z-crt"><span>2</span><p>订单支付</p></li>
-                <li class="li-3"><span>3</span><p>购买成功</p></li>
-            </ul>
-        </div>
-        <div class="topay"><h2>选择支付方式</h2>
-            <ul class="f-cb">
-                <li><input type="radio" value="ali" name="pay_type"/><span class="span-1">支付宝支付</span></li>
-                <li><input type="radio" value="wx" name="pay_type"/><span class="span-2">微信支付</span></li>
-            </ul>
-        </div>
-        <div class="submit"><p>需支付：<span>&yen;<?=total?></span></p>
-            <button class="btngotopay">去支付</button>
-        </div>
-    </div>
-    <div class="m-pay f-dn">
-        <div class="f-cb"> <div class="order"><h2>订单号：</h2>
-            <p class="p-1"><?=orderno?></p>
-            <h2 class="h2-2">订单金额：</h2>
-            <p class="p-2">&yen;<?=total?></p>
-            <h2 class="h2-3">支付方式：</h2>
-            <p class="paymethod p-3">支付宝支付</p></div>
-            <div class="graph"></div>
-        </div>
-        <div class="payment">支付提示：请您及时付款，以便订单尽快处理。<br />若您已经完成支付，直接刷新页面即可享受该服务。</div>
-    </div>
-</script>
-<script type="text/template" id="orderstatusTPL">
-    <div class="m-firmorder f-pr">
-        <?if(type==0){?>
-        <div class="state">
-            <h2 class="no">您有未支付的订单</h2>
-            <p>您有未支付的订单，请至个人中心-我的数字报继续完成支付。</p>
-            <button onclick="location.href='/users/orderlist20'">查看订单</button>
-            <div class="payment">支付提示：如支付遇到问题，请拨打客服电话400-606-0101
-            </div>
-        </div>
-        <?}else if(type==3){?>
-        <div class="state">
-            <h2 class="error">支付失败</h2>
-            <p>您尚未支付成功，但订单超时已关闭，如若需要请重新下单。</p>
-            <button onclick="location.reload(1);">我知道了</button>
-            <div class="payment">支付提示：如支付遇到问题，请拨打客服电话400-606-0101
-            </div>
-        </div>
-        <?}else if(type==2){?>
-        <div>
-            <div class="flow f-cb">
-                <ul>
-                    <li class="li-1 z-crt"><span>1</span>
-                        <p>订单确认</p></li>
-                    <li class="li-2 z-crt"><span>2</span>
-                        <p>订单支付</p></li>
-                    <li class="li-3 z-crt"><span>3</span>
-                        <p>购买成功</p></li>
-                </ul>
-            </div>
-            <div class="state"><h2 class="success">支付成功</h2>
-                <p>您已成功付款<span>&yen;<i></i></span> 元，请至个人中心-我的数字报页面查看订单。
-                </p>
-                <button>查看产品详情</button>
-            </div>
-        </div>
-        <?}else{?>
-        <div class="state">
-            <h2 class="no">订单说明</h2>
-            <p>您的订单已处理，请至个人中心 - 我的数字报进行跟踪</p>
-            <button onclick="location.href='/users/orderlist20'">查看订单</button>
-            <div class="payment">支付提示：如支付遇到问题，请拨打客服电话400-606-0101</div>
-        </div>
-        <?}?>
-    </div>
-</script>
-<!--content-->
+</div>
+
+
+<!-- js -->  <script src="../../js/jquery.min.js"></script>  <script src="../../js/bootstrap.min.js"></script>  <script src="../../js/bootstrap-datepicker.min.js"></script>  <script src="../../js/bootstrap-datepicker.zh-CN.min.js"></script>  <script src="db.js"></script>  <script src="../../js/jquery.maphilight.min.js"></script><script src="../../js/pjs.js"></script>
+
 </body>
 </html>

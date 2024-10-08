@@ -42,6 +42,8 @@ def get_gansufazhi_paper(paper_time, queue_id, webpage_id):
             if bm_res.status_code == 200:
                 html_2data = bm_res.content.decode()
                 html_2 = etree.HTML(bm_res.content.decode())
+                if html_2 is None:
+                    continue
                 # 获取该页的PDF
                 pdf_url1 = ''.join(re.findall(r'<!-- <p id="pdfUrl" style="display:none">(.*?)</p> -->', html_2data))
                 bm_img = "".join(html_2.xpath("//img[@class='preview']/@src"))
@@ -128,4 +130,4 @@ def get_gansufazhi_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_gansufazhi_paper('2023-01-16', 111, 222)
+# get_gansufazhi_paper('2022-09-28', 111, 222)

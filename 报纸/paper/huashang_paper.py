@@ -38,10 +38,10 @@ def get_huashang_paper(paper_time, queue_id, webpage_id):
             bm_name = "".join(bm.xpath("./text()")).strip()
             # 版面链接
             bm_url = ''.join(bm.xpath("./@onclick"))
-            bm_url = re.findall(r"gourl\('(.*?)', '_top'\)", bm_url)[0]
+            bm_url = re.findall(r"gourl\('(.*?)', '_top'\)", bm_url)
             if not bm_url:
-                continue
-            bm_url = "http://ehsb.hspress.net" + bm_url
+                raise Exception(f'该日期没有报纸')
+            bm_url = "http://ehsb.hspress.net" + bm_url[0]
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers)
             time.sleep(1)
@@ -123,4 +123,4 @@ def get_huashang_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_huashang_paper('2024-08-22', 111, 1111)
+# get_huashang_paper('2023-10-01', 111, 1111)
