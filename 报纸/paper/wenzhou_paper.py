@@ -40,6 +40,8 @@ def get_wenzhou_paper(paper_time, queue_id, webpage_id):
         bm_list = content["msg"]
         pdf_set = set()
         for bm in bm_list:
+            if type(bm) is str:
+                raise Exception(f'该日期没有报纸')
             bm_name = bm["editionName"]
             bm_url = f'http://szb.66wz.com/newspaper?mediaKey=wzrb&showArticleDetail=false&curEdition=01&publishTime={paper_time}'
             bm_pdf = 'http://szb.66wz.com/newspaperfile' + bm["pdfPath"]
@@ -113,4 +115,4 @@ def get_wenzhou_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_wenzhou_paper('2024-09-13', 111, 1111)
+# get_wenzhou_paper('2024-10-01', 111, 1111)

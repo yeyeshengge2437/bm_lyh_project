@@ -33,7 +33,10 @@ def get_chinashiyou_paper(paper_time, queue_id, webpage_id):
     if response.status_code == 200:
         content = response.content.decode('gbk')
         content = ''.join(re.findall(r'var epaperObject = (.*?);', content))
-        content_json = json.loads(content)
+        try:
+            content_json = json.loads(content)
+        except:
+            raise Exception(f'该日期没有报纸')
         page_v = content_json.keys()
         page_num = re.findall(r'page_\d+', str(page_v))
         for page in page_num:
@@ -100,4 +103,4 @@ def get_chinashiyou_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_chinashiyou_paper('2024-09-19', 111, 1111)
+# get_chinashiyou_paper('2023-09-09', 111, 1111)

@@ -48,6 +48,8 @@ def get_yunnan1_paper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
             # 版面的pdf
             bm_pdf = 'https://yndaily.yunnan.cn/' + "".join(bm_html.xpath(
                 "//table[@id='mainBox']/tbody/tr/td[1]/table/tbody/tr[2]/td/table/tbody/tr/td[1]/a/@href")).strip(
@@ -228,4 +230,4 @@ def get_yunnan_paper(paper_time, queue_id, webpage_id):
         get_yunnan2_paper(paper_time, queue_id, webpage_id)
 
 
-# get_yunnan_paper('2020-08-04', 111, 1111)
+# get_yunnan_paper('2024-03-05', 111, 1111)

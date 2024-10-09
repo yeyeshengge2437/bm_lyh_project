@@ -40,6 +40,8 @@ def get_wenzhou_lastpaper(paper_time, queue_id, webpage_id):
         bm_list = content["msg"]
         pdf_set = set()
         for bm in bm_list:
+            if type(bm) is str:
+                continue
             bm_name = bm["editionName"]
             bm_url = f'http://szb.66wz.com/newspaper?mediaKey=wzwb&showArticleDetail=false&curEdition=01&publishTime={paper_time}'
             bm_pdf = 'http://szb.66wz.com/newspaperfile' + bm["pdfPath"]

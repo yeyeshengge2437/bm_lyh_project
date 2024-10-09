@@ -197,6 +197,7 @@ from linanminzu_paper import get_linanminzu_paper  # 临夏民族日报
 from lianhe_paper import get_lianhe_paper  # 联合日报
 from renminzhengxie_paper import get_renminzhengxie_paper  # 人民政协报
 from xizang_paper import get_xizang_paper  # 西藏日报
+from kashi_paper import get_kashi_paper  # 喀什日报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -396,6 +397,7 @@ methods = {
     '联合日报': get_lianhe_paper,
     '人民政协报': get_renminzhengxie_paper,
     '西藏日报': get_xizang_paper,
+    '喀什日报': get_kashi_paper,
 }
 
 webpage_url_list = [
@@ -595,6 +597,7 @@ webpage_url_list = [
     'http://dzb.rmzxb.com.cn/rmzxbPaper/pc/layout',
     'http://www.jjckb.cn/www/pages',
     'https://e.xzxw.com/xzrb',
+    'http://www.zgkashi.com/yw/sp',
 ]
 
 

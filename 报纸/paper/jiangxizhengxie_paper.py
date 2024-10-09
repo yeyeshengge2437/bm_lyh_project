@@ -36,11 +36,12 @@ def get_date():
         for date in dates:
             date_str = "".join(date.xpath("./span[@class='time']/text")).strip()
             date_url = "".join(date.xpath("./h1/a/@href")).strip()
-            date['date_str'] = date_url
+            date[date_str] = date_url
         return date
 
 
 print(get_date())
+
 def get_chuxiong_paper(paper_time, queue_id, webpage_id):
     # 将today的格式进行改变
     day = paper_time

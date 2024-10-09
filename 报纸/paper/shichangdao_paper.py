@@ -5,15 +5,29 @@ from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, p
     judge_bm_repeat, judging_bm_criteria
 import mysql.connector
 import requests
+from DrissionPage import ChromiumPage, ChromiumOptions
 from lxml import etree
+
+co = ChromiumOptions()
+co = co.set_paths(local_port=9236)
+co = co.set_argument('--no-sandbox')  # 关闭沙箱模式, 解决`$DISPLAY`报错
+co = co.headless(True)  # 开启无头模式, 解决`浏览器无法连接`报错
+
+
 
 
 paper = "市场导报"
-cookies = {
-    'security_session_verify': '2d778e64f62cc60e13d1c5f3e2a0cb3e',
-    'security_session_mid_verify': '37eb62fefd8a664ece6f9ea61a24d470',
-    'PHPSESSID': '24b61f110672e0fefb0337831d06d75d',
-}
+# cookies = {
+#     'security_session_verify': '2d778e64f62cc60e13d1c5f3e2a0cb3e',
+#     'security_session_mid_verify': '37eb62fefd8a664ece6f9ea61a24d470',
+#     'PHPSESSID': '24b61f110672e0fefb0337831d06d75d',
+# }
+# cookies = {
+#     'security_session_verify': '197789afa9699f9389327afd09bdd0d5',
+#     'srcurl': '68747470733a2f2f6570617065722e7a6a736364622e636f6d2f7368746d6c2f736364622f32303233303930312f696e6465782e7368746d6c',
+#     'security_session_mid_verify': '7f029eb0d91c20169c51965e3d34b3c6',
+#     'PHPSESSID': '4af35376495e0bc9189fc6e0fe956fdf',
+# }
 headers = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'accept-language': 'zh-CN,zh;q=0.9',
@@ -35,14 +49,25 @@ headers = {
 
 
 def get_shichangdao_paper(paper_time, queue_id, webpage_id):
+
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m%d')
     base_url = f'https://epaper.zjscdb.com/shtml/scdb/{paper_time}/'
     url = base_url + 'index.shtml'
-    response = requests.get(url,cookies=cookies, headers=headers)
+    cookie_dict = {}
+    page = ChromiumPage(co)
+    page.get(url)
+    value_cookies = page.cookies()
+    for key in value_cookies:
+        cookie_dict[key['name']] = key['value']
+    page.close()
+    response = requests.get(url, cookies=cookie_dict, headers=headers)
     if response.status_code == 200:
-        content = response.content.decode("gbk")
+        try:
+            content = response.content.decode("gbk")
+        except:
+            content = response.content.decode()
         html_1 = etree.HTML(content)
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//div[@id='scrollDiv']/ul/li")
@@ -52,7 +77,7 @@ def get_shichangdao_paper(paper_time, queue_id, webpage_id):
             # 版面链接
             bm_url = base_url + ''.join(bm.xpath("./a/@href"))
             # 获取版面详情
-            bm_response = requests.get(bm_url, headers=headers, cookies=cookies)
+            bm_response = requests.get(bm_url, headers=headers, cookies=cookie_dict)
             time.sleep(1)
             try:
                 bm_content = bm_response.content.decode('gbk')
@@ -60,7 +85,7 @@ def get_shichangdao_paper(paper_time, queue_id, webpage_id):
                 bm_content = bm_response.content
             bm_html = etree.HTML(bm_content)
             # 版面的pdf
-            bm_img = 'https://epaper.zjscdb.com/' + "".join(bm_html.xpath("//img[@id='imgPage']/@src"))
+            bm_img = 'https://epaper.zjscdb.com' + "".join(bm_html.xpath("//img[@id='imgPage']/@src"))
             bm_img = re.sub('b_', '', bm_img)
 
             # 获取所有文章的链接
@@ -74,7 +99,7 @@ def get_shichangdao_paper(paper_time, queue_id, webpage_id):
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 获取文章内容
-                article_response = requests.get(article_url, headers=headers, cookies=cookies)
+                article_response = requests.get(article_url, headers=headers, cookies=cookie_dict)
                 time.sleep(1)
                 article_content = article_response.content.decode('gbk')
                 article_html = etree.HTML(article_content)
@@ -91,7 +116,7 @@ def get_shichangdao_paper(paper_time, queue_id, webpage_id):
                 # print(bm_name, article_name, article_url, bm_img, content)
                 if bm_img not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
-                    up_pdf = upload_file_by_url(bm_img, paper, "pdf", "paper")
+                    up_pdf = upload_file_by_url(bm_img, paper, "jpg", "paper")
                     pdf_set.add(bm_img)
                     # 上传到报纸的图片或PDF
                     insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
@@ -129,4 +154,4 @@ def get_shichangdao_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_shichangdao_paper('2024-09-10', 111, 1111)
+# get_shichangdao_paper('2023-09-06', 111, 1111)

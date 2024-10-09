@@ -17,8 +17,8 @@ methods = {
     'https://www.samrdprc.org.cn/qczh/qczhgg1': get_car_gg_data,  # 召回汽车公告
     'https://www.samrdprc.org.cn/xfpzh/xfpzhgg': get_xiaofei_gg_data,  # 召回消费品公告
     'https://yjj.guizhou.gov.cn/xwdt/tzgg': get_yjj_data,  # 贵州省药品监督管理局
-    'https://dkjgfw.mnr.gov.cn/#/site/credit/abnormal': get_quanguoyichangminglu_data,  # 全国异常名录
-    'https://dkjgfw.mnr.gov.cn/#/site/unit/1': get_quanguodizhikanchadanwei_data,  # 全国地质勘查单位
+    # 'https://dkjgfw.mnr.gov.cn/#/site/credit/abnormal': get_quanguoyichangminglu_data,  # 全国异常名录
+    # 'https://dkjgfw.mnr.gov.cn/#/site/unit/1': get_quanguodizhikanchadanwei_data,  # 全国地质勘查单位
     # 'https://dkjgfw.mnr.gov.cn/#/site/credit/blacklist': get_yanzhongshixinmingdan_data,  # 全国地质勘察行业严重失信名单
     "https://www.samr.gov.cn/zljds/jdcc/index.html": get_buhegechanpin_data,  # 国家市场监督管理总局产品质量安全监督管理局 监督抽查不合格产品发布
     "https://www.samr.gov.cn/zljds/zlgg/bsgg/index.html": get_bensigonggao_data,  # 国家市场监督管理总局产品质量安全监督管理局 本司公告

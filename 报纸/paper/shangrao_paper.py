@@ -138,7 +138,10 @@ def get_shangrao_paper_old(paper_time, queue_id, webpage_id):
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers)
             time.sleep(1)
-            bm_content = bm_response.content.decode()
+            try:
+                bm_content = bm_response.content.decode()
+            except:
+                continue
             bm_html = etree.HTML(bm_content)
 
             # 获取所有文章的链接
@@ -226,4 +229,4 @@ def get_shangrao_paper(paper_time, queue_id, webpage_id):
         # print('使用新方法')
         get_shangrao_paper_new(paper_time, queue_id, webpage_id)
 
-# get_shangrao_paper('2024-01-07', 111, 1111)
+# get_shangrao_paper('2023-10-15', 111, 1111)
