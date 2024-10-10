@@ -55,7 +55,8 @@ def get_geermu_paper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
-
+            if bm_html is None:
+                continue
 
             # 获取所有文章的链接
             all_article = bm_html.xpath("//tr/td[@class='default'][2]/a")
@@ -70,7 +71,11 @@ def get_geermu_paper(paper_time, queue_id, webpage_id):
                 # 获取文章内容
                 article_response = requests.get(article_url, headers=headers)
                 time.sleep(1)
-                article_content = article_response.content.decode()
+                try:
+                    article_content = article_response.content.decode()
+                except:
+                    continue
+
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content//text()")).strip()
@@ -123,4 +128,4 @@ def get_geermu_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_geermu_paper('2023-08-09', 111, 1111)
+# get_geermu_paper('2023-09-11', 111, 1111)

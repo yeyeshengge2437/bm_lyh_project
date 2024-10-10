@@ -198,6 +198,20 @@ from lianhe_paper import get_lianhe_paper  # 联合日报
 from renminzhengxie_paper import get_renminzhengxie_paper  # 人民政协报
 from xizang_paper import get_xizang_paper  # 西藏日报
 from kashi_paper import get_kashi_paper  # 喀什日报
+from guangming_paper import get_guangming_paper  # 光明日报
+from minzhuyufazhi_paper import get_minzhuyufazhi_paper  # 民主与法制时报 ------------------------（以下为没有高清图片和pdf的报纸）
+from shanxi_paper import get_shanxi_paper  # 山西日报
+from chinaxumushou_paper import get_chinaxumushou_paper  # 中国畜牧兽医报
+from shenghuore_paper import get_shenghuore_paper  # 生活日报
+from huaxiazao_paper import get_huaxiazao_paper  # 华夏早报
+from gejiedao_paper import get_gejiedao_paper  # 各界导报
+from meireshang_paper import get_meireshang_paper  # 每日商报
+from xinxishi_paper import get_xinxishi_paper  # 信息时报
+from nanfangnongcun_paper import get_nanfangnongcun_paper  # 南方农村报
+from chinaqingnian_paper import get_chinaqingnian_paper  # 中国青年报
+from jinan_paper import get_jinan_paper  # 济南日报
+from yilikenqu_paper import get_yilikenqu_paper  # 伊犁垦区报
+from shantou_paper import get_shantou_paper  # 汕头日报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -398,6 +412,20 @@ methods = {
     '人民政协报': get_renminzhengxie_paper,
     '西藏日报': get_xizang_paper,
     '喀什日报': get_kashi_paper,
+    '光明日报': get_guangming_paper,
+    '民主与法制时报': get_minzhuyufazhi_paper,
+    '山西日报': get_shanxi_paper,
+    '中国畜牧兽医报': get_chinaxumushou_paper,
+    '生活日报': get_shenghuore_paper,
+    '华夏早报': get_huaxiazao_paper,
+    '各界导报': get_gejiedao_paper,
+    '每日商报': get_meireshang_paper,
+    '信息时报': get_xinxishi_paper,
+    '南方农村报': get_nanfangnongcun_paper,
+    '中国青年报': get_chinaqingnian_paper,
+    '济南日报': get_jinan_paper,
+    '伊犁垦区报': get_yilikenqu_paper,
+    '汕头日报': get_shantou_paper,
 }
 
 webpage_url_list = [
@@ -598,6 +626,20 @@ webpage_url_list = [
     'http://www.jjckb.cn/www/pages',
     'https://e.xzxw.com/xzrb',
     'http://www.zgkashi.com/yw/sp',
+    'https://epaper.gmw.cn/gmrb',
+    'http://e.mzyfz.com/paper',
+    'http://epaper.sxrb.com',
+    'https://news.183read.cc',
+    'https://shrb.qlwb.com.cn/shrb',
+    'http://epaper.cmnpnews.com/index.Asp?Nid=366',
+    'http://paper.gjnews.cn',
+    'https://hzdaily.hangzhou.com.cn/mrsb',
+    'https://epaper.xxsb.com',
+    'https://epaper.nfncb.cn',
+    'https://zqb.cyol.com',
+    'http://jnrb.e23.cn/jnrb',
+    'http://www.ylkqbs.com',
+    'https://strb.dahuawang.com',
 ]
 
 

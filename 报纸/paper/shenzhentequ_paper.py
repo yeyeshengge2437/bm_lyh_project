@@ -53,6 +53,8 @@ def get_shenzhentequ_paper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
 
             # 获取所有文章的链接
             all_article = bm_html.xpath("//div[@class='newslist']/ul/li/h3/a")
@@ -69,7 +71,7 @@ def get_shenzhentequ_paper(paper_time, queue_id, webpage_id):
                 time.sleep(1)
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
-                if not article_html:
+                if article_html is None:
                     continue
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@class='newsdetatext']/founder-content/p/text()")).strip()
@@ -122,4 +124,4 @@ def get_shenzhentequ_paper(paper_time, queue_id, webpage_id):
     else:
         raise Exception(f'该日期没有报纸')
 
-# get_shenzhentequ_paper('2018-06-28', 111, 1111)
+# get_shenzhentequ_paper('2022-04-06', 111, 1111)

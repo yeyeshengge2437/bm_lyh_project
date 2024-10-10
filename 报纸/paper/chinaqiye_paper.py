@@ -34,6 +34,8 @@ def get_chinaqiye_paper(paper_time, queue_id, webpage_id):
     if response.status_code == 200:
         data = response.content.decode()
         bm_html = etree.HTML(data)
+        if bm_html is None:
+            raise Exception(f'该日期没有报纸')
         bm_list = bm_html.xpath("//td[@class='mulu04']/table/tbody/tr")
         for bm in bm_list:
             # 获取版面名称
@@ -109,4 +111,4 @@ def get_chinaqiye_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_chinaqiye_paper("2011-11-22", 11,  11)
+# get_chinaqiye_paper("2016-06-06", 11,  11)

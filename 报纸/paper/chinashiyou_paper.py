@@ -47,9 +47,12 @@ def get_chinashiyou_paper(paper_time, queue_id, webpage_id):
             for bm in bm_list:
                 article_url = base_url
                 article_name = bm["title"]
-                content = bm["content"]
-                content_html = etree.HTML(content)
-                content = "".join(content_html.xpath("//p/text()"))
+                try:
+                    content = bm["content"]
+                    content_html = etree.HTML(content)
+                    content = "".join(content_html.xpath("//p/text()"))
+                except:
+                    content = ''
 
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
@@ -103,4 +106,4 @@ def get_chinashiyou_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_chinashiyou_paper('2023-09-09', 111, 1111)
+# get_chinashiyou_paper('2024-01-02', 111, 1111)

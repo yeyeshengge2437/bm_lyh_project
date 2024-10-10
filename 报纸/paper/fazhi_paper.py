@@ -126,34 +126,4 @@ def get_fazhi_paper(paper_time, queue_id, webpage_id):
         page.quit()
         raise Exception(f'该日期没有报纸')
 
-# queue_id = 1111
-# webpage_id = 1111
-# get_fazhi_paper('2024-08-22', queue_id, webpage_id)
-
-# # 设置最大重试次数
-# max_retries = 5
-# retries = 0
-# while retries < max_retries:
-#     value = paper_queue_next(webpage_url_list=['http://epaper.legaldaily.com.cn/fzrb'])
-#     from_queue = value['id']
-#     webpage_id = value["webpage_id"]
-#     try:
-#         get_fazhi_paper(date_str)
-#         break
-#     except Exception as e:
-#         retries += 1
-#         if retries == max_retries and "目前暂未有今天报纸" in str(e):
-#             success_data = {
-#                 'id': from_queue,
-#                 'description': '今天没有报纸',
-#             }
-#             paper_queue_success(success_data)
-#             break
-#         else:
-#
-#             fail_data = {
-#                 "id": from_queue,
-#                 "description": f"出现问题:{e}",
-#             }
-#             paper_queue_fail(fail_data)
-#             time.sleep(3610)  # 等待1小时后重试
+# get_fazhi_paper('2024-09-05', 111, 222)

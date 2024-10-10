@@ -22,15 +22,6 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
 }
 
-def get_tag_date(date):
-    with open("leshan.js", encoding='utf-8') as f:
-        code = f.read()
-        ctx = execjs.compile(code)
-    ciphertext = ctx.call("date", '')
-    return ciphertext
-
-
-print(get_tag_date("2024-9-14"))
 
 
 

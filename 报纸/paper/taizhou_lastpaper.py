@@ -42,6 +42,8 @@ def get_taizhou_lastpaper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
             # 版面的pdf
             bm_pdf = 'http://sz.tznews.cn/tzwb/pc/' + "".join(bm_html.xpath("//img[@class='preview']/@src")).strip('../../..').strip('.1')
 
@@ -111,4 +113,4 @@ def get_taizhou_lastpaper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_taizhou_lastpaper('2024-08-22', 111, 1111)
+# get_taizhou_lastpaper('2024-09-28', 111, 1111)

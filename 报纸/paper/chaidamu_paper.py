@@ -116,14 +116,12 @@ def get_chaidamu_paper_old(paper_time, queue_id, webpage_id):
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m/%d')
     base_url = f'https://www.cdmrb.com.cn/html/{paper_time}/'
     url = base_url + 'node_2.htm'
-    print(url)
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//td[@class='default']/a[@id='pageLink']")
-        print(len(all_bm))
         for bm in all_bm:
             # 版面名称
             bm_name = "".join(bm.xpath("./text()")).strip()
