@@ -73,6 +73,8 @@ def get_jingbao_paper(paper_time, queue_id, webpage_id):
                 time.sleep(1)
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
+                if article_html is None:
+                    continue
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@class='newsdetatext']/founder-content/p/text()")).strip()
                 # print(bm_name, article_name, article_url, content)
@@ -124,4 +126,4 @@ def get_jingbao_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_jingbao_paper("2021-01-20", "111", "1111")
+# get_jingbao_paper("2020-11-06", "111", "1111")

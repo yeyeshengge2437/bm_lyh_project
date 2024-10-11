@@ -199,6 +199,8 @@ from renminzhengxie_paper import get_renminzhengxie_paper  # 人民政协报
 from xizang_paper import get_xizang_paper  # 西藏日报
 from kashi_paper import get_kashi_paper  # 喀什日报
 from guangming_paper import get_guangming_paper  # 光明日报
+from meirejingji_paper import get_meirejingji_paper  # 每日经济新闻
+from qingdao_paper import get_qingdao_paper  # 青岛日报
 from minzhuyufazhi_paper import get_minzhuyufazhi_paper  # 民主与法制时报 ------------------------（以下为没有高清图片和pdf的报纸）
 from shanxi_paper import get_shanxi_paper  # 山西日报
 from chinaxumushou_paper import get_chinaxumushou_paper  # 中国畜牧兽医报
@@ -212,6 +214,20 @@ from chinaqingnian_paper import get_chinaqingnian_paper  # 中国青年报
 from jinan_paper import get_jinan_paper  # 济南日报
 from yilikenqu_paper import get_yilikenqu_paper  # 伊犁垦区报
 from shantou_paper import get_shantou_paper  # 汕头日报
+from yongzhou_paper import get_yongzhou_paper  # 永州日报
+from shanxinongcun_paper import get_shanxinongcun_paper  # 陕西农村报
+from shanxinongminbao_paper import get_shanxinongminbao_paper  # 山西农民报
+from shanxikeji_paper import get_shanxikeji_paper  # 陕西科技报
+from azhuikeji_paper import get_anhuikeji_paper  # 安徽科技报
+from shanxikejibao_paper import get_shanxikejibao_paper  # 山西科技报
+from xinkuai_paper import get_xinkuai_paper  # 新快报
+from dushikuai_paper import get_dushikuai_paper  # 都市快报
+from guilin_paper import get_guilin_paper  # 桂林日报
+from guilin_lastpaper import get_guilin_lastpaper  # 桂林晚报
+from shanxishichangdao_paper import get_shanxishichangdao_paper  # 山西市场导报
+from shanxi_lastpaper import get_shanxi_lastpaper  # 山西晚报
+from chinashuiwu_paper import get_chinashuiwu_paper  # 中国税务报
+from jinanshi_paper import get_jinanshi_paper  # 济南时报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -426,6 +442,23 @@ methods = {
     '济南日报': get_jinan_paper,
     '伊犁垦区报': get_yilikenqu_paper,
     '汕头日报': get_shantou_paper,
+    '每日经济新闻': get_meirejingji_paper,
+    '青岛日报': get_qingdao_paper,
+    '永州日报': get_yongzhou_paper,
+    '陕西农村报': get_shanxinongcun_paper,
+    '山西农民报': get_shanxinongminbao_paper,
+    '陕西科技报': get_shanxikeji_paper,
+    '安徽科技报': get_anhuikeji_paper,
+    '山西科技报': get_shanxikejibao_paper,
+    '新快报': get_xinkuai_paper,
+    '都市快报': get_dushikuai_paper,
+    '桂林日报': get_guilin_paper,
+    '桂林晚报': get_guilin_lastpaper,
+    '山西市场导报': get_shanxishichangdao_paper,
+    '山西晚报': get_shanxi_lastpaper,
+    '中国税务报': get_chinashuiwu_paper,
+    '济南时报': get_jinanshi_paper,
+
 }
 
 webpage_url_list = [
@@ -640,6 +673,22 @@ webpage_url_list = [
     'http://jnrb.e23.cn/jnrb',
     'http://www.ylkqbs.com',
     'https://strb.dahuawang.com',
+    'https://epaper.mrjjxw.com',
+    'https://epaper.guanhai.com.cn/conpaper/qdrb',
+    'http://paper.0746news.com',
+    'https://sxncb.joyhua.cn/sxncb',
+    'http://epaper.sxrb.com/index_sxnmb.shtml',
+    'https://szb.snkjb.com',
+    'http://ahkjb.joyhua.cn',
+    'http://epaper.sxkjbs.com',
+    'https://epaper.xkb.com.cn',
+    'https://mdaily.hangzhou.com.cn/dskb',
+    'https://epaper.guilinlife.com/glrbh5/glrb',
+    'https://epaper.guilinlife.com/glwbh5/glwb',
+    'http://epaper.sxrb.com/shtml/index_sxscdb.shtml',
+    'http://epaper.sxrb.com/shtml/index_sxwb.shtml',
+    'https://www.ctaxnews.net.cn/paper/pc/layout',
+    'http://jnsb.e23.cn/jnsb',
 ]
 
 

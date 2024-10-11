@@ -54,6 +54,8 @@ def get_zhengquanshi_paper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
             # 版面的pdf
             bm_pdf = 'https://epaper.stcn.com/' + "".join(bm_html.xpath("//div[@class='download']//a/@href")).strip('../../..')
 
@@ -123,4 +125,4 @@ def get_zhengquanshi_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_zhengquanshi_paper('2022-05-08', 111, 1111)
+# get_zhengquanshi_paper('2008-10-27', 111, 1111)

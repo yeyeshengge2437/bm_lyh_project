@@ -1,38 +1,730 @@
-﻿<html>
+﻿﻿<!-- -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-<meta http-equiv="Cache-Control" content="no-store, must-revalidate"/>
-<meta http-equiv="Pragma" content="no-cache"/>
-<meta http-equiv="Expires" content="0"/>
-<meta http-equiv="Page-Enter" content="blendTrans(Duration=0.5)">
-<link href="/styles/main-min.css" type="text/css" rel="stylesheet" />
-<link href="/styles/global-min.css" type="text/css" rel="stylesheet" />
-<link href="/widgets/loadmask/jquery.loadmask-min.css" type="text/css" rel="stylesheet" />
+    <title>
+        桂林日报
+        -01版:头版-2024年10月11日</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script type="text/javascript" src="../datelist.php"></script>
+    <script type="text/javascript" src="https://yf.hgzp.com.cn/token.js"></script>
+    <script type="text/javascript" src="../../public/jquery.js"></script>
+    <script type="text/javascript" src="../../public/jquery1.12.4.js"></script>
+    <script type="text/javascript" src="../../public/simple-share.min.js"></script>
+    <script type="text/javascript" src="../../public/jquery.touchSwipe.min.js"></script>
+    <script type="text/javascript" src="../../public/public.js"></script>
+    <script type="text/javascript" src="../../public/phonedate.js"></script>
+    <link href="../../public/app.css" rel="Stylesheet" />
+    <link rel="shortcut icon" href="../../public/favicon.ico" />
+    <link href="../../public/swiper.css" rel="stylesheet"
+        type="text/css" />
 
-<script src="/scripts/main-min.js" type="text/javascript"></script>
-<script src="/scripts/validator.pack.js" type="text/javascript"></script>
-<script src="/scripts/date-min.js" type="text/javascript"></script>
-<script src="/scripts/json2-min.js" type="text/javascript"></script>
-<script src="/scripts/jquery.pack.js" type="text/javascript"></script>
-<script src="/scripts/jquery.bgiframe.pack.js" type="text/javascript"></script>
-<script src="/scripts/jquery.ext.pack.js" type="text/javascript"></script>
-<script src="/widgets/loadmask/jquery.loadmask.pack.js" type="text/javascript"></script>
+    <script>
+        var PageDate = "2024年10月11日";//2006年07月29日
+        var tY = PageDate.substring(0, 4); //Today.getFullYear();
+        var tM = PageDate.substring(5, 7) - 1; //Today.getMonth();
+        var tD = PageDate.substring(8, 10);//Today.getDate();
+        var tPageDate = new Date(tY, tM, tD);
+        //initAreaData();
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#calendar").html(drawCalendar(tY, tM, new Date(tY, tM, tD)));
 
-<script type="text/javascript">
-<!--
-	var ctx = '';
-//-->
-</script>
-<title>数字报订阅平台</title>
-<link rel="shortcut icon" href="/images/login/favicon.ico" type="image/vnd.microsoft.icon" />
-<meta http-equiv="Cache-Control" content="no-store, must-revalidate"/>
-<meta http-equiv="Pragma" content="no-cache"/>
-<meta http-equiv="Expires" content="0"/>
-<meta http-equiv="Page-Enter" content="blendTrans(Duration=0.5)">
-<script type="text/javascript">
-window.location='/site/epSite.do?method=index';
-</script>
+        })
+    </script>
 </head>
 <body>
+    <img src='../../public/logofang.jpg' class="none" style="display: none" />
+    <audio src="../../public/1.mp3" controls="controls" id="audio" style="display: none"></audio>
+    <div class="search"></div>
+    <div id="schedule">
+        <table width="200">
+            <tr>
+                <td>
+                    <select id='sYear'>
+                    </select>
+                </td>
+                <td>
+                    <select id="sMonth">
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div id="calendar">
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="leftmenu">
+        <h3></h3>
+        <ul>
+            <li><a  href="Page01BC.htm" target="_blank">01版:头版</a></li><li><a  href="Page02BC.htm" target="_blank">02版:综合新闻</a></li><li><a  href="Page03BC.htm" target="_blank">03版:社会生活</a></li><li><a  href="Page04BC.htm" target="_blank">04版:县区新闻</a></li><li><a  href="Page05BC.htm" target="_blank">05版:县区新闻</a></li><li><a  href="Page06BC.htm" target="_blank">06版:时事·体育</a></li><li><a  href="Page07BC.htm" target="_blank">07版:理论·时评</a></li><li><a  href="Page08BC.htm" target="_blank">08版:健康讲堂</a></li>
+        </ul>
+    </div>
+    <div class="rightmenu">
+        <h3></h3>
+
+            <h4> 01版：头版</h4>
+        <ul>
+            <li>*<a href="Articel01001NR.htm" target="_blank">习近平致电祝贺赛义德<br/>当选连任突尼斯总统</a></li><li>*<a href="Articel01002NR.htm" target="_blank">既要老有所养老有所乐又要老有所为<br/>为推进中国式现代化贡献“银发力量”</a></li><li>*<a href="Articel01003NR.htm" target="_blank">习近平给“银龄行动”老年志愿者代表的回信</a></li><li>*<a href="Articel01004NR.htm" target="_blank">我市积极筹备第三届南方花卉苗木交易会<br/>暨第五届广西花卉苗木交易会</a></li><li>*<a href="Articel01005NR.htm" target="_blank">让群众更加快捷<br/>高效申请到公租房</a></li><li>*<a href="Articel01006NR.htm" target="_blank">潜经村：“筏”出来的“明星村”</a></li><li>*<a href="Articel01007NR.htm" target="_blank">《范秀明阳朔神话系列剧》<br/>筹拍新闻发布会在我市举行</a></li><li>*<a href="Articel01008NR.htm" target="_blank">田园综合体解锁<br/>“农文旅融合”密码</a></li>
+        </ul>
+            <h4> 02版：综合新闻</h4>
+        <ul>
+            <li>*<a href="Articel02001NR.htm" target="_blank">市人大常委会开展专题调研</a></li><li>*<a href="Articel02002NR.htm" target="_blank">中国气象局调研组到桂林<br/>调研指导气象服务工作</a></li><li>*<a href="Articel02003NR.htm" target="_blank">全域推进清廉家庭融合共建<br/>为桂林世界级旅游城市建设贡献“家”力量</a></li><li>*<a href="Articel02004NR.htm" target="_blank">叠彩区政协文史馆、<br/>叠彩区政协书画院揭牌</a></li><li>*<a href="Articel02005NR.htm" target="_blank">2024年ITF国际网球大师赛<br/>MT100桂林灌阳站开幕</a></li><li>*<a href="Articel02006NR.htm" target="_blank">全国模范退役军人董俊洲：31年从警 军营铸就坚韧底色</a></li><li>*<a href="Articel02007NR.htm" target="_blank">桂林移动5G护航通信畅通</a></li>
+        </ul>
+            <h4> 03版：社会生活</h4>
+        <ul>
+            <li>*<a href="Articel03001NR.htm" target="_blank">田园综合体解锁“农文旅融合”密码</a></li><li>*<a href="Articel03002NR.htm" target="_blank">共庆重阳，老年人为老年人演出</a></li><li>*<a href="Articel03003NR.htm" target="_blank">一碗“长寿粉” 15载“敬老情”</a></li><li>*<a href="Articel03004NR.htm" target="_blank">社山桥社区这场健康沙龙活动让老人们收获满满</a></li><li>*<a href="Articel03005NR.htm" target="_blank">七星区：山歌油茶庆重阳</a></li><li>*<a href="Articel03006NR.htm" target="_blank">秀峰区举办“九九重阳”<br/>社会救助主题活动</a></li>
+        </ul>
+            <h4> 04版：县区新闻</h4>
+        <ul>
+            <li>*<a href="Articel04001NR.htm" target="_blank">龙胜瓢里镇举办第十届“鱼宴节”</a></li><li>*<a href="Articel04002NR.htm" target="_blank">荔浦芋扣肉上榜<br/>“桂菜十大名菜”</a></li><li>*<a href="Articel04003NR.htm" target="_blank">永福：积极推进生态环境损害赔偿<br/>探索建立畜禽养殖污染治理新模式</a></li><li>*<a href="Articel04004NR.htm" target="_blank">资源：青春力量助振兴 教育帮扶显真情</a></li><li>*<a href="Articel04005NR.htm" target="_blank">兴坪镇：“三聚焦”提升真驻实干质效</a></li><li>*<a href="Articel04006NR.htm" target="_blank">2024阳朔铁人三项赛<br/>将于10月20日激情开赛</a></li>
+        </ul>
+            <h4> 05版：县区新闻</h4>
+        <ul>
+            <li>*<a href="Articel05001NR.htm" target="_blank">六塘镇：移风易俗树新风<br/>乡村焕发新气象</a></li><li>*<a href="Articel05002NR.htm" target="_blank">龙胜：开设中医夜市服务百姓健康</a></li><li>*<a href="Articel05003NR.htm" target="_blank">灌阳观音阁乡：甜蜜“柿”业醉农心</a></li><li>*<a href="Articel05004NR.htm" target="_blank">两江镇：公益体检送健康<br/>志愿服务暖重阳</a></li><li>*<a href="Articel05005NR.htm" target="_blank">漠川乡：开展县乡人大代表<br/>进联络站联系群众活动</a></li><li>*<a href="Articel05006NR.htm" target="_blank">崔家乡：探索“人大+纪委”模式，提升联动监督质效</a></li><li>*<a href="Articel05007NR.htm" target="_blank">白石乡：人大代表助力<br/>民族团结之花在基层绽放</a></li><li>*<a href="Articel05008NR.htm" target="_blank">公 告</a></li>
+        </ul>
+            <h4> 06版：时事·体育</h4>
+        <ul>
+            <li>*<a href="Articel06001NR.htm" target="_blank">托起幸福“夕阳红”</a></li><li>*<a href="Articel06002NR.htm" target="_blank">全力承办好国际网球大师赛<br/>助力打造世界级旅游城市</a></li><li>*<a href="Articel06003NR.htm" target="_blank">多彩活动迎重阳</a></li><li>*<a href="Articel06004NR.htm" target="_blank">很荣幸能参与赛事中<br/>更好地推广网球运动</a></li><li>*<a href="Articel06006NR.htm" target="_blank">公 示</a></li><li>*<a href="Articel06007NR.htm" target="_blank">公 示</a></li><li>*<a href="Articel06008NR.htm" target="_blank">这里的网球设施一流<br/>非常高兴能来参加比赛</a></li>
+        </ul>
+            <h4> 07版：理论·时评</h4>
+        <ul>
+            <li>*<a href="Articel07001NR.htm" target="_blank">遵道而行，但到半途须努力<br/>会心不远，要登绝顶莫辞劳</a></li><li>*<a href="Articel07002NR.htm" target="_blank">深化教育综合改革<br/>为加快建设教育强国提供动力</a></li><li>*<a href="Articel07003NR.htm" target="_blank">呵护精神卫生<br/>要从“脱敏”做起</a></li><li>*<a href="Articel07004NR.htm" target="_blank">促进人口高质量发展<br/>健全覆盖全人群、全生命周期的人口服务体系</a></li><li>*<a href="Articel07005NR.htm" target="_blank">为超速电动自行车<br/>按下“减速键”</a></li>
+        </ul>
+            <h4> 08版：健康讲堂</h4>
+        <ul>
+            <li>*<a href="Articel08001NR.htm" target="_blank">怀孕了，就要把我的宠物送走？</a></li><li>*<a href="Articel08002NR.htm" target="_blank">市妇幼保健院与<br/>叠彩区教育局签署共建协议</a></li><li>*<a href="Articel08003NR.htm" target="_blank">高血压自我管理，做自己健康的守护者</a></li><li>*<a href="Articel08004NR.htm" target="_blank">市人民医院与社区、<br/>银行开展清廉融合共建</a></li><li>*<a href="Articel08005NR.htm" target="_blank">市医学会中西医<br/>结合脾胃肝病学分会成立</a></li><li>*<a href="Articel08006NR.htm" target="_blank">探索艾滋病病毒的微观世界</a></li><li>*<a href="Articel08007NR.htm" target="_blank">方便群众就诊 桂医附院实施<br/>周末高级职称专家出诊制度</a></li><li>*<a href="Articel08008NR.htm" target="_blank">桂林市综合介入<br/>诊疗技术质量控制中心成立</a></li>
+        </ul>
+    </div>
+
+    <h1><a class="fl" id="prevpager" style="display: none" href="">前一版</a>
+        <a class="fr" id="nextpager" style="display: " href="Page02BC.htm">下一版</a>
+        2024年10月11日
+    </h1>
+    <div class="paper">
+        <!--幻灯片-->
+        <div class="swiper-container swiper-container-horizontal">
+            <div class="swiper-wrapper">
+
+		<div class="swiper-slide " alt='01' fld='头版' >
+          <div class="mylink">
+
+<a href="Articel01001NR.htm" class="overlink" style='width:304px;height:115px;left:325px;top:28px;' title="习近平致电祝贺赛义德<br/>当选连任突尼斯总统" field="1b9bf471-fa25-4398-b24e-71e0b3c0a480" ><span class="play none iconfont  icon-bofang" alt="1b9bf471-fa25-4398-b24e-71e0b3c0a480"></span></a>
+
+<a href="Articel01002NR.htm" class="overlink" style='width:436px;height:222px;left:11px;top:164px;' title="既要老有所养老有所乐又要老有所为<br/>为推进中国式现代化贡献“银发力量”" field="7012e3f5-efc3-4768-9c2a-e2bbb70c3b67" ><span class="play none iconfont  icon-bofang" alt="7012e3f5-efc3-4768-9c2a-e2bbb70c3b67"></span></a>
+
+<a href="Articel01003NR.htm" class="overlink" style='width:211px;height:100px;left:16px;top:279px;' title="习近平给“银龄行动”老年志愿者代表的回信" field="d2451a58-a073-41f7-8af7-bc28797999d2" ><span class="play none iconfont  icon-bofang" alt="d2451a58-a073-41f7-8af7-bc28797999d2"></span></a>
+
+<a href="Articel01004NR.htm" class="overlink" style='width:436px;height:121px;left:11px;top:394px;' title="我市积极筹备第三届南方花卉苗木交易会<br/>暨第五届广西花卉苗木交易会" field="b45543d8-b7c8-4720-817b-7ca735a32e5b" ><span class="play none iconfont  icon-bofang" alt="b45543d8-b7c8-4720-817b-7ca735a32e5b"></span></a>
+
+<a href="Articel01005NR.htm" class="overlink" style='width:161px;height:244px;left:468px;top:164px;' title="让群众更加快捷<br/>高效申请到公租房" field="c5da087a-c225-4d92-88e5-4d070bee11c6" ><span class="play none iconfont  icon-bofang" alt="c5da087a-c225-4d92-88e5-4d070bee11c6"></span></a>
+
+<a href="Articel01006NR.htm" class="overlink" style='width:436px;height:300px;left:11px;top:566px;' title="潜经村：“筏”出来的“明星村”" field="1e610b7f-8c05-4bea-a01d-816ef6122903" ><span class="play none iconfont  icon-bofang" alt="1e610b7f-8c05-4bea-a01d-816ef6122903"></span></a>
+
+<a href="Articel01007NR.htm" class="overlink" style='width:161px;height:173px;left:468px;top:415px;' title="《范秀明阳朔神话系列剧》<br/>筹拍新闻发布会在我市举行" field="d6487ed1-3253-40d0-a3a8-9fd9ef4643c9" ><span class="play none iconfont  icon-bofang" alt="d6487ed1-3253-40d0-a3a8-9fd9ef4643c9"></span></a>
+
+<a href="Articel01008NR.htm" class="overlink" style='width:161px;height:243px;left:468px;top:623px;' title="田园综合体解锁<br/>“农文旅融合”密码" field="98e26a7d-b16d-47be-a219-c7d8b3ef1d0a" ><span class="play none iconfont  icon-bofang" alt="98e26a7d-b16d-47be-a219-c7d8b3ef1d0a"></span></a>
+
+
+            </div>
+        <img src="../20241011/Page01-640.jpg"border="1" width="640" usemap="#PageMap">
+		</div>
+
+		<div class="swiper-slide " alt='02' fld='综合新闻' >
+          <div class="mylink">
+
+<a href="Articel02001NR.htm" class="overlink" style='width:161px;height:179px;left:11px;top:57px;' title="市人大常委会开展专题调研" field="cc5196f4-f710-4e89-be7f-ee3133c0c98a" ><span class="play none iconfont  icon-bofang" alt="cc5196f4-f710-4e89-be7f-ee3133c0c98a"></span></a>
+
+<a href="Articel02002NR.htm" class="overlink" style='width:161px;height:200px;left:11px;top:243px;' title="中国气象局调研组到桂林<br/>调研指导气象服务工作" field="fa4ff6f6-860f-4b89-9d89-847e711d49c0" ><span class="play none iconfont  icon-bofang" alt="fa4ff6f6-860f-4b89-9d89-847e711d49c0"></span></a>
+
+<a href="Articel02003NR.htm" class="overlink" style='width:436px;height:352px;left:193px;top:50px;' title="全域推进清廉家庭融合共建<br/>为桂林世界级旅游城市建设贡献“家”力量" field="be617a97-fd79-4a7c-9ab1-c9b00b1a721c" ><span class="play none iconfont  icon-bofang" alt="be617a97-fd79-4a7c-9ab1-c9b00b1a721c"></span></a>
+
+<a href="Articel02004NR.htm" class="overlink" style='width:161px;height:157px;left:11px;top:451px;' title="叠彩区政协文史馆、<br/>叠彩区政协书画院揭牌" field="07b6bb31-2189-43f0-b6ac-1ae69f1f8cc9" ><span class="play none iconfont  icon-bofang" alt="07b6bb31-2189-43f0-b6ac-1ae69f1f8cc9"></span></a>
+
+<a href="Articel02005NR.htm" class="overlink" style='width:161px;height:266px;left:11px;top:616px;' title="2024年ITF国际网球大师赛<br/>MT100桂林灌阳站开幕" field="c326708c-ff29-48ba-b12f-8e8327d51f27" ><span class="play none iconfont  icon-bofang" alt="c326708c-ff29-48ba-b12f-8e8327d51f27"></span></a>
+
+<a href="Articel02006NR.htm" class="overlink" style='width:436px;height:331px;left:193px;top:408px;' title="全国模范退役军人董俊洲：31年从警 军营铸就坚韧底色" field="3f30d8bd-1015-4905-91a2-2d1c440ab377" ><span class="play none iconfont  icon-bofang" alt="3f30d8bd-1015-4905-91a2-2d1c440ab377"></span></a>
+
+<a href="Articel02007NR.htm" class="overlink" style='width:436px;height:137px;left:193px;top:745px;' title="桂林移动5G护航通信畅通" field="2db89b33-f7f3-4e25-a0b4-6e16736790f3" ><span class="play none iconfont  icon-bofang" alt="2db89b33-f7f3-4e25-a0b4-6e16736790f3"></span></a>
+
+
+            </div>
+        <img src="../20241011/Page02-640.jpg"border="1" width="640" usemap="#PageMap">
+		</div>
+
+		<div class="swiper-slide " alt='03' fld='社会生活' >
+          <div class="mylink">
+
+<a href="Articel03001NR.htm" class="overlink" style='width:618px;height:415px;left:11px;top:50px;' title="田园综合体解锁“农文旅融合”密码" field="188f7333-9201-444e-aa52-b56fe0b07701" ><span class="play none iconfont  icon-bofang" alt="188f7333-9201-444e-aa52-b56fe0b07701"></span></a>
+
+<a href="Articel03002NR.htm" class="overlink" style='width:382px;height:201px;left:16px;top:480px;' title="共庆重阳，老年人为老年人演出" field="07b66d25-1b41-4b5b-ad5a-14902d181a14" ><span class="play none iconfont  icon-bofang" alt="07b66d25-1b41-4b5b-ad5a-14902d181a14"></span></a>
+
+<a href="Articel03003NR.htm" class="overlink" style='width:205px;height:135px;left:419px;top:480px;' title="一碗“长寿粉” 15载“敬老情”" field="ad958c65-20cc-454f-abcc-c251af1e0bf2" ><span class="play none iconfont  icon-bofang" alt="ad958c65-20cc-454f-abcc-c251af1e0bf2"></span></a>
+
+<a href="Articel03004NR.htm" class="overlink" style='width:382px;height:173px;left:16px;top:702px;' title="社山桥社区这场健康沙龙活动让老人们收获满满" field="f0f4cf46-d457-43a5-89e0-63de4398043c" ><span class="play none iconfont  icon-bofang" alt="f0f4cf46-d457-43a5-89e0-63de4398043c"></span></a>
+
+<a href="Articel03005NR.htm" class="overlink" style='width:205px;height:114px;left:419px;top:623px;' title="七星区：山歌油茶庆重阳" field="72b9887b-e783-41ea-87e6-34dfec314562" ><span class="play none iconfont  icon-bofang" alt="72b9887b-e783-41ea-87e6-34dfec314562"></span></a>
+
+<a href="Articel03006NR.htm" class="overlink" style='width:205px;height:128px;left:419px;top:745px;' title="秀峰区举办“九九重阳”<br/>社会救助主题活动" field="d0390123-7f4a-4b5e-a1d5-243166590cf1" ><span class="play none iconfont  icon-bofang" alt="d0390123-7f4a-4b5e-a1d5-243166590cf1"></span></a>
+
+
+            </div>
+        <img src="../20241011/Page03-640.jpg"border="1" width="640" usemap="#PageMap">
+		</div>
+
+		<div class="swiper-slide " alt='04' fld='县区新闻' >
+          <div class="mylink">
+
+<a href="Articel04001NR.htm" class="overlink" style='width:449px;height:581px;left:10px;top:57px;' title="龙胜瓢里镇举办第十届“鱼宴节”" field="b87c4db7-c36f-4984-a926-6af8282b4ee1" ><span class="play none iconfont  icon-bofang" alt="b87c4db7-c36f-4984-a926-6af8282b4ee1"></span></a>
+
+<a href="Articel04002NR.htm" class="overlink" style='width:144px;height:214px;left:485px;top:57px;' title="荔浦芋扣肉上榜<br/>“桂菜十大名菜”" field="eaf00c61-4193-479e-a8c0-d6e7d234371e" ><span class="play none iconfont  icon-bofang" alt="eaf00c61-4193-479e-a8c0-d6e7d234371e"></span></a>
+
+<a href="Articel04003NR.htm" class="overlink" style='width:144px;height:308px;left:485px;top:279px;' title="永福：积极推进生态环境损害赔偿<br/>探索建立畜禽养殖污染治理新模式" field="5230e45c-26fe-450a-84f2-134c75bf8279" ><span class="play none iconfont  icon-bofang" alt="5230e45c-26fe-450a-84f2-134c75bf8279"></span></a>
+
+<a href="Articel04004NR.htm" class="overlink" style='width:447px;height:94px;left:11px;top:659px;' title="资源：青春力量助振兴 教育帮扶显真情" field="7f4b4856-4c51-4e4e-89d7-e9b81d386787" ><span class="play none iconfont  icon-bofang" alt="7f4b4856-4c51-4e4e-89d7-e9b81d386787"></span></a>
+
+<a href="Articel04005NR.htm" class="overlink" style='width:447px;height:122px;left:11px;top:759px;' title="兴坪镇：“三聚焦”提升真驻实干质效" field="6f0ea1bb-96cc-4784-aab4-c3f7b5e6187b" ><span class="play none iconfont  icon-bofang" alt="6f0ea1bb-96cc-4784-aab4-c3f7b5e6187b"></span></a>
+
+<a href="Articel04006NR.htm" class="overlink" style='width:144px;height:287px;left:485px;top:594px;' title="2024阳朔铁人三项赛<br/>将于10月20日激情开赛" field="0bcb5d1a-0a60-4016-8a07-2eb02b758b46" ><span class="play none iconfont  icon-bofang" alt="0bcb5d1a-0a60-4016-8a07-2eb02b758b46"></span></a>
+
+
+            </div>
+        <img src="../20241011/Page04-640.jpg"border="1" width="640" usemap="#PageMap">
+		</div>
+
+		<div class="swiper-slide " alt='05' fld='县区新闻' >
+          <div class="mylink">
+
+<a href="Articel05001NR.htm" class="overlink" style='width:188px;height:193px;left:441px;top:57px;' title="六塘镇：移风易俗树新风<br/>乡村焕发新气象" field="f7250ebd-241b-4df6-a1e7-9d863e5f52ed" ><span class="play none iconfont  icon-bofang" alt="f7250ebd-241b-4df6-a1e7-9d863e5f52ed"></span></a>
+
+<a href="Articel05002NR.htm" class="overlink" style='width:409px;height:302px;left:11px;top:315px;' title="龙胜：开设中医夜市服务百姓健康" field="eead545c-8a9a-425f-b246-c490b7fa0db0" ><span class="play none iconfont  icon-bofang" alt="eead545c-8a9a-425f-b246-c490b7fa0db0"></span></a>
+
+<a href="Articel05003NR.htm" class="overlink" style='width:409px;height:252px;left:11px;top:57px;' title="灌阳观音阁乡：甜蜜“柿”业醉农心" field="3d1f43e1-3094-4177-a60f-9c708f463c5f" ><span class="play none iconfont  icon-bofang" alt="3d1f43e1-3094-4177-a60f-9c708f463c5f"></span></a>
+
+<a href="Articel05004NR.htm" class="overlink" style='width:188px;height:128px;left:441px;top:258px;' title="两江镇：公益体检送健康<br/>志愿服务暖重阳" field="bead17d8-7b9f-4aa5-be4f-3486785bc81f" ><span class="play none iconfont  icon-bofang" alt="bead17d8-7b9f-4aa5-be4f-3486785bc81f"></span></a>
+
+<a href="Articel05005NR.htm" class="overlink" style='width:189px;height:150px;left:441px;top:394px;' title="漠川乡：开展县乡人大代表<br/>进联络站联系群众活动" field="3391b29d-5823-41ca-87c3-af7ce9183eb7" ><span class="play none iconfont  icon-bofang" alt="3391b29d-5823-41ca-87c3-af7ce9183eb7"></span></a>
+
+<a href="Articel05006NR.htm" class="overlink" style='width:409px;height:107px;left:11px;top:623px;' title="崔家乡：探索“人大+纪委”模式，提升联动监督质效" field="f364c2cd-204b-46b0-b83a-3afcb79afd66" ><span class="play none iconfont  icon-bofang" alt="f364c2cd-204b-46b0-b83a-3afcb79afd66"></span></a>
+
+<a href="Articel05007NR.htm" class="overlink" style='width:189px;height:179px;left:441px;top:551px;' title="白石乡：人大代表助力<br/>民族团结之花在基层绽放" field="8f9eb136-d6cf-4091-8367-63137b4bc599" ><span class="play none iconfont  icon-bofang" alt="8f9eb136-d6cf-4091-8367-63137b4bc599"></span></a>
+
+<a href="Articel05008NR.htm" class="overlink" style='width:611px;height:137px;left:16px;top:741px;' title="公 告" field="dcad05bf-6257-4b89-96f3-cc2b92804c01" ><span class="play none iconfont  icon-bofang" alt="dcad05bf-6257-4b89-96f3-cc2b92804c01"></span></a>
+
+
+            </div>
+        <img src="../20241011/Page05-640.jpg"border="1" width="640" usemap="#PageMap">
+		</div>
+
+		<div class="swiper-slide " alt='06' fld='时事·体育' >
+          <div class="mylink">
+
+<a href="Articel06001NR.htm" class="overlink" style='width:409px;height:473px;left:11px;top:78px;' title="托起幸福“夕阳红”" field="5103f9c7-2c73-406d-b90e-c44054ef1125" ><span class="play none iconfont  icon-bofang" alt="5103f9c7-2c73-406d-b90e-c44054ef1125"></span></a>
+
+<a href="Articel06002NR.htm" class="overlink" style='width:194px;height:257px;left:435px;top:93px;' title="全力承办好国际网球大师赛<br/>助力打造世界级旅游城市" field="2985c0a9-2535-47e5-bf60-34a16f023ca9" ><span class="play none iconfont  icon-bofang" alt="2985c0a9-2535-47e5-bf60-34a16f023ca9"></span></a>
+
+<a href="Articel06003NR.htm" class="overlink" style='width:398px;height:146px;left:16px;top:566px;' title="多彩活动迎重阳" field="42b3627d-dbbe-4de2-95a3-e77e2157f7ae" ><span class="play none iconfont  icon-bofang" alt="42b3627d-dbbe-4de2-95a3-e77e2157f7ae"></span></a>
+
+<a href="Articel06004NR.htm" class="overlink" style='width:194px;height:243px;left:435px;top:367px;' title="很荣幸能参与赛事中<br/>更好地推广网球运动" field="bc59b728-5daa-4d9b-9944-6a1d91d9e51e" ><span class="play none iconfont  icon-bofang" alt="bc59b728-5daa-4d9b-9944-6a1d91d9e51e"></span></a>
+
+<a href="Articel06006NR.htm" class="overlink" style='width:182px;height:133px;left:23px;top:740px;' title="公 示" field="00578c4e-d1cd-4df8-add8-0cc2fe7cefe0" ><span class="play none iconfont  icon-bofang" alt="00578c4e-d1cd-4df8-add8-0cc2fe7cefe0"></span></a>
+
+<a href="Articel06007NR.htm" class="overlink" style='width:182px;height:133px;left:227px;top:740px;' title="公 示" field="2c94c000-bdc9-452a-8253-e121d6eb9220" ><span class="play none iconfont  icon-bofang" alt="2c94c000-bdc9-452a-8253-e121d6eb9220"></span></a>
+
+<a href="Articel06008NR.htm" class="overlink" style='width:194px;height:236px;left:435px;top:630px;' title="这里的网球设施一流<br/>非常高兴能来参加比赛" field="11f1b254-2b43-475b-a9ad-cbb95d700317" ><span class="play none iconfont  icon-bofang" alt="11f1b254-2b43-475b-a9ad-cbb95d700317"></span></a>
+
+
+            </div>
+        <img src="../20241011/Page06-640.jpg"border="1" width="640" usemap="#PageMap">
+		</div>
+
+		<div class="swiper-slide " alt='07' fld='理论·时评' >
+          <div class="mylink">
+
+<a href="Articel07001NR.htm" class="overlink" style='width:409px;height:300px;left:22px;top:93px;' title="遵道而行，但到半途须努力<br/>会心不远，要登绝顶莫辞劳" field="78bbfe8d-24e0-44d6-9770-9d3816c7e319" ><span class="play none iconfont  icon-bofang" alt="78bbfe8d-24e0-44d6-9770-9d3816c7e319"></span></a>
+
+<a href="Articel07002NR.htm" class="overlink" style='width:409px;height:222px;left:22px;top:408px;' title="深化教育综合改革<br/>为加快建设教育强国提供动力" field="a85a5d10-ebaf-43f8-a986-cda74917fd8c" ><span class="play none iconfont  icon-bofang" alt="a85a5d10-ebaf-43f8-a986-cda74917fd8c"></span></a>
+
+<a href="Articel07003NR.htm" class="overlink" style='width:161px;height:372px;left:457px;top:93px;' title="呵护精神卫生<br/>要从“脱敏”做起" field="b52c73d5-d074-4ef5-811b-282d463f8c17" ><span class="play none iconfont  icon-bofang" alt="b52c73d5-d074-4ef5-811b-282d463f8c17"></span></a>
+
+<a href="Articel07004NR.htm" class="overlink" style='width:409px;height:230px;left:22px;top:645px;' title="促进人口高质量发展<br/>健全覆盖全人群、全生命周期的人口服务体系" field="d09e7e86-45d6-45ab-928c-1467ed5d9a00" ><span class="play none iconfont  icon-bofang" alt="d09e7e86-45d6-45ab-928c-1467ed5d9a00"></span></a>
+
+<a href="Articel07005NR.htm" class="overlink" style='width:161px;height:401px;left:457px;top:473px;' title="为超速电动自行车<br/>按下“减速键”" field="d7d20032-6aad-4d4b-909c-f5b5e17add35" ><span class="play none iconfont  icon-bofang" alt="d7d20032-6aad-4d4b-909c-f5b5e17add35"></span></a>
+
+
+            </div>
+        <img src="../20241011/Page07-640.jpg"border="1" width="640" usemap="#PageMap">
+		</div>
+
+		<div class="swiper-slide " alt='08' fld='健康讲堂' >
+          <div class="mylink">
+
+<a href="Articel08001NR.htm" class="overlink" style='width:431px;height:244px;left:22px;top:78px;' title="怀孕了，就要把我的宠物送走？" field="d2518088-bf6f-4c22-b960-0075431654af" ><span class="play none iconfont  icon-bofang" alt="d2518088-bf6f-4c22-b960-0075431654af"></span></a>
+
+<a href="Articel08002NR.htm" class="overlink" style='width:144px;height:178px;left:474px;top:129px;' title="市妇幼保健院与<br/>叠彩区教育局签署共建协议" field="f4f6e67d-99a2-4a7c-b021-527e14b6c2d5" ><span class="play none iconfont  icon-bofang" alt="f4f6e67d-99a2-4a7c-b021-527e14b6c2d5"></span></a>
+
+<a href="Articel08003NR.htm" class="overlink" style='width:431px;height:279px;left:22px;top:329px;' title="高血压自我管理，做自己健康的守护者" field="f39463ec-2e9e-471d-895a-d32baf19e9e0" ><span class="play none iconfont  icon-bofang" alt="f39463ec-2e9e-471d-895a-d32baf19e9e0"></span></a>
+
+<a href="Articel08004NR.htm" class="overlink" style='width:144px;height:157px;left:474px;top:315px;' title="市人民医院与社区、<br/>银行开展清廉融合共建" field="ce62e146-9b1d-49b9-986f-c8170f1971b9" ><span class="play none iconfont  icon-bofang" alt="ce62e146-9b1d-49b9-986f-c8170f1971b9"></span></a>
+
+<a href="Articel08005NR.htm" class="overlink" style='width:144px;height:128px;left:474px;top:480px;' title="市医学会中西医<br/>结合脾胃肝病学分会成立" field="11e47c5a-887a-4743-a76a-9660a926c54e" ><span class="play none iconfont  icon-bofang" alt="11e47c5a-887a-4743-a76a-9660a926c54e"></span></a>
+
+<a href="Articel08006NR.htm" class="overlink" style='width:431px;height:243px;left:22px;top:616px;' title="探索艾滋病病毒的微观世界" field="8c15e113-3e52-414b-8a48-c3a73ac5291e" ><span class="play none iconfont  icon-bofang" alt="8c15e113-3e52-414b-8a48-c3a73ac5291e"></span></a>
+
+<a href="Articel08007NR.htm" class="overlink" style='width:144px;height:107px;left:474px;top:616px;' title="方便群众就诊 桂医附院实施<br/>周末高级职称专家出诊制度" field="fe1b38fe-2561-48ae-a210-3dc6251e59cf" ><span class="play none iconfont  icon-bofang" alt="fe1b38fe-2561-48ae-a210-3dc6251e59cf"></span></a>
+
+<a href="Articel08008NR.htm" class="overlink" style='width:144px;height:128px;left:474px;top:731px;' title="桂林市综合介入<br/>诊疗技术质量控制中心成立" field="2dc6a862-05dd-4bed-a11f-1db8481d94c3" ><span class="play none iconfont  icon-bofang" alt="2dc6a862-05dd-4bed-a11f-1db8481d94c3"></span></a>
+
+
+            </div>
+        <img src="../20241011/Page08-640.jpg"border="1" width="640" usemap="#PageMap">
+		</div>
+
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+        <script src="../../public/swiper.min.js"></script>
+        <script type="text/javascript">
+            var initialSlide = "1";
+            initialSlide = initialSlide - 1;
+            var mySwiper = new Swiper('.swiper-container', {
+                pagination: '.swiper-pagination',
+                paginationClickable: '.swiper-pagination',
+                loop: false,
+                autoplay: false,
+                autoResize: true,
+                preventClicks: false,
+
+                onSlideChangeEnd: function (swiper) {
+                    var activeIndex = swiper.activeIndex;
+                    $(".bancimingChang").html($(".swiper-slide").eq(activeIndex).attr("fld"));
+                }
+            });
+            mySwiper.slideTo(initialSlide, false);
+        </script>
+    </div>
+    <div class="zhanwei"></div>
+    <ul class="menu">
+        <li>
+            <a href='../20241011/IssueIndex.htm'>
+                <img src="../../public/icon1.png" />
+                2024/10/11
+            </a>
+        </li>
+        <li>
+            <div class="banci">
+                <img src="../../public/icon2.png" />
+                <span class="bancimingChang">
+                    头版
+                </span>
+            </div>
+        </li>
+        <li>
+            <div class="mulu">
+                <img src="../../public/icon3.png" />
+                目录
+            </div>
+        </li>
+        <li>
+            <!--期次-->
+            <div class="qici">
+                <img src="../../public/icon4.png" />期次
+            </div>
+        </li>
+    </ul>
+    <div class="none neirongbox">
+
+            <div class="neirong 1b9bf471-fa25-4398-b24e-71e0b3c0a480" alt="1b9bf471-fa25-4398-b24e-71e0b3c0a480" daoxiang="01 ">
+
+                习近平致电祝贺赛义德<br/>当选连任突尼斯总统
+
+              　　新华社北京10月10日电&nbsp;10月9日，国家主席习近平致电凯斯·赛义德，祝贺他当选连任突尼斯共和国总统。<BR>　　习近平指出，中国同突尼斯传统友谊深厚。近年来，在我们共同引领下，两国关系健康稳定发展，各领域交流合作富有成效，传统友谊不断深化。2024年5月，你成功对中国进行国事访问，我同你共同宣布中突建立战略伙伴关系，推动两国关系迈上新台阶。我高度重视中突关系发展，愿同你一道努力，以今年两国建交60周年为契机，继续传承中突友好，深化各领域交流合作，推动中突战略伙伴关系行稳致远。<BR>
+            </div>
+
+            <div class="neirong 7012e3f5-efc3-4768-9c2a-e2bbb70c3b67" alt="7012e3f5-efc3-4768-9c2a-e2bbb70c3b67" daoxiang="01 ">
+                 习近平回信勉励“银龄行动”老年志愿者代表
+                既要老有所养老有所乐又要老有所为<br/>为推进中国式现代化贡献“银发力量”
+
+              　　新华社北京10月10日电&nbsp;在中华民族传统节日重阳节来临之际，中共中央总书记、国家主席、中央军委主席习近平给“银龄行动”老年志愿者代表回信，对他们予以亲切勉励，向全国的老年人致以诚挚问候。<BR>　　习近平指出，多年来，大家积极参加志愿服务活动，利用所学所长服务基层、服务群众，向社会传递正能量，展现了新时代中国老年人的精神风貌。<BR>　　习近平强调，老年人是党和国家的宝贵财富。希望广大老年朋友保持老骥伏枥、老当益壮的健康心态和进取精神，既要老有所养、老有所乐，又要老有所为，为推进中国式现代化贡献“银发力量”。各级党委和政府要高度重视老龄工作，聚焦老年人的急难愁盼问题，完善政策举措，营造良好社会环境，把老年人生活保障好、作用发挥好、权益维护好。<BR>　　“银龄行动”是由全国老龄委于2003年发起的老年志愿服务活动，主要是组织各领域老专家、老教授支援欠发达地区。截至目前，全国参加“银龄行动”的老年志愿者累计有700余万人次，开展援助项目4000多个，“银龄行动”已成为促进老年人老有所为重要平台之一。近日，“银龄行动”老年志愿者代表给习近平总书记写信，汇报参加志愿服务情况，表达继续发挥专长、回报社会，为推进中国式现代化贡献力量的决心。<BR>
+            </div>
+
+            <div class="neirong d2451a58-a073-41f7-8af7-bc28797999d2" alt="d2451a58-a073-41f7-8af7-bc28797999d2" daoxiang="01 ">
+
+                习近平给“银龄行动”老年志愿者代表的回信
+
+              　　“银龄行动”老年志愿者代表：<BR>　　你们好！来信收悉。多年来，大家积极参加志愿服务活动，利用所学所长服务基层、服务群众，向社会传递正能量，展现了新时代中国老年人的精神风貌。<BR>　　老年人是党和国家的宝贵财富。希望广大老年朋友保持老骥伏枥、老当益壮的健康心态和进取精神，既要老有所养、老有所乐，又要老有所为，为推进中国式现代化贡献“银发力量”。各级党委和政府要高度重视老龄工作，聚焦老年人的急难愁盼问题，完善政策举措，营造良好社会环境，把老年人生活保障好、作用发挥好、权益维护好。<BR>　　重阳佳节即将来临，祝你们和全国老年朋友们健康长寿、生活幸福！<BR>　　　　　　　　　　　　　　&nbsp;<BR>　　　　　　　　习近平<BR>　　　　　&nbsp;　2024年10月9日<BR>　　（新华社北京10月10日电）
+            </div>
+
+            <div class="neirong b45543d8-b7c8-4720-817b-7ca735a32e5b" alt="b45543d8-b7c8-4720-817b-7ca735a32e5b" daoxiang="01 ">
+
+                我市积极筹备第三届南方花卉苗木交易会<br/>暨第五届广西花卉苗木交易会
+
+              　　本报讯（记者张婷婷）10月10日，我市召开第三届南方花卉苗木交易会暨第五届广西花卉苗木交易会桂林市筹备工作推进会，对大会的筹备工作进行再动员、再部署、再落实，要求把本次交易会办成弘扬绿色文化、繁荣花木产业、促进交流合作、实现共赢发展的一场盛会。<BR>　　市委副书记卢新华出席会议并讲话，市委常委、副市长陈国富主持会议。<BR>　　本届交易会以“山水甲天下，南方花盛开”为主题，定于10月18日至21日在我市举办。今年的交易会，我市首次纳入世界林产品及木制品展，在往届专注花卉苗木产业的基础上，新增了林业产业的展示，这对交易会品牌建设的提档升级，乃至未来进一步国际化发展将起到促进作用。本届交易会面积大、布局广，展区面积约1万亩，其中主会场叠彩区约6500亩，分会场临桂区约3500亩、秀峰区约200亩，预计有广东、湖南、湖北等10个省区市参与。<BR>　　会议强调，本届交易会是市委、市政府为推进林业强市建设重点培育的品牌展会，更是桂林打造世界级旅游城市的宣传展示平台。各级各部门要提高思想认识，按照精细办会、高效办会、创新办会、真诚办会、安全办会的要求精心组织筹备，全力以赴把各项筹备工作抓紧、抓实、抓到位，确保办成一个有特色、有水平、有实效的交易会，为推动桂林林业高质量发展、加快打造桂林世界级旅游城市贡献力量。<BR>
+            </div>
+
+            <div class="neirong c5da087a-c225-4d92-88e5-4d070bee11c6" alt="c5da087a-c225-4d92-88e5-4d070bee11c6" daoxiang="01 ">
+                 自治区七部门联合印发实施方案
+                让群众更加快捷<br/>高效申请到公租房
+
+              　　据《广西日报》消息（记者徐庆成）10月9日，自治区住房城乡建设厅、教育厅、公安厅、民政厅、人力资源社会保障厅、自然资源厅和数据局联合印发《推进申请公租房“高效办成一件事”实施方案》（以下简称《方案》），以进一步提升政务服务和行政效能，优化申请公租房流程，保障群众“进得来，住得快”，让群众更加快捷高效申请到公租房。<BR>　　《方案》提出，整合服务事项。认真梳理公租房申请业务需求，梳理高频服务事项，整合优化业务办理要素、材料和流程，合理调整业务办理顺序，理顺申请公租房“高效办成一件事”业务流程。进一步精简各业务事项的受理材料，推进政企材料互通共用，避免材料重复提交，实现申请材料“一次提交、多次复用”，为群众提供便利。<BR>　　《方案》要求实现数据共享。强化自治区住房城乡建设厅、公安厅、民政厅、教育厅、人力资源社会保障厅、自然资源厅之间的业务协同，与相关部门业务系统进行公租房申请人的婚姻、低保特困、社保、户籍、居住证、学历、车辆、不动产等档案数据互联，通过接口查档等方式进行数据共享查询，实现数据信息互认、数据标准统一。<BR>　　《方案》强调要完善业务服务。通过广西数字政务一体化平台、“桂住保”微信小程序等线上服务，提供多样化的办理渠道，全力推进完善线上服务。线下充分利用政务服务大厅、街道办事处、社区等场所，确保申请公租房“高效办成一件事”线下办理途径畅通，加大线上渠道在线下场所的宣传推广，引导办理人员优先选择线上渠道办理业务，持续改善服务。全面落实线下办事“只进一门”、线上办事“一网通办”、群众诉求“一线应答”，实现申请公租房“高效办成一件事”高效办理。<BR>
+            </div>
+
+            <div class="neirong 1e610b7f-8c05-4bea-a01d-816ef6122903" alt="1e610b7f-8c05-4bea-a01d-816ef6122903" daoxiang="01 ">
+
+                潜经村：“筏”出来的“明星村”
+
+              　　<SPAN class=FloatTitle>□本报记者秦丽云&nbsp;刘菁&nbsp;唐迅<BR>&nbsp;实习生罗彩福<BR>&nbsp;通讯员诸葛诚浩&nbsp;王妥&nbsp;文/摄</SPAN><BR>　　江水悠悠，晴空朗朗。秋风越过茂密的竹林和翠绿的山峦，再轻拂绿意笼罩的步道，草坪上搭建着五颜六色的露营帐篷，竹筏上坐着正惬意赏秋景的游客……眼前这一切，让游客们赞叹，亦让潜经村的村民们充满欣喜。<BR>　　雁山区草坪回族乡潜经村位于漓江东岸，枕山伴水，地势低平宽阔，漓江蜿蜒流经村前，两岸景色宜人。<BR>　　国庆长假期间，位于潜经村的碧岩阁客运码头，游人如织，游船如织。每天早晨，村民在江边整理竹筏，按照统一调度，有序地迎接八方来客。<BR>　　“国庆期间客流量大，每天得开竹筏五六趟，工作量是平时的两三倍。”10月7日，“70后”筏工白志斌谈起国庆假期的忙碌，语气中藏着欢喜。<BR>　　“别小看这小小竹筏，它‘筏’出了我们潜经村的发展新前景。”潜经村支书郑道娟告诉记者，曾经，小小竹筏只是村民进出村子的交通工具。那时，坐拥漓江畔山清水秀的旅游资源，村民却全然不懂开发、利用。2014年左右，随着零星游客的到来，一些村民尝试开竹筏带领游客游览漓江风景。小小竹筏由朴素的交通工具变为村民拓展增收途径的“先锋”，更成为小村与世界通联的纽带。<BR>　　2015年，桂林草坪东岸漓江小镇旅游投资有限公司入驻潜经村，统一竹筏样式，统一筏工着装，并要求筏工持证上岗。经过数年发展，竹筏游逐渐成为潜经村的一张旅游名片。随着旅游产业的发展，村民的收入也日益丰富多元。<BR>　　“‘山多田少水深’的潜经村曾是‘十三五’贫困村。20年前，乡亲们大多还是按照祖辈传统的方式通过种稻谋生，收入结构单一。那时，外出谋生成了大多数青壮年的选择。”郑道娟说，2015年以来，随着漓东百里生态长廊建设项目的大力推进，草坪回族乡针对潜经村交通不便这一薄弱环节，投入5000余万元，对潜经村委碧岩阁村至草坪镇区公路进行扩建，从原有的5米宽扩宽到10米，两侧修建了2.25米宽的骑行慢道，成为桂林第一条骑行景观公路。与此同时，潜经村抓住机遇，大力加强基础设施建设，旅游驿站、古村寨修复等一系列工程先后完工。接着，改厨改厕、风貌改造、污水处理、村道硬化等一系列民生工程随后展开，村容村貌焕然一新。<BR>　　2019年，敢闯敢干的郑道娟在碧岩阁客运码头开了一间木屋小店，每天纯收入近400元，拉开了全村更多人吃旅游饭的序幕。而今，两长排的木屋小店，早已成了乡亲们展示、销售当地特产的窗口，也成了增收的小“金屋”。<BR>　　“我们筏工平时在家里务农，到了时间就来这里开竹筏。”作为一个有着将近10年工作经验的竹筏工，白志斌每月收入至少2000元。业余时间，他和其他乡亲一样，种稻、种果蔬等，每年收入三四万元。<BR>　　据桂林草坪东岸漓江小镇旅游投资有限公司办公室主任罗雪介绍，目前，潜经村村民共有100多人在该公司就业，仅竹筏工就有90多人，年收入在2.5万—4万元之间。<BR>　　郑道娟还告诉记者，为了满足游客们的更多需求，一些外地客商来村经营独具特色的民宿，并带动村民开餐馆，售卖本地特产。村民收入增加，幸福指数不断提升。<BR>　　漫步潜经村，白墙灰瓦的房屋错落有致，木质台阶直通漓江，蜿蜒的沿江步道从竹林间穿过……村外的田野，水稻飘香，果园茂盛，蔬菜成片。郑道娟说，近年来，在发展旅游产业的同时，村民持续发展特色农业产业，之前村民主要种植的玉米、花生等农作物，被无核黄皮果、时令蔬菜等取代。今年，全村种植无核黄皮果500多亩，批发价最高达12元/斤；全村种植蔬菜700多亩，一年四季品种不断，收入不断。<BR>　　在潜经村委办公楼一楼，众多荣誉牌匾挂满了白墙，包括中国少数民族特色村寨、国家森林乡村、自治区“美丽广西”乡村建设示范村、桂林市民族团结进步教育基地等。每一份荣誉，都见证着昔日漓江畔的这个无名小村蝶变成“明星村”的历程。世界喀斯特地貌保护区、漓江5A级景区核心区，更是让潜经村名扬四海。<BR>　　结束采访即将离开时，几位筏工自豪地告诉记者，江上往来的150只竹筏均在今年国庆节前完成了“油改电”升级改造。如今，绿色电动竹筏每天载着游客往返于美丽山水间，将为潜经村乃至漓江两岸众多的乡村“筏”出更美未来。<BR>
+            </div>
+
+            <div class="neirong d6487ed1-3253-40d0-a3a8-9fd9ef4643c9" alt="d6487ed1-3253-40d0-a3a8-9fd9ef4643c9" daoxiang="01 ">
+
+                《范秀明阳朔神话系列剧》<br/>筹拍新闻发布会在我市举行
+
+              　　本报讯（记者李思静）近日，《范秀明阳朔神话系列剧》项目筹拍新闻发布会在桂林举行。据了解，该剧由曾执导过83版《射雕英雄传》、98版《天龙八部》、古天乐版《神雕侠侣》、郑少秋版《香帅传奇》等脍炙人口电视剧的著名影视导演范秀明担纲总导演，聚焦桂林神话故事，充分展现桂林秀甲天下的山水风光和深厚的人文底蕴。<BR>　　发布会上，范秀明分享了《范秀明阳朔神话系列剧》的创作理念、剧本亮点，并介绍了对阳朔神话故事的独特见解，展示了项目的创作思路，让现场嘉宾、观众提前领略剧集的独特魅力。<BR>　　“我对桂林的山水景色特别欣赏喜欢，我筹拍中国神话系列，在取景方面我觉得桂林阳朔和漓江的风光特别符合剧中的情景。”范秀明说。<BR>　　此外，创作团队还透露，该剧将在桂林众多知名景点景区取景，力图呈现桂林山水仙境般的秀美。目前，该剧的拍摄吸引了众多影视圈投资人、TVB知名演员及国内新生代演员等各界人士的关注和参与，各项工作正有序推进。<BR>
+            </div>
+
+            <div class="neirong 98e26a7d-b16d-47be-a219-c7d8b3ef1d0a" alt="98e26a7d-b16d-47be-a219-c7d8b3ef1d0a" daoxiang="01 ">
+
+                田园综合体解锁<br/>“农文旅融合”密码
+
+              　　本报讯（记者周文琼）欣儿的花园一年多的时间里在桂林虏获了人们的芳心，一年超5万人次打卡花园，外国游客只在桂林停留两天时间也要花半天时间去看一看……网红花园火爆的背后是人们对“生活在别处”的美好向往，即从城市和工作的喧嚣中逃离出来，回归那久违的田园，拥抱美好的大自然，在梦想中的花园找到浪漫、宁静、喜悦、小确幸……<BR>　　2020年第一届广西花卉苗木交易会落户大美漓江·缤纷叠彩田园综合体，特别是2022年升格为第一届南方花卉苗木交易会，为花卉苗木产业做大做强、转型升级带来了契机。目前，该综合体已发展成为广西规模最大的花卉苗木生产基地和流通基地之一。<BR>　　2024年，叠彩区还将修建江东片区25公里慢行休闲步道，布局野猪林休闲驿站、白石潭古驿站、春江绕驿站、花卉中心驿站及特色民宿和田园风度假酒店等。花卉基地核心区花旅融合提档升级项目正火热进行，打造一个背靠尧山、面向漓江的5A级田园综合体，农文旅融合发展将给游客带来更多惊喜。&nbsp;（详见第三版）<BR>
+            </div>
+
+            <div class="neirong cc5196f4-f710-4e89-be7f-ee3133c0c98a" alt="cc5196f4-f710-4e89-be7f-ee3133c0c98a" daoxiang="02 ">
+
+                市人大常委会开展专题调研
+                推动铸牢中华民族共同体意识示范区建设
+              　　本报讯（记者陈娟）近日，市人大常委会成立专题调研组，对我市《广西壮族自治区人民代表大会常务委员会关于推动铸牢中华民族共同体意识示范区建设的决定》实施情况进行专题调研。<BR>　　此次专题调研采取座谈汇报、实地调研、走访了解、问卷调查等方式进行。10月8日，在专题调研市直部门座谈会上，市人民政府汇报关于《广西壮族自治区人民代表大会常务委员会关于推动铸牢中华民族共同体意识示范区建设的决定》实施情况。市民宗委、市发展改革委、市教育局等相关部门依次汇报发言。与会人员进行了座谈交流。<BR>　　据了解，今年以来，我市坚持把铸牢中华民族共同体意识作为全市各项工作的主线，以打造世界级旅游城市为统揽，聚焦“五个家园”建设，促进各民族广泛交往交流交融，扎实推进中华民族共同体建设。年初，市委六届六次全会提出了打造全国民族团结进步典范城市的目标，市人民政府推动全市民族工作再上新台阶、取得新成效。9月下旬，象山区政府、龙胜各族自治县大寨村村民潘保玉分别荣获全国民族团结进步模范集体和模范个人，象山区政府作为两个发言代表之一在大会上发言，这是自1988年开展该项表彰以来广西首次。<BR>　　市人大常委会副主任李滨参加座谈会。<BR>
+            </div>
+
+            <div class="neirong fa4ff6f6-860f-4b89-9d89-847e711d49c0" alt="fa4ff6f6-860f-4b89-9d89-847e711d49c0" daoxiang="02 ">
+
+                中国气象局调研组到桂林<br/>调研指导气象服务工作
+
+              　　本报讯（记者张婷婷&nbsp;通讯员李岩）近日，中国气象局副局长毕宝贵一行到桂林市及灵川县、阳朔县开展气象服务工作情况调研，要求桂林加快推进基层气象高质量发展，突出科技创新和人才支撑保障，以气象科技能力现代化和社会服务现代化赋能经济社会高质量发展。<BR>　　调研组一行先后来到两江四湖二号码头“漓江卫士”党建船、桂林市气象局、灵川县气象局、阳朔县气象局等地，了解漓江党建联盟及气象服务助力漓江流域生态环境保护情况，调研《气象高质量发展纲要（2022-2035年）》贯彻落实情况，气象预报能力、基层台站建设及财政保障等工作。<BR>　　调研组对我市气象部门在气象现代化建设方面取得的明显成效、在服务地方经济社会发展方面作出的突出贡献表示充分肯定。调研组要求，桂林各级气象部门要因地制宜落实中国气象局党组《关于加快推进基层气象高质量发展的意见》，主动融入地方政府的发展战略，探索建立“旅游+气象”全域服务新模式，为桂林全力打造世界级旅游城市做好服务保障；要切实发挥气象防灾减灾第一道防线作用，通过不断强化气象服务能力，扎实做好灾害性天气过程的监测预报预警工作，大力实施“气象+”赋能行动，不断优化文旅、特色产业等气象服务供给；要加强气象科技创新，密切关注新的IT技术、新的预报技术、新的人工智能技术应用，依靠科技手段解决发展中存在的重点、难点问题，借助科技力量赋能当地经济社会高质量发展。<BR>　　自治区气象局局长王丽、桂林市副市长周彦参加调研。<BR>
+            </div>
+
+            <div class="neirong be617a97-fd79-4a7c-9ab1-c9b00b1a721c" alt="be617a97-fd79-4a7c-9ab1-c9b00b1a721c" daoxiang="02 ">
+
+                全域推进清廉家庭融合共建<br/>为桂林世界级旅游城市建设贡献“家”力量
+                ——我市“三个一”推进清廉家庭融合共建
+              　　<SPAN class=FloatTitle>□本报记者文新军&nbsp;通讯员曾雅玲</SPAN><BR>　　“什么是诚实守信？什么是公平正义？”在秀峰街道解东社区“儿童之家”，大学生志愿者带领孩子们正在开展清廉家风润童心家庭教育活动。孩子们一笔一画认真书写“公正”“诚实”“节约”等词语，用稚嫩的笔触表达对清廉的初步理解，清廉家风也随之在孩子们心中生根发芽。<BR>　　近年来，市清廉家庭建设专责小组深入学习贯彻习近平总书记关于注重家庭家教家风建设的重要论述，紧扣“一个方案、一个品牌、一个基地”，以小家庭串联大矩阵，全域推进清廉家庭与其他清廉单元融合共建，为桂林打造世界级旅游城市贡献“家”力量。<BR>　　<SPAN class=FloatTitle>　　聚焦一个“融合共建”方案&nbsp;筑牢拒腐防变家庭防线</SPAN><BR>　　今年5月，桂林市在全区率先制定了《推进清廉桂林建设融合共建的实施方案》，按照“宜融则融、相互融合、共建共享”原则，研究提出30条各清廉单元之间、清廉文化与各清廉单元之间融合共建措施。<BR>　　“要探索‘清廉+’模式，积极开展清廉建设融合共建，推动清廉建设与中心工作同频共振。”市委副书记、市清廉办主任卢新华在清廉桂林建设提质增效三年行动部署会上对清廉桂林建设融合共建工作作出了明确要求。<BR>　　强化制度建设和制度执行“双轨并行”，配套建立联席会议、联系指导、协作配合工作机制，市清廉办综合组组长作为联席会议召集人，九个清廉单元分管领导、县区清廉办综合组组长共同谋划，构建“试点点题—单元协作—同题共答”衔接闭环，一体推动机制建立、试点创建、活动开展等工作有序开展。全市256支“桂姐姐”宣讲团（队）“五进五送”生动讲述清廉家风故事，恭城瑶族自治县“桂姐姐”宣讲队通过山歌、快板、三句半等喜闻乐见的方式，不断向当地群众传播清廉家风，获人民日报点赞报道。同时，持续将家庭家教家风教育纳入各级党委（党组）理论学习中心组学习、党校主体培训、妇联系统培训内容，强化新时代家庭观教育，2024年以来桂林市各级党校开展相关培训8期，覆盖人员1200多人。<BR>　　<SPAN class=FloatTitle>　　打造一个“红廉万家”品牌&nbsp;推动清廉家庭建设落地开花</SPAN><BR>　　今年来，市清廉家庭建设专责小组充分依托桂林作为首批国家历史文化名城的优势，盘活以湘江战役历史为核心的红色文化资源，创新打造“红廉万家”清廉家庭品牌，聚焦清廉家庭“典型联建、活动联办、作品联创”精准发力，推动清廉家庭建设与其他清廉单元共建共享、共促发展。<BR>　　“学校公用电话上锁只能接不能打，公家的钱每一分都不能浪费，必须用在刀刃上……”这是荔浦市特殊教育学校党支部书记、校长熊碧芳在分享自己“最抠门校长”的事迹。今年6月初，市清廉家庭单元联合其他八个清廉单元举办“家风的力量”桂林市清廉家庭融合共建分享会，通过讲述清廉家风故事、分享融合共建工作经验、推介清廉文旅路线，不断增强清廉家风渗透力感染力。<BR>　　在推动清廉家庭建设与其他清廉单元融合共建当中，市清廉家庭建设专责小组按照“分类储备一批、倾力打造一批、融合共建一批”思路，建立清廉家庭建设示范户创建库，选树各行业各领域清廉家庭典型107户。探索建立激励机制，从学习、游览、健康、健身方面为清廉家庭提供礼遇服务。讲好清廉家风故事，邀请“全国人民满意公务员”于伍生、“全国最美教师”熊碧芳分享清廉家风故事，弘扬最美清廉家风故事。以满足广大党员群众对清廉家风的需求为导向，市妇联与纪检监察机关、宣传部门制作警示教育片《作风不正&nbsp;自毁前程》，打造《爱廉说》电视精品栏目等，以接地气、冒热气的形式广泛传播廉洁文化。<BR>　　<SPAN class=FloatTitle>　　围绕一个“家教家风”基地&nbsp;深化清廉家庭建设全域共建</SPAN><BR>　　今年8月2日，广西家教家风基地（桂林）正式揭牌使用。该基地立足灵川县九屋镇江头村古建筑群，集先贤家风、红色家风、时代新风等于一体，为全区党员干部提供学习场所。<BR>　　“恋亲不为亲徇私，念旧不为旧谋利，济亲不为亲撑腰。这是毛泽东同志定下的‘家风三原则’，为共产党人的亲情观作了最好的诠释……”中秋节前，市妇联联合市自来水有限公司在广西家教家风基地（桂林）开展“红廉万家”之“清风明月&nbsp;廉满中秋”清廉家庭与清廉国企融合共建活动，呼吁更多家庭要争做清廉家庭的建设者、倡导者、守护者。<BR>　　今年以来，市清廉家庭建设专责小组围绕广西家教家风基地（桂林），“点线面”三维发力，开展家教家风教育系列活动。点上，倾力打造市税务局、将军桥小学、秀峰区解东社区等22个融合共建阵地，形成以广西家教家风基地（桂林）为主、清廉单元融合共建阵地为辅的“1+N”融合共建阵地集群。线上，将38个清廉景区和70处革命遗址（遗存）资源串联成线，推出19条清廉家风研学线路和30条红廉文化旅游路线，打造集廉政教育、家风教育、研学观光融为一体的融合共建旅游线路。面上，坚持“一域一品一特色”，深入挖掘县域清廉文化资源，打造以广西家教家风基地（桂林）为主阵地，以恭城“龙虎·清风渠”主题公园、荔浦“清风荔江·十里廉廊”教育基地、阳朔县曹邺诗碑廊等32个家风教育基地为辅的宣传矩阵，引导广大党员干部从红色家风、清廉家风中汲取崇德治家、廉洁齐家、勤俭持家的精神养分。<BR>　　“下一步，桂林市清廉家庭建设专责小组将充分发挥家庭家教家风建设在基层治理中的作用，全域推进清廉家庭与其他清廉单元融合共建，以千千万万家庭的好家风，支撑起全社会的清风正气，为奋力谱写中国式现代化桂林篇章贡献‘家’力量。”市清廉家庭建设专责小组相关负责人表示。<BR>
+            </div>
+
+            <div class="neirong 07b6bb31-2189-43f0-b6ac-1ae69f1f8cc9" alt="07b6bb31-2189-43f0-b6ac-1ae69f1f8cc9" daoxiang="02 ">
+
+                叠彩区政协文史馆、<br/>叠彩区政协书画院揭牌
+
+              　　本报讯（记者周文俊）近日，叠彩区政协文史馆、叠彩区政协书画院在该区政务服务中心二楼正式揭牌。<BR>　　今年3月以来，叠彩区政协用不到半年时间完成文史馆（书画院）场馆建设和资料收集整理。该馆（院）由展厅、书画院、资料室、采编室四个部分组成，面积220平方米。其中，展厅部分包括铸就荣光、锻造铁军、传承文史等八个篇章，收藏有历史图片480余幅、橱窗资料60余件，以图文并茂的方式真实展现叠彩区政协成立25年来的光辉历程、中国共产党领导的多党合作和政治协商制度及其实践成果等。同时，还利用文史馆外墙设计了“叠彩八景”文化长廊。揭牌后，将成为叠彩区对外展示政协文化精神的窗口、挖掘研究叠彩文史的平台和传播叠彩声音的阵地。<BR>　　近年来，叠彩区政协挖掘历史文化资源，梳理历史文脉，组织完成了《秀美叠彩》《神奇尧山》等四卷历史文化系列丛书编撰，印制“江山会景&nbsp;翰墨同心”书画作品集和《叠彩八景》文化书签等，不断提升叠彩文化底蕴和美誉度。<BR>　　市政协副主席文建中参加活动。<BR>
+            </div>
+
+            <div class="neirong c326708c-ff29-48ba-b12f-8e8327d51f27" alt="c326708c-ff29-48ba-b12f-8e8327d51f27" daoxiang="02 ">
+
+                2024年ITF国际网球大师赛<br/>MT100桂林灌阳站开幕
+
+              　　本报讯（记者周文俊）金秋十月，丹桂飘香。10月10日上午，2024年ITF国际网球大师赛MT100桂林灌阳站在灌阳县体育公园网球中心球场开幕，这是首个世界级网球赛事在桂林举办。来自美国、加拿大以及我国北京、上海、广东、江苏、广西和香港等地的170多名网球选手隔网对决，奉献一场场精彩的网球盛宴，为桂林打造世界级旅游城市增添更多国际元素、注入更多“国际范”。<BR>　　本次比赛由国际网球联合会（ITF）授权，国家体育总局网球运动管理中心、中国网球协会主办，桂林市体育局、灌阳县人民政府承办，灌阳县文广体旅局、体坛导报协办。共设置男双、女双、混双三个项目，每个项目又设30+、35+、40+、45+、50+、55+、60+、65+等8个年龄组共24个单项，分小组循环赛、淘汰赛两个阶段进行激烈角逐。<BR>　　当天，选手们陆续登场比赛。正手抽球、反手直线、凌空抽球、网前截击、挑高球、中场高压、冲刺救球……比赛中，选手们纷纷使出看家本领，不放过每一个赢球的机会，尽情享受网球比赛和网球运动的乐趣，也获得现场观众的欢呼喝彩。<BR>　　据了解，ITF国际网球大师赛是国际网球联合会面向30岁以上网球爱好者推出的一项国际赛事，自2019年中国网球协会首次将ITF大师赛引入国内，已逐渐成为广受欢迎的国际群众类网球赛事，2024年全国各地共举办23站赛事。本次赛事不仅为选手们提供了一个展示自我、实现梦想的舞台，更为他们提供了获得国际积分与排名的宝贵机会。<BR>　　近年来，灌阳县高度重视体育事业尤其是网球运动发展，建成标准网球场18个，广西青少年体育竞训基地、广西球类运动中心竞训基地等相继落户。同时，灌阳拥有丰富的体育赛事承办经验，近年先后承办了国家级、自治区级赛事19次，体育品牌影响力不断提高，荣获“广西体育旅游示范试点县”荣誉称号。此次承办2024年ITF国际网球大师赛MT100赛事，是助力桂林打造世界级旅游城市的实际举措，进一步巩固了灌阳“体育+”成果，营造群众体育、竞技体育、全民健身活动浓厚氛围。<BR>　　市政协副主席蒋昌桂出席开幕式并宣布开幕。<BR>
+            </div>
+
+            <div class="neirong 3f30d8bd-1015-4905-91a2-2d1c440ab377" alt="3f30d8bd-1015-4905-91a2-2d1c440ab377" daoxiang="02 ">
+
+                全国模范退役军人董俊洲：31年从警 军营铸就坚韧底色
+
+              　　<SPAN class=FloatTitle>□本报记者&nbsp;陈静</SPAN><BR>　　“服从中国共产党的领导，全心全意为人民服务。”这是董俊洲入伍时的宣誓。从橄榄绿到藏青蓝，如今已经在公安岗位上深耕30年的他，誓词的内容变了，但对党忠诚、为民服务的初心始终不变。<BR>　　31年来，无论是在基层派出所，还是在刑侦岗位，或是走上领导岗位，董俊洲始终不忘初心、牢记使命，坚守在打击违法犯罪的第一线，用实际行动默默践行着“退役不褪色，退伍不退志”的军人风采。<BR>　　因工作表现突出，他先后荣立个人一等功1次、个人二等功1次、个人三等功3次，2020年荣获“广西壮族自治区优秀退役军人”称号，2024年获“全国模范退役军人”荣誉。<BR>　　<SPAN class=FloatTitle>正义少年圆梦警营</SPAN><BR>　　因为父亲曾是军人，年幼的董俊洲常常听他谈起部队的生活、军人的责任，耳濡目染下，小董俊洲一直心存正义，暗下决心以后自己从事的工作要用行动去维护正义，破案抓坏人，守护好民众的生命安全。<BR>　　1989年，16岁的董俊洲从家乡河北前往内蒙古武警四支队服役，三年义务兵军旅生涯，他不仅学会了一身擒拿格斗的本领，也理解了沉甸甸的家国情怀。<BR>　　“军旅生涯结束后，为了能离儿时梦想更进一步，1993年，我决定一个人来到离家两千公里外的广西，报考公安岗位。”董俊洲说。离家多年的董俊洲始终牢记父亲对他说的话——“好男儿志在四方，有国才有家”。”父亲的话激励着他心无旁骛地去实现自己的梦想。<BR>　　有着过硬业务能力的董俊洲先后任桂林市公安局刑事警察支队六大队(特警大队)副大队长、教导员、三大队大队长、支队纪委书记、副支队长等职务。他把在部队里学到的技能战术延续到公安特警的训练当中，从体能、队列、擒拿格斗、射击等方面全面培训提升刑侦特警的综合能力，同时坚持按照军事化模式管理队伍。<BR>　　<SPAN class=FloatTitle>迎难而上&nbsp;他屡破大案</SPAN><BR>　　退伍从警后，董俊洲始终保持着军人果敢、执着、追求正义、不畏艰难的优良品质。他以侦查破案为己任，牵头侦破了一批重特大案件，屡立战功。<BR>　　1999年5月，一伙持枪劫匪流窜到高速公路上拦路，制造了多起抢劫货车司机案件。在查明这个团伙落脚地后，董俊洲带领队员立即制定抓捕方案，展开抓捕工作。当天凌晨5时，董俊洲和队员们来到嫌疑人落脚的旅店门口伏击观察，在嫌疑人还没反应过来之时迅速将他们控制，当场缴获3支枪。<BR>　　破案、抓人、追赃，这个是刑警工作的日常，年复一年、日复一日的重复。在刑侦支队工作期间，董俊洲先后抓获280余名涉暴力犯罪嫌疑人，受理的命案100%侦破。<BR>　　在扫黑除恶专项斗争期间，董俊洲担任桂林市公安局扫黑办副主任，他组织带领扫黑办全体民警打掉了9个涉黑组织、27个恶势力犯罪集团和15个恶势力犯罪团伙，为维护辖区社会治安，提高群众的安全感、满意度作出了积极的贡献。<BR>　　“侦查破案是磨人的活儿，遇到疑难案件，他总是想方设法寻找突破口。每次抓捕，他也总是冲在前面，是我们队名副其实的‘急先锋’。”与董俊洲共事多年的战友黄伟说道。<BR>　　<SPAN class=FloatTitle>潜心钻研<BR>　　他用心守护群众的钱袋子</SPAN><BR>　　2021年，董俊洲受命担任市公安局新组建的新型网络犯罪侦查支队支队长。<BR>　　在刚刚组建的新型网络犯罪侦查支队，董俊洲迅速进入角色，潜心研究打击治理工作规律，带领团队多措并举出实招，短时间内各项工作就取得了一系列突破。<BR>　　2023年3月3日，桂林市发生一起案值1060余万元的电信网络诈骗案，在上级公安机关的指导下，董俊洲带领全市反诈队伍强力推进案件侦办，共抓获犯罪嫌疑人115名，打掉诈骗、洗钱跑分、技术等团伙13个，追赃挽损360余万元。该案件也是2023年全国单案抓捕人数最多的案件，得到了上级部门的肯定。<BR>　　为整合资源，形成反诈警务效能，董俊洲还组织团队联合相关部门研究出台了银行网点“三必问”机制、电信网络诈骗案件专案攻坚工作机制等40多个制度机制。<BR>　　此外，董俊洲和团队不断推动银行机构开展精准涉诈资金拦截保护和预警能力建设，仅2023年就成功劝阻100余名群众被骗，直接避免群众损失316万余元。<BR>　　军队淬炼了董俊洲执法为民的意志和情怀。工作中，他严格要求自己，经办的案件没有出现一次涉诉、涉访问题。生活上，他廉洁自律，用实际行动践行一名共产党员全心全意为人民服务的宗旨。<BR>　　“两种颜色，一种坚守，两身制服，一种情怀，昔日军戍，此时警徽，是我此生最珍贵的勋章。”31年的警察生涯，董俊洲用自己朴实担当的言行书写着人民公安为人民的铮铮誓言，以满腔的热血和执着的信念谱写了一曲新时代的人民警察之歌。<BR>
+            </div>
+
+            <div class="neirong 2db89b33-f7f3-4e25-a0b4-6e16736790f3" alt="2db89b33-f7f3-4e25-a0b4-6e16736790f3" daoxiang="02 ">
+                 国庆桂林 游客如潮
+                桂林移动5G护航通信畅通
+
+              　　本报讯（通讯员徐先丽&nbsp;李静）国庆佳节，桂林这座山水甲天下的城市再次迎来了旅游的高峰期，文旅市场表现火爆，各大景区、商圈及交通枢纽的人流量较去年同期有显著增长，游客和市民共同见证了这座城市的繁荣与活力。而在这一片热闹与喧嚣之中，中国移动广西桂林分公司以其卓越的通信保障能力，为游客和市民提供了稳定、高速的网络通信服务，成为节日里一道亮丽的风景线，也为桂林旅游业的蓬勃发展注入了强劲动力。<BR>　　近年来，桂林旅游业发展迅速，凭借其独特的自然风光和丰富的文化底蕴，吸引了越来越多的国内外游客。国庆期间，象鼻山、漓江、阳朔西街、龙脊梯田等热门景区游人如织，游客们纷纷拿出手机，记录下眼前的美景和与家人朋友的欢乐时光。桂林移动紧跟桂林旅游业的发展步伐，不断升级和优化通信网络，确保每一位游客都能享受到流畅的网络体验。<BR>　　面对国庆期间人流量激增的挑战，桂林移动提前谋划，精心布局，以“接得入、调得出、传得对、配得优”为出发点，全面升级了通信网络。特别是在商圈、交通枢纽、热点景区等关键区域，桂林移动采用了最新的5G-A技术，从用户接入与调度、MU-MIMO配对增强、多载波和干扰抑制等多个维度进行了算法优化，确保每一位用户都能享受到流畅的网络。<BR>　　在各大景区，桂林移动于节前开展了网络测试及优化工作，通过干扰协同，对小区间的无线资源进行合理分配，有效降低干扰，提升用户体验。在人群密集处，桂林移动新增应急机柜，大幅提升网络容量，保障市民游客网络感知。5G网络不仅满足了游客们拍照、发视频的需求，还为游客提供了便捷的移动支付、导航和信息查询服务。游客们可以通过手机轻松获取景区介绍、路线规划、周边美食等信息，大大提升了旅游体验。<BR>　　在甲天下广场，历时24天的2024漓泉啤酒音乐节在国庆期间达到高潮。面对庞大的客流，桂林移动采用短时高容量保障功能，优化对齐配对策略和配对算法，改善重载场景下用户体验。同时安排2台应急柜、1辆大型应急通信车全程保障，确保市民和游客在线拍视频、即时上传，享受高速稳定的网络通信服务。<BR>　　除了景区，桂林移动在各大商圈和交通枢纽，通过优化网络调度和增强信号覆盖，确保了游客和市民在购物、出行过程中能够享受到稳定、高速的网络服务。国庆佳节期间，桂林移动共新增4/5G小区51个、扩容453个，5G-A技术优势和MU-MIMO配对增强技术，实现了多个用户同时高效利用网络资源，提高了网络的整体吞吐量和用户体验。<BR>
+            </div>
+
+            <div class="neirong 188f7333-9201-444e-aa52-b56fe0b07701" alt="188f7333-9201-444e-aa52-b56fe0b07701" daoxiang="03 ">
+
+                田园综合体解锁“农文旅融合”密码
+
+              　　<SPAN class=FloatTitle>□本报记者&nbsp;周文琼</SPAN><BR>　　位于大美漓江·缤纷叠彩田园综合体的网红花园“欣儿的花园”一年超5万人次打卡，甚至有外国旅客只在桂林停留两天，也要花半天时间去看一看……网红花园火爆的背后，是人们对“生活在别处”的美好向往。<BR>　　桂林市大美漓江·缤纷叠彩田园综合体是广西目前规模最大的花卉苗木生产基地和流通基地。今年以来，叠彩区江东25公里绿道项目、花卉基地核心区花旅融合提档升级项目正火热进行，打造一个位于尧山脚下、面向漓江的5A级田园综合体，农文旅融合发展将给游客带来更多惊喜。<BR>　　<SPAN class=FloatTitle>在“风口”上的网红花园</SPAN><BR>　　初秋的桂林，下午4点的太阳还有点火辣，“欣儿的花园”游客很少，与春夏季节满是鲜花也满是游人的情景大不相同。尽管花不多，但蓝天、白云、小木屋、绿草地形成一幅宁静和谐的画面。梁琼方正在树下的椅子上做花卉研学策划方案。她笑着说，现在是花园的淡季，正好能偷点闲，前几个月可太忙了。<BR>　　梁琼方“偷闲”可是很有底气的。她告诉记者，今年上半年，花园仅门票收入已经超过7万元，已经可以支撑她一年的地租以及花园的相关开销。再加上她在餐饮、承接团建等方面的收入，“收入还是比较可观的，比上班好。”正是有了这样的底气，她可以有更多空闲来思考如何做得更好。<BR>　　她的花园面积超过6000平方米。梁琼方于2022年11月着手打造这个属于祖孙三代人的“家庭花园”。花园里栽种了1000多种植物，通过不同品种的搭配，让人们无论什么时候来都能看到花开。从最初在露台上种花，到后来在梦想的大花园里种花，她实现了自己最初的心愿——将园艺带来的美好和幸福感传递给更多的花友。2023年花园接待游客超5万人次。梁琼方说，每次自己在网络平台发花园的照片，轻轻松松就能获得几千上万的点赞，总是有人留言到桂林一定要来看看。一位来自墨西哥的园艺爱好者在桂林仅停留两天时间，其中半天她选择来到“欣儿的花园”。<BR>　　“欣儿的花园”爆火是偶然和意外吗？梁琼方说：“回头看看，其实我站在了农文旅融合的风口上。”<BR>　　大美漓江·缤纷叠彩田园综合体的花卉产业是2006年以来叠彩区响应国家调整农业产业结构的政策逐步发展起来的。原址在大村东二环路旁边，只有几家花卉苗木基地，没有形成有规模的产业。2007年搬迁到现在的场地后，10多年来，通过采取“政府引导+合作社统筹+企业主体+农户参与”的运作模式，目前入驻的花卉苗圃企业达500多家，其中世外陶园、香樟园等花卉苗木龙头企业达20余家。2020年第一届广西花卉苗木交易会落户于此，并于2022年升格为第一届南方花卉苗木交易会，为我市花卉苗木产业做大做强、转型升级带来了契机。如今这里已发展成为广西规模最大的花卉苗木生产基地和流通基地之一。<BR>　　广西花卉协会副会长、市第六届人大代表、桂林陶园花卉有限公司总经理陶春发深耕花卉苗木行业20余载。他介绍，一直以来桂林的花卉产业都以绿化苗为主。但随着绿化市场需求减少，绿化苗木严重滞销；另一方面，我国家庭园艺消费成为花卉产业新的增长点，呈现出蓬勃向上的发展态势。<BR>　　当梁琼方要建一个家庭式花园的时候，正遇上了大美漓江·缤纷叠彩田园综合体探索转型的时机。<BR>　　在这样的背景下，“欣儿的花园”在建设中得到叠彩区委、区政府及相关部门的关心支持鼓励，建成之后叠彩区相关部门通过官方渠道对花园进行宣传。梁琼方还多次免费参加由叠彩区相关部门组织的培训，增强了网络营销、新媒体宣传运营等方面的技能。美丽的花园加上有效的宣传和营销，“欣儿的花园”火得明明白白。<BR>　　<SPAN class=FloatTitle>搅动农文旅融合发展一池春水</SPAN><BR>　　当记者和梁琼方一起坐在花园的树下时，她说：“你听到突突突的机器挖掘声了吗？我们这里很多商户都在转型，今年这里会有大变化，例如盆景大观园、轰趴馆……到时人们来这里游玩体验会更丰富。”<BR>　　梁琼方告诉记者，这里交通便捷，离市区车程仅十多分钟。田园综合体还配套有酒店，今后这里将聚集更多人气。这里的商户也经常聚在一起分享经验，争取做得更好。<BR>　　其实叠彩区政府对田园综合体的发展已有了顶层设计。<BR>　　叠彩区正抢抓桂林打造世界级旅游城市的历史机遇，重点发展2—3个具有桂林地域特色的优质花卉品种，形成规模种植，实现产业富民；将持续以田园综合体为载体，发挥以资源聚集资源的效应，吸引更多的花卉行业头部企业入驻；持续做大做强花卉苗木特色富民产业，把生态财富转化为经济财富，让沿岸群众共享漓江保护发展成果。<BR>　　桂林市大美漓江·缤纷叠彩田园综合体管委会副主任蒋泽群介绍说，2021年以来，叠彩区委、区政府围绕保护漓江、打造世界级旅游城市的历史使命，谋划江东片区发展，成立了桂林市大美漓江·缤纷叠彩田园综合体管委会，编制了村庄规划和花卉产业发展规划。在举办2022年第一届南方花卉苗木交易会前，对大美漓江·缤纷叠彩田园综合体实施了大规模环境整治，并进行提级改造。在此基础上，大力鼓励培育花园庭院经济，实现花旅融合发展，力争用3—5年时间打造成为一、二、三产融合发展的花卉现代农业产业园以及农文旅融合发展的五星级田园综合体。2024年将按照“一园一主题，一园一特色”产业规划布局，完成知竹小鲜肉精品园一期建设、铭景造园一期改造、“欣儿的花园”二期改造。<BR>　　今年上半年，管委会促成田园综合体和世外陶园山庄、广东圣茵花卉园艺有限公司合作培育研发朱顶红品种，引进多个朱顶红新品种，完成了8万株朱顶红的示范种植目标。<BR>　　同时，管委会积极推动将1号馆后约45亩土地打造成集游客中心、花卉文化中心、展览温室、新品花卉育苗基地等功能齐全的月季园，目前已进行了500多个品种的月季示范种植培育。管委会还与桂林市职工根艺奇石盆景花卉协会达成战略合作协议，引入7家盆景企业。<BR>　　叠彩区不断提升田园综合体周边道路及水利灌溉等基础设施建设。如今，园区道路宽畅便捷，餐厅、花卉超市、卖场、旅游厕所、慢行休闲步道、驿站及特色民宿和田园风度假酒店等配套设施逐步完善，成为市民、游客休闲游玩的好去处。<BR>
+            </div>
+
+            <div class="neirong 07b66d25-1b41-4b5b-ad5a-14902d181a14" alt="07b66d25-1b41-4b5b-ad5a-14902d181a14" daoxiang="03 ">
+
+                共庆重阳，老年人为老年人演出
+
+              　　本报讯（记者陈静&nbsp;通讯员彭康生　　文/摄）在重阳节即将到来之际，10月10日，桂林市中华文化促进会龙之声综合艺术团来到位于东安街老阀门厂区的桂林“优享家”养老院，为近百名长者举办了一场公益慰问演出。<BR>　　一首大合唱拉开了活动的序幕。随后，合唱、戏曲演唱、乐器演奏等精彩节目轮番上演。一个小时的演出节目丰富多彩，很多是老人们耳熟能详的老歌，一下子就引起了大家的共鸣，现场掌声不断、一片欢声笑语。最后，全体演员和养老院的老人们共同高唱《最美不过夕阳红》，将慰问演出推向高潮。<BR>　　据了解，参加演出的人员都是退休老人，年龄最大的已经73岁，但他们个个精神饱满，热情洋溢。老年人为老年人演出，不仅让大家一起感受到节日的温馨与快乐，更体会到了老有所学、老有所乐、老有所为的幸福晚年生活。“感谢这场精彩演出，让我们把这个重阳节过得这么棒。”“今天的节目每一个都好看！”养老院的老人们对演出赞不绝口。<BR>
+            </div>
+
+            <div class="neirong ad958c65-20cc-454f-abcc-c251af1e0bf2" alt="ad958c65-20cc-454f-abcc-c251af1e0bf2" daoxiang="03 ">
+
+                一碗“长寿粉” 15载“敬老情”
+
+              　　本报讯（记者韦莎妮娜&nbsp;通讯员王亚东）重阳又随清秋至。10月9日，在七星区五通社区，白发苍苍的居民接过志愿者递来的美味米粉，开心地说：“年年重阳节都能吃到社区准备的‘长寿粉’，能被记挂着，非常感动。”<BR>　　“一碗粉”是社区与居民长达15年的约定。多年来，五通社区以“粉”为媒，以重阳节为载体，营造尊老、爱老、孝老、助老的社区氛围。社区负责人告诉记者，每年的重阳节，社区都会组织老年居民聚在一起，观看由附近幼儿园孩子、民间文艺团体表演的文艺节目。看完节目，社区工作人员、志愿者给老人们煮“长寿粉”，通过“同吃粉、话幸福”这种群众喜欢的形式，减轻老人们的孤独感，提升他们的归属感和幸福感。<BR>　　在今年的重阳节活动现场，老人们不仅观看表演，他们自己也登台表演了节目。84岁的居民谭政锋即兴朗诵了自己创作的新诗，收获了热烈的掌声。谭爷爷说，平时他有什么需求或是建议，只要跟社区反映，马上就能得到回馈。“我切身感受到自己是这个大家庭的一分子。”<BR>　　五通社区负责人表示，未来只要有条件，这个重阳节主题活动将持续开展下去，把敬老爱老的中华传统美德传承下去，弘扬开来。<BR>
+            </div>
+
+            <div class="neirong f0f4cf46-d457-43a5-89e0-63de4398043c" alt="f0f4cf46-d457-43a5-89e0-63de4398043c" daoxiang="03 ">
+
+                社山桥社区这场健康沙龙活动让老人们收获满满
+
+              　　本报讯（记者陈静&nbsp;文/摄）又是一年重阳节。10月10日上午，七星区计生协与社山桥社区党委、东江社区卫生服务中心联合在七星区家庭健康服务中心举办主题为“好家风·健康行”的重阳节健康沙龙活动，引导老年人形成健康快乐的生活方式。<BR>　　中医药养生专家、东江社区卫生服务中心主任赵东梅为到场老年人普及中医知识和中医健康养生方法，告诉大家怎样利用食物和药物的特性，制作具有保健和治疗作用的食疗方和药膳，让大家受益匪浅。<BR>　　随后，东江社区卫生服务中心的工作人员现场教授了八段锦功法，老人们跟随着认真学习每一个动作。<BR>　　社区工作人员还为老年朋友准备了重阳养生茶和点心，祝福他们“时光不老、快乐永久”。<BR>　　参与活动的老人们纷纷表示，这样的活动不仅提高了他们的养生保健意识，还能让大家增进交流，拓展社交圈子，丰富精神生活，同时营造爱老、助老的浓厚氛围，提升了老人们的幸福感、获得感。<BR>
+            </div>
+
+            <div class="neirong 72b9887b-e783-41ea-87e6-34dfec314562" alt="72b9887b-e783-41ea-87e6-34dfec314562" daoxiang="03 ">
+
+                七星区：山歌油茶庆重阳
+
+              　　本报讯（记者韦莎妮娜&nbsp;通讯员黄爱群）又到重阳，桂子飘香。在九九重阳节来临之际，七星区在毛塘路开展“山歌嘹亮庆重阳&nbsp;油茶飘香共团圆”活动，为银发群体送上祝福和关爱。<BR>　　七星区民政局、广西仁者社会工作服务中心策划了本次活动，邀请社区及爱心企业共同营造浓厚的尊老氛围。<BR>　　在活动现场，老年居民们在志愿者带领下对起了山歌。“唱山歌来哟，唱山歌，这边唱来那边和”“什么水面打跟斗哎，嘿了了啰”……熟悉的山歌唱响，现场的气氛顿时热烈起来。随后，大家一起动手打油茶、喝油茶，在浓郁的茶香中拉近邻里关系，增进情感交流。<BR>　　广西仁者社会工作服务中心负责人表示，山歌和油茶爱好者均以老年人居多，在熟悉的领域，他们能够更加放松身心交往交流。今年以来，仁者社会工作服务中心以传统佳节为载体，组织丰富多彩的文化活动，以“志愿+慈善”的服务模式，为计生家庭、困境儿童、银发群体送去贴心的服务和真挚的关爱。<BR>
+            </div>
+
+            <div class="neirong d0390123-7f4a-4b5e-a1d5-243166590cf1" alt="d0390123-7f4a-4b5e-a1d5-243166590cf1" daoxiang="03 ">
+
+                秀峰区举办“九九重阳”<br/>社会救助主题活动
+
+              　　本报讯（记者韦莎妮娜&nbsp;通讯员黄爱群）近日，秀峰区在尊神庙文化广场开展了“九九重阳暖人间&nbsp;社会救助惠民生”主题活动。本次活动由秀峰区民政局主办、广西仁者社会工作服务中心承办，旨在通过文艺表演、义诊、义剪等志愿服务，弘扬中华民族尊老、敬老的传统美德，加强社会救助政策的宣传力度，提高公众对社会救助政策的知晓率和对社会救助服务工作的满意度。<BR>　　在活动现场，老人们饶有兴致地观看了文艺节目，20名特困、低保等老年群体代表接受了慰问。爱心单位、爱心企业现场为老年人提供义诊、义剪、健康咨询、按摩体验等便民服务。秀峰区民政局还通过陈列展板、发放宣传册和现场有奖问答等形式，宣传社会救助政策，让更多人了解国家及地方政府在保障民生、改善弱势群体生活方面所采取的措施和取得的成效，推动在辖区形成良好的“志愿+慈善”服务模式，诠释“民政为民、民政爱民”服务理念。<BR>
+            </div>
+
+            <div class="neirong b87c4db7-c36f-4984-a926-6af8282b4ee1" alt="b87c4db7-c36f-4984-a926-6af8282b4ee1" daoxiang="04 ">
+
+                龙胜瓢里镇举办第十届“鱼宴节”
+
+              　　本报讯（记者李忠波&nbsp;通讯员章艳&nbsp;刘胜&nbsp;文/摄）金秋十月，龙胜各族自治县瓢里镇处处洋溢着丰收的喜悦。10月10日这个寓意“十全十美”的日子，瓢里镇盛大举办了以“跃动的鱼&nbsp;丰收的歌”为主题的第十届“鱼宴节”。<BR>　　瓢里镇凭借丰富的水资源和独特的渔业文化，使得“鱼宴节”历经多届传承，已然成为一张闪亮的名片。活动当天，外嫁女们身着节日盛装，纷纷回娘家团聚，共同分享丰收的欢乐。外嫁河北邯郸25年的张丽霞激动地说：“此次受娘家人热情邀请回乡参加‘鱼宴节’，心情无比激动。看遍诸多美景，最美的始终是回家的路。”<BR>　　湖南会馆舞台上，节目精彩纷呈。舞蹈、歌曲演唱、T台秀依次上演，赢得现场观众阵阵热烈掌声。演员们用歌声与舞姿，传达对美好生活的憧憬和对丰收的感激喜悦。<BR>　　鱼跃公园码头，古法撒网捕鱼展示的场景吸引了众多游客的目光。渔夫们身着传统服饰，熟练地挥舞着渔网，那有力的动作和专注的神情仿佛在诉说着古老的故事。鱼生展示现场，新鲜的鱼肉被切成薄片，薄如蝉翼，晶莹剔透。厨师们巧妙搭配各种调料，色彩斑斓，令人垂涎欲滴。来自河北唐山的游客果立波感慨道：“我奔着龙脊美景而来，经当地朋友介绍参加瓢里‘鱼宴节’。这个活动让我认识了瓢里镇，感受到了瓢里人民的热情，体验了这里的风土人情，还尝到了美味的鱼生，实在是非常满足。”<BR>　　“浑水摸鱼”环节趣味十足，参与性极强。主持人一声令下，参与者们纷纷卷起裤腿，踏入水中，展开紧张刺激的摸鱼大赛。经验丰富的手法娴熟，收获满满，令人羡慕不已；新手们虽技艺欠佳，但那份热情和乐趣丝毫不减。<BR>　　千人长桌宴将活动推向高潮。长长的餐桌上摆满了丰富的特色食物，游客与当地群众欢聚一堂，举杯共庆，现场热闹非凡。<BR>　　据悉，本次“鱼宴节”接待游客、嘉宾两千余人，参展商户达30家。餐饮、住宿、农副产品销售、奇石销售等活动，为瓢里镇人民带来了100万元的经济收入。<BR>　　这些活动不仅丰富了当地群众文化生活，也为瓢里镇的经济发展贡献了力量。近年来，瓢里镇始终坚持以党的二十大精神为引领，持续践行新发展理念，以农业为资源、文化为底蕴、旅游为媒介，扎实走好农文旅融合发展之路，创新性推动特色文化资源转化，为瓢里镇实现高质量发展注入了强劲动能。<BR>　　瓢里镇党委书记胡秋菊表示，下一步，瓢里镇将以龙胜打造民族文化旅游示范区为契机，全力推动文化旅游产业高质量发展。深挖文化资源，培育发展乡土文化品牌，拓展“旅游+文化”的深度与广度，积极创建民族特色村寨、传统村落，大力开展民俗文化活动，探索文旅融合新路径，形成保护与开发循环、反哺的文旅发展格局，丰富旅游产品和业态，为瓢里镇的文旅产业高质量发展贡献力量。
+            </div>
+
+            <div class="neirong eaf00c61-4193-479e-a8c0-d6e7d234371e" alt="eaf00c61-4193-479e-a8c0-d6e7d234371e" daoxiang="04 ">
+
+                荔浦芋扣肉上榜<br/>“桂菜十大名菜”
+
+              　　本报讯（记者秦丽云&nbsp;通讯员周俊远）日前，广西壮族自治区商务厅联合广西烹饪餐饮行业协会、广西广播电视台组织开展了广西桂菜名菜名小吃评议活动，荔浦芋扣肉上榜“桂菜十大名菜”。<BR>　　据了解，在9月15日至9月24日投票期间，本次评议活动得到全国各地网友788万次访问，投票76.8万张。结合网络投票、专家评议，最终评出最具民族代表性、蕴含广西饮食文化、广受消费者青睐的“桂菜十大名菜”“广西十大名小吃”。其中，荔浦芋扣肉上榜“桂菜十大名菜”。<BR>　　荔浦芋扣肉是一道色香味俱全的地方名菜。此菜以荔浦市荔浦芋、带皮五花肉、桂林腐乳为主要原料，先将带皮五花肉和切块荔浦芋过油炸黄，再将五花肉块皮朝下，与芋块相间排放碗中，加入调味料蒸熟，翻扣入另一盘中即成。芋头松粉软糯，冲淡了肥肉的油腻味，肉富芋味，芋含肉香，取长补短，相辅相成，酥香味美，素有“一家蒸扣，四邻皆香”之赞誉，不仅是历代皇室的“贡品”，更是逢年过节百姓家宴中必不可少的特色菜。<BR>　　据悉，此次上榜的“桂菜十大名菜”为广西白切鸡、荔浦芋扣肉、高峰柠檬鸭、螺蛳鸭脚煲、玉林炒牛杂、梧州纸包鸡、南宁老友鱼、贺州三宝酿、巴马烤香猪、酥炸沙虫；“广西十大名小吃”为桂林米粉、五色糯米饭、柳州螺蛳粉、广西酸嘢、瑶族油茶、南宁老友粉、梧州龟苓膏、玉林牛巴、北海蛋黄酥、贵港藕粉糊。
+            </div>
+
+            <div class="neirong 5230e45c-26fe-450a-84f2-134c75bf8279" alt="5230e45c-26fe-450a-84f2-134c75bf8279" daoxiang="04 ">
+
+                永福：积极推进生态环境损害赔偿<br/>探索建立畜禽养殖污染治理新模式
+
+              　　本报讯（记者刘健&nbsp;通讯员秦忆文）近日，永福县成功办理2起生态环境损害赔偿案件，2起案件均涉及畜禽养殖场超标排放水污染物的环境违法行为。为做好畜禽养殖污染治理，永福县探索建立“行政执法+磋商索赔+生态修复”三位一体的畜禽养殖污染治理新模式，实现法律效果、社会效果和生态效果多方共赢。<BR>　　“对环境违法事实坚持‘一案双查’，在畜禽养殖污染执法的过程中同步开展生态环境损害调查工作。通过收集资料、现场勘察、采样监测、座谈走访、大数据分析等多元化方式，围绕畜禽养殖污染程度、生态环境损害是否存在、受损范围、受损程度、赔偿义务人责任等问题开展调查，查清生态环境损害事实。同时，提高生态环境损害赔偿案件办理质量，推动永福县生态环境损害赔偿工作向规范化、制度化、常态化方向迈进。”永福县生态环境局局长张近扬介绍说。<BR>　　落实磋商索赔，是对生态发展的保护举措。但保护生态的同时，也不能伤害企业发展。<BR>　　为此，永福县对符合索赔条件的畜禽养殖污染案件第一时间启动生态环境损害赔偿，对造成的生态环境损害情况进行评估，形成生态环境损害评估意见。<BR>　　“我们会及时组织养殖业主召开生态环境损害赔偿磋商会进行磋商，意见达成一致后签订赔偿协议书。磋商索赔环节实现高效、便捷、低成本，节省了行政和司法成本，减轻养殖业主诉累，有利于赔偿义务人认错悔错改错，及时主动修复生态环境。”张近扬介绍说，永福县还积极向养殖业主宣传解读生态环境损害赔偿政策法规，鼓励其履行生态环境损害赔偿责任。<BR>　　除了短期治理以外，永福县还积极探索县级人民政府统一管理县级生态环境损害赔偿资金，统筹开展县级生态环境修复相关工作的新模式。<BR>　　记者从永福县政府了解到，该县根据畜禽粪污对周边环境造成的影响，推广小流域治理、补植复绿、土地复垦等方式，多元化、多角度开展生态环境修复工作，要求养殖业主提高治污技术，对粪污进行综合利用，切实做好畜禽养殖污染防治。同时邀请公众参与监督修复实效，持续提升群众对生态环境损害赔偿制度的知晓率。<BR>
+            </div>
+
+            <div class="neirong 7f4b4856-4c51-4e4e-89d7-e9b81d386787" alt="7f4b4856-4c51-4e4e-89d7-e9b81d386787" daoxiang="04 ">
+
+                资源：青春力量助振兴 教育帮扶显真情
+
+              　　本报讯（记者刘健&nbsp;通讯员粟维辉&nbsp;潘孟阳）近日，广西师范大学物理科学与技术学院师生代表到资源县梅溪镇坪水底村开展“党建引领乡村振兴，科普育人建功时代”乡村振兴主题活动。活动中，广西师范大学物理科学与技术学院师生一行与村“两委”干部共同学习、深刻领会和把握党的二十届三中全会精神，走访看望了帮扶户，与帮扶对象亲切交流，为他们送上生活物资。<BR>　　随后，科普员通过趣味十足的互动体验，激发村里孩子们对科学的好奇心和热情。支教团的老师们将抽象的大气压强概念转化为直观有趣的实践操作，模拟17世纪科学家奥托·冯·格里克所做的著名实验，让孩子们亲手拨开由于大气而紧密结合的两个半球，真切地感受到大气压强的存在与威力。期间，老师还带领同学们动手制作了水火箭，模拟火箭发射的场景，让他们在动手操作和亲身体验中感受到科学实验的奇妙与乐趣。<BR>　　“今天很荣幸能够在这里开展科普教育活动。作为未来的一名人民教师，教育家精神不只是挂在嘴边的口号，而是付诸实践的行动。希望能够发挥我们的一点作用，引领这些孩子在探索科学奥秘中找到自我，坚定报效祖国的理想。”广西师范大学物理科学与技术学院科学教育专业学生张清清一边带领孩子们做手工，一边说道。<BR>　　据悉，通过此次活动，深化了广西师范大学物理科学与技术学院与对口帮扶村坪水底村的交流与合作，为下一步更加精准、更加务实、更加有效地推动坪水底村乡村振兴工作打下坚实基础。<BR>
+            </div>
+
+            <div class="neirong 6f0ea1bb-96cc-4784-aab4-c3f7b5e6187b" alt="6f0ea1bb-96cc-4784-aab4-c3f7b5e6187b" daoxiang="04 ">
+
+                兴坪镇：“三聚焦”提升真驻实干质效
+
+              　　本报讯（记者张婷婷&nbsp;通讯员程明辉）“我们镇种植的沙田柚果实硕大、脆嫩清甜、营养丰富，在全市小有名气，发展沙田柚特色产业大有可为。”兴坪镇水洛村驻村第一书记张华平一边为柚子树施肥，一边对脱贫户说。另一边，正在古皮寨村向村民推广桑蚕养殖的驻村第一书记姜平，天已经黑了还在村民家中讲解桑蚕产业的市场和优势。<BR>　　这是阳朔县兴坪镇发挥驻村工作队作用，让“驻村”变“助村”的缩影。近年来，为推动驻村工作队坚守岗位、履职尽责、发挥作用，兴坪镇持续强化驻村工作队管理，聚焦教育培训、严管厚爱、为民办事等方面，着力打造一支真蹲实驻、真帮实促、真抓实干的乡村振兴队伍。<BR>　　聚焦教育培训，增强助村本领。组织驻村工作队员集中学习《巩固拓展脱贫攻坚成果同乡村振兴有效衔接工作应知应会知识汇编》，定期开展特色产业发展、乡村治理、发展壮大村级集体经济等业务培训，解决驻村工作队员政策不清、业务不精等问题。组织驻村工作队员到党建先进村、产业发展示范村开展素质能力提升培训，开展理论学习、“擂台比武”和经验分享，借鉴先进经验，拓宽发展思路。<BR>　　聚焦严管厚爱，激发驻村动能。坚持明察与暗访相结合，由挂点领导、分管领导和镇纪委联合到村开展集中督查和随机暗访，对驻村工作队员进行综合评价，作为公布红黑榜的依据。坚持落实“八有两安”、乡镇补贴、工作经费等保障，及时解决工作、生活困难。坚持“以实绩论英雄”的鲜明导向，挖掘在乡村振兴、为民服务中的先进典型事例，讲好驻村故事。2023年以来，兴坪镇共评选出“最美第一书记”“最美驻村工作队员”9名，获评全市优秀第一书记工作示范点1个，正向激励效应不断提升。<BR>　　聚焦为民办事，强化驻村担当。定期开展“为漓江拾垃圾洗脸”“服务游客志愿红”等主题活动，持续要求驻村工作队员遍访脱贫户，扎实推进驻村帮扶措施落地落实，促进脱贫人口稳岗就业和产业发展。今年以来，驻村工作队员落实脱贫户雨露计划政策33人共计4.59万元资金；务工交通补助270人，共计13.98万元；产业奖补342户，共计93万余元。<BR>
+            </div>
+
+            <div class="neirong 0bcb5d1a-0a60-4016-8a07-2eb02b758b46" alt="0bcb5d1a-0a60-4016-8a07-2eb02b758b46" daoxiang="04 ">
+
+                2024阳朔铁人三项赛<br/>将于10月20日激情开赛
+
+              　　本报讯（记者廖绍芷）畅游秀美漓江，驰骋风光阳朔，再现精英风采。公认为国内规模最大、影响力最广的铁人三项赛即将在阳朔开赛，同时对赛道进行了更新，让参赛选手更深刻体验移步异景的山水阳朔。<BR>　　10月10日，记者从阳朔2024铁人三项赛新闻发布会上获悉，阳朔2024铁人三项赛将于10月20日激情开赛。这是阳朔自2017年以来第七次举办“铁三赛”。<BR>　　据介绍，本届“铁三赛”诚邀往届精英回归，引领赛事高度，再现精英风采。同时本届赛事特别推出畅游漓江体验活动，旨在为所有年龄、对铁人三项感兴趣的运动爱好者提供铁人三项赛体验，让更多对赛事感兴趣的朋友对“铁三赛”有更深入的了解。<BR>　　在上届赛事成功举办的基础上，本届赛事对赛道进行了优化，游泳赛道继续沿用漓江精华河段，骑车赛道自观莲路出发，途经田园路、石马路、山水大道，跑步赛道以元宝山集散中心为起讫点，途经有着旖旎山水风光、独特人文风情的阳朔新城区。骑车、跑步赛道的优化串联起阳朔各大经典景点，囊括阳朔的奇山秀水，真正实现参赛运动员享受“打铁”过程，共赏阳朔美景。<BR>　　近年来，阳朔积极探索和打造“旅游+体育”等“1+N”旅游规划体系，阳朔“铁三赛”的举办为“旅游+体育”提供了积极正向的带动作用。作为一项国际性的体育赛事，阳朔“铁三赛”为阳朔带来世界各地的参赛运动员及热爱运动的游客，也向世界展示了阳朔独特的自然魅力和深厚的户外文化底蕴，这些都进一步提升了阳朔的知名度和旅游形象。游客、参赛运动员的到来也为阳朔的住宿业、餐饮业、交通运输业带来了巨大客流量，带动了消费，为阳朔经济发展注入了新的活力，进一步推动了阳朔旅游业的发展。同时，阳朔提出以体为媒、以体促旅方案，以形成产业化为目标，谋划建设户外运动产业集群，推进户外运动产业基础设施建设。开发户外运动基地，围绕户外运动产业要素，努力打造集培训、表演、旅游于一体的户外运动艺术空间，推动阳朔旅游服务品质的提升。<BR>
+            </div>
+
+            <div class="neirong f7250ebd-241b-4df6-a1e7-9d863e5f52ed" alt="f7250ebd-241b-4df6-a1e7-9d863e5f52ed" daoxiang="05 ">
+
+                六塘镇：移风易俗树新风<br/>乡村焕发新气象
+
+              　　本报讯（记者刘健&nbsp;通讯员周甜）近年来，临桂区六塘镇将移风易俗、树文明新风作为乡村精神文明建设的重要抓手，注重结合运用文明乡风、家风传承、基层治理等有效方式，让乡村“内外兼修”，美得自然，为乡村振兴注入文明力量。<BR>　　村规民约“约”出新生活。六塘镇根据全镇16个村（居）委所含108个自然村实际，量体裁衣修订完善村规民约，重点将“树立婚事简办新风、树立勤俭朴素新风、树立厚养薄葬新风”等内容纳入《村规民约》，规范村民行为，树文明风尚。六塘镇岚岩村因地制宜，将村规民约的履行进行奖励，进一步提升村民规范行为的积极性，村规民约的约束力效果更明显。<BR>　　家园自治“理”出新风尚。六塘镇六塘村廖家花园村以建设美丽乡村与实现乡村振兴为目标，与村民代表共同协商后，创新打造了“花园”村民议事平台，为村民解决问题。“我觉得要解决村里环境卫生问题，关键还是要把家禽固定位置圈养，再以户为单位轮流负责公共区域卫生打扫。”在一次村民议事会上，一位村民代表的意见得到了大家的肯定。<BR>　　文化润心“创”出新环境。走进六塘镇，一幅幅生动亮眼的墙体彩绘分布在街道两旁的房屋立面，这些墙体彩绘包括移风易俗在内的主题图画，涵盖家风家训、婚丧喜庆、孝老爱亲、文明节俭、倡树新风、名人故事等内容。此外，六塘镇还结合传统节日等时间节点，依托新时代文明实践所（站），组织开展文化汇演、志愿服务、村民大会等形式多样、群众参与面广的主题活动，厚植传统文化沃土，释放文化魅力。<BR>
+            </div>
+
+            <div class="neirong eead545c-8a9a-425f-b246-c490b7fa0db0" alt="eead545c-8a9a-425f-b246-c490b7fa0db0" daoxiang="05 ">
+
+                龙胜：开设中医夜市服务百姓健康
+
+              　　本报讯（记者何月&nbsp;通讯员潘志祥&nbsp;秦榛）刮痧、针灸、耳穴贴压……近日，一个别出心裁的中医文化夜市在龙胜各族自治县县城开启。<BR>　　夜幕下，县城北岸特色街区灯火通明、人声鼎沸。活动现场设置了中医健康义诊区、中医技术体验区、中医代茶饮区等，免费为群众提供刮痧、针灸、中药泡脚等中医药服务，并向辖区群众宣传普及中医健康保健有关知识。<BR>　　“舒服，真舒服，让医生刮一下痧，整个人都松快了。明天我还要来！”家住县城的李女士对夜市提供的免费刮痧活动赞不绝口。中医技术体验区每项服务点都排着长龙。<BR>　　“夜市为期一个月，欢迎大家来了解、体验中医药文化。”义诊区医师夏蔚林同样被活动的盛况所感染，“通过夜市，我们能更好地传播中医药健康理念，中医药优秀传统文化也得到弘扬传承。”<BR>　　据龙胜各族自治县文广体旅局局长阳庆国介绍，本次中医康养文化夜市活动是龙胜首届以“中医康养文化”为主题的夜市，是龙胜继承好、发展好、利用好传统医学的一次创新尝试，也是服务百姓健康、为民办实事的惠民行动，更有意促进全县中医药和文化旅游深度融合。<BR>　　“龙胜得天独厚的地理环境，造就了龙胜药材的多样品种和优良品质，赋予了龙胜深厚的中医药文化底蕴。”阳庆国表示，龙胜将以本次活动为契机，结合境内龙脊梯田、龙胜温泉等丰富的旅游资源，发挥好中医药和龙胜旅游特色优势，不断做精做实中医康养文化夜市，把龙胜“中医康养文化夜市”办出实效、办出亮点、办出特色、办出品牌。
+            </div>
+
+            <div class="neirong 3d1f43e1-3094-4177-a60f-9c708f463c5f" alt="3d1f43e1-3094-4177-a60f-9c708f463c5f" daoxiang="05 ">
+
+                灌阳观音阁乡：甜蜜“柿”业醉农心
+
+              　　本报讯（记者秦丽云&nbsp;通讯员蒋宏伟&nbsp;蒋家凤）金秋十月，灌阳县观音阁乡立强村太秋甜柿种植基地的甜柿迎来了成熟采摘期。连日来，果农们在基地忙着采摘、装筐、搬运、销售等，乐享丰收。<BR>　　灌阳县观音阁乡地处中亚热带季风气候区，雨量适宜，土壤肥沃，日照充足。独特的地理生态环境，很适合太秋甜柿的种植。作为市场上品质和口感极好的柿子品种之一，太秋甜柿有柿子中的“爱马仕”、脆柿中的“玛莎拉蒂”之美誉，市场前景广阔。<BR>　　2018年，观音阁乡青年卢义瞄准太秋甜柿的商机和家乡这块“风水宝地”，利用自己打工赚得的“第一桶金”返乡创业。他流转土地120多亩，于2019年种植6000多株太秋甜柿苗，开创“柿”业。数年坚持，他已成为灌阳县成功种植甜杮的第一人。发展壮大后，卢义还联农带农，通过整合土地、资金、技术等资源要素，成立立强村太秋种养专业合作社和就业帮扶车间，带动其他农户参与种植。目前，合作社吸纳近10户20多名脱贫人口在车间务工，户均年增收4万元左右。<BR>　　走进甜柿种植基地，记者看到，柿树上挂着一个个与成人拳头大小的柿子。这些柿子果形端正，果肉橙黄色，无褐斑。尝一口，肉质嫩、清甜多汁，糖分足。<BR>　　据卢义介绍，数年来，太秋种养专业合作社以提供高品质、零污染的绿色果业为经营理念，严格把好每个种植生产环节的质量关，以无公害果品生产规程打造消费者“舌尖上安全美味食品”口碑。基地使用的肥料，是从附近的养殖场内买来粪便再经过发酵而成的生物有机肥。基地管理员唐义桂告诉记者，采用生物有机肥种出的甜柿果肉细嫩，甜脆多汁，成为广州、东莞、杭州等经济发达地区水果档口的抢手货和放心食品。<BR>　　卢义说，今年，基地的甜柿进入丰产期，亩产量2000斤左右。因果子品相好，早在9月份已有不少客商前来预订，优质果每斤10—15元，预估亩产值达2万元。<BR>　　“以前没吃过这样的柿子，今天有幸吃上了，真是太好吃了。这甜柿，有苹果的脆性、梨的水分、哈密瓜的甜味，超出了我对柿子的认知。”前来甜柿种植基地游玩的游客兰丽梅对口中的甜柿赞不绝口。<BR>　　据了解，近年来，灌阳县已成为水果产出大县。该县水果总面积超过30万亩，2023年水果总产量70多万吨，总产值超20亿元，全县果农年人均收入约1.5万元。该县按照“南橙、北李、中雪梨”的水果优势区域布局，大力鼓励群众发展李、梨、桃、橙种植产业，还支持其它特色水果产业发展。<BR>　　观音阁乡人大主席王玉秀告诉记者，在灌阳县农业农村局的技术指导下，该乡人大正在引导群众扩大太秋甜柿种植规模，以此丰富消费者“果篮子”，充实群众“钱袋子”，走“一村一品、一镇一业”的特色产业富民之路。<BR>
+            </div>
+
+            <div class="neirong bead17d8-7b9f-4aa5-be4f-3486785bc81f" alt="bead17d8-7b9f-4aa5-be4f-3486785bc81f" daoxiang="05 ">
+
+                两江镇：公益体检送健康<br/>志愿服务暖重阳
+
+              　　本报讯（通讯员陈标钰）在重阳节来临之际，临桂区两江镇新时代文明实践所联合临桂区两江镇卫生院来到两江镇洲村开展“我们的节日·重阳关爱老人免费体检”活动。<BR>　　现场，医护人员有序开展了健康咨询、健康指导、专科疾病答疑、测血糖、测血压活动，对有相关专科疾病的老年人提供了专业性包括饮食、保健、用药等全面的健康指导，对现场老年人进行了个性化的健康知识普及。<BR>　　九九重阳，健康吉祥。此次健康义诊活动，不仅为老人们送上了一份健康、一份关爱，也送上了重阳节真挚的祝福。随着社会的不断发展，我国逐渐进入老龄化社会，老年人对于生活品质的追求也愈来愈高。据悉，两江镇以此次重阳节免费体检活动为契机，将对两江镇辖区内所有的村（居）委老人进行一次免费体检，预计覆盖7000余人。<BR>
+            </div>
+
+            <div class="neirong 3391b29d-5823-41ca-87c3-af7ce9183eb7" alt="3391b29d-5823-41ca-87c3-af7ce9183eb7" daoxiang="05 ">
+
+                漠川乡：开展县乡人大代表<br/>进联络站联系群众活动
+
+              　　本报讯（通讯员杨长波&nbsp;张纯）近日，兴安县漠川乡人大开展县乡人大代表进联络站联系群众活动。活动中，人大代表们一起学习了党的二十届三中全会精神和“服务发展壮大实体经济，助推‘一区两地一园一通道建设’”主题实践活动内容，强化代表履职尽责，更好地发挥代表作用。驻站人大代表和群众代表对《广西壮族自治区平陆运河保护与管理条例（草案）》《桂林市海绵城市建设和管理条例（草案）》《桂林市旅游市场秩序条例（草案）》提出意见和建议。<BR>　　群众代表们从实际出发，畅所欲言，从居民最关心的S501省道建设、用水、卫生环境、交通出行等方面工作提出意见和建议。在座代表耐心倾听，一一记录，现场交流探讨相关问题的解决办法，力求做到事事有答复，件件有着落。<BR>　　下一步，漠川乡人大将进一步建好阵地、建强平台、建优队伍，努力让代表联络站成为联系群众的桥梁纽带、监督议政的履职平台，不断增强依法履职实效，为建设生态漠川、文化漠川、富裕漠川贡献人大力量。<BR>
+            </div>
+
+            <div class="neirong f364c2cd-204b-46b0-b83a-3afcb79afd66" alt="f364c2cd-204b-46b0-b83a-3afcb79afd66" daoxiang="05 ">
+
+                崔家乡：探索“人大+纪委”模式，提升联动监督质效
+
+              　　本报讯（记者刘健&nbsp;通讯员唐嘉辉）“修好了！修好了！感谢人大代表和乡纪委的同志，这条路终于修好了，我们出行再也不怕晴天一身灰、雨天一身泥了。”近日，家住崔家乡高泽村委赶子园村的李嬢嬢说道。走进赶子园村，已看不到之前坑坑洼洼的小路，映入眼帘的是干净整洁的水泥路。<BR>　　据悉，崔家乡高泽村人大代表联络站组织代表们在走访选民的过程中了解到，高泽村委赶子园村村内道路坑坑洼洼、泥泞不堪，给村民出行带来极大的不便。代表们在深入走访调研的基础上，及时向乡人大主席团提出《关于修建高泽村委赶子园村村内道路的建议》。<BR>　　此建议移交转办后，崔家乡人大连同乡纪委迅速将其纳入监督重点，对项目实施情况进行视察和监督，及时掌握项目内容、进展情况及在建设过程中遇到的问题和困难，对发现的问题及时提出建议并督促整改，共同推动该项目落地见效。同时，崔家乡人大还开展了建议办理“回头看”及群众满意度测评，切实提高了群众获得感和幸福感。<BR>　　据悉，今年以来，兴安县崔家乡积极探索“人大+纪委”监督联动模式，聚焦项目建设、民生实事、社会治理及群众反映强烈的突出问题等内容，及时构建信息共享互通机制，联合制定督查工作计划，充分发挥监督联动、职能互补优势，持续为全乡经济社会发展助力。通过开展联动监督工作，该乡人大和乡纪委已推动产业道路硬化、农田水渠维修等问题的解决。<BR>　　下一步，崔家乡人大将持续优化监督协调机制，与乡纪委同向发力，同频共振，以监督成果最大化实现监督效能最大化，为全乡基层社会治理和高质量发展赋能。<BR>
+            </div>
+
+            <div class="neirong 8f9eb136-d6cf-4091-8367-63137b4bc599" alt="8f9eb136-d6cf-4091-8367-63137b4bc599" daoxiang="05 ">
+
+                白石乡：人大代表助力<br/>民族团结之花在基层绽放
+
+              　　本报讯（记者刘健&nbsp;通讯员李丽）连日来，兴安县白石乡人大组织人大代表通过进村入户宣讲、银杏树下宣讲、田间地头宣讲等方式，将习近平总书记关于铸牢中华民族共同体意识的重要论述、党的二十届三中全会精神等内容向群众进行宣讲，让党的最新理论政策“飞入”寻常百姓家，让铸牢中华民族共同体意识家喻户晓、深入人心。<BR>　　近年来，白石乡人大依托各人大代表联络站宣传阵地，将人大工作理论学习与民族政策法规教育相结合，立足于春节、广西三月三、中秋节等传统节日，组建“人大代表+民族团结宣讲志愿服务队”，把民族团结政策和各项惠民政策融入文化活动中，以群众喜闻乐见的方式开展民族团结宣传教育。<BR>　　各代表联络站根据自身特色，开展了形式多样的宣讲活动。鳌头村人大代表联络站通过大喇叭宣传民族团结政策，通过发放宣传单、微信群转发等形式，扩大宣讲覆盖面和影响力。高圩村人大代表联络站采用“理论+文艺”的宣讲方式，以文艺演出为载体，进一步加强各族群众之间的交往交流交融，营造浓厚的民族团结一家亲氛围。<BR>　　下一步，白石乡人大将持续深入推进民族团结进步宣传教育工作，促进各民族交往交流交融。同时，突出发挥人大职能和工作特点，将民族团结与人大工作深度融合，让各民族群众像石榴籽一样紧紧抱在一起，助力民族团结之花在基层绽放。<BR>
+            </div>
+
+            <div class="neirong dcad05bf-6257-4b89-96f3-cc2b92804c01" alt="dcad05bf-6257-4b89-96f3-cc2b92804c01" daoxiang="05 ">
+
+                公 告
+
+              　　桂林市公安局在断卡行动中，对相关银行<BR>　　20209301040026800、30191201107610732、4563512600674910949、6212262103000154567、6212262103002653129、6212262103004311783、6212262103004335535、6212262103004472742、6212262103007020332、6212262103009257791、6212262103009410739、6213471011003625373、621412020104950483、62145603005772998、62145603007839084、62145603008385525、62145603012268584、62145603014297052、62145603014313156、6214560314369828、62145612000035798、62145612000794782、62145612002398020、62145620003818375、62145620006563259、62145620008960479、62145621000310713、62145621000702992、62145621001107803、62145621001804466、6214820130013608819、6214922700511730、6215340301901906270、6215340301901906270、6215682600000845891、6215682600000845891、6215692600001286531、6215983390001370711、6215983390001485444、6216692600006209965、6216915504519212、6216915505306049、6217003210017223690、6217003230053113050、6217003390002271456、6217003390003509391、6217003390004119760、6217003390004212102、6217003390004386799、6217003390004711863、6217003390005161605、6217003390005891193、6217003390006608992、6217003390007032598、6217003390007531177、6217003390008916831、6217003390008975027、6217003390009346731、6217003390009894847、6217003390011106594、6217003390012064222、6217003390012253353、6217003390012772667、6217003390013404328、6217003390013511247、6217003390014172122、6217212103000712877、6217212103003324191、6217222103000950039、6217232103000358842、6217232103000521738、62175620001496893、6217562600018987983、6217582600006759267、6217852600018345215、6217852600019065986、6217852600020691333、6217852600024835142、6217852600025664673、6217852600027223684、6217852600030715775、6217862600001707908、6217902600002192573、6217922901486291、6217994560025721163、62179961000178141022、6217996100038992242、6217996100096242852、62179961000975210079、6217996100114257015、6217996100114905514、6217996100136749643、6217996100137544357、6217996100137561880、6217996100139417990、6217996100139469470、6221840509088930581、6221886170005721556、6222032103002625885、6222032103003525894、6222032103003965926、6222032103006153991、6222032103006153991、6222082103000113180、622260070003729114、6222600770002553267、6222600770003268386、6222600770004090243、6222600770004241325、6222600770004808933、6222620770000489353、62226207700005360377、6222620770000665606、6222620770001277435、62226207700018998131、6222620770002002675、6222620770002256362、6222620770002986463、6222620770003076843、6222620770003145754、6222620770003170885、6222620770003505023、6222620770003731009、6222620770004249209、6222620770004648319、6222620770004792869、6222620770004918951、6222620770004999977、6222620770005209228、6222620770005632783、6222620770005639796、6222620776768394131、6226225507704540、6226632702040044、6227003395100082936、6227003395330093802、6227003396060151141、622821149022622270、6228270146006760370、6228270146016512670、6228270146041637278、6228270146065718673、6228270146083404173、6228270146089947571、6228270146094256679、6228410144549060474、6228410144560869878、6228420148815573370、6228450148032860077、6228480140362831111、6228480140647739212、6228480141313836415、6228480141369509718、622848014146938613、6228480141496947815、6228480141498128216、6228480148482765879、6228480148502357277、6228480148820381777、6228480148853324272、6228480148872172777、62284810144545037377、62285610007384243、62285611000290130、62285613000420139、62285618000341417、62285621005159305、62285621005275507、62285621005590541、62285621009683854、62285621009685396、62285621015028540、62285621018951219、62285622000282647、62285628001089535、62285628001184559、6228802002051755、622908553045141712、6230200351344986、6231330100001953094、6231330100003166216、6231330100006347003、62285628002782492、6231330100007288735、6231330100511702403、6231330100651022794、6231330300136206372、6231330304002017129、6231330500026941653、6231330500044793680、623133050536456242、62322155001308660、62322155001972846、62322155002047499、62322155004210764、62322155006208576、62322155008448196、62322155009278030、62322155009768279、6235692600000029948、623575200002578991、6236683390000550403、6236683390001353740、6236683390001817827、660000012206500015、660000015457500014、66001008612540010、660011056913300010、66213471011003901543、95588021031128860723账户内的涉案资金依法予以扣押。现公告，上述账户内的资金所有人自公告之日起六个月内持本人有效身份证件及证明材料到桂林市公安局认领并接受调查。逾期无人认领的，公安机关将依法上缴国库。特此公告。<BR>　　联系人：钟明格<BR>　　联系单位：市公安局新型网络犯罪侦查支队<BR>　　<BR>　　　　桂林市公安局<BR>
+            </div>
+
+            <div class="neirong 5103f9c7-2c73-406d-b90e-c44054ef1125" alt="5103f9c7-2c73-406d-b90e-c44054ef1125" daoxiang="06 ">
+
+                托起幸福“夕阳红”
+
+              　　<SPAN class=FloatTitle>□新华社记者刘紫凌&nbsp;马丽娟&nbsp;唐紫宸</SPAN><BR>　　让所有老年人都能有一个幸福美满的晚年，一直是习近平总书记的牵挂。<BR>　　习近平总书记指出：“满足数量庞大的老年群众多方面需求、妥善解决人口老龄化带来的社会问题，事关国家发展全局，事关百姓福祉，需要我们下大气力来应对。”<BR>　　重阳节前，记者走访基层看到，“智慧+”养老新场景破解急难愁盼，“行业+”养老新业态满足多元化需求，“志愿+”各级组织为老年人搭建发光发热新舞台……处处涌现的新实践，正在托起幸福“夕阳红”。<BR>　　<SPAN class=FloatTitle>急难愁盼有着落</SPAN><BR>　　【群众心声】做饭太麻烦，怎么吃更健康？出门遇到突发情况，家人不在身边怎么办？<BR>　　【总书记强调】积极应对人口老龄化，构建养老、孝老、敬老政策体系和社会环境，推进医养结合，加快老龄事业和产业发展。<BR>　　【基层实践】<BR>　　刷脸就能知道午餐适宜吃什么，你信不信？这样“时尚”的场景在杭州市西湖区翠苑一区老年食堂早就不是新鲜事。<BR>　　中午饭点快到了，老年居民陆续来到这里。刚一进门，就有AI摄像头通过人脸识别到老人的身体健康信息，左侧大屏幕立即弹出“个人定制菜单”，包括“不宜食用”和“今日推荐”，图文并茂。<BR>　　“陈老师，你今天不宜吃海鲜和豆制品，一会儿别忘了。”“老沈，你少吃点重口味的菜，最近是不是血压又高了？”几位老人对着屏幕上的用餐建议，彼此提醒着。<BR>　　点餐窗口每道菜上方，显示着菜品的营养含量。取餐后，收银台自动识别菜品并结算，老人刷脸即可支付。“这是老年食堂的智能‘助手’，特别‘聪慧’。”翠苑一区社区党委书记、居委会主任项菲菲笑着说。<BR>　　老人们的健康数据从何而来？项菲菲说，食堂二楼还设有日间照料中心，也是老年居民的健康小屋，日常会监测大家的身体各项指标。“这些数据会定期传到食堂数字化系统，为老年人健康膳食食谱提供依据。”项菲菲说。<BR>　　近年来，杭州还打造“全城通”智慧助餐模式，老年人在手机相关App上搜索，就能看到附近老年助餐点，任选一家“刷脸”即可用餐，无论户籍在哪里，都能享受相应优惠。<BR>　　随着新一代信息技术快速发展，老年人就餐、就医、家政等急难愁盼都有了新解。<BR>　　吉林长春市81岁的孔祥菊如今出门锻炼身体，逢熟人就介绍自己的“健康管家”——智能手表，“一个人出门就怕出意外，这块手表能随时监测我的身体状况，还能定位跟踪和报警”。<BR>　　不久前，孔祥菊在公园锻炼时不小心摔倒，智能手表马上响起电话，提供监测服务的一家医养中心医护人员立即实时问诊。当天，医养中心护工便上门回访，再次为她检查身体状况。“有了这个智能手表，我安心，儿女也更放心。”孔祥菊说。<BR>　　近年来，长春市积极推进医养结合，对医养结合型民办养老机构实施奖补，更多智慧健康养老产品和服务得到推广，惠及越来越多老年人。<BR>　　【新闻深一度】<BR>　　智能防走失手环、健康监测设备、家庭服务机器人……在数字化浪潮推动下，“比你更懂你”的智慧健康养老产品不断“上新”，为老年人提供更加精准的服务。今年8月底，工信部等三部门联合印发通知，组织开展2024年智慧健康养老产品及服务推广目录申报工作，数字化手段将为更多老年人排忧解难。<BR>　　<SPAN class=FloatTitle>多彩生活有滋味</SPAN><BR>　　【群众心声】一场说走就走的旅行，一个健康愉悦的爱好……<BR>　　【总书记强调】我国老年群体数量庞大，老年人用品和服务需求巨大，老龄服务事业和产业发展空间十分广阔。<BR>　　【基层实践】<BR>　　结束了在宁夏固原市隆德县长达一个半月的“候鸟式”养老，不久前刚回到西安市的64岁退休老人代英，已经开始期待明年夏天的“旅行”了。<BR>　　坐落在六盘山的隆德县风景秀美，夏季平均气温只有18摄氏度。今年，经朋友介绍，代英专门来此避暑，“一下车就爱上了这里，空气好，很安静，满眼都是绿色”。<BR>　　代英入住的旅居养老机构，是隆德县老年养护院。这家2021年新建的公办民营养老机构，可为失能、半失能老人提供服务。<BR>　　“去年我们将一栋闲置的大楼改造成酒店，接待全国各地旅居老人，没想到很抢手。”养护院院长杨珍珍说，“今年5月起，58张床位全部住满，有来自四川、陕西、山西等地的老人，时间最长的住了3个月。”<BR>　　“出来玩我们最关心的就是吃和住。”代英说，养护院随处可见扶手、斜坡、防滑砖等适老化设施，食堂饭菜口味清淡，很合胃口。入住期间她感冒了，养护院有专业的医疗服务，不出大院就把病看了，“住得舒心又安心”。<BR>　　当前，旅居养老已成为老年人新选择。今年8月，宁夏发布了“旅居养老地图”，标注了全区首批39家旅居养老机构，地理位置、床位情况、联系方式及周边景点等一目了然。宁夏还与福建、广东等12省区签订旅居养老合作框架协议，让老年人四季均可旅居养老。<BR>　　面对老年人日益迫切的多元化、差异化、个性化需求，越来越多新业态涌现。<BR>　　每天清晨，在浙江宁波市鄞州区东柳街道锦苑社区“长者运动健康之家”，一些满头银发的老年人，由工作人员量血压、戴上心率手环后，在专业教练指导下开始“撸铁”。<BR>　　“这些健身器材都是针对老年人的身体特点研发的，通过科学健身，帮助老年人预防和减缓慢性疾病的发生与发展，还为老人制定个性化训练方案。”锦苑社区党委书记程燕说，去年，社区打造了这间老年健身房，从力量训练到平衡练习，一应俱全，按照公益低收费模式向居民开放。<BR>　　66岁的社区居民王顺茂每天都来锻炼一个小时。“以前我自己运动，很多动作不规范，现在有专业指导就是不一样！我感觉自己精神多了。”王顺茂说。<BR>　　如今，宁波市多个社区都建设了嵌入式健身场所，这里渐渐成为老人们的新乐园。<BR>　　【新闻深一度】<BR>　　近年来，我国推动养老服务与文化、旅游、体育等行业融合发展，切实提升老年人生活品质。今年1月，国务院办公厅印发《关于发展银发经济增进老年人福祉的意见》，提出“建设国家老年大学”“组建覆盖全国的旅居养老产业合作平台”“丰富老年文体服务”“组织开展各类适合老年人的体育赛事活动”等一系列意见，让老年人共享发展成果、安享幸福晚年。<BR>　　<SPAN class=FloatTitle>老骥伏枥有作为</SPAN><BR>　　【群众心声】继续投身热爱的事业，继续发光发热实现自我价值，继续积极参与社会生活……<BR>　　【总书记强调】要为老年人发挥作用创造条件，引导老年人保持老骥伏枥、老当益壮的健康心态和进取精神，发挥正能量，作出新贡献。<BR>　　【基层实践】<BR>　　68岁的吉林大学基础医学院退休教授崔丽，两年多前来到新疆阿拉尔市的塔里木大学支教。上课、办讲座、指导大学生创业竞赛……每日步履匆匆，她却精力充沛。<BR>　　退休后崔丽在家照看了几年孙子，心里总想着再做点什么。2022年，她报名教育部开展的高校银龄教师支援西部计划，成为塔里木大学医学院第一位银龄教师。<BR>　　当时，塔里木大学医学院刚成立，师资力量薄弱。崔丽带领教师集体备课、指导参加教学比赛……学院缺少病理学资深教师，原本主要讲授组织胚胎学课程的她，主动揽下这门课程。<BR>　　支教期满后，面对医学院师生的不舍和挽留，她又留了下来。崔丽说，趁“年轻”，她还想为塔里木大学继续奉献光和热。<BR>　　从智力援助、基层治理到志愿服务，一批批银发群体为社会注入满满正能量。<BR>　　9月底，宁夏吴忠市利通区金积镇梨花桥村，一片片籽实饱满的青贮玉米挺立田间，大型收割机穿梭其中。66岁的农业技术专家杨生明剥开玉米棒苞叶，检查籽粒成熟情况，收完玉米，马上就要抢种冬小麦，他负责技术指导。<BR>　　2018年从吴忠市农业技术推广服务中心退休后，杨生明闲不住，先后被内蒙古、甘肃等周边省份返聘，在田间地头指导农业生产。<BR>　　这两年宁夏在引黄灌区探索“冬小麦+青贮玉米”一年两熟模式，打破过往种粮一年一熟的局限，以提高种植效益。吴忠市老科技工作者协会邀请杨生明加入技术攻坚团队，他毫不犹豫地答应了。<BR>　　“将一年两熟技术运用到实际生产中，是我目前最大的心愿。”杨生明说，虽然退休了，但科技工作没有止境，他期盼见证更大的丰收。<BR>　　近年来，吴忠市实施“银才赋能”行动，分行业分领域建立由名医、名师、名家、名匠组成的“银发人才”信息库，为这些自愿加入的银发人才搭建继续发光发热的平台。<BR>　　【新闻深一度】<BR>　　莫道桑榆晚，为霞尚满天。老年是人生中重要的阶段，依然可以有作为、有进步、有快乐。2024年，国家银龄教师行动计划将招募7000名银龄讲学教师，支持农村地区教育发展。9月，全国老龄工作委员会印发相关指导意见，提出将组建全国“银龄行动”志愿服务队伍，行动将融入东西部协作和省域内区域协调发展，这将为老年人展示自我价值创造更宽广的舞台。<BR>　　（新华社北京10月10日电）<BR>
+            </div>
+
+            <div class="neirong 2985c0a9-2535-47e5-bf60-34a16f023ca9" alt="2985c0a9-2535-47e5-bf60-34a16f023ca9" daoxiang="06 ">
+
+                全力承办好国际网球大师赛<br/>助力打造世界级旅游城市
+                ——访灌阳县委常委、副县长金峰
+              　　<SPAN class=FloatTitle>□本报记者周文俊&nbsp;文/摄</SPAN><BR>　　“2024年ITF国际网球大师赛MT100桂林灌阳站今天正式开幕，这是近年来灌阳承办级别最高的一次体育赛事，也是灌阳积极助力桂林打造世界级旅游城市活动的实际举措。”10月10日，灌阳县委常委、副县长金峰向记者介绍说。<BR>　　为承办好本届ITF国际网球大师赛，灌阳县认真开展筹办工作，成立市级以上重大赛事灌阳县执委会统筹赛事筹备各项工作，下设办公室及9个工作组，全面开展竞赛组织、场馆提升、新闻宣传、安保和应急、后勤保障等各项工作，先后召开多次推进会、协调会，全面落实落细各项筹备工作，努力为参赛选手营造优质的比赛环境，确保赛事安全有序圆满成功举办，向国内外选手展示灌阳良好形象。<BR>　　金峰表示，在承办好赛事的同时，灌阳还举办了灌阳县2024年国庆特优“农”味嘉年华系列活动，依托重大体育赛事，将灌阳的农特产品进行展示推介，推进农文旅体产业深度融合。<BR>　　“下一步，我们将继续做好‘体育+’后半篇文章，不断推动灌阳县经济社会高质量发展。”金峰说。<BR>
+            </div>
+
+            <div class="neirong 42b3627d-dbbe-4de2-95a3-e77e2157f7ae" alt="42b3627d-dbbe-4de2-95a3-e77e2157f7ae" daoxiang="06 ">
+
+                多彩活动迎重阳
+
+
+            </div>
+
+            <div class="neirong bc59b728-5daa-4d9b-9944-6a1d91d9e51e" alt="bc59b728-5daa-4d9b-9944-6a1d91d9e51e" daoxiang="06 ">
+
+                很荣幸能参与赛事中<br/>更好地推广网球运动
+                ——访奥运冠军郑钦文奥运备战团队成员、上海久事网球队队员肖霖昂
+              　　<SPAN class=FloatTitle>□本报记者周文俊&nbsp;文/摄</SPAN><BR>　　“这次2024年ITF国际网球大师赛，是在桂林和灌阳举办的第一个国际网球赛事，作为一名地道的桂林人，非常荣幸能够受邀参与到这项重大赛事中。”10日上午，在比赛开幕式结束后，肖霖昂高兴地告诉记者说。<BR>　　作为一名网球明星球员，肖霖昂受到现场球迷们的热捧。给球迷送上签名网球、与球迷合影、为球迷签名。他表示，希望通过参与到这项赛事中，更好地向社会特别是青少年朋友推广网球运动，让更多的人爱上网球，积极助力桂林网球运动的发展。<BR>　　“这里有非常棒的网球设施，有中心球场、露天球场、风雨棚场，而且依山傍水，环境非常好，为赛事的举办和参赛选手提供了非常好的比赛条件。”肖霖昂说。2024年ITF国际网球大师赛MT100桂林灌阳站的举办，必将进一步推动桂林和灌阳体育事业的发展。同时，希望承办更多这种有影响力的重大赛事，带动更多的群众参与到网球运动中，促进全民健身运动蓬勃开展。<BR>
+            </div>
+
+            <div class="neirong 00578c4e-d1cd-4df8-add8-0cc2fe7cefe0" alt="00578c4e-d1cd-4df8-add8-0cc2fe7cefe0" daoxiang="06 ">
+
+                公 示
+
+              　　根据《中华人民共和国城乡规划法》要求，我局现将拟批瓦楞纸板生产线扩建项目规划总平面图方案予以公示（详见公示网站)。<BR>　　该项目位于大圩镇廖家村民委员会毛村村民小组。主要技术经济指标为：总用地面积2665㎡，建筑占地面积864㎡，总建筑面积3550㎡，计容建筑面积3550㎡，建筑系数47.4%，容积率1.33，绿地率13.76%。<BR>　　申请人及利害关系人如有异议，请以书面形式将意见（署真实姓名和有效联系方式)于公示期内送达灵川县自然资源局国土空间用途管制股（联系电话：0773-6860193），申请人及利害关系人依法享有要求听证的权利。<BR>　　公示期限：自公示刊登日起，至顺延满7个工作日止。<BR>　　现场公示地点：瓦楞纸板生产线扩建项目现场<BR>　　公示网址：http：//www.lcxzf.gov.cn/xxgk/fdzdgknr/ggzyjy/tdsc<BR>　　咨询电话：0773-6860193<BR>　　　　　　　　　　　　　　　　　　　　灵川县自然资源局　　　　　　　　　　　　　　　　　　　　　　　　&nbsp;2024年9月30日
+            </div>
+
+            <div class="neirong 2c94c000-bdc9-452a-8253-e121d6eb9220" alt="2c94c000-bdc9-452a-8253-e121d6eb9220" daoxiang="06 ">
+
+                公 示
+
+              　　根据《中华人民共和国城乡规划法》要求，现将我局拟批《桂林市琴潭片区城中村改造项目D8-3-1a地块》规划方案予以公示（具体内容及图纸详见桂林市自然资源局网站、项目现场、市自然资源局公示栏）。<BR>　　该项目位于琴潭南路南侧，衡柳铁路以北。具体内容详见公示图纸。<BR>　　申请人及利害关系人如有异议，请以书面形式将意见（署真实姓名和有效联系方式）于公示期内送达临桂区西城中路69号创业大厦西辅楼桂林市政务中心三楼D区13号窗口（联系电话：5625041），申请人及利害关系人依法享有要求听证的权利。&nbsp;<BR>　　公示期限：自公示刊登日起，至顺延满7个工作日止。<BR>　　公示网址：zrzyj.guilin.gov.cn	<BR>　　咨询电话：0773-2850440<BR>　　　　　　　　　　　　　　　　　　　　&nbsp;桂林市自然资源局<BR>　　　　　　　　　　　　　　　　　　　　&nbsp;2024年10月10日<BR>
+            </div>
+
+            <div class="neirong 11f1b254-2b43-475b-a9ad-cbb95d700317" alt="11f1b254-2b43-475b-a9ad-cbb95d700317" daoxiang="06 ">
+
+                这里的网球设施一流<br/>非常高兴能来参加比赛
+                ——访中国足球教练员、参赛选手区楚良
+              　　<SPAN class=FloatTitle>□本报记者周文俊&nbsp;文/摄</SPAN><BR>　　“这里的网球场地等硬件设施是一流的，非常高兴能够到桂林灌阳参加这项ITF国际网球大师赛。”10日上午，中国足球教练员、前中国足球队明星球员区楚良，作为选手参与到赛事中。<BR>　　根据赛事安排，当天区楚良和队友轮空，不过他们很早就现身比赛现场，了解场地情况，感受比赛氛围，并提前打探对手水平。对于比赛设施，他表示，现场有十多块集中比赛场地，非常不简单。如果能够不断组织各个级别的网球赛事在这里举办，带动更多的群众参与其中，逐渐形成良好的网球氛围，相信假以时日，经过不断的积累和沉淀，网球运动在灌阳和桂林会发展得更加蓬勃。<BR>　　对于参加本次赛事，区楚良表示，没有具体的目标，目前对网球比赛胜负已经无欲无求了。不过，希望通过在这里比赛，争取到一些网球赛的国际积分，去参与更高级别的赛事，享受网球运动的快乐。<BR>
+            </div>
+
+            <div class="neirong 78bbfe8d-24e0-44d6-9770-9d3816c7e319" alt="78bbfe8d-24e0-44d6-9770-9d3816c7e319" daoxiang="07 ">
+
+                遵道而行，但到半途须努力<br/>会心不远，要登绝顶莫辞劳
+
+              　　□崔华前<BR><BR>　　9月30日，习近平总书记在庆祝中华人民共和国成立75周年招待会上的讲话中引用南岳衡山的一副对联“遵道而行，但到半途须努力；会心不远，要登绝顶莫辞劳”，要求全党同志居安思危、未雨绸缪，坚决战胜一切不确定难预料的风险挑战。<BR>　　这副对联上联中的“遵道而行”语出《礼记·中庸》：“君子遵道而行，半涂（同‘途’，编者注）而废，吾弗能已矣。”强调忠诚于“道”、锲而不舍对于成就一番事业的极端重要性，旨在倡导一种遵循客观规律、沿着正确方向、矢志践行真理的顽强意志；下联中的“会心不远”语出《世说新语·言语》：“会心处不必在远。”强调与本心相会不一定在远方，而是在自己内心深处，旨在倡导一种遵循本心指示、战胜挫折困难、到达成功彼岸的坚定信念。“遵道而行”“会心不远”是“方向盘”和“道”，“须努力”“莫辞劳”是“发动机”和“术”，它们相互配合、相得益彰，共同构成了人们行稳致远、达成目标的完整有效模式。<BR>　　实现中国式现代化要“遵道而行”，遵循客观规律。中国式现代化受到历史发展规律支配，只有不断深化对规律的认识，按照规律办事，才能避免走弯路，做到事半功倍。中国共产党领导是中国特色社会主义最本质的特征，是中国特色社会主义制度的最大优势，为此必须把握和运用共产党执政规律，充分认识中国共产党执政的历史必然性，始终坚持党总揽全局、协调各方的领导核心作用，坚决维护党中央权威和集中统一领导，持之以恒推进全面从严治党，努力以党的自我革命引领伟大社会革命。习近平总书记在党的二十大报告中深刻阐释了前进道路上必须牢牢把握的五个重大原则，其中第二条是坚持中国特色社会主义道路，为此必须把握和运用社会主义建设规律，深入贯彻党的基本理论、基本路线、基本方略，把国家发展进步的命运牢牢掌握在中国人民手中。中国式现代化的本质要求之一，就是实现高质量发展。高质量发展是全面建设社会主义现代化国家的首要任务，为此必须把握和运用人类社会发展规律，立足新发展阶段，贯彻新发展理念，构建新发展格局，充分发挥中国特色社会主义的制度优势，更好推动生产关系与生产力、上层建筑与经济基础相适应，提升全要素生产率，发展新质生产力。<BR>　　实现中国式现代化要“会心不远”，牢记初心使命。为中国人民谋幸福，为中华民族谋复兴，是中国共产党人的初心和使命，是激励一代代中国共产党人前赴后继、英勇奋斗的根本动力。推进中国式现代化，必须坚持以人民为中心，始终牢记党的根本宗旨，牢记人民至上，坚持发展为了人民，把人民利益作为一切工作的出发点、落脚点和评判标准，把解决民生问题放在一切工作的首位，多谋民生之利、多解民生之忧，致力于让全体人民都过上好日子；坚持发展依靠人民，问政、问需、问计于民，尊重人民主体地位和首创精神，做到人民有所呼、改革有所应；坚持发展成果由人民共享，促进全体人民共同富裕、社会公平正义、人的全面发展，不断提高人民生活质量和社会共享水平，努力让全体人民在共同奋斗中共享改革发展成果。<BR>　　实现中国式现代化“须努力”，要保持顽强意志。中国式现代化前进道路不可能一马平川，必定会有艰难险阻，可能遇到风高浪急甚至惊涛骇浪的重大考验。志不求易者成，事不避难者进。推进中国式现代化，必须立场坚定、坚守原则，充分认识“道路问题是关系党的事业兴衰成败第一位的问题，道路就是党的生命”，坚持和发展中国特色社会主义，不管遇到什么风浪，任凭乱云飞渡，决不因各种杂音噪音而改弦更张，保证不在根本性问题上出现颠覆性失误；充分认识进一步全面深化改革是有方向、有立场、有原则的，有发展道路、指导思想、民主制度等方面的政治原则和底线，做到“该改的、能改的我们坚决改，不该改的、不能改的坚决不改”；保持咬定青山不放松、任尔东西南北风的强大战略定力，做到道不变、志不改，一张蓝图绘到底，一任接着一任干，久久为功，不达目的决不罢休。<BR>　　实现中国式现代化“莫辞劳”，要坚持自强不息。天行健，君子以自强不息。自强不息既是中华民族生生不息、薪火相传的强大精神支柱，也是中国共产党栉风沐雨、披荆斩棘的强大精神动力。当前，世界百年未有之大变局加速演进，不安全、不稳定、不确定因素明显增加，我国发展彩虹和风雨共生，机遇和挑战并存。当此船到中流、人到半山之时，只有大力弘扬和培育自强不息精神，不照搬西方现代化模式，独立自主地探索中国式现代化道路，自信自立、不屈不挠，才能在艰难磨砺中显勇毅、得玉成。<BR>　　（作者系温州医科大学马克思主义学院院长、教授，浙江省习近平新时代中国特色社会主义思想研究中心研究员）<BR>　　（来源：《光明日报》）<BR>
+            </div>
+
+            <div class="neirong a85a5d10-ebaf-43f8-a986-cda74917fd8c" alt="a85a5d10-ebaf-43f8-a986-cda74917fd8c" daoxiang="07 ">
+
+                深化教育综合改革<br/>为加快建设教育强国提供动力
+
+              　　□孙迎春&nbsp;王一虹<BR><BR>　　习近平总书记在全国教育大会上强调：“建成教育强国是近代以来中华民族梦寐以求的美好愿望，是实现以中国式现代化全面推进强国建设、民族复兴伟业的先导任务、坚实基础、战略支撑，必须朝着既定目标扎实迈进。”建成教育强国，需要深化教育综合改革。党的二十届三中全会《决定》对深化教育综合改革作出重要部署。新征程上，我们要贯彻落实深化教育综合改革的重要部署，办好人民满意的教育，为加快建设教育强国提供动力。<BR>　　遵循教育规律、人才成长规律，完善立德树人机制。习近平总书记强调要“紧紧围绕立德树人这个根本任务”“实施新时代立德树人工程”。立德树人，需要认识、尊重和顺应教育规律、人才成长规律。孔子提倡的有教无类、因材施教，荀子提倡的德育原则等，都是对教育规律、人才成长规律的思考和探索，其中一个重要方面就是把“立德”作为重中之重。立德树人是教育的根本任务，关系党的事业后继有人，关系国家前途命运。完善立德树人机制，就要从体制机制上引导教育更好聚焦这一根本任务。要把立德树人的成效作为检验学校一切工作的根本标准，坚持不懈用习近平新时代中国特色社会主义思想铸魂育人，着力培育和践行社会主义核心价值观，推进大中小学思政课一体化改革创新，健全德智体美劳全面培养体系，为学生终身发展和幸福成长奠基。<BR>　　形成健康的教育环境和生态，持续深化教育评价改革。习近平总书记强调：“要在全社会树立科学的人才观、成才观、教育观，加快扭转教育功利化倾向，形成健康的教育环境和生态。”深化教育综合改革，需要在形成健康的教育环境和生态上下功夫。现实中，教育功利化、短视化倾向背离了育人育才的目标指向，滋生错误的教育政绩观，让教育的指挥棒浓缩为考试分数、升学率等。形成健康的教育环境和生态，要淡化功利性，树立正确教育政绩观，扭转不科学的教育评价导向，把教育评价改革引向深入。要完善教育评价体系，把握好共性与个性、整体与局部、短期与长期之间的关系，进一步破除“唯分数、唯升学、唯文凭、唯论文、唯帽子”顽瘴痼疾，着力提高教育评价的科学性、专业性、客观性。按照整体性、系统性、协同性原则，围绕服务国家战略和经济社会发展，针对不同主体和不同学段、不同类型教育特点，分类设计教育评价体系。<BR>　　始终坚持教育公益性原则，进一步促进教育公平。习近平总书记强调：“要坚持以人民为中心，不断提升教育公共服务的普惠性、可及性、便捷性，让教育改革发展成果更多更公平惠及全体人民。”教育公平是社会公平的重要基础，也是建设教育强国的内在要求。围绕解决人民群众急难愁盼问题深化教育综合改革，就要把教育公平作为国家基本教育政策，逐步缩小教育的城乡、区域、校际、群体差距，努力让每个孩子都能享有公平而有质量的教育。坚持把促进教育公平融入深化教育综合改革的各方面各环节，推进基本公共教育服务覆盖全民、优质均衡，为具有不同禀赋和潜能的学生创造发展条件。优化区域教育资源配置，进一步推动优质教育资源向欠发达地区供给和输入，提高教育资源使用效益效能。完善义务教育优质均衡推进机制，加快集团化办学和城乡学校共同体建设，有效提升薄弱学校、农村学校办学水平。<BR>　　[作者单位分别为中央党校（国家行政学院）、中国国家创新与发展战略研究会]<BR>　　（来源：《人民日报》）<BR>
+            </div>
+
+            <div class="neirong b52c73d5-d074-4ef5-811b-282d463f8c17" alt="b52c73d5-d074-4ef5-811b-282d463f8c17" daoxiang="07 ">
+
+                呵护精神卫生<br/>要从“脱敏”做起
+                □新华社记者 徐鹏航
+              　　10月10日是世界精神卫生日。时下，精神健康日益成为人们的追求，精神卫生愈发受到全社会广泛关注。国家卫生健康委公布今年的全国宣传主题为“共建共治共享，同心健心安心”，充分体现了全社会对精神卫生的重视。<BR>　　呵护精神卫生，要从对精神心理疾病“脱敏”做起，增加理解，减少病耻感，共同营造一个充满关爱与支持的社会氛围。<BR>　　在现实生活中，仍有一些人不能正确认识精神心理疾病——有的人羞于谈起，对其讳莫如深；有的人视其为“洪水猛兽”，避之唯恐不及；也有的人认为精神心理疾病是个人意志品质问题，只是简单的“想不开”“不坚强”“爱钻牛角尖”。<BR>　　对精神心理疾病“脱敏”，首先要有正确的认知。精神心理疾病是一种“普通而又不普通”的疾病。“普通”是因为它就像一场“心灵感冒”，是可以预防和治疗的。精神心理疾病患者和其他躯体疾病患者一样，也是疾病的受害者。“不普通”则是因为精神心理疾病更加需要专业的治疗，也需要更多的谅解与关爱。<BR>　　就个人来说，对精神心理疾病“脱敏”，有助于更好地关注自己的心理健康，也有助于早发现、早治疗。每个人一生中都可能遇到心理健康问题。出于病耻感而讳疾忌医只会让病情恶化，错过最佳治疗时机。主动学习和了解心理健康知识，出现问题时及时向专业机构寻求帮助，则有助于保持积极健康的情绪，避免持续消极情绪对健康造成伤害。要认识到及时求助于专业人员不等于自己有病，更不等于病情严重，而是负责任的体现。<BR>　　就家庭来说，对精神心理疾病“脱敏”，既有助于患者的康复，也有利于家庭稳定和谐。更多了解精神心理疾病基本知识，给予患者关心、关爱，对患者的治疗、康复至关重要。尊重患者，不歧视患者，为患者提供支持，能够减少患者的孤独感，让其更有信心面对问题。此外，要充分理解患者的一些行为是疾病导致的，而非其有意为之，减轻照护者的心理负担。<BR>　　就社会来说，对精神心理疾病“脱敏”，有助于形成包容和支持的社会环境，真正实现“共建共治共享”。心理健康和精神卫生不仅是医疗卫生问题，更是民生和社会问题，关乎个人身心健康和社会和谐。一方面，加强科普，让更多人关注心理健康，了解精神卫生，为精神心理疾病“去污名化”至关重要。另一方面，构建社会心理服务体系，将精神卫生融入社会治理，从源头发力，主动预防、系统解决，提供全方位、多层次的社会支持，既能让民众更方便地获得心理健康知识和服务，也有利于进一步提升全社会的健康水平。<BR>　　以科学和包容的心态，了解精神卫生知识，关注心理健康，理解和接纳精神心理疾病患者，将有利于形成更加友善和温暖的社会环境。对此，需要你我携手共同营造“同心健心安心”的社会氛围，让每个人都能享受到真正的精神健康与幸福。<BR>　　　　　　　　　　　　（新华社北京10月10日电）<BR>
+            </div>
+
+            <div class="neirong d09e7e86-45d6-45ab-928c-1467ed5d9a00" alt="d09e7e86-45d6-45ab-928c-1467ed5d9a00" daoxiang="07 ">
+
+                促进人口高质量发展<br/>健全覆盖全人群、全生命周期的人口服务体系
+
+              　　□石智雷<BR><BR>　　人口问题始终是我国面临的全局性、长期性、战略性问题，人口发展是关系中华民族伟大复兴的大事。习近平总书记指出：“必须着力提高人口整体素质，以人口高质量发展支撑中国式现代化。”今后一个时期，我国人口众多的基本国情不会改变。同时，我国人口发展少子化、老龄化、区域人口增减分化的趋势性特征进一步显现。预计2035年前后，我国人口将进入重度老龄化阶段，这将对经济运行全领域、社会建设各环节、社会文化多方面产生深远影响。人口服务体系将婚嫁、生育、养育、教育一体考虑，有利于解决群众后顾之忧、促进人口高质量发展，为全面建设社会主义现代化国家提供坚实基础和持久动力。<BR>　　近年来，我国加快完善人口服务体系，以“一老一幼”为重点努力推动人口高质量发展，出台《关于优化生育政策促进人口长期均衡发展的决定》《关于推进基本养老服务体系建设的意见》《积极发展老年助餐服务行动方案》《家庭托育点管理办法（试行）》《托育机构质量评估标准》等，让广大人民群众的生活更加便捷、品质逐步提升，有力推动了人口高质量发展。党的二十届三中全会《决定》从推进强国建设、民族复兴伟业的战略高度，对“健全人口发展支持和服务体系”作出战略部署，提出“以应对老龄化、少子化为重点完善人口发展战略，健全覆盖全人群、全生命周期的人口服务体系，促进人口高质量发展”。这为进一步推动人口高质量发展指明了方向。我们要全面认识、正确看待我国人口发展形势，深刻把握人口发展规律，坚持人民至上，从人民整体利益、根本利益、长远利益出发，把党中央的战略部署落到实处，努力以人口高质量发展支撑中国式现代化。<BR>　　覆盖全人群。健全人口服务体系，保证每个人平等参与、平等发展的权利，才能让改革发展成果更多更公平惠及全体人民。这就要求我们着力增强人口服务体系的包容性，扩大人口服务体系的覆盖面，确保不同地区、不同民族、不同职业群体等都能平等、普惠地获得相关服务。比如，健全灵活就业人员、农民工、新就业形态人员社保制度，扩大失业、工伤、生育保险覆盖面等。同时，要顺应新时代人口流动客观规律，推动相关公共服务随人走，促进城乡、区域人口合理集聚、有序流动。<BR>　　覆盖全生命周期。全生命周期，就是要以人的生命周期为主线，为人们从婴儿期到老年期提供不间断的持续性人口服务。当前，广大人民群众都期盼美好的生活。同时，处在每一个年龄阶段的人口分别对应着特有的民生需求，幼有所育、学有所教、劳有所得、病有所医、老有所养、住有所居、弱有所扶，大都是具有年龄特征的民生保障内容。因此，要以人的生命周期为主线，健全覆盖全生命周期的人口服务体系，为不同年龄群体提供全方位人口服务。要完善生育支持政策体系和激励机制，有效降低生育、养育、教育成本，完善生育休假制度，建立生育补贴制度，提高基本生育和儿童医疗公共服务水平。要优化基本养老服务供给，培育社区养老服务机构等。<BR>　　健全覆盖全人群、全生命周期的人口服务体系是一项系统工程，涉及方方面面，必须坚持以系统思维统筹推进，科学把握和处理人口系统内部各要素之间，人口与经济社会、资源环境等外部要素之间的关系。同时，兼顾多重政策目标，将人口发展纳入中国式现代化建设全局中统筹考虑，充分发挥不同政策的系统集成效应，增强人口服务政策与其他政策的协调联动，形成共同促进人口高质量发展的合力。<BR>　　（作者为中南财经政法大学经济学院院长）<BR>　　（来源：《人民日报》）<BR>
+            </div>
+
+            <div class="neirong d7d20032-6aad-4d4b-909c-f5b5e17add35" alt="d7d20032-6aad-4d4b-909c-f5b5e17add35" daoxiang="07 ">
+
+                为超速电动自行车<br/>按下“减速键”
+
+              　　□熊志<BR><BR>　　近日，工业和信息化部会同公安部、应急管理部等多部门，对最新修订的《电动自行车安全技术规范》公开征求意见。<BR>　　《电动自行车安全技术规范》，是电动自行车领域的强制性国家标准。相对于现行标准，此次修订的“新国标”，在提高防火阻燃性能、防范非法改装行为、限制车速等方面，做了进一步改进和提升。比如，再次明确最高设计车速不超过25km/h。<BR>　　当下，我国的电动自行车保有量不断提升，在给民众提供出行便利的同时，火灾、交通事故等风险隐患也在逐渐放大，威胁群众生命财产安全。顺应行业发展的新趋势，对国标进行修订，越来越必要。<BR>　　现实中，电动自行车引发的安全事故频繁上演。一个重要因素在于，有的消费者为了追求更快的行驶速度、更长时间的续航，让商家对电动自行车进行非法改装，导致电动自行车超标、超速上路，大大增加了道路交通风险。<BR>　　比如针对“25km/h限速沦为摆设”的问题，此次“新国标”特别进行了完善，明确电动自行车控制器、蓄电池互认协同要求，改进了电动机额定功率测试方法，增加了对电动机最高转速的限制。<BR>　　电动自行车非法改装现象的泛滥，很大程度上是因为技术篡改难度小、门槛低，网上甚至充斥着解除限速的详尽操作指南，车主可轻易自行完成违规改造。<BR>　　这次拟推出的“新国标”，通过技术层面的改进，旨在从源头增加对电动自行车违规篡改的技术难度，同时提升了相关检测与测量的便捷性与准确性，以有效遏制非法改装行为。<BR>　　不过要指出的是，“徒法不足以自行”，电动自行车强制性国家标准与时俱进，只是推动行业健康发展、保障公共安全的第一步，更重要的是要让“新国标”得到贯彻落实，让规范不仅仅停留在纸面上。<BR>　　电动自行车问题突出，并非没有针对性的标准。以外界关心的限速问题为例，2019年版本的国标就明确规定，电动自行车最高车速为25km/h。<BR>　　现实中，随着民众出行范围扩大，生活节奏显著加快，25km/h的限速标准，难以满足部分消费者的期望，他们倾向于寻求解除限速的方法。面对这一市场需求，部分商家甚至将解除限速作为隐性服务提供，强制性国家标准的约束力，也在无形中被削弱了。<BR>　　让“新国标”落地，还得多管齐下。从生产源头到销售终端，再到车辆上路使用的全链条，均要强化监管与执法力度，减少事故隐患，确保道路交通安全。<BR>　　特别是针对网点分布广泛的经销商，应实施更为严格的监督措施，一旦发现存在非法改装行为，必须立即依法严惩，绝不姑息，避免陷入“法不责众”的误区，从而确保“新国标”的权威性与有效性。<BR>　　广大消费者也应该意识到，交通安全是出行中的首要之务，要自觉遵守“新国标”的相关规定。盲目追求速度与续航，对电动自行车进行非法改装，超越车辆原设计性能，不仅危及自身安全，更可能殃及他人，实属害人害己之举。&nbsp;（来源：《安徽日报》）<BR>
+            </div>
+
+            <div class="neirong d2518088-bf6f-4c22-b960-0075431654af" alt="d2518088-bf6f-4c22-b960-0075431654af" daoxiang="08 ">
+
+                怀孕了，就要把我的宠物送走？
+                □苏莉（桂林医学院附属医院优生遗传科）
+              　　随着生活水平的提高，撸猫、撸狗已经成了现代生活的一部分，这些“毛孩子”给大家的生活增加了乐趣，有些猫猫狗狗还成了家庭成员中重要的一分子。但是，一旦家里有人怀孕，宠物是否该留下的问题就成了争议的焦点。<BR>　　其实，这主要是有些人认为养猫、养狗会导致弓形虫的感染，对宝宝产生不良影响，那么，怀孕期间到底可不可以养宠物呢？<BR>　　一、什么是弓形虫<BR>　　弓形虫(toxoplasma)全名刚地弓形虫，是一种细胞内寄生性原虫，因其滋养体形似弓形或半月形而得名。弓形虫病是由刚地弓形虫感染导致的一种人畜共患疾病。猫或其他猫科动物是弓形虫的最终宿主，所有恒温动物（包括牛、猪、鸟和人）是其中间宿主。<BR>　　猫科动物感染后，在肠道内形成卵囊（感染体），经粪便排出，污染水和环境。如果动物采食了被污染的植物、捕食了患病动物或饮用了被污染的水源就有可能被感染。广泛的宿主和复杂的生命周期使得弓形虫在环境中广泛传播。<BR>　　人类主要通过食用受污染的没有煮熟的肉类、食物和水，或者与感染弓形虫的猫密切接触等途径感染。据推测，全球三分之一的人口已经感染了刚地弓形虫。因此它也被称为“地球上最成功的寄生虫”之一。<BR>　　二、弓形虫感染的影响<BR>　　弓形虫感染的临床表现非常复杂。健康成人感染后通常没有明显症状或者仅出现轻微的类似感冒症状，比如低热、疲劳、头痛。孕妇感染弓形虫后，可通过胎盘传染胎儿。孕早期感染容易导致死胎、流产及胎儿畸形等。孕中晚期感染的胎儿多为隐性感染，但部分婴儿出生后可出现黄疸、视力受损、脑积水、智力低下等多种损害。儿童期可表现出中枢神经系统损害，成年后的视网膜脉络膜炎等。<BR>　　胎儿感染的风险随着孕周增加而增加。据估计，早孕期母体感染的传播率为1.3%，孕中期为10.6%，孕晚期为21.7%（数据源自2023年AGG《妊娠期刚地弓形虫感染》专家共识）。但需注意的是，孕妇感染的孕周越早，对胎儿造成的损害越严重。因此育龄期妇女尤其要预防此病。<BR>　　三、弓形虫感染好发人群<BR>　　猫作为弓形虫的终末宿主，成为弓形虫感染的“代言人”也是情理之中。弓形虫感染大多数是因为不良的生活习惯、生活条件导致的，所以好发人群是：（1）有食用生的或半生猪、羊、牛、狗等动物肉类及其制品的；（2）有猫、狗等宠物饲养或接触的；（3）有皮肤黏膜损伤、器官移植、输血史的；（4）免疫功能低下或缺陷；（5）母亲妊娠期有以上暴露风险的。<BR>　　四、弓形虫感染的诊断<BR>　　目前临床上对弓形虫感染诊断的主要方法是检测血清中特异的弓形虫抗体(IgG和IgM)。另外还可以通过从血液、体液、穿刺液等分离出弓形虫来确诊急性感染。<BR>　　对于可疑胎儿弓形虫感染时，可以采用羊水穿刺检测弓形虫DNA，彩超密切监测胎儿生长发育，必要时进行胎儿头颅磁共振（MRI）检查了解是否存在神经系统方面的异常等方法进行诊断。<BR>　　五、科学预防弓形虫<BR>　　血清学检查阴性的人群可以通过预防暴露降低感染弓形虫的风险，措施包括：（1）不吃生的、未煮熟的肉类产品。（2）不吃没洗干净的果蔬，不喝没煮沸的水。（3）生熟砧板、刀具分开使用，处理过生肉的器具要彻底清洁。（4）做园艺或者农活时，记得戴手套，结束后洗手。参观沙地旅游区后，也要彻底洗手。（5）饭前洗手，防止病从口入。（6）备孕时查弓形虫抗体，了解体内弓形虫感染及免疫情况。（7）如果孕妇家中有猫，则只应给猫咪喂食罐头食品、干猫粮。摸过宠物后注意洗手。怀孕期间尽量不要亲自打理猫砂，猫砂盆由其他人用热水清洗。（8）给猫咪测抗体，规范驱虫治疗。<BR>　　目前，还没有弓形虫疫苗可以使用，通过上面的阐述，我们可以了解到，如果你们家的猫总是跑到外面去吃不该吃的东西，接触不该接触的野生动物，它可能会感染弓形虫。猫在感染弓形虫的活跃期，排出弓形虫的虫卵时，孕妇再去接触，受感染的风险才会上升。<BR>　　家养的猫咪，吃猫粮，定期体检、驱虫，这样的猫咪就是好猫咪，密切接触是没有问题的。为了做到零风险，“铲屎官”这个职位在怀孕期间可以让准爸爸帮忙代劳。<BR>　　只要我们科学地检查、备孕，养成良好的生活习惯，在可疑弓形虫感染时寻求医生的帮助进行风险评估和相应处理，就可以远离弓形虫。<BR>
+            </div>
+
+            <div class="neirong f4f6e67d-99a2-4a7c-b021-527e14b6c2d5" alt="f4f6e67d-99a2-4a7c-b021-527e14b6c2d5" daoxiang="08 ">
+
+                市妇幼保健院与<br/>叠彩区教育局签署共建协议
+
+              　　本报讯（记者胡晓诗&nbsp;通讯员何永芳）10月8日，市妇幼保健院与叠彩区教育局“党建引领&nbsp;教医融合&nbsp;护航健康教育”医疗保障服务共建活动签约仪式在市希望小学举行。双方将以党建共建、医教融合为纽带，进一步提升叠彩区教育系统及公立医院党建工作质量，保障广大师生身心健康，增强学生体质，深入推进融合教育。<BR>　　据悉，本次活动旨在通过创建“党建引领&nbsp;教医融合　　护航健康教育”模式，进一步普及心理健康知识和校园急救知识，在校内遇到突发意外伤害时能够进行初步有效处理，切实提高自救互救能力，帮助学生养成良好的卫生行为，降低学校常见病和流行病的发病率，促进学生在身体、心理和社会适应能力等方面健康、和谐发展。届时，市妇幼保健院将发挥优质医疗资源优势，为叠彩区教育系统全体教职工、学生及学生家属提供健康知识讲座、义诊指导、心理辅导、绿色通道就诊等优质、快捷的医疗护理服务和健康服务。<BR>　　活动最后，市妇幼保健院临床心理科专家向参加活动的教师职工代表开展了题为“关注儿童青少年心理健康”的心理健康讲座。<BR>
+            </div>
+
+            <div class="neirong f39463ec-2e9e-471d-895a-d32baf19e9e0" alt="f39463ec-2e9e-471d-895a-d32baf19e9e0" daoxiang="08 ">
+
+                高血压自我管理，做自己健康的守护者
+                ——小改变，大健康，掌握自我管理的秘诀<br/>□张恩浩（广西医科大学第一附属医院心血管内科）
+              　　在我们忙碌的生活中，有一种被称为“沉默的杀手”的疾病——高血压，正悄无声息地影响着我国众多人的健康。它如同潜伏在日常生活中的隐形敌人，不痛不痒，却在不经意间对我们的身体健康发起无声的攻击。<BR>　　我们的饮食习惯、生活方式，可都是高血压“盯上”我们的原因。吃得太咸、钾吃得太少，人变得越来越重，还有吸烟、喝酒过量，再加上压力山大，这些都成了高血压的“帮凶”。<BR>　　在您的健康管理之旅中，医生的专业指导就像是一盏明灯，为您照亮前方的道路。他们根据多年的学习和临床经验，为您提供个性化的治疗建议和生活方式调整。然而，您知道吗——除了医生的指导，您自己的积极参与和自我管理同样重要，甚至可以说是您健康管理的“加速器”。研究表明，高血压患者在实施自我管理后对疾病的知晓程度及治疗依从性都有显著的提高，血压控制率也更为理想。这意味着，当您学会如何更好地了解自己的病情，遵循医嘱，并采取积极的生活方式改变时，您的健康状况将得到更好的控制。<BR>　　如何进行自我管理呢？<BR>　　减盐行动：目标清晰，健康有迹可循<BR>　　对于高血压患者而言，每日摄入的钠（通常以食盐的形式出现）建议控制在2克以下——这相当于5克食盐。听起来可能有些“苛刻”，但每一克的减少，都是对健康的一份承诺。<BR>　　聪明选择：低钠盐，让餐桌上的“盐”值更低<BR>　　对于肾功能良好的高血压患者，我们有更“聪明”的选择——低钠富钾替代盐。这种盐，钠的含量更低，钾元素更丰富，能帮助改善血压状况，为健康加分。<BR>　　高血压膳食健康密码——“少脂多钾”<BR>　　减法：对饱和脂肪说“不”，这不仅是为了血压，也是对心脏的一份温柔呵护。加法：蛋白质和优质碳水化合物，是餐盘里的新宠。别忘了“健康盟友”钾和膳食纤维，它们在平衡血压、促进肠道健康上，扮演着不可小觑的角色。<BR>　　超重/肥胖高血压者的体重管理秘籍<BR>　　对于那些体重超出理想范围，特别是超重或肥胖的高血压朋友，好消息是控制体重不仅能够帮助您有效降低血压，还能显著减少心血管事件的风险，可谓一举两得！<BR>　　戒烟行动<BR>　　对于每一位吸烟者而言，戒烟是开启健康新生活的关键一步。它不仅能够显著降低隐蔽性高血压的出现，更对减少心血管疾病和全因死亡风险有着不可小觑的作用。<BR>　　活力律动：高血压患者的全方位运动指南<BR>　　有氧为主，抗阻为伴：以有氧运动作为您的日常主打，比如快步走、游泳或骑自行车，结合适度的抗阻训练，如哑铃操或健身器械，让身体的每个细胞都跳动起来。呼吸与柔韧并重：别忘了加入呼吸训练，深呼吸，慢吐气，让每一次呼吸都成为心灵的按摩。<BR>　　心灵绿洲：多元减压法，为心灵找一片宁静<BR>　　在快节奏的生活中，不妨尝试以下几种方法，为您的心灵减负，找回内心的宁静与平衡。认知行为治疗：通过调整思考模式，将消极思维转化为积极行动，让心灵的天空重新明亮。正念与冥想：沉浸在当下的每一刻，感受生活的每一个细节，冥想是心灵的深度SPA。瑜伽之舞：在伸展与呼吸中，让身体与心灵对话，释放压力，迎接内心的平和。深呼吸练习：简单却有效，深呼吸，让每一次呼吸都成为压力的释放，心灵的洗涤。<BR>　　夜的乐章：高血压患者的睡眠宝典<BR>　　1.优质睡眠，从时长和质量抓起<BR>　　成人夜晚的睡眠，7到9小时最宜，让身体得以完整修复。按时就寝，规律作息，让睡眠成为身体的定时钟。<BR>　　2.特殊群体，特别关怀<BR>　　难治性高血压、夜间高血压或血压异常下降者，需筛查睡眠障碍，守护夜的安宁。有睡眠障碍（如打鼾、失眠）的朋友，定期血压监测，动态血压监测评估，为健康护航。<BR>　　3.特殊工作者，特殊呵护<BR>　　夜班族或轮班工作者，动态血压监测，诊断与评估，让健康看得见。<BR>　　4.睡眠中的禁用药物<BR>　　高血压患者夜间避用利尿剂，防止夜尿干扰，守护整夜安眠。<BR>　　5.睡眠卫生小贴士<BR>　　每晚固定时间就寝，让身体习惯夜的节奏。远离咖啡及尼古丁，睡前可以热水泡脚，温暖身心。舒适的床上用品，适宜的室温与环境的安静，轻音乐伴你入眠。<BR>　　6.睡眠行为调整<BR>　　刺激控制，在床上时需远离电视、手机与思考。睡眠限制，白天建议短暂小憩，夜晚睡眠会更为香甜。<BR>　　7.多途径改善睡眠<BR>　　中医、物理、催眠治疗，多管齐下，改善睡眠障碍。必要时药物治疗，但需遵医嘱。<BR>　　通过这些具体的自我管理策略，高血压患者可以更有效地控制血压，减少并发症的风险，提高生活质量。记住，每个人的情况都是独特的，因此在实施任何自我管理计划之前，都应咨询医疗专业人员。<BR>
+            </div>
+
+            <div class="neirong ce62e146-9b1d-49b9-986f-c8170f1971b9" alt="ce62e146-9b1d-49b9-986f-c8170f1971b9" daoxiang="08 ">
+
+                市人民医院与社区、<br/>银行开展清廉融合共建
+
+              　　本报讯（记者徐莹波&nbsp;通讯员吴曼莉&nbsp;廖国梁）近日，市人民医院、象山区文明社区、桂林银行桂林分行营业部联合举行清廉融合共建协议签约仪式。根据协议，三方将通过组织共建、文化共创、服务共抓、治理共管等措施，积极推动清廉社区与清廉医院、清廉银行的融合共建，建设宜业宜居的社区环境，为市民提供优质、便捷的服务。<BR>　　在签约仪式上，市人民医院院长秦科表示，近年来，市人民医院通过开展清廉医院建设，在医疗质量、服务水平、人才队伍、社会认可度等方面都得到较大提升。开展此次清廉融合共建，是加强清廉医院建设的创新性措施；今后，医院将发挥自身优势，携手多方持续开展党建共建，提升党建品牌建设质量和管理水平，组织开展廉洁教育、便民义诊等惠民服务，为建设清廉桂林、推动社区发展、提升居民生活质量作出积极贡献。<BR>　　仪式结束后，三家单位的代表还对文明社区18名党员义务巡防队员进行了慰问。<BR>
+            </div>
+
+            <div class="neirong 11e47c5a-887a-4743-a76a-9660a926c54e" alt="11e47c5a-887a-4743-a76a-9660a926c54e" daoxiang="08 ">
+
+                市医学会中西医<br/>结合脾胃肝病学分会成立
+
+              　　本报讯（记者刘菁&nbsp;通讯员许阳慧）日前，由市医学会主办、市中西医结合医院承办的“桂林市医学会中西医结合脾胃肝病学分会成立大会暨学术交流会”圆满举办。<BR>　　会议采用“线上＋线下”的方式进行，吸引了来自市内外的脾胃肝病专家、医护同仁共500余人共襄盛会，并选举产生了第一届委员会，市中西医结合医院脾胃病科主任沈林艳当选首届主任委员。随后，“第五届脾胃系病中西医结合诊疗经验论坛暨消化道早癌诊疗进展学习班暨脾胃系疾病中医护理适宜技术临床应用与创新培训班”拉开帷幕，众多专家、学者围绕消化内镜在消化道早癌诊疗领域的最新研究成果、中医技术创新和临床应用等内容进行授课，为参会者带来了宝贵的前沿学术信息。<BR>
+            </div>
+
+            <div class="neirong 8c15e113-3e52-414b-8a48-c3a73ac5291e" alt="8c15e113-3e52-414b-8a48-c3a73ac5291e" daoxiang="08 ">
+
+                探索艾滋病病毒的微观世界
+                □周玲米（桂林医学院）
+              　　艾滋病，即获得性免疫缺陷综合征（acquired&nbsp;immunodeficiency&nbsp;syndrome，AIDS），是目前严重威胁人类健康的重要传染病。导致艾滋病的病原体是人类免疫缺陷病毒（Human&nbsp;Immunodeficiency&nbsp;Virus，HIV），人们常把它称为艾滋病病毒。尽管随着医学的进步，我们对HIV的理解不断加深，但这种疾病的复杂性和全球范围内的流行趋势仍然令人关注。深入了解HIV的病原学特征不仅是科学研究的需要，更是有效控制疾病传播、预防新感染和改善患者治疗效果的关键。<BR>　　一、HIV的形态结构<BR>　　HIV属于逆转录病毒科慢病毒属中的人类慢病毒组，其形态为球形颗粒，直径100～120纳米，仅相当于人类头发丝直径的万分之一。HIV病毒颗粒由核心和包膜两部分组成，这种结构为其复杂的生命周期提供了基础。<BR>　　HIV的核心部分主要由衣壳蛋白（p24）组成，衣壳内包裹着两条完全相同的单股正链RNA链、核壳蛋白（NC）以及病毒复制所必需的酶类。这些酶类包括逆转录酶（RT，p51/p66）、整合酶（IN，p32）和蛋白酶（PR，p10）。逆转录酶是HIV复制过程中的关键酶，负责将RNA逆转录成DNA；整合酶则负责将病毒DNA整合到宿主细胞染色体中；蛋白酶则参与病毒蛋白的裂解和成熟过程。<BR>　　HIV的最外层为包膜，包膜来源于宿主细胞膜的膜质结构，其中嵌有外膜糖蛋白gp120和跨膜糖蛋白gp41。这两种糖蛋白在病毒入侵宿主细胞的过程中起着至关重要的作用。gp120负责与宿主细胞表面的CD4受体结合，而gp41则参与病毒与宿主细胞膜的融合过程。<BR>　　二、HIV的基因组特征<BR>　　HIV的基因组全长9.7～9.8千碱基对（kb），是一种典型的逆转录病毒基因组。HIV基因组包含三个结构基因（gag、pol和env）、两个调节基因（tat和rev）以及四个辅助基因（nef、vpr、vpu和vif）。<BR>　　结构基因中，gag基因编码病毒的核心蛋白；pol基因编码病毒复制所需的酶类；env基因编码病毒的包膜糖蛋白。这些基因共同构成了HIV病毒粒子的基本结构。调节基因tat基因编码的反式激活因子能够激活病毒基因组的转录；rev基因编码的蛋白则参与病毒mRNA的转运和调控。这些调节基因在病毒复制周期中起着重要的调控作用。nef、vpr、vpu和vif等辅助基因编码的蛋白在病毒复制、感染和传播过程中发挥多种辅助功能。例如，nef蛋白能够负调控宿主免疫反应；vpr蛋白参与病毒在宿主细胞内的复制和潜伏；vpu蛋白在特定细胞类型中促进病毒粒子的释放；vif蛋白则增强病毒在宿主细胞内的复制能力。<BR>　　三、HIV的感染机制<BR>　　HIV攻击人体细胞的过程好似一场精心策划的入侵。想象HIV病毒像一艘小船，它的船头（gp120蛋白）会寻找并锁定人体细胞表面的特定“码头”（CD4受体）。在找到合适的码头后，它还会寻求辅助受体（比如CCR5或CXCR4）的帮助，以便更牢固地停靠。一旦HIV病毒成功附着，它会将自己的遗传物质（RNA）注入宿主细胞内。这就像是小船释放了一艘小艇，携带着货物（病毒RNA）进入港口（宿主细胞）。进入细胞后，HIV的RNA在一种特殊酶（逆转录酶）的帮助下，转换成双链DNA。然后，这种DNA在另一种酶（整合酶）的帮助下，被嵌入到宿主细胞的基因组中，形成了一个病毒的“蓝图”（前病毒）。根据这个蓝图，宿主细胞开始制造病毒蛋白和酶类，就像是在生产工厂中制造产品。最后，这些组件和病毒RNA组装成新的病毒颗粒，并通过出芽的方式从宿主细胞中释放出来，准备感染更多的细胞。<BR>　　四、HIV的生存环境与灭活条件<BR>　　HIV在外界的生存能力较弱，对物理因素和化学因素的抵抗力较低。HIV对热很敏感，对低温耐受性强于高温。56℃处理30分钟可使HIV在体外对人的T淋巴细胞失去感染性，但不能完全灭活血清中的HIV；100℃煮沸20分钟可将HIV完全灭活。此外，HIV对紫外线、γ射线等物理因素也较为敏感，能够迅速被这些物理因素破坏其感染性。在化学因素方面，HIV对多种消毒剂敏感。常用的消毒剂如乙醇、漂白粉、次氯酸钠、戊二醛等，均能有效灭活HIV。这些消毒剂通过破坏HIV的病毒结构或干扰其复制过程，从而达到灭活病毒的目的。<BR>　　然而，需要注意的是，尽管HIV在外界环境中的生存能力较弱，但在适宜的条件下，如体液中（血液、精液、阴道分泌物等），HIV可以保持较长时间的活性。因此，在处理可能含有HIV的体液时，必须采取严格的防护措施，以防止病毒传播。<BR>
+            </div>
+
+            <div class="neirong fe1b38fe-2561-48ae-a210-3dc6251e59cf" alt="fe1b38fe-2561-48ae-a210-3dc6251e59cf" daoxiang="08 ">
+
+                方便群众就诊 桂医附院实施<br/>周末高级职称专家出诊制度
+
+              　　本报讯（记者徐莹波&nbsp;通讯员李锦）记者从桂林医学院附属医院获悉，自2009年以来，该院已连续15年坚持实施无假日门诊；为了进一步改善医疗服务，方便群众周末就诊，提升患者就医获得感，近日，该院正式实施周末高级职称专家（即主任医师或副主任医师）出诊制度，其中，每周六上午医院全部科室均安排高级职称专家出诊，每周六下午及周日也有部分科室安排高级职称专家出诊。另外，目前，该院已实行“挂一次号管三天”就诊模式，周末也提供免费复诊服务。<BR>
+            </div>
+
+            <div class="neirong 2dc6a862-05dd-4bed-a11f-1db8481d94c3" alt="2dc6a862-05dd-4bed-a11f-1db8481d94c3" daoxiang="08 ">
+
+                桂林市综合介入<br/>诊疗技术质量控制中心成立
+
+              　　本报讯（记者徐莹波&nbsp;通讯员廖国梁）记者从市人民医院获悉，根据市卫健委部署，近日，桂林市综合介入诊疗技术质量控制中心正式成立；该中心挂靠在市人民医院介入科，并由介入科张黎副主任医师担任中心主任。<BR>　　据悉，市综合介入诊疗技术质量控制中心是在市卫健委领导下，负责全市范围内各级各类医疗机构综合介入诊疗技术质量控制的评价和指导，建立医疗质量评价体系和控制标准，促进医疗质量安全同质化，实现医疗质量安全持续改进。市人民医院介入科成立于2019年3月，是桂林首个独立设置的介入科，聚焦于肿瘤介入、急性出血等的综合介入，拥有超声介入和放射介入两种手段，并在人才团队、诊疗技术、专科影响力等方面达到广西医疗系统先进水平。<BR>
+            </div>
+
+    </div>
+    <script type="text/javascript" src="//epaper.guilinlife.com/glrbh5/public/footer.js"></script>
 </body>
 </html>

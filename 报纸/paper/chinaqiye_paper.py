@@ -49,6 +49,8 @@ def get_chinaqiye_paper(paper_time, queue_id, webpage_id):
             time.sleep(2)
             bm_data = bm_response.content.decode()
             bm_html1 = etree.HTML(bm_data)
+            if bm_html1 is None:
+                continue
             bm_areaList = bm_html1.xpath("//ul[@class='list01']/li/a")
             for bm_area in bm_areaList:
                 # 获取文章名称
@@ -111,4 +113,4 @@ def get_chinaqiye_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_chinaqiye_paper("2016-06-06", 11,  11)
+# get_chinaqiye_paper("2016-05-17", 11,  11)
