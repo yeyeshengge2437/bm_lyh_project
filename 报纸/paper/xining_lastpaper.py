@@ -32,6 +32,8 @@ def get_xining_lastpaper(paper_time, queue_id, webpage_id):
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
+        if html_1 is None:
+            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//td[@class='bmdh']/div/table/tbody/tr")
         for bm in all_bm:
@@ -48,7 +50,8 @@ def get_xining_lastpaper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
-
+            if bm_html is None:
+                continue
             # 获取所有文章的链接
             all_article = bm_html.xpath("//td[@class='list1']/div/table/tbody/tr/td[@class='font7']/a")
             pdf_set = set()
@@ -65,7 +68,7 @@ def get_xining_lastpaper(paper_time, queue_id, webpage_id):
                 try:
                     article_content = article_response.content.decode()
                 except:
-                    article_content = article_response.content.decode('gbk')
+                    continue
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
@@ -118,4 +121,4 @@ def get_xining_lastpaper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_xining_lastpaper('2024-06-20', 111, 1111)
+# get_xining_lastpaper('2023-01-02', 111, 1111)
