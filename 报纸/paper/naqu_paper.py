@@ -1,5 +1,3 @@
-import json
-import re
 import time
 from datetime import datetime
 from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
@@ -7,64 +5,64 @@ from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, p
 import mysql.connector
 import requests
 from lxml import etree
-import ast
 
 
-paper = "滨城时报"
+paper = "那曲报"
 headers = {
-    'Accept': '*/*',
+    'Accept': 'application/json, text/plain, */*',
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
-    # 'Cookie': '127_vq=1',
+    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
     'Pragma': 'no-cache',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36',
+    'X-Requested-With': 'XMLHttpRequest',
+    'x-appid-header': '100058',
 }
 
 
-
-def get_binchengshi_paper(paper_time, queue_id, webpage_id):
+def get_naqu_paper(paper_time, queue_id, webpage_id):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m%d')
-    base_url = f'http://www.tjbh.com/szb/pages/{paper_time}/db.js'
+    params = {
+        'paperTime': f'{paper_time}',
+        'mode': '0',
+        'typeId': '7',
+        'pageSort': '0',
+    }
+    base_url = 'http://nq.electron.allmc.cn/api-electorn-paper/newspaper/getType'
     url = base_url
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, params=params)
+
     if response.status_code == 200:
-        content1 = response.content.decode()
-        html_1 = re.findall(r'var obj0 = (.*?);', content1)[0]
-        html_1 = json.loads(html_1)
+        content = response.json()
+        try:
+            html_1 = content["datas"]["newspaperPageList"]
+        except Exception as e:
+            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
         all_bm = html_1
-        count = 0
         for bm in all_bm:
-            count += 1
             # 版面名称
-            bm_name = bm
+            bm_name = bm['name']
             # 版面链接
-            bm_url = url
+            bm_url = f'http://nq.electron.allmc.cn/pc/index?paperTime={paper_time}&mode=0&typeId=7&pageSort={bm_name}'
             # 版面的pdf
             bm_pdf = None
             up_pdf = None
             # 获取所有文章的链接
-            all_article = re.findall(rf'var obj\d = (.*?);', content1, re.S)[count].replace('\n', '')
-            article_dict = ast.literal_eval(all_article)
-
+            all_article = bm["pageDraftList"]
             pdf_set = set()
-            for article_value, article_key in article_dict.items():
+            for article in all_article:
                 # 获取文章链接
-                article_url = 'http://www.tjbh.com' + article_key.strip()
+                article_url = f'{bm_url}#aid={article["uuid"]}'
                 # 获取文章名称
-                article_name = article_value
+                article_name = article['title']
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 获取文章内容
-                article_response = requests.get(article_url, headers=headers)
-                time.sleep(1)
-                article_content = article_response.content.decode()
-                article_html = etree.HTML(article_content)
-                # 获取文章内容
-                content = ''.join(article_html.xpath("//div[@class='media']/p/text()")).strip()
+                content = article["content"]
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -106,4 +104,4 @@ def get_binchengshi_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_binchengshi_paper('2024-07-11', 111, 1111)
+# get_naqu_paper('2024-10-05', 111, 1111)

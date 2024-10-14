@@ -228,6 +228,11 @@ from shanxishichangdao_paper import get_shanxishichangdao_paper  # 山西市场�
 from shanxi_lastpaper import get_shanxi_lastpaper  # 山西晚报
 from chinashuiwu_paper import get_chinashuiwu_paper  # 中国税务报
 from jinanshi_paper import get_jinanshi_paper  # 济南时报
+from binchengshi_paper import get_binchengshi_paper  # 滨城时报
+from naqu_paper import get_naqu_paper  # 那曲报
+from guizhouzhengxie_paper import get_guizhouzhengxie_paper  # 贵州政协报
+from xinjiang_paper import get_xinjiang_paper  # 新疆日报
+from xinxire_paper import get_xinxire_paper  # 信息日报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -458,6 +463,11 @@ methods = {
     '山西晚报': get_shanxi_lastpaper,
     '中国税务报': get_chinashuiwu_paper,
     '济南时报': get_jinanshi_paper,
+    '滨城时报': get_binchengshi_paper,
+    '那曲报': get_naqu_paper,
+    '贵州政协报': get_guizhouzhengxie_paper,
+    '新疆日报': get_xinjiang_paper,
+    '信息日报': get_xinxire_paper,
 
 }
 
@@ -470,7 +480,7 @@ webpage_url_list = [
     'https://www.scxb.com.cn',
     # 'https://tmrb.tmwcn.com/tmrb',  # 天门日报没有pdf
     'https://epaper.scjjrb.com',
-    # 'https://www.wccdaily.com.cn', # pdf无法获取
+    'https://www.wccdaily.com.cn',
     'https://epaper.cenews.com.cn',
     'https://epaper.qingdaonews.com',
     'https://dzb.subaoxw.com',
@@ -689,6 +699,13 @@ webpage_url_list = [
     'http://epaper.sxrb.com/shtml/index_sxwb.shtml',
     'https://www.ctaxnews.net.cn/paper/pc/layout',
     'http://jnsb.e23.cn/jnsb',
+    'http://www.tjbh.com/szb/pages',
+    'http://epaper.boznews.cn',
+    'http://nq.electron.allmc.cn/pc/index',
+    'https://www.gzszx.gov.cn/gzzxb/web',
+    'https://xjrb.ts.cn/xjrb',
+    'https://jiangxi.jxnews.com.cn/system',
+
 ]
 
 
