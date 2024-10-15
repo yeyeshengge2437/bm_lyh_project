@@ -201,6 +201,14 @@ from kashi_paper import get_kashi_paper  # 喀什日报
 from guangming_paper import get_guangming_paper  # 光明日报
 from meirejingji_paper import get_meirejingji_paper  # 每日经济新闻
 from qingdao_paper import get_qingdao_paper  # 青岛日报
+from qiyejia_paper import get_qiyejia_paper  # 企业家日报
+from shanxijingji_paper import get_shanxijingji_paper  # 山西经济日报
+from huaxingshi_paper import get_huaxingshi_paper  # 华兴时报
+from chinaminzu_paper import get_chinaminzu_paper  # 中国民族报
+from chengdu_paper import get_chengdu_paper  # 成都日报
+from xinxiaoxi_paper import get_xinxiaoxi_paper  # 新消息报
+from gansugongren_paper import get_gansugongren_paper  # 甘肃工人报
+from qingdaocaijing_paper import get_qingdaocaijing_paper  # 青岛财经日报
 from minzhuyufazhi_paper import get_minzhuyufazhi_paper  # 民主与法制时报 ------------------------（以下为没有高清图片和pdf的报纸）
 from shanxi_paper import get_shanxi_paper  # 山西日报
 from chinaxumushou_paper import get_chinaxumushou_paper  # 中国畜牧兽医报
@@ -468,6 +476,14 @@ methods = {
     '贵州政协报': get_guizhouzhengxie_paper,
     '新疆日报': get_xinjiang_paper,
     '信息日报': get_xinxire_paper,
+    '企业家日报': get_qiyejia_paper,
+    '山西经济日报': get_shanxijingji_paper,
+    '华兴时报': get_huaxingshi_paper,
+    '中国民族报': get_chinaminzu_paper,
+    '成都日报': get_chengdu_paper,
+    '新消息报': get_xinxiaoxi_paper,
+    '甘肃工人报': get_gansugongren_paper,
+    '青岛财经日报': get_qingdaocaijing_paper,
 
 }
 
@@ -705,6 +721,14 @@ webpage_url_list = [
     'https://www.gzszx.gov.cn/gzzxb/web',
     'https://xjrb.ts.cn/xjrb',
     'https://jiangxi.jxnews.com.cn/system',
+    'http://www.entrepreneurdaily.cn',
+    'http://www.sxjjb.cn',
+    'https://www.hxsbs.com/szb/layout',
+    'http://210.12.104.26:81/epaper/',
+    'https://www.cdrb.com.cn/epaper/cdrbpc',
+    'https://szb.nxrb.cn/xxxb/pc/layout',
+    'https://szb.gansudaily.com.cn/gsgrb',
+    'http://epaper.qdcaijing.com',
 
 ]
 

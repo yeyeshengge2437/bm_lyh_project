@@ -6,7 +6,6 @@ import mysql.connector
 import requests
 from lxml import etree
 
-
 paper = "潇湘晨报"
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -17,7 +16,6 @@ headers = {
     'Upgrade-Insecure-Requests': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
 }
-
 
 
 def get_xiaoxiangchen_paper_new(paper_time, queue_id, webpage_id):
@@ -102,7 +100,6 @@ def get_xiaoxiangchen_paper_new(paper_time, queue_id, webpage_id):
                 cursor_test.close()
                 conn_test.close()
 
-
         success_data = {
             'id': queue_id,
             'description': '数据获取成功',
@@ -157,7 +154,8 @@ def get_xiaoxiangchen_paper_old(paper_time, queue_id, webpage_id):
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
-                content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text() | //div[@id='right']//p/text()")).strip()
+                content = ''.join(article_html.xpath(
+                    "//div[@id='ozoom']/founder-content/p/text() | //div[@id='right']//p/text()")).strip()
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -180,7 +178,7 @@ def get_xiaoxiangchen_paper_old(paper_time, queue_id, webpage_id):
                     conn_test.commit()
 
                 if judging_criteria(article_name, content):
-                # if 1:
+                    # if 1:
 
                     # print(content)
                     # return
@@ -196,7 +194,6 @@ def get_xiaoxiangchen_paper_old(paper_time, queue_id, webpage_id):
                 cursor_test.close()
                 conn_test.close()
 
-
         success_data = {
             'id': queue_id,
             'description': '数据获取成功',
@@ -205,6 +202,7 @@ def get_xiaoxiangchen_paper_old(paper_time, queue_id, webpage_id):
 
     else:
         raise Exception(f'该日期没有报纸')
+
 
 # get_xiaoxiangchen_paper_new('2009-11-17', 111, 1111)
 # get_xiaoxiangchen_paper_old('2015-09-01', 111, 1111)
@@ -224,3 +222,5 @@ def get_xiaoxiangchen_paper(paper_time, queue_id, webpage_id):
         # print('使用新方法')
         get_xiaoxiangchen_paper_new(paper_time, queue_id, webpage_id)
 
+
+# get_xiaoxiangchen_paper('2023-10-05', 111, 1111)

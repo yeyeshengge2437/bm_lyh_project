@@ -17,17 +17,6 @@ co = co.headless(True)  # 开启无头模式, 解决`浏览器无法连接`报�
 
 
 paper = "市场导报"
-# cookies = {
-#     'security_session_verify': '2d778e64f62cc60e13d1c5f3e2a0cb3e',
-#     'security_session_mid_verify': '37eb62fefd8a664ece6f9ea61a24d470',
-#     'PHPSESSID': '24b61f110672e0fefb0337831d06d75d',
-# }
-# cookies = {
-#     'security_session_verify': '197789afa9699f9389327afd09bdd0d5',
-#     'srcurl': '68747470733a2f2f6570617065722e7a6a736364622e636f6d2f7368746d6c2f736364622f32303233303930312f696e6465782e7368746d6c',
-#     'security_session_mid_verify': '7f029eb0d91c20169c51965e3d34b3c6',
-#     'PHPSESSID': '4af35376495e0bc9189fc6e0fe956fdf',
-# }
 headers = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'accept-language': 'zh-CN,zh;q=0.9',

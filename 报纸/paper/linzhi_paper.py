@@ -37,7 +37,7 @@ def get_linzhi_paper(paper_time, queue_id, webpage_id):
         date = re.findall(r'\d{4}-\d{2}-\d{2}', date_str)[0]
         if str(date) == paper_time:
             url = f'http://116.172.193.36:8090/api/cms/content/init/{item["catalogId"]}/article/{item["contentId"]}'
-            bm_url = url
+
             response = requests.get(url, headers=headers, verify=False)
             res_json = response.json()
             res_html = res_json["data"]["contentHtml"]
@@ -53,9 +53,10 @@ def get_linzhi_paper(paper_time, queue_id, webpage_id):
                     password="Bm_a12a06",
                     database="col",
                 )
+                bm_url = bm_img
                 cursor_test = conn_test.cursor()
                 # print(bm_img)
-                if bm_img not in pdf_set:
+                if bm_img not in pdf_set and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_img, paper, "jpg", "paper")
                     pdf_set.add(bm_img)

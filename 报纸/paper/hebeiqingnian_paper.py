@@ -43,11 +43,11 @@ def get_hebeiqingnian_paper(paper_time, queue_id, webpage_id):
             count += 1
             # 版面名称
             bm_name = f"第{count}版"
-            # 版面链接
-            bm_url = 'https://www.hbynet.net/html/heqing/daohang/dianzibao/index.html'
+
             # 版面的pdf
             bm_pdf = 'https://www.hbynet.net' + bm
-
+            # 版面链接
+            bm_url = bm_pdf
             pdf_set = set()
 
             create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -73,7 +73,6 @@ def get_hebeiqingnian_paper(paper_time, queue_id, webpage_id):
                                     (day, paper, bm_name, bm_pdf, bm_url, up_pdf, create_time, queue_id,
                                      create_date, webpage_id))
                 conn_test.commit()
-
 
 
             cursor_test.close()

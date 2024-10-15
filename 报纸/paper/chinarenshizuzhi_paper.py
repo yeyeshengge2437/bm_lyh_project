@@ -63,6 +63,8 @@ def get_chinarenshizuzhi_paper(paper_time, queue_id, webpage_id):
             bm_name = bm["columnName"]
             # 版面链接
             bm_url = "https://www.zuzhirenshi.com/newspaper/index"
+            if bm.get('areapdfPath') is None:
+                continue
             # 版面的pdf
             bm_pdf = "https://www.zuzhirenshi.com" + bm["areapdfPath"]
 
@@ -136,4 +138,4 @@ def get_chinarenshizuzhi_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_chinarenshizuzhi_paper('2024-09-11', 111, 1111)
+# get_chinarenshizuzhi_paper('2023-10-09', 111, 1111)

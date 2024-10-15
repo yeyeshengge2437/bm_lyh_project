@@ -56,11 +56,11 @@ def get_kashi_paper(paper_time, queue_id, webpage_id):
             count += 1
             # 版面名称
             bm_name = f'第{count}版'
-            # 版面链接
-            bm_url = url
+
             # 版面的pdf
             bm_pdf = 'http://www.zgkashi.com' + "".join(bm.xpath("./@src"))
-
+            # 版面链接
+            bm_url = bm_pdf
             pdf_set = set()
 
             create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')

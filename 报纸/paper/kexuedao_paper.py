@@ -49,11 +49,11 @@ def get_kexuedao_paper(paper_time, queue_id, webpage_id):
         for bm in all_bm:
             # 版面名称
             bm_name = "".join(bm.xpath("./text()")).strip()
-            # 版面链接
-            bm_url = url
+
             # 版面的pdf
             bm_pdf = "".join(bm.xpath("./@href"))
-
+            # 版面链接
+            bm_url = bm_pdf
 
             pdf_set = set()
 

@@ -46,6 +46,8 @@ def get_yiwushang_paper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
             # 版面的pdf
             bm_pdf = 'http://szb1.ywcity.cn/' + "".join(
                 bm_html.xpath("//div[@class='mgb25']/div[@class='pull-right']/a/@href")).strip('../../..')
@@ -116,4 +118,4 @@ def get_yiwushang_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_yiwushang_paper('2023-12-01', 111, 1111)
+# get_yiwushang_paper('2021-05-06', 111, 1111)
