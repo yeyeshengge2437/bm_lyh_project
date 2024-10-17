@@ -152,7 +152,10 @@ def get_minnan_paper_old(paper_time, queue_id, webpage_id):
                 # 获取文章内容
                 article_response = requests.get(article_url, headers=headers)
                 time.sleep(1)
-                article_content = article_response.content.decode()
+                try:
+                    article_content = article_response.content.decode()
+                except:
+                    continue
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
@@ -219,6 +222,6 @@ def get_minnan_paper(paper_time, queue_id, webpage_id):
         # print('使用新方法')
         get_minnan_paper_new(paper_time, queue_id, webpage_id)
 
-# get_minnan_paper('2019-11-22', 111, 222)
+# get_minnan_paper('2019-08-11', 111, 222)
 # get_chuxiong_paper_old('2019-11-21', 111, 222)
 # get_chuxiong_paper_new('2024-08-22', 111, 1111)

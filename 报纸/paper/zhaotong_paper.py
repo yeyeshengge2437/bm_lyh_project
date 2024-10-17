@@ -59,15 +59,16 @@ def get_zhaotong_paper_new(paper_time, queue_id, webpage_id):
             bm_name = "".join(bm.xpath("./a[@class='btn btn-block']/text()")).strip()
             # 版面链接
             bm_url = base_url + ''.join(bm.xpath("./a[@class='btn btn-block']/@href"))
-            # 版面的pdf
-            bm_pdf = 'https://dubao.ztnews.net/' + "".join(
-                bm.xpath("./a[@class='pdf']/@href")).strip('../..')
+
 
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers)
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            # 版面的pdf
+            bm_pdf = 'https://dubao.ztnews.net/' + "".join(
+                bm_html.xpath("//a[@class='pdf']/@href")).strip('../..')
 
             # 获取所有文章的链接
             all_article = bm_html.xpath("//ul/li[@class='resultList']/a")
@@ -132,6 +133,8 @@ def get_zhaotong_paper_new(paper_time, queue_id, webpage_id):
 
     else:
         raise Exception(f'该日期没有报纸')
+
+# get_zhaotong_paper_new('2024-10-14', '1', '1')
 
 
 def get_zhaotong_paper_old(paper_time, queue_id, webpage_id):

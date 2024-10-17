@@ -1,42 +1,487 @@
 ﻿<!DOCTYPE html>
-	<html lang="en" xmlns="http://www.w3.org/1999/html">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width">
-		<link rel="stylesheet" type="text/css" href="https://seccaptcha.haplat.net/css/captcha.css">
-	</head>
-	<body>
-	<div class="captchaPage">
-	<div class="rightValidate_cont">
-	<div class="comImageValidate rightValidate">
-		<input type="hidden" id="isAudio" value="">
-		<input type="hidden" id="urlLink" value="aHR0cHM6Ly9qampjYi5jY2RpLmdvdi5jbi9lcGFwZXIv">
-		<input type="hidden" id="infoString" value="eyJjYXB0Y2hhX2RlbF9jIjoiSE1ZX0pDIiwidGltZSI6MTcyODg3NjM4NS40NTYsImtleSI6ImpzY19qampjYi5jY2RpLmdvdi5jbjkwNzE3ZGJmNDUxNzI3NTgwNzQ3MTM1NzkwYWMiLCJ0eXAiOiJibGFja2xpc3QifQ==">
-		<div class="imgBg">
-			<img class="bgFullImg" width="100%" height="100%">
-			<div class="imgBtn">
-				<img src="">
-			</div>
-			<div class="refresh">
-				<img title="" src="https://seccaptcha.haplat.net/img/refresh.png"/>
-			</div>
-		</div>
-		<div class="checkRes" id="checkSuccess">
-			<span class="suc" langFlag="reSuccess"></span></div>
-		<div class="checkRes" id="checkFailure">
-			<span class="fail" langFlag="reFail"></span></div>
-		<div class="hkinnerWrap">
-			<span class="v_rightBtn"></span>
-			<span class="huakuai" langFlag="moveTip"></span>
-			<input type="hidden" name="validX"/>
-		</div>
-	</div>
-	</div>
-	</div>
-	<script type="text/javascript" src="https://seccaptcha.haplat.net/js/jquery-1.8.2.min.js"></script>
-	<script type="text/javascript" src="https://seccaptcha.haplat.net/js/code-min.js"></script>
-    <script type="text/javascript" src="https://seccaptcha.haplat.net/js/base64.js"></script>
-	<script type="text/javascript" src="https://seccaptcha.haplat.net/js/captcha_dec.js"></script>
-	<script src="/_bot_sbu/sbu_iframe_resizer.js"></script>
-	</body>
-	</html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="renderer" content="webkit" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+  <meta name="author" content="ntnyq<1210485244@qq.com>" />
+  <title>岳阳日报</title>
+  <link rel="stylesheet" href="https://www.803.com.cn//Public/demo/szb/pc/css/reset.min.css">
+  <link rel="stylesheet" href="https://www.803.com.cn//Public/demo/szb/pc/css/style.css">
+   <link rel="stylesheet" href="https://www.803.com.cn//Public//demo/szb/pc/plugs/layui-v2.4.5/layui/css/layui.css">
+  <link rel="stylesheet" href="https://www.803.com.cn//Public//demo/szb/pc/css/footer-action.css">
+  <link rel="stylesheet" href="https://www.803.com.cn//Public//demo/szb/pc/css/component.css">
+  <style>
+      .layui-input {
+          border-width: 1px !important;
+          border-style: solid !important;
+          background-color: #fff !important;
+          border-radius: 2px !important;
+          border-color: #e6e6e6 !important;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+  <input type="hidden" name="activeDate" value="2007/07/08">
+
+    <div class="page-main clearfix">
+      <!-- 版面预览 -->
+      <div class="pic-box fl">
+        <MAP NAME="pagepicmap">
+                     <Area class="paperarea" coords="982,1410,982,15426,1995,15426,1995,1410,982,1410" shape="polygon" href="content_99294003.html" title="
+        热烈祝贺岳阳市工商局君山分局党委评为市直机关第一批基层党建示范单位
+      " >
+                     <Area class="paperarea" coords="2214,3580,2214,9921,4652,9921,4652,3580,2214,3580" shape="polygon" href="content_99294004.html" title="
+        君山区机关和基层党建工作比翼双飞
+      " >
+                     <Area class="paperarea" coords="2222,10152,2222,14018,4634,14018,4634,10152,2222,10152" shape="polygon" href="content_99294005.html" title="
+        民盟、民建岳阳市委学习胡锦涛总书记重要讲话
+      " >
+                     <Area class="paperarea" coords="2252,14135,2252,14531,3336,14531,3336,14135,2252,14135" shape="polygon" href="content_99294006.html" title="
+        www．803．cn首页点击突破460万人次
+      " >
+                     <Area class="paperarea" coords="2218,14617,2218,15534,12428,15534,12428,14617,2218,14617" shape="polygon" href="content_99294007.html" title="
+        看好房赏名车相约步行街
+      " >
+                     <Area class="paperarea" coords="3456,14134,3456,14523,4558,14523,4558,14134,3456,14134" shape="polygon" href="content_99294008.html" title="
+        摄影美术部欢迎赐稿
+      " >
+                     <Area class="paperarea" coords="4786,3578,4786,7828,12454,7828,12454,3578,4786,3578" shape="polygon" href="content_99294009.html" title="
+        废品堆上领风骚
+      " >
+                     <Area class="paperarea" coords="4782,8043,4782,9131,9736,9131,9736,8043,4782,8043" shape="polygon" href="content_99294010.html" title="
+        湘阴举办纪念抗日战争图片展
+      " >
+                     <Area class="paperarea" coords="4799,9331,4799,11464,9750,11464,9750,9331,4799,9331" shape="polygon" href="content_99294011.html" title="
+        众口赞誉万祖红
+      " >
+                     <Area class="paperarea" coords="4723,11643,4723,14509,9674,14509,9674,11643,4723,11643" shape="polygon" href="content_99294012.html" title="
+        李劲夫现场参观新农村示范点——安定镇江东村
+      " >
+                     <Area class="paperarea" coords="7481,1070,7481,3210,12352,3210,12352,1070,7481,1070" shape="polygon" href="content_99294013.html" title="
+        我市上半年经济呈加速发展态势
+      " >
+                     <Area class="paperarea" coords="9944,8077,9944,12653,12316,12653,12316,8077,9944,8077" shape="polygon" href="content_99294014.html" title="
+        寓非公有制企业党建工作于大统战格局之中
+      " >
+                     <Area class="paperarea" coords="9854,12889,9854,14498,12452,14498,12452,12889,9854,12889" shape="polygon" href="content_99294015.html" title="
+        全市农村改厕工作成效显著
+      " >
+
+        </MAP>
+        <img src="https://99web.803.com.cn/files/web/Resource/xplus/yyrb/20070708/page_01.jpg" id="mapimage"  width="367px" border=0  USEMAP=#pagepicmap>
+        <div class="pic-info clearfix">
+          <span class="pic-info-summary fl">要闻</span>
+          <div class="pic-info-ctrls clearfix fr">
+                          <a class="pic-info-ctrl pic-info-ctrl-next" title="阅读下一版" href="./node_2.html">下一版</a>
+                        </div>
+        </div>
+      </div>
+      <!-- 主体 -->
+      <div class="main-box">
+        <div class="main-header clearfix">
+          <h1 class="fl"><!-- 中国工业报 --></h1>
+          <ul class="main-header-nav fr clearfix">
+             <form  onsubmit="search_wj();return false;" class="header-center-main-search" id="formsearch" action="#" method="post">
+            <input  style="padding-left:55px;border:1px solid black;width:300px;height:42px;background:white;background:url('http://www.803.com.cn/Public/yueyang/index/img/assets/icon_search.png') 22px center no-repeat;background-size:20px;" type="text" name="searchText" value="" placeholder="请输入要搜索的内容">
+
+          </form>
+            <!-- <li class="fl"><a href="javascripts:;">中国工业报</a></li>
+            <li class="fl"><a href="javascripts:;">帮助</a></li> -->
+          </ul>
+        </div>
+        <div class="main-tools clearfix">
+          <span class="main-tools-date fl" id="cur_dates">2007年07月08日</span>
+          <div class="main-tools-ctrls fr">
+            <a class="main-tools-ctrl main-tools-ctrl-index" title="回到数字报首页" href="https://www.803.com.cn//yyrb/">数字报首页</a>
+          </div>
+        </div>
+        <div class="main-layout clearfix">
+          <div class="layout-catalogue fl">
+            <h2 class="layout-catalogue-title">版面目录</h2>
+            <div class="layout-catalogue-main">
+              <ul class="layout-catalogue-list">
+
+                <li  class="layout-catalogue-item">
+                  <a href="./node_1.html">第1版&nbsp;要闻</a>
+                     <a class="pdf" style="width:35px;height:35px;position:absolute;right:0px;background: url(https://www.803.com.cn//Public/demo/szb/pc/img/assets/icon_pdf.png) no-repeat center;"  href="http://99web.803.com.cn/files/"></a>
+                </li>
+
+
+                <li  class="layout-catalogue-item">
+                  <a href="./node_2.html">第2版&nbsp;综合</a>
+                     <a class="pdf" style="width:35px;height:35px;position:absolute;right:0px;background: url(https://www.803.com.cn//Public/demo/szb/pc/img/assets/icon_pdf.png) no-repeat center;"  href="http://99web.803.com.cn/files/"></a>
+                </li>
+
+
+                <li  class="layout-catalogue-item">
+                  <a href="./node_3.html">第3版&nbsp;文化</a>
+                     <a class="pdf" style="width:35px;height:35px;position:absolute;right:0px;background: url(https://www.803.com.cn//Public/demo/szb/pc/img/assets/icon_pdf.png) no-repeat center;"  href="http://99web.803.com.cn/files/"></a>
+                </li>
+
+
+                <li  class="layout-catalogue-item">
+                  <a href="./node_4.html">第4版&nbsp;专题</a>
+                     <a class="pdf" style="width:35px;height:35px;position:absolute;right:0px;background: url(https://www.803.com.cn//Public/demo/szb/pc/img/assets/icon_pdf.png) no-repeat center;"  href="http://99web.803.com.cn/files/"></a>
+                </li>
+
+
+              </ul>
+            </div>
+          </div>
+          <div class="layout-calendar fr" id="calendar">
+            <div class="calendar-header clearfix">
+              <h4 class="fl">按日期查找</h4>
+              <div class="date-toggle fr clearfix">
+                <div class="date-toggle-item year-toggle fl">
+                  <i class="icon-toggle icon-toggle-prev"></i>
+                  <select class="date-select">
+                    <option value="2013">2013</option>
+                    <option value="2014">2014</option>
+                    <option value="2015">2015</option>
+                    <option value="2016">2016</option>
+                    <option value="2017">2017</option>
+                    <option value="2018">2018</option>
+                  </select>
+                  <i class="icon-toggle icon-toggle-next"></i>
+                </div>
+                <div class="date-toggle-item month-toggle fl">
+                  <i class="icon-toggle icon-toggle-prev"></i>
+                  <select class="date-select">
+                    <option value="01">01</option>
+                    <option value="02">02</option>
+                    <option value="03">03</option>
+                    <option value="04">04</option>
+                    <option value="05">05</option>
+                    <option value="06">06</option>
+                    <option value="07">07</option>
+                    <option value="08">08</option>
+                    <option value="09">09</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                  </select>
+                  <i class="icon-toggle icon-toggle-next"></i>
+                </div>
+              </div>
+            </div>
+            <ul class="calendar-week">
+              <li>日</li>
+              <li>一</li>
+              <li>二</li>
+              <li>三</li>
+              <li>四</li>
+              <li>五</li>
+              <li>六</li>
+            </ul>
+            <div class="calendar-main"></div>
+            <div class="calendar-footer clearfix">
+              <input class="date-input" id="input_year" type="text" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d]/g,'')" maxlength="4">
+              <span>年</span>
+              <input class="date-input" id="input_month" type="text" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d]/g,'')" maxlength="2">
+              <span>月</span>
+              <input class="date-input" id="input_day" type="text" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d]/g,'')" maxlength="2">
+              <span>日</span>
+              <button class="btn-view fr" id="submit_btn">查&nbsp;看</button>
+            </div>
+          </div>
+           <a  style="display:inline-block;margin-right:0px;" href="http://222.242.222.133:8018/newspaper/paperlistnew.aspx?EN=hnyyfz" target="_blank"><img src="https://www.803.com.cn//Public/yueyang/img/history.jpg" width="410" border="0" style="margin-top: 20px;margin-left:35px;"></a>
+        </div>
+        <div class="main-news">
+          <h2 class="main-news-title">本版列表新闻</h2>
+          <div class="main-news-main">
+            <ul class="news-list">
+              <!-- -------------标题导航-------------->
+                                      <LI class="news-item">
+                      <a href="content_99294003.html" target="_blank">
+        热烈祝贺岳阳市工商局君山分局党委评为市直机关第一批基层党建示范单位
+      </a>
+                    </LI>
+                                       <LI class="news-item">
+                      <a href="content_99294004.html" target="_blank">
+        君山区机关和基层党建工作比翼双飞
+      </a>
+                    </LI>
+                                       <LI class="news-item">
+                      <a href="content_99294005.html" target="_blank">
+        民盟、民建岳阳市委学习胡锦涛总书记重要讲话
+      </a>
+                    </LI>
+                                       <LI class="news-item">
+                      <a href="content_99294006.html" target="_blank">
+        www．803．cn首页点击突破460万人次
+      </a>
+                    </LI>
+                                       <LI class="news-item">
+                      <a href="content_99294007.html" target="_blank">
+        看好房赏名车相约步行街
+      </a>
+                    </LI>
+                                       <LI class="news-item">
+                      <a href="content_99294008.html" target="_blank">
+        摄影美术部欢迎赐稿
+      </a>
+                    </LI>
+                                       <LI class="news-item">
+                      <a href="content_99294009.html" target="_blank">
+        废品堆上领风骚
+      </a>
+                    </LI>
+                                       <LI class="news-item">
+                      <a href="content_99294010.html" target="_blank">
+        湘阴举办纪念抗日战争图片展
+      </a>
+                    </LI>
+                                       <LI class="news-item">
+                      <a href="content_99294011.html" target="_blank">
+        众口赞誉万祖红
+      </a>
+                    </LI>
+                                       <LI class="news-item">
+                      <a href="content_99294012.html" target="_blank">
+        李劲夫现场参观新农村示范点——安定镇江东村
+      </a>
+                    </LI>
+                                       <LI class="news-item">
+                      <a href="content_99294013.html" target="_blank">
+        我市上半年经济呈加速发展态势
+      </a>
+                    </LI>
+                                       <LI class="news-item">
+                      <a href="content_99294014.html" target="_blank">
+        寓非公有制企业党建工作于大统战格局之中
+      </a>
+                    </LI>
+                                       <LI class="news-item">
+                      <a href="content_99294015.html" target="_blank">
+        全市农村改厕工作成效显著
+      </a>
+                    </LI>
+                                      <!-- ------------标题导航 END -------------->
+
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+       <button type="button" class="layui-btn layui-btn-sm layui-btn-primary"  id="inquiry" name="button">在线调查</button>
+        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="submission" name="button">在线投稿</button>
+        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="message" name="button">版面留言</button>
+        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="mark" name="button">版面打分</button>
+      <!-- <p class="footer-content">COPYRIGHT &copy; CHINA INDUSTRIY NEWS, All RIGHTS RESERVED<br />京ICP备2018842号-2 中国工业报社 版权所有 未经书面允许 不得复制或建立镜像<br />中国工业报社常年法律顾问：北京市尚和律师事务所 闫风翥 李屏<br />报社地址：北京市百万庄葡萄园1号<br />邮政编码：100037 广告：010-68349303 发行：010-88382373 010-68334731<br />网站：010-63981577 、63983637</p> -->
+    </div>
+    <script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"2","bdPos":"right","bdTop":"100"},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='https://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+  </div>
+ <div class="layui-container display-none" style="width:100%;" id="inqHtml">
+      <div class="layui-row">
+          <div class="layui-col-md12 center margin-30-bot">
+              <h2 id="title">调查名</h2>
+          </div>
+          <div class="layui-col-md12 center margin-30-bot">
+              <h3 id="desc">调查描述</h3>
+          </div>
+          <input type="hidden" name="iid" value="">
+          <div class="layui-col-md12">
+              <section class="inqQues">
+                  <!--<form class="ac-custom ac-radio ac-fill" autocomplete="off">-->
+                      <!--<h2>你在哪里主动设想的多媒体基础知识和跨媒体发展战略？</h2>-->
+                      <!--<ul>-->
+                          <!--<li><input id="r1" name="r1" type="radio"><label for="r1">无缝可视化质量的智力资本</label></li>-->
+                          <!--<li><input id="r2" name="r1" type="radio"><label for="r2">协同管理交钥匙渠道</label></li>-->
+                          <!--<li><input id="r3" name="r1" type="radio"><label for="r3">客观地把握可扩展指标</label></li>-->
+                          <!--<li><input id="r4" name="r1" type="radio"><label for="r4">Energistically规模的面向未来的核心竞争力</label></li>-->
+                      <!--</ul>-->
+                  <!--</form>-->
+                  <!--<form class="ac-custom ac-checkbox ac-checkmark" autocomplete="off">-->
+                      <!--<h2>你为什么拖延交互高回报的内容，而不会向后兼容的数据？</h2>-->
+                      <!--<ul>-->
+                          <!--<li><input id="cb6" name="cb6" type="checkbox"><label for="cb6">可信reintermediate后端思路</label></li>-->
+                          <!--<li><input id="cb7" name="cb7" type="checkbox"><label for="cb7">不断reintermediate一体化进程</label></li>-->
+                          <!--<li><input id="cb8" name="cb8" type="checkbox"><label for="cb8">利用独特的最佳路线</label></li>-->
+                          <!--<li><input id="cb9" name="cb9" type="checkbox"><label for="cb9">快速协调电子商务应用</label></li>-->
+                      <!--<ul>-->
+                  <!--</form>-->
+              </section>
+          </div>
+          <div class="layui-col-md12 margin-30-bot">
+              <button class="layui-btn layui-btn-primary inquiry-btn">提交</button>
+          </div>
+      </div>
+  </div>
+  <div class="layui-container display-none" style="width:100%;" id="subHtml">
+      <form class="layui-form layui-form-pane" action="">
+          <div class="layui-form-item">
+          <div class="layui-inline">
+            <label class="layui-form-label">姓名：</label>
+            <div class="layui-input-inline">
+              <input type="text" name="username" lay-verify="required|username" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">电话：</label>
+            <div class="layui-input-inline">
+              <input type="text" name="tel" id="date" lay-verify="required|phone" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">邮箱：</label>
+            <div class="layui-input-inline">
+              <input type="text" name="email" lay-verify="required|email" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="layui-form-item">
+          <label class="layui-form-label">稿件主题：</label>
+          <div class="layui-input-block">
+            <input type="text" name="title" lay-verify="required" placeholder="请输入主题" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">描述：</label>
+          <div class="layui-input-block">
+            <input type="text" name="desc" autocomplete="off" placeholder="" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">稿件类别：</label>
+          <div class="layui-input-block">
+            <select name="cid" lay-filter="aihao" class="cate">
+
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+          <label class="layui-form-label">正文：</label>
+          <div class="layui-input-block">
+            <textarea placeholder="请输入内容" class="layui-textarea" name="content"></textarea>
+          </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">附件上传：</label>
+            <div class="layui-input-block">
+              <input type="text" name="fileee" value="" placeholder="附件支持格式：图片、Excel、ppt、Word、txt等文件格式..." autocomplete="off" disabled="disabled" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item right">
+            <div class="layui-upload-drag" id="upload">
+              <i class="layui-icon"></i>
+              <p>点击上传，或将文件拖拽到此处</p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+          <button class="layui-btn" lay-submit lay-filter="submission">提交</button>
+        </div>
+      </form>
+  </div>
+  <div class="layui-container display-none" style="width:100%;" id="messHtml">
+      <form class="layui-form layui-form-pane" action="">
+        <div class="layui-form-item layui-form-text">
+          <div class="layui-input-block">
+            <textarea placeholder="你想说些什么..." class="layui-textarea" name="words"></textarea>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <button class="layui-btn" lay-submit lay-filter="message">提交</button>
+        </div>
+      </form>
+  </div>
+  <div class="layui-container display-none" style="width:100%;" id="markHtml">
+      <div id="markcon"></div>
+  </div>
+
+  <script type="text/javascript">
+    var api_url="https://www.803.com.cn//yyrb/";
+  </script>
+
+  <link rel="stylesheet" href="https://www.803.com.cn//Public/demo/szb/pc/tp/jquery-ui.css">
+  <script src="https://www.803.com.cn//Public/demo/szb/pc/tp/jquery-1.10.2.min.js"></script>
+  <script src="https://www.803.com.cn//Public/demo/szb/pc/tp/jquery-ui.js"></script>
+  <script src="https://www.803.com.cn//Public/demo/szb/pc/js/common/jquery.datepicker.js"></script>
+  <script src="https://www.803.com.cn//Public/demo/szb/pc/js/common/common.js"></script>
+  <script src="https://www.803.com.cn//Public/demo/szb/pc/js/index.js"></script>
+
+
+  <script src="https://www.803.com.cn//Public//demo/szb/pc/plugs/layui-v2.4.5/layui/layui.all.js"></script>
+  <script type="text/javascript" src="https://www.803.com.cn//Public//demo/szb/pc/js/svgcheckbx.js"></script>
+  <script type="text/javascript" src="https://www.803.com.cn//Public//demo/szb/pc/js/inquiry.js"></script>
+  <script type="text/javascript" src="https://www.803.com.cn//Public//demo/szb/pc/js/mark.js"></script>
+  <script type="text/javascript" src="https://www.803.com.cn//Public//demo/szb/pc/js/submission.js"></script>
+  <script type="text/javascript" src="https://www.803.com.cn//Public//demo/szb/pc/js/mess.js"></script>
+
+
+   <script>
+    var imgs = document.getElementById('mapimage');
+
+  var areas = document.getElementsByTagName('Area');
+
+  function aaa(){
+    var arr = new Array();
+    for(var i=0;i<areas.length;i++) {
+
+      arr =areas[i].coords.split(",");
+      var coords = rel(arr);
+      areas[i].coords = coords;
+    }
+  }
+   $('.paperarea').tooltip({
+        track: true,
+        content: function() {
+            var element = $(this);
+            var text = element.attr( "title" );
+            if (text == '') {
+                $(this).tooltip("option","hide");
+            } else {
+              return '<span>'+text+'</span>';
+            }
+        }
+    });
+
+  function rel(arr) {
+
+    var a = new Array();
+    var b=367/13353;
+
+    if(b <1){
+      for(var j=0;j<arr.length;j++){
+        a[j] = b*parseInt(arr[j]);
+        a[j] = parseInt(a[j]);
+
+      }
+      var rst = a.join(',');
+    }else{
+      for(var j=0;j<arr.length;j++){
+        a[j] = b*parseInt(arr[j]);
+        a[j] = parseInt(a[j]);
+
+      }
+      var rst = a.join(',');
+    }
+    return rst;
+  }
+  aaa()
+  // window.onload = aaa;
+  </script>
+
+ <script type="text/javascript">
+      $(function(){
+          //在线调查
+          Inquiry.initPage();
+          //在线投稿
+          Submission.initPage();
+          //版面留言
+          Message.initPage();
+          //版面打分
+          Mark.initPage();
+      });
+  </script>
+<script>
+  function search_wj(){
+    search = $("input[name='searchText']").val()
+    window.open("http://99app.803.com.cn/search/search.php?s=/SzbSearch/search/searchText/"+search);
+  }
+</script>
+</body>
+</html>

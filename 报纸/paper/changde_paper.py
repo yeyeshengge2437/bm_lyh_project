@@ -14,6 +14,7 @@ headers = {
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
     'Pragma': 'no-cache',
+    'Referer': 'http://cdrb.cdyee.com/pc/column/202410/17/node_A01.html',
     'Upgrade-Insecure-Requests': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
 }
@@ -60,7 +61,10 @@ def get_changde_paper(paper_time, queue_id, webpage_id):
                 # 获取文章内容
                 article_response = requests.get(article_url, headers=headers)
                 time.sleep(1)
-                article_content = article_response.content.decode()
+                try:
+                    article_content = article_response.content.decode()
+                except:
+                    article_content = article_response.content.decode('gbk')
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
@@ -113,4 +117,4 @@ def get_changde_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_changde_paper('2024-08-22', 111, 1111)
+# get_changde_paper('2019-08-13', 111, 1111)

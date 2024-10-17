@@ -53,7 +53,7 @@ def get_yueyang_paper(paper_time, queue_id, webpage_id):
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
             if not bm_pdf:
-                bm_img = bm_html.xpath("//img[@id='mapimage']/@src")
+                bm_img = ''.join(bm_html.xpath("//img[@id='mapimage']/@src"))
 
             # 获取所有文章的链接
             all_article = bm_html.xpath("//li[@class='news-item']/a")
@@ -80,9 +80,10 @@ def get_yueyang_paper(paper_time, queue_id, webpage_id):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
-                # print(bm_name, article_name, article_url, bm_pdf, content)
+                print(bm_name, article_name, article_url, bm_pdf, content)
                 if bm_pdf:
                     if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
+                        # pass
                         # 将报纸url上传
                         up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
                         pdf_set.add(bm_pdf)
@@ -95,8 +96,12 @@ def get_yueyang_paper(paper_time, queue_id, webpage_id):
                         conn_test.commit()
                 else:
                     if bm_img not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
-                        # 将报纸url上传
-                        up_pdf = upload_file_by_url(bm_img, paper, "jpg", "paper")
+                        # pass
+                        if bm_img is None:
+                            up_pdf = None
+                        else:
+                            # 将报纸url上传
+                            up_pdf = upload_file_by_url(bm_img, paper, "jpg", "paper")
                         pdf_set.add(bm_img)
                         # 上传到报纸的图片或PDF
                         insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
@@ -108,11 +113,7 @@ def get_yueyang_paper(paper_time, queue_id, webpage_id):
 
 
                 if judging_criteria(article_name, content):
-                # if 1:
-
-                    # print(content)
-                    # return
-
+                    # pass
                     # 上传到报纸的内容
                     insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
 
@@ -135,4 +136,4 @@ def get_yueyang_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_yueyang_paper('2024-08-22', 111, 1111)
+# get_yueyang_paper('2007-07-08', 111, 1111)

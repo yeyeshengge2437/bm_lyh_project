@@ -241,6 +241,10 @@ from naqu_paper import get_naqu_paper  # 那曲报
 from guizhouzhengxie_paper import get_guizhouzhengxie_paper  # 贵州政协报
 from xinjiang_paper import get_xinjiang_paper  # 新疆日报
 from xinxire_paper import get_xinxire_paper  # 信息日报
+from hebeidangxiao_paper import get_hebeidangxiao_paper  # 河北党校报
+from jiangsukeji_paper import get_jiangsukeji_paper  # 江苏科技报
+from chinakexue_paper import get_chinakexue_paper  # 中国科学报
+from shanghaikeji_paper import get_shanghaikeji_paper  # 上海科技报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -484,6 +488,10 @@ methods = {
     '新消息报': get_xinxiaoxi_paper,
     '甘肃工人报': get_gansugongren_paper,
     '青岛财经日报': get_qingdaocaijing_paper,
+    '河北党校报': get_hebeidangxiao_paper,
+    '江苏科技报': get_jiangsukeji_paper,
+    '中国科学报': get_chinakexue_paper,
+    '上海科技报': get_shanghaikeji_paper,
 
 }
 
@@ -729,6 +737,10 @@ webpage_url_list = [
     'https://szb.nxrb.cn/xxxb/pc/layout',
     'https://szb.gansudaily.com.cn/gsgrb',
     'http://epaper.qdcaijing.com',
+    'http://www.hebdx.com/node_358332.htm',
+    'http://www.jskjb.com:8081/xpaper/release/index.shtml',
+    'https://news.sciencenet.cn/dz/dznews_photo.aspx?id=40369',
+    'https://www.shkjb.com/paper/animate.html',
 
 ]
 

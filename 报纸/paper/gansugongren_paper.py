@@ -28,7 +28,8 @@ def get_gansugongren_paper_new(paper_time, queue_id, webpage_id):
     if response.status_code == 200:
         html_data = response.content.decode()
         html_1 = etree.HTML(html_data)
-
+        if html_1 is None:
+            raise Exception(f'该日期没有报纸')
         # 获取所有版面
         banmian = html_1.xpath("//div[@class='nav-list']/ul/li/a[@class='btn btn-block']")
         for bm in banmian:
@@ -216,4 +217,4 @@ def get_gansugongren_paper(paper_time, queue_id, webpage_id):
         get_gansugongren_paper_new(paper_time, queue_id, webpage_id)
 
 
-# get_gansugongren_paper('2018-12-24', 1, 1)
+# get_gansugongren_paper('2022-10-19', 1, 1)

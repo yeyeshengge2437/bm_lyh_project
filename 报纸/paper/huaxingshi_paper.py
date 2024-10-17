@@ -49,6 +49,8 @@ def get_huaxingshi_paper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
             # 版面的pdf
             bm_pdf = 'https://www.hxsbs.com/szb/' + "".join(bm_html.xpath("//div[@class='nav-list']/ul/li/a[@class='pdf']/@href")).strip('../../..')
 
@@ -118,4 +120,4 @@ def get_huaxingshi_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_huaxingshi_paper('2020-02-13', 111, 1111)
+# get_huaxingshi_paper('2023-04-28', 111, 1111)

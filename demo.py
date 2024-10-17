@@ -1,36 +1,19 @@
-import requests
+from DrissionPage import ChromiumPage, ChromiumOptions
+co = ChromiumOptions()
+co = co.set_paths(local_port=9242)
+co = co.set_argument('--no-sandbox')  # 关闭沙箱模式, 解决`$DISPLAY`报错
+co = co.headless(True)  # 开启无头模式, 解决`浏览器无法连接`报错
+def get_paper_url_cookies(url):
+    cookie_dict = {}
+    page = ChromiumPage(co)
+    page.get(url)
+    value_cookies = page.cookies()
+    for key in value_cookies:
+        cookie_dict[key['name']] = key['value']
+    page.close()
+    return cookie_dict
 
-cookies = {
-    '_trs_uv': 'm1n0z125_4878_bybu',
-    'HMF_CI': 'b51b612efcab0fb27c3cf129d01b6f57f9cc81ed33b9e6109db3dd05c0a07d30e57329e9b0f4965e6d33684674687b90b710359f359d7da20742fef2e71ca0f8ae',
-    'HMY_JC': 'd91b61a45f651d66acb10be91f0c6e65e2e99075b6ee85196ecbc046654f38da00,',
-    '_trs_ua_s_1': 'm28fwbwj_4878_6sqg',
-    'HBB_HC': '24964091dfe18dabe54402bab839e0f6c0a6b8e5854e5b34841f6e5df2adaa9d9486714f935fc352c27a327bd9008a7fe5',
-}
-
-headers = {
-    'Accept': 'application/json, text/javascript, */*; q=0.01',
-    'Accept-Language': 'zh-CN,zh;q=0.9',
-    'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive',
-    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    # 'Cookie': '_trs_uv=m1n0z125_4878_bybu; HMF_CI=b51b612efcab0fb27c3cf129d01b6f57f9cc81ed33b9e6109db3dd05c0a07d30e57329e9b0f4965e6d33684674687b90b710359f359d7da20742fef2e71ca0f8ae; HMY_JC=d91b61a45f651d66acb10be91f0c6e65e2e99075b6ee85196ecbc046654f38da00,; _trs_ua_s_1=m28fwbwj_4878_6sqg; HBB_HC=24964091dfe18dabe54402bab839e0f6c0a6b8e5854e5b34841f6e5df2adaa9d9486714f935fc352c27a327bd9008a7fe5',
-    'Origin': 'https://jjjcb.ccdi.gov.cn',
-    'Pragma': 'no-cache',
-    'Referer': 'https://jjjcb.ccdi.gov.cn/epaper/',
-    'Sec-Fetch-Dest': 'empty',
-    'Sec-Fetch-Mode': 'cors',
-    'Sec-Fetch-Site': 'same-origin',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36',
-    'X-Requested-With': 'XMLHttpRequest',
-    'sec-ch-ua': '"Google Chrome";v="129", "Not=A?Brand";v="8", "Chromium";v="129"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
-}
-
-data = {
-    'docPubTime': '20241014',
-}
-
-response = requests.post('https://jjjcb.ccdi.gov.cn/reader/layout/findBmMenu.do', cookies=cookies, headers=headers, data=data)
-print(response.text)
+page = ChromiumPage(co)
+page.get('https://www.xyshjj.cn/newsepaper/10193_153332_1733080_zgxyjjb.html')
+print(page.html)
+page.close()

@@ -39,6 +39,8 @@ def get_qinzhou_paper(paper_time, queue_id, webpage_id):
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
+        if html_1 is None:
+            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//div[@class='nav-list']/ul/li")
         for bm in all_bm:
@@ -120,4 +122,4 @@ def get_qinzhou_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_qinzhou_paper('2024-08-22', 111, 1111)
+# get_qinzhou_paper('2021-12-16', 111, 1111)

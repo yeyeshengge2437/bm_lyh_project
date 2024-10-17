@@ -32,7 +32,10 @@ def get_chinaminzu_paper(paper_time, queue_id, webpage_id):
     }
     response = requests.post('http://210.12.104.26:81/reader/layout/findBmMenuPub.do', headers=headers, data=data, verify=False)
     if response.status_code == 200:
-        content = response.json()
+        try:
+            content = response.json()
+        except:
+            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
         all_bm = content
         for bm in all_bm:
@@ -118,4 +121,4 @@ def get_chinaminzu_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_chinaminzu_paper('2021-09-14', 111, 1111)
+# get_chinaminzu_paper('2021-09-29', 111, 1111)
