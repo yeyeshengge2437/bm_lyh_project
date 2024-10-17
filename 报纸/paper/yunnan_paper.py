@@ -232,4 +232,4 @@ def get_yunnan_paper(paper_time, queue_id, webpage_id):
         get_yunnan2_paper(paper_time, queue_id, webpage_id)
 
 
-get_yunnan_paper('2022-10-03', 111, 1111)
+# get_yunnan_paper('2022-10-03', 111, 1111)
