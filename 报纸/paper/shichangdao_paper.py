@@ -9,7 +9,7 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 from lxml import etree
 
 co = ChromiumOptions()
-co = co.set_paths(local_port=9236)
+co = co.set_paths().auto_port()
 co = co.set_argument('--no-sandbox')  # 关闭沙箱模式, 解决`$DISPLAY`报错
 co = co.headless(True)  # 开启无头模式, 解决`浏览器无法连接`报错
 
@@ -46,17 +46,18 @@ def get_shichangdao_paper(paper_time, queue_id, webpage_id):
     url = base_url + 'index.shtml'
     cookie_dict = {}
     page = ChromiumPage(co)
-    page.get(url)
-    value_cookies = page.cookies()
+    tab = page.new_tab()
+    tab.get(url)
+    value_cookies = tab.cookies()
     for key in value_cookies:
         cookie_dict[key['name']] = key['value']
-    page.close()
+    tab.close()
     response = requests.get(url, cookies=cookie_dict, headers=headers)
     if response.status_code == 200:
         try:
             content = response.content.decode("gbk")
         except:
-            content = response.content.decode()
+            raise Exception(f'该日期没有报纸')
         html_1 = etree.HTML(content)
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//div[@id='scrollDiv']/ul/li")
@@ -143,4 +144,4 @@ def get_shichangdao_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_shichangdao_paper('2023-09-06', 111, 1111)
+# get_shichangdao_paper('2023-09-08', 111, 1111)
