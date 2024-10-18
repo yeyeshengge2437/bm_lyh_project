@@ -7,58 +7,51 @@ import requests
 from lxml import etree
 
 
-paper = "江淮晨报"
+paper = "新安晚报"
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
+    # 'Cookie': 'JSESSIONID=9B5D953817AF0863AF0D0A924374A79D',
     'Pragma': 'no-cache',
-    'Sec-Fetch-Dest': 'document',
-    'Sec-Fetch-Mode': 'navigate',
-    'Sec-Fetch-Site': 'same-origin',
-    'Sec-Fetch-User': '?1',
     'Upgrade-Insecure-Requests': '1',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-    'sec-ch-ua': '"Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36',
 }
 
 
-def get_jianghuaichen_paper(paper_time, queue_id, webpage_id):
+
+def get_xinan_lastpaper(paper_time, queue_id, webpage_id):
     # 将today的格式进行改变
     day = paper_time
-    paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m/%d')
-    base_url = f'https://newspaper.hf365.com/jhcb/pc/layout/{paper_time}/'
-    url = base_url + 'node_A01.html'
+    paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m%d')
+    base_url = f'http://epaper.ahwang.cn/xawb/{paper_time}/html/'
+    url = base_url + 'index.htm'
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
-        if html_1 is None:
-            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
-        all_bm = html_1.xpath("//ul[@id='layoutlist']/li[@class='posRelative']")
+        all_bm = html_1.xpath("//div[@class='bmml_con_div']")
         for bm in all_bm:
             # 版面名称
-            bm_name = "".join(bm.xpath("./a/text()")).strip()
+            bm_name = "".join(bm.xpath("./a[@class='bmml_con_div_name']/text()")).strip()
             # 版面链接
-            bm_url = base_url + ''.join(bm.xpath("./a/@href"))
+            bm_url = base_url + ''.join(bm.xpath("./a[@class='bmml_con_div_name']/@href"))
+            # 版面的pdf
+            bm_pdf = None
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers)
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
-            # 版面的pdf
-            bm_pdf = 'https://newspaper.hf365.com/jhcb/pc/' + "".join(bm_html.xpath('//*[@id="pdfUrl"]/text()')).strip('../../..')
 
             # 获取所有文章的链接
-            all_article = bm_html.xpath("//li[@class='clearfix']/a")
+            all_article = bm_html.xpath("//a[@class='bmdh_con_a']")
             pdf_set = set()
             for article in all_article:
                 # 获取文章链接
-                article_url = 'https://newspaper.hf365.com/jhcb/pc/' + ''.join(article.xpath("./@href")).strip('../../..')
+                article_url = base_url + ''.join(article.xpath("./@href"))
                 # 获取文章名称
                 article_name = ''.join(article.xpath("./text()")).strip()
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -69,7 +62,7 @@ def get_jianghuaichen_paper(paper_time, queue_id, webpage_id):
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
-                content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
+                content = ''.join(article_html.xpath("//div[@id='zoom']/text()")).strip()
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -79,10 +72,10 @@ def get_jianghuaichen_paper(paper_time, queue_id, webpage_id):
                 )
                 cursor_test = conn_test.cursor()
                 # print(bm_name, article_name, article_url, bm_pdf, content)
-                if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
+                if judging_criteria(article_name, content):
                     # 将报纸url上传
-                    up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
-                    pdf_set.add(bm_pdf)
+                    up_pdf = None
+
                     # 上传到报纸的图片或PDF
                     insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
 
@@ -119,4 +112,4 @@ def get_jianghuaichen_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_jianghuaichen_paper('2022-10-25', 111, 1111)
+# get_xinan_lastpaper('2024-08-22', 111, 1111)

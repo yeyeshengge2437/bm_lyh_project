@@ -49,6 +49,8 @@ def get_chuncheng_lastpaper_new(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
             # 版面的pdf
             bm_pdf = 'https://ccwb.yunnan.cn/' + "".join(
                 bm_html.xpath("//tr[2]/td/table/tbody/tr/td[1]/a/@href")).strip('../..')
@@ -227,4 +229,4 @@ def get_chuncheng_lastpaper(paper_time, queue_id, webpage_id):
         # print('使用新方法')
         get_chuncheng_lastpaper_new(paper_time, queue_id, webpage_id)
 
-# get_chuncheng_lastpaper('2021-08-01', 111, 1111)
+# get_chuncheng_lastpaper('2023-11-06', 111, 1111)

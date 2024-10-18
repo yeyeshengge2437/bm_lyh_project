@@ -153,7 +153,13 @@ def get_langfang_paper_old(paper_time, queue_id, webpage_id):
                 # 获取文章内容
                 article_response = requests.get(article_url, headers=headers)
                 time.sleep(1)
-                article_content = article_response.content.decode()
+                try:
+                    article_content = article_response.content.decode()
+                except:
+                    try:
+                        article_content = article_response.content.decode('gbk')
+                    except:
+                        continue
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
@@ -221,3 +227,6 @@ def get_langfang_paper(paper_time, queue_id, webpage_id):
     else:
         # print('使用新方法')
         get_langfang_paper_new(paper_time, queue_id, webpage_id)
+
+
+# get_langfang_paper('2018-08-16', 111, 1111)

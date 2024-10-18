@@ -245,6 +245,9 @@ from hebeidangxiao_paper import get_hebeidangxiao_paper  # 河北党校报
 from jiangsukeji_paper import get_jiangsukeji_paper  # 江苏科技报
 from chinakexue_paper import get_chinakexue_paper  # 中国科学报
 from shanghaikeji_paper import get_shanghaikeji_paper  # 上海科技报
+from haikou_paper import get_haikou_paper  # 海口日报
+from tianshanjianshe_paper import get_tianshanjianshe_paper  # 天山建设报
+from xinan_lastpaper import get_xinan_lastpaper  # 新安晚报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -492,6 +495,9 @@ methods = {
     '江苏科技报': get_jiangsukeji_paper,
     '中国科学报': get_chinakexue_paper,
     '上海科技报': get_shanghaikeji_paper,
+    '海口日报': get_haikou_paper,
+    '天山建设报': get_tianshanjianshe_paper,
+    '新安晚报': get_xinan_lastpaper,
 
 }
 
@@ -741,6 +747,9 @@ webpage_url_list = [
     'http://www.jskjb.com:8081/xpaper/release/index.shtml',
     'https://news.sciencenet.cn/dz/dznews_photo.aspx?id=40369',
     'https://www.shkjb.com/paper/animate.html',
+    'https://szb.hkwb.net',
+    'https://www.tsjsb.net',
+    'https://epaper.ahwang.cn/xawb',
 
 ]
 
