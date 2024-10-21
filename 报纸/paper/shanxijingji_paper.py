@@ -87,6 +87,8 @@ def get_shanxijingji_paper(paper_time, queue_id, webpage_id):
                 except:
                     continue
                 article_html = etree.HTML(article_content)
+                if article_html is None:
+                    continue
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
                 # 上传到测试数据库
@@ -138,4 +140,4 @@ def get_shanxijingji_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_shanxijingji_paper('2015-05-13', 111, 1111)
+# get_shanxijingji_paper('2019-04-23', 111, 1111)

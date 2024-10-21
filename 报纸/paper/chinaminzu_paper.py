@@ -71,7 +71,10 @@ def get_chinaminzu_paper(paper_time, queue_id, webpage_id):
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 获取文章内容
-                content = article['IR_ABSTRACT']
+                try:
+                    content = article['IR_ABSTRACT']
+                except:
+                    content = ''
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -121,4 +124,4 @@ def get_chinaminzu_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_chinaminzu_paper('2021-09-29', 111, 1111)
+# get_chinaminzu_paper('2021-08-03', 111, 1111)

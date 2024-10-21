@@ -45,13 +45,12 @@ def get_guangdongkeji_paper(paper_time, queue_id, webpage_id):
         for bm in all_bm:
             # 版面名称
             bm_name = "".join(bm.xpath("./text()")).strip()
-            # 版面链接
-            bm_url = base_url
+
             # 版面的pdf
             date_num = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m%d')
             bm_pdf = f'https://cdn.gdkjb.com/epaper/kejibao/{date_num}/{bm_name}.pdf'
-
-
+            # 版面链接
+            bm_url = bm_pdf
 
             create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             create_date = datetime.now().strftime('%Y-%m-%d')
