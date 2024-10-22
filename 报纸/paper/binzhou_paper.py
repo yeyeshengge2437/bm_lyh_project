@@ -114,4 +114,4 @@ def get_binzhou_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_binzhou_paper('2024-08-22', 111, 1111)
+# get_binzhou_paper('2020-09-25', 111, 1111)

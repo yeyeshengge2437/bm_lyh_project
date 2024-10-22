@@ -42,6 +42,8 @@ def get_qingdaocaijing_paper_old(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
             # 版面的pdf
             bm_pdf = 'http://epaper.qdcaijing.com/pc/' + "".join(bm_html.xpath("//table[@id='mainBox']/tbody/tr/td[1]/table/tbody/tr[2]//td[1]/a/@href")).strip('../../..')
 
@@ -190,4 +192,4 @@ def get_qingdaocaijing_paper(paper_time, queue_id, webpage_id):
         get_qingdaocaijing_paper_new(paper_time, queue_id, webpage_id)
 
 
-# get_qingdaocaijing_paper('2024-06-06', 111, 1111)
+# get_qingdaocaijing_paper('2017-02-16', 111, 1111)

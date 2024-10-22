@@ -1485,4 +1485,4 @@ def get_xinxire_paper(paper_time, queue_id, webpage_id):
         page.close()
         raise Exception(f'该日期没有报纸')
 
-# get_xinxire_paper('2024-10-12', 111, 1111)
+# get_xinxire_paper('2024-04-09', 111, 1111)

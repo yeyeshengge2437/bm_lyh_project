@@ -29,7 +29,10 @@ def get_changde_paper(paper_time, queue_id, webpage_id):
     url = base_url + 'node_A01.html'
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
-        content = response.content.decode()
+        try:
+            content = response.content.decode()
+        except:
+            content = response.content.decode('gbk')
         html_1 = etree.HTML(content)
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//div[@class='nav-list']/ul/li")
@@ -117,4 +120,4 @@ def get_changde_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_changde_paper('2019-08-13', 111, 1111)
+# get_changde_paper('2021-02-13', 111, 1111)

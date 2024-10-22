@@ -123,6 +123,8 @@ def get_langfangdushi_paper_old(paper_time, queue_id, webpage_id):
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
+        if html_1 is None:
+            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//tr[2]//tr")
         for bm in all_bm:
@@ -221,3 +223,5 @@ def get_langfangdushi_paper(paper_time, queue_id, webpage_id):
     else:
         # print('使用新方法')
         get_langfangdushi_paper_new(paper_time, queue_id, webpage_id)
+
+# get_langfangdushi_paper('2019-10-02', 111, 1111)
