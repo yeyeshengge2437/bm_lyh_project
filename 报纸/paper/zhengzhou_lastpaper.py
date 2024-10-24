@@ -37,8 +37,13 @@ def get_zhengzhou_lastpaper(paper_time, queue_id, webpage_id):
     url = base_url + 'node_102.htm'
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
-        content = response.content.decode()
+        try:
+            content = response.content.decode()
+        except:
+            raise Exception(f'该日期没有报纸')
         html_1 = etree.HTML(content)
+        if html_1 is None:
+            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//table[@class='newspaperDirectory']//table[3]/tbody/tr")
         for bm in all_bm:
@@ -125,4 +130,4 @@ def get_zhengzhou_lastpaper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_zhengzhou_lastpaper('2008-08-07', 111, 1111)
+# get_zhengzhou_lastpaper('2009-03-06', 111, 1111)

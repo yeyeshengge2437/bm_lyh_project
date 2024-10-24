@@ -11,8 +11,9 @@ while True:
     except:
         time.sleep(30)
         continue
-    if value is None:
+    if not value:
         time.sleep(120)
+        continue
     id_str = value['id']
     img_url = value['img_url']
     print(img_url)

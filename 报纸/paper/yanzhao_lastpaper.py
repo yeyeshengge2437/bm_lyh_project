@@ -46,8 +46,14 @@ def get_yanzhao_lastpaper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
-            # 版面的pdf
-            bm_pdf = 'http://yzwb.sjzdaily.com.cn/yzwbpaper/pc/' + "".join(bm_html.xpath("//div[@class='pull-right']/a/@href")).strip('../../..')
+            if bm_html is None:
+                continue
+            bm_pdf_str = "".join(bm_html.xpath("//div[@class='pull-right']/a/@href")).strip('../../..')
+            if bm_pdf_str:
+                # 版面的pdf
+                bm_pdf = 'http://yzwb.sjzdaily.com.cn/yzwbpaper/pc/' + bm_pdf_str
+            else:
+                bm_pdf = 'http://yzwb.sjzdaily.com.cn/yzwbpaper/pc/' + "".join(bm_html.xpath('//*[@id="pdfUrl"]/text()')).strip('../../..')
 
             # 获取所有文章的链接
             all_article = bm_html.xpath("//li[@class='clearfix']/a")
@@ -117,4 +123,4 @@ def get_yanzhao_lastpaper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_yanzhao_lastpaper('2021-05-19', 111, 1111)
+# get_yanzhao_lastpaper('2021-04-19', 111, 1111)

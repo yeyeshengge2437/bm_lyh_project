@@ -121,4 +121,4 @@ def get_xizangfazhi_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_xizangfazhi_paper('2024-09-19', 111, 1111)
+# get_xizangfazhi_paper('2024-03-05', 111, 1111)

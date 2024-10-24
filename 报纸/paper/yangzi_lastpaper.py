@@ -49,6 +49,8 @@ def get_yangzi_lastpaper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
             # 版面的pdf
             bm_pdf = 'https://epaper.yzwb.net/pc/' + "".join(bm_html.xpath("//a[@class='download-pdf']/@href")).strip('../../..')
 
@@ -118,4 +120,4 @@ def get_yangzi_lastpaper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_yangzi_lastpaper('2024-08-22', 111, 1111)
+# get_yangzi_lastpaper('2021-07-16', 111, 1111)

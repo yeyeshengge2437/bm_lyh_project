@@ -60,6 +60,8 @@ def get_renminzhengxie_paper_new(paper_time, queue_id, webpage_id):
                 time.sleep(1)
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
+                if article_html is None:
+                    continue
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
                 # 上传到测试数据库
@@ -215,5 +217,5 @@ def get_renminzhengxie_paper(paper_time, queue_id, webpage_id):
         get_renminzhengxie_paper_new(paper_time, queue_id, webpage_id)
 
 
-# get_renminzhengxie_paper('2021-01-08', 111, 1111)
+# get_renminzhengxie_paper('2024-05-20', 111, 1111)
 # get_renminzhengxie_paper('2024-08-22', 111, 1111)

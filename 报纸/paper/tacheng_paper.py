@@ -44,6 +44,8 @@ def get_tacheng_paper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
             # 版面的pdf
             bm_pdf = 'http://szb.tcxw.cc/pc/' + "".join(bm_html.xpath("//div[@class='newslisttit']/em/a/@href")).strip('../../..')
 
@@ -62,6 +64,8 @@ def get_tacheng_paper(paper_time, queue_id, webpage_id):
                 time.sleep(1)
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
+                if article_html is None:
+                    continue
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@class='newsdetatext']/founder-content/p//text()")).strip()
                 # 上传到测试数据库
@@ -113,4 +117,4 @@ def get_tacheng_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_tacheng_paper('2024-10-03', 111, 1111)
+# get_tacheng_paper('2022-05-19', 111, 1111)

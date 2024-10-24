@@ -350,4 +350,4 @@ def get_zhaotong_paper(paper_time, queue_id, webpage_id):
         # print('使用新方法')
         get_zhaotong_paper_new(paper_time, queue_id, webpage_id)
 
-# get_zhaotong_paper('2008-03-09', 111, 1111)
+# get_zhaotong_paper('2008-05-18', 111, 1111)

@@ -141,6 +141,8 @@ def get_langfangdushi_paper_old(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
 
             # 获取所有文章的链接
             all_article = bm_html.xpath("//tr[4]/td//tbody//td[@class='default'][2]/a")
@@ -227,4 +229,4 @@ def get_langfangdushi_paper(paper_time, queue_id, webpage_id):
         # print('使用新方法')
         get_langfangdushi_paper_new(paper_time, queue_id, webpage_id)
 
-# get_langfangdushi_paper('2016-09-06', 111, 1111)
+# get_langfangdushi_paper('2017-01-18', 111, 1111)
