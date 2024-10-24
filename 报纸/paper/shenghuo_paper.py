@@ -47,7 +47,8 @@ def get_shenghuo_paper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
-
+            if bm_html is None:
+                continue
             # 获取所有文章的链接
             all_article = bm_html.xpath("//div[@id='ScroLeft']/div[@class='newslist']/ul/li/h3/a")
             pdf_set = set()
@@ -114,4 +115,4 @@ def get_shenghuo_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_shenghuo_paper('2024-08-22', 111, 1111)
+# get_shenghuo_paper('2021-12-30', 111, 1111)

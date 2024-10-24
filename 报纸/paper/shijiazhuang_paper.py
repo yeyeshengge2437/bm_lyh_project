@@ -31,6 +31,8 @@ def get_shijiazhuang_paper(paper_time, queue_id, webpage_id):
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
+        if html_1 is None:
+            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//li[@class='posRelative']/a")
         for bm in all_bm:
@@ -43,8 +45,13 @@ def get_shijiazhuang_paper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
+            pdf_str = "".join(bm_html.xpath("//div[@class='pull-right']/a/@href")).strip('../../..')
+            if not pdf_str:
+                pdf_str = "".join(bm_html.xpath('//*[@id="pdfUrl"]/text()')).strip('../../..')
             # 版面的pdf
-            bm_pdf = 'http://sjzrb.sjzdaily.com.cn/sjzrbpaper/pc/' + "".join(bm_html.xpath("//div[@class='pull-right']/a/@href")).strip('../../..')
+            bm_pdf = 'http://sjzrb.sjzdaily.com.cn/sjzrbpaper/pc/' + pdf_str
 
             # 获取所有文章的链接
             all_article = bm_html.xpath("//li[@class='clearfix']/a")
@@ -61,8 +68,11 @@ def get_shijiazhuang_paper(paper_time, queue_id, webpage_id):
                 time.sleep(1)
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
-                # 获取文章内容
-                content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
+                if article_html is None:
+                    content = ''
+                else:
+                    # 获取文章内容
+                    content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -112,4 +122,4 @@ def get_shijiazhuang_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_shijiazhuang_paper('2024-08-22', 111, 1111)
+# get_shijiazhuang_paper('2021-05-05', 111, 1111)

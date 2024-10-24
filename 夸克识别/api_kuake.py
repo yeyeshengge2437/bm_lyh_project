@@ -1,5 +1,8 @@
 import json
+import os
+
 import requests
+from PIL import Image
 
 requests.DEFAULT_RETRIES = 3
 s = requests.session()
@@ -74,6 +77,43 @@ data = {
 """
 
 
+def compress_img(file_name):
+    # 打开彩色图片文件
+    color_image = Image.open(file_name)
+    # 转换为黑白模式
+    black_and_white_image = color_image.convert('L')
+    # 将图像转换为调色板模式（8位）
+    palette_image = black_and_white_image.convert('P', palette=Image.ADAPTIVE)
+    # 保存黑白图片
+    black_and_white_image.save(file_name, optimize=True)
+
+
+def compress_image(input_path, output_path, max_size_mb=9):
+    # 打开图片
+    img = Image.open(input_path)
+
+    # 初始化质量参数
+    quality = 95  # 从较高的质量开始
+    i = 0
+
+    # 循环直到文件大小小于最大大小
+    while True:
+        # 保存图片
+        img.save(f'{output_path}_{i}.jpg', 'JPEG', quality=quality, optimize=True)
+
+        # 检查文件大小
+        if os.path.getsize(f'{output_path}_{i}.jpg') <= max_size_mb * 1024 * 1024:
+            return f'{output_path}_{i}.jpg'
+        else:
+            os.remove(f'{output_path}_{i}.jpg')
+
+        # 如果文件仍然太大，降低质量并重试
+        quality -= 5
+        i += 1
+        if quality < 10:  # 防止质量降到过低
+            return None
+
+
 def img_url_to_fail(image_url):
     # 图片的URL
     image_url = image_url
@@ -95,6 +135,9 @@ def img_url_to_fail(image_url):
         with open(filename, 'wb') as f:
             # 写入请求回来的图片数据
             f.write(response.content)
-        return filename
+
+        compress_name = compress_image(filename, 'yasuo', max_size_mb=9)
+
+        return compress_name
     else:
         raise Exception('下载图像失败')

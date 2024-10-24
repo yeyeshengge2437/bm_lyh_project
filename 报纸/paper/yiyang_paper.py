@@ -76,6 +76,8 @@ def get_yiyang_paper(paper_time, queue_id, webpage_id):
                 except:
                     continue
                 article_html = etree.HTML(article_content)
+                if article_html is None:
+                    continue
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//text()")).strip()
                 # 上传到测试数据库
@@ -127,4 +129,4 @@ def get_yiyang_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_yiyang_paper('2024-10-01', 111, 1111)
+# get_yiyang_paper('2021-03-23', 111, 1111)

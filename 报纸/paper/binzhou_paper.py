@@ -38,9 +38,13 @@ def get_binzhou_paper(paper_time, queue_id, webpage_id):
             bm_name = "".join(bm.xpath("./a[@class='bmml_con_div_name']/text()")).strip()
             # 版面链接
             bm_url = base_url + ''.join(bm.xpath("./a[@class='bmml_con_div_name']/@href"))
-            # 版面的pdf
-            bm_pdf = 'http://paper.bzrb.net' + "".join(
+            bm_pdf_str = "".join(
                 bm.xpath("./a[@class='bmml_con_div_pic']/@href"))
+            if 'bzrb' in bm_pdf_str:
+                # 版面的pdf
+                bm_pdf = 'http://paper.bzrb.net/' + bm_pdf_str
+            else:
+                bm_pdf = base_url + bm_pdf_str
 
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers)
@@ -114,4 +118,4 @@ def get_binzhou_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_binzhou_paper('2020-09-25', 111, 1111)
+# get_binzhou_paper('2020-10-12', 111, 1111)

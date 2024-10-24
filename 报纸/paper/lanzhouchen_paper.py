@@ -155,7 +155,10 @@ def get_lanzhouchen_paper_old(paper_time, queue_id, webpage_id):
                 # 获取文章内容
                 article_response = requests.get(article_url, headers=headers)
                 time.sleep(1)
-                article_content = article_response.content.decode()
+                try:
+                    article_content = article_response.content.decode()
+                except:
+                    continue
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
@@ -226,5 +229,5 @@ def get_lanzhouchen_paper(paper_time, queue_id, webpage_id):
         get_lanzhouchen_paper_new(paper_time, queue_id, webpage_id)
 
 
-# get_lanzhouchen_paper('2021-08-22', 111, 1111)
+# get_lanzhouchen_paper('2009-09-08', 111, 1111)
 

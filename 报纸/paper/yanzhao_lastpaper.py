@@ -64,6 +64,8 @@ def get_yanzhao_lastpaper(paper_time, queue_id, webpage_id):
                 time.sleep(1)
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
+                if article_html is None:
+                    continue
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
                 # 上传到测试数据库
@@ -115,4 +117,4 @@ def get_yanzhao_lastpaper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_yanzhao_lastpaper('2022-06-09', 111, 1111)
+# get_yanzhao_lastpaper('2021-05-19', 111, 1111)

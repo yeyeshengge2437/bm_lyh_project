@@ -38,7 +38,10 @@ def get_xuexishi_paper(paper_time, queue_id, webpage_id):
             # 版面链接
             bm_url = base_url + ''.join(bm.xpath("./@href")).strip('./')
             # 获取版面详情
-            bm_response = requests.get(bm_url, headers=headers)
+            try:
+                bm_response = requests.get(bm_url, headers=headers)
+            except:
+                continue
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
@@ -56,7 +59,10 @@ def get_xuexishi_paper(paper_time, queue_id, webpage_id):
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 获取文章内容
-                article_response = requests.get(article_url, headers=headers)
+                try:
+                    article_response = requests.get(article_url, headers=headers)
+                except:
+                    continue
                 time.sleep(1)
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
@@ -111,4 +117,4 @@ def get_xuexishi_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_xuexishi_paper('2024-09-25', 111, 1111)
+# get_xuexishi_paper('2014-08-12', 111, 1111)

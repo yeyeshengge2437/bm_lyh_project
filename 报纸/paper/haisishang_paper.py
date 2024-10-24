@@ -51,6 +51,8 @@ def get_haisishang_paper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
             # 版面的pdf
             bm_pdf = 'https://hssb.fjdaily.com/pc/' + "".join(bm_html.xpath("//table[@id='mainBox']/tbody/tr/td[1]/table/tbody/tr[2]//td[1]/a/@href")).strip('../../..')
 
@@ -120,4 +122,4 @@ def get_haisishang_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_haisishang_paper('2024-07-01', 111, 1111)
+# get_haisishang_paper('2021-03-03', 111, 1111)

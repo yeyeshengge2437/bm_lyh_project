@@ -6,7 +6,6 @@ import mysql.connector
 import requests
 from lxml import etree
 
-
 paper = "联合日报"
 headers = {
     'Accept': '*/*',
@@ -26,8 +25,6 @@ headers = {
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"Windows"',
 }
-
-
 
 
 def get_lianhe_paper(paper_time, queue_id, webpage_id):
@@ -65,11 +62,15 @@ def get_lianhe_paper(paper_time, queue_id, webpage_id):
             create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             create_date = datetime.now().strftime('%Y-%m-%d')
             # 获取文章内容
-            article_response = requests.get(f'https://app.lhwww.com.cn/content/{article["contentId"]}',  headers=headers)
+            article_response = requests.get(f'https://app.lhwww.com.cn/content/{article["contentId"]}', headers=headers)
             time.sleep(1)
             article_content = article_response.json()
+
             # 获取文章内容
-            content = article_content["data"]["txtCleanHtml"]
+            try:
+                content = article_content["data"]["txtCleanHtml"]
+            except:
+                content = ''
             # 上传到测试数据库
             conn_test = mysql.connector.connect(
                 host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -78,36 +79,35 @@ def get_lianhe_paper(paper_time, queue_id, webpage_id):
                 database="col",
             )
             cursor_test = conn_test.cursor()
-            # print(bm_name, article_name, article_url, bm_pdf, content)
-            if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
-                # 将报纸url上传
-                up_pdf = upload_file_by_url(bm_pdf, paper, "jpg", "paper")
-                pdf_set.add(bm_pdf)
-                # 上传到报纸的图片或PDF
-                insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
-
-                cursor_test.execute(insert_sql,
-                                    (day, paper, bm_name, bm_pdf, bm_url, up_pdf, create_time, queue_id,
-                                     create_date, webpage_id))
-                conn_test.commit()
-
-            if judging_criteria(article_name, content):
-            # if 1:
-
-                # print(content)
-                # return
-
-                # 上传到报纸的内容
-                insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
-
-                cursor_test.execute(insert_sql,
-                                    (bm_url, day, paper, article_name, content, article_url, create_time, queue_id,
-                                     create_date, webpage_id))
-                conn_test.commit()
+            print(bm_name, article_name, article_url, bm_pdf, content)
+            # if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
+            #     # 将报纸url上传
+            #     up_pdf = upload_file_by_url(bm_pdf, paper, "jpg", "paper")
+            #     pdf_set.add(bm_pdf)
+            #     # 上传到报纸的图片或PDF
+            #     insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
+            #
+            #     cursor_test.execute(insert_sql,
+            #                         (day, paper, bm_name, bm_pdf, bm_url, up_pdf, create_time, queue_id,
+            #                          create_date, webpage_id))
+            #     conn_test.commit()
+            #
+            # if judging_criteria(article_name, content):
+            # # if 1:
+            #
+            #     # print(content)
+            #     # return
+            #
+            #     # 上传到报纸的内容
+            #     insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
+            #
+            #     cursor_test.execute(insert_sql,
+            #                         (bm_url, day, paper, article_name, content, article_url, create_time, queue_id,
+            #                          create_date, webpage_id))
+            #     conn_test.commit()
 
             cursor_test.close()
             conn_test.close()
-
 
     success_data = {
         'id': queue_id,
@@ -116,5 +116,4 @@ def get_lianhe_paper(paper_time, queue_id, webpage_id):
     paper_queue_success(success_data)
 
 
-
-# get_lianhe_paper('2024-09-29', 111, 1111)
+get_lianhe_paper('2023-10-10', 111, 1111)

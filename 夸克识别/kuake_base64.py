@@ -18,7 +18,7 @@ def img_to_base64(path):
     return base64_data
 
 
-def create_demo_param(client_id, client_secret, img_url, img_type='imgBase64'):
+def create_demo_param(client_id, client_secret, img_url):
     business = "table_ocr"
     sign_method = "SHA3-256"
     sign_nonce = uuid.uuid4().hex
@@ -33,9 +33,11 @@ def create_demo_param(client_id, client_secret, img_url, img_type='imgBase64'):
         "signMethod": sign_method,
         "signNonce": sign_nonce,
         "timestamp": timestamp,
-        img_type: img_to_base64(img_name),
+        "imgBase64": img_to_base64(img_name),
         "signature": signature
     }
+    # if os.path.exists(img_name):
+    #     os.remove(img_name)
     return param
 
 
@@ -60,7 +62,7 @@ def get_signature(client_id, client_secret, business, sign_method, sign_nonce, t
     return sign
 
 
-def quark(img_url):
+def quark_base64(img_url):
     client_id = "test"
     client_secret = "6zGXp1QZ6GcLWoEn"
 
@@ -87,4 +89,6 @@ def quark(img_url):
         return None
 
 
-
+# quark_base64('https://res.debtop.com/manage/live/paper/202410/24/20241024011804833e306331d34b3b.png')
+# quark_base64('https://res.debtop.com/manage/live/paper/202410/24/2024102401301999a053971b424897.png')
+# quark_base64('https://res.debtop.com/manage/live/paper/202410/24/20241024110628f369258f291548b9.png')

@@ -272,7 +272,10 @@ def get_zhaotong_paper_old_old(paper_time, queue_id, webpage_id):
                 # 获取文章内容
                 article_response = requests.get(article_url, headers=headers_old, verify=False)
                 time.sleep(1)
-                article_content = article_response.content.decode()
+                try:
+                    article_content = article_response.content.decode()
+                except:
+                    continue
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
@@ -347,4 +350,4 @@ def get_zhaotong_paper(paper_time, queue_id, webpage_id):
         # print('使用新方法')
         get_zhaotong_paper_new(paper_time, queue_id, webpage_id)
 
-# get_zhaotong_paper('2020-08-22', 111, 1111)
+# get_zhaotong_paper('2008-03-09', 111, 1111)
