@@ -41,7 +41,10 @@ def get_nanhuang_paper(paper_time, queue_id, webpage_id):
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers)
             time.sleep(1)
-            bm_content = bm_response.content.decode('gbk')
+            try:
+                bm_content = bm_response.content.decode('gbk')
+            except:
+                continue
             bm_html = etree.HTML(bm_content)
             # 版面的pdf
             bm_pdf = 'http://hnb.huangnan.gov.cn' + "".join(bm_html.xpath("//div[@class='bktitle']/a/@href"))
@@ -112,4 +115,4 @@ def get_nanhuang_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_nanhuang_paper('2024-03-29', 111, 1111)
+# get_nanhuang_paper('2020-12-23', 111, 1111)

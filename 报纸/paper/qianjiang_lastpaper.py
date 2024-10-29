@@ -44,7 +44,10 @@ def get_qianjiang_lastpaper(paper_time, queue_id, webpage_id):
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers)
             time.sleep(1)
-            bm_content = bm_response.content.decode()
+            try:
+                bm_content = bm_response.content.decode()
+            except:
+                bm_content = bm_response.content.decode('gbk')
             bm_html = etree.HTML(bm_content)
             # 版面的pdf
             bm_pdf = 'http://qjwb.thehour.cn/' + "".join(
@@ -63,7 +66,10 @@ def get_qianjiang_lastpaper(paper_time, queue_id, webpage_id):
                 # 获取文章内容
                 article_response = requests.get(article_url, headers=headers)
                 time.sleep(1)
-                article_content = article_response.content.decode()
+                try:
+                    article_content = article_response.content.decode()
+                except:
+                    article_content = article_response.content.decode('gbk')
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
@@ -116,4 +122,4 @@ def get_qianjiang_lastpaper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_qianjiang_lastpaper('2024-08-22', 111, 1111)
+# get_qianjiang_lastpaper('2016-12-14', 111, 1111)

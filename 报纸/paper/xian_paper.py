@@ -52,6 +52,8 @@ def get_xian_paper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
             # 版面的pdf
             bm_pdf = 'https://epaper.xiancn.com/' + "".join(bm_html.xpath("//table[@id='mainBox']/tbody/tr/td[1]/table/tbody/tr[2]/td/table/tbody/tr/td[1]/a/@href")).strip('../../../../..')
 
@@ -123,4 +125,4 @@ def get_xian_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_xian_paper('2024-01-05', 111, 1111)
+# get_xian_paper('2021-07-24', 111, 1111)

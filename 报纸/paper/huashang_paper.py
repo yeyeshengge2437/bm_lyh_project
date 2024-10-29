@@ -58,7 +58,7 @@ def get_huashang_paper(paper_time, queue_id, webpage_id):
             for article in all_article:
                 # 获取文章链接
                 article_url = ''.join(article.xpath("./@onclick"))
-                article_url = re.findall(r"gourl\('(.*?)', '_top'\)", article_url)[0]
+                article_url = ''.join(re.findall(r"gourl\('(.*?)', '_top'\)", article_url))
                 if not article_url:
                     continue
                 article_url = "http://ehsb.hspress.net" + article_url
@@ -123,4 +123,4 @@ def get_huashang_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_huashang_paper('2023-10-01', 111, 1111)
+# get_huashang_paper('2013-07-02', 111, 1111)

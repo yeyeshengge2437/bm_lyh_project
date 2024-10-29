@@ -58,7 +58,10 @@ def get_zhengzhou_lastpaper(paper_time, queue_id, webpage_id):
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers)
             time.sleep(1)
-            bm_content = bm_response.content.decode()
+            try:
+                bm_content = bm_response.content.decode()
+            except:
+                continue
             bm_html = etree.HTML(bm_content)
 
             # 获取所有文章的链接
@@ -130,4 +133,4 @@ def get_zhengzhou_lastpaper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_zhengzhou_lastpaper('2009-03-06', 111, 1111)
+# get_zhengzhou_lastpaper('2012-01-05', 111, 1111)

@@ -6,7 +6,6 @@ import mysql.connector
 import requests
 from lxml import etree
 
-
 paper = "洛阳晚报"
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -50,6 +49,7 @@ cookies = {
     'Hm_lpvt_6f25c71301bfc73e874e5940cd84affe': '1727321352',
 }
 
+
 def get_luoyang_lastpaper_new(paper_time, queue_id, webpage_id):
     # 将today的格式进行改变
     day = paper_time
@@ -76,7 +76,8 @@ def get_luoyang_lastpaper_new(paper_time, queue_id, webpage_id):
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
             # 版面的pdf
-            bm_pdf = 'https://lywb.lyd.com.cn/' + "".join(bm_html.xpath("//span[@class='pdf-download']/a/@href")).strip('../../..')
+            bm_pdf = 'https://lywb.lyd.com.cn/' + "".join(bm_html.xpath("//span[@class='pdf-download']/a/@href")).strip(
+                '../../..')
 
             # 获取所有文章的链接
             all_article = bm_html.xpath("//ul[@class='main-ed-articlenav-list']/li/a")
@@ -117,7 +118,7 @@ def get_luoyang_lastpaper_new(paper_time, queue_id, webpage_id):
                     conn_test.commit()
 
                 if judging_criteria(article_name, content):
-                # if 1:
+                    # if 1:
 
                     # print(content)
                     # return
@@ -132,7 +133,6 @@ def get_luoyang_lastpaper_new(paper_time, queue_id, webpage_id):
 
                 cursor_test.close()
                 conn_test.close()
-
 
         success_data = {
             'id': queue_id,
@@ -168,7 +168,8 @@ def get_luoyang_lastpaper_old(paper_time, queue_id, webpage_id):
             bm_content = bm_response.content.decode('gbk')
             bm_html = etree.HTML(bm_content)
             # 版面的pdf
-            bm_pdf = 'https://lywb.lyd.com.cn/' + "".join(bm_html.xpath("//td[@class='px12'][3]/a/@href")).strip('../../..')
+            bm_pdf = 'https://lywb.lyd.com.cn/' + "".join(bm_html.xpath("//td[@class='px12'][3]/a/@href")).strip(
+                '../../..')
             # 获取所有文章的链接
             all_article = bm_html.xpath("//td[@class='default']/a/div")
             pdf_set = set()
@@ -182,7 +183,10 @@ def get_luoyang_lastpaper_old(paper_time, queue_id, webpage_id):
                 # 获取文章内容
                 article_response = requests.get(article_url, headers=headers_old)
                 time.sleep(1)
-                article_content = article_response.content.decode('gbk')
+                try:
+                    article_content = article_response.content.decode('gbk')
+                except:
+                    continue
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@id='ozoom']/p/text()")).strip()
@@ -224,7 +228,6 @@ def get_luoyang_lastpaper_old(paper_time, queue_id, webpage_id):
                 cursor_test.close()
                 conn_test.close()
 
-
         success_data = {
             'id': queue_id,
             'description': '数据获取成功',
@@ -233,6 +236,8 @@ def get_luoyang_lastpaper_old(paper_time, queue_id, webpage_id):
 
     else:
         raise Exception(f'该日期没有报纸')
+
+
 # get_luoyang_lastpaper('2024-08-22', 111, 1111)
 # get_luoyang_lastpaper_old('2014-08-22', 111, 1111)
 def get_luoyang_lastpaper(paper_time, queue_id, webpage_id):
@@ -250,4 +255,5 @@ def get_luoyang_lastpaper(paper_time, queue_id, webpage_id):
         # print('使用新方法')
         get_luoyang_lastpaper_new(paper_time, queue_id, webpage_id)
 
-# get_luoyang_lastpaper('2024-10-02', 111, 1111)
+
+# get_luoyang_lastpaper('2013-08-29', 111, 1111)

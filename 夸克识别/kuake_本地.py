@@ -30,7 +30,7 @@ def create_demo_param(client_id, client_secret):
         "signMethod": sign_method,
         "signNonce": sign_nonce,
         "timestamp": timestamp,
-        "imgBase64": img_to_base64("1.png"),
+        "imgBase64": img_to_base64("img.png"),
         "signature": signature
     }
     return param

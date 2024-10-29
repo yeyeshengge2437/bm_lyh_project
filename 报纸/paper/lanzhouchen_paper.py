@@ -138,6 +138,8 @@ def get_lanzhouchen_paper_old(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
             # 版面的pdf
             bm_pdf = 'http://morningpost.benliuxinwen.com/' + "".join(
                 bm_html.xpath('//td[@width="199"]/a/@href')).strip('../../..')
@@ -229,5 +231,5 @@ def get_lanzhouchen_paper(paper_time, queue_id, webpage_id):
         get_lanzhouchen_paper_new(paper_time, queue_id, webpage_id)
 
 
-# get_lanzhouchen_paper('2009-09-08', 111, 1111)
+# get_lanzhouchen_paper('2016-08-07', 111, 1111)
 

@@ -126,6 +126,7 @@ def get_gongshangdao_paper(paper_time, queue_id, webpage_id):
                         database="col",
                     )
                     cursor_test = conn_test.cursor()
+                    # print(bm_name, article_name, article_url, bm_img, content)
                     if bm_img not in pdf_set and (
                             "分类信息" in article_name or judging_bm_criteria(article_name)) and judge_bm_repeat(paper,
                                                                                                                  bm_url):
@@ -164,13 +165,5 @@ def get_gongshangdao_paper(paper_time, queue_id, webpage_id):
     else:
         raise Exception(f'该日期没有报纸')
 
-# paper_queue = paper_queue_next(
-#             webpage_url_list=['https://epaper.lnd.com.cn'])
-# webpage_name = paper_queue['webpage_name']
-# queue_day = paper_queue['day']
-# queue_id = paper_queue['id']
-# webpage_id = paper_queue["webpage_id"]
-# queue_id = 1111
-# webpage_id = 1111
-# time = '2020-01-21'
-# get_gongshangdao_paper(time, queue_id, webpage_id)
+
+# get_gongshangdao_paper('2024-10-18', '11', '1111')

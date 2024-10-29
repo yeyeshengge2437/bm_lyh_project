@@ -1,48 +1,31 @@
-import os
+import requests
 
-from PIL import Image
+cookies = {
+    'RK': 'nBU4TPDzwS',
+    'ptcz': 'faead0bb4c470764ffd3e2db5cc6d80201eab8a69fa8b7777adea4dd0b0fcfc2',
+}
 
-# # 打开彩色图片文件
-# color_image = Image.open('2024102401301999a053971b424897.png')
-#
-# # 转换为黑白模式
-# black_and_white_image = color_image.convert('L')
-# # 将图像转换为调色板模式（8位）
-# palette_image = black_and_white_image.convert('P', palette=Image.ADAPTIVE)
-# # 保存黑白图片
-# palette_image.save('black_and_white_image.png', optimize=True)
+headers = {
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'accept-language': 'zh-CN,zh;q=0.9',
+    'cache-control': 'no-cache',
+    # 'cookie': 'RK=nBU4TPDzwS; ptcz=faead0bb4c470764ffd3e2db5cc6d80201eab8a69fa8b7777adea4dd0b0fcfc2',
+    'pragma': 'no-cache',
+    'priority': 'u=0, i',
+    'sec-ch-ua': '"Google Chrome";v="129", "Not=A?Brand";v="8", "Chromium";v="129"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    'sec-fetch-dest': 'document',
+    'sec-fetch-mode': 'navigate',
+    'sec-fetch-site': 'none',
+    'sec-fetch-user': '?1',
+    'upgrade-insecure-requests': '1',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36',
+}
 
-
-from PIL import Image
-import os
-
-
-def compress_image(input_path, output_path, max_size_mb=9):
-    # 打开图片
-    img = Image.open(input_path)
-
-    # 初始化质量参数
-    quality = 95  # 从较高的质量开始
-    i = 0
-
-    # 循环直到文件大小小于最大大小
-    while True:
-        # 保存图片
-        img.save(f'{output_path}_{i}.jpg', 'JPEG', quality=quality, optimize=True)
-
-        # 检查文件大小
-        if os.path.getsize(f'{output_path}_{i}.jpg') <= max_size_mb * 1024 * 1024:
-            print(f'Compressed image saved as {output_path}_{i}.jpg')
-            return f'{output_path}_{i}.jpg'
-        else:
-            os.remove(f'{output_path}_{i}.jpg')
-
-        # 如果文件仍然太大，降低质量并重试
-        quality -= 5
-        i += 1
-        if quality < 10:  # 防止质量降到过低
-            return None
-
-
-# 使用示例
-# compress_image('2024102401301999a053971b424897.png', 'compress_image.jpg')
+response = requests.get(
+    'https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI5ODk2MTY1Mg==&action=getalbum&album_id=3421134606546747396',
+    cookies=cookies,
+    headers=headers,
+)
+print(response.text)

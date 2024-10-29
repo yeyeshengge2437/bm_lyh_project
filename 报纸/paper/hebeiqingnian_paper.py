@@ -43,9 +43,11 @@ def get_hebeiqingnian_paper(paper_time, queue_id, webpage_id):
             count += 1
             # 版面名称
             bm_name = f"第{count}版"
-
-            # 版面的pdf
-            bm_pdf = 'https://www.hbynet.net' + bm
+            if 'http' in bm:
+                bm_pdf = bm
+            else:
+                # 版面的pdf
+                bm_pdf = 'https://www.hbynet.net' + bm
             # 版面链接
             bm_url = bm_pdf
             pdf_set = set()
@@ -89,4 +91,4 @@ def get_hebeiqingnian_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_hebeiqingnian_paper('2024-08-22', 111, 1111)
+# get_hebeiqingnian_paper('2019-06-04', 111, 1111)

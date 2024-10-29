@@ -131,6 +131,8 @@ def get_lanzhouxinqu_paper_old(paper_time, queue_id, webpage_id):
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
+        if html_1 is None:
+            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//li[@class='posRelative']/a")
         for bm in all_bm:
@@ -230,4 +232,4 @@ def get_lanzhouxinqu_paper(paper_time, queue_id, webpage_id):
         # print('使用新方法')
         get_lanzhouxinqu_paper_new(paper_time, queue_id, webpage_id)
 
-# get_lanzhouxinqu_paper('2022-07-30', 111, 1111)
+# get_lanzhouxinqu_paper('2021-07-01', 111, 1111)

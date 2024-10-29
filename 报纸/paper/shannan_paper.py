@@ -29,6 +29,8 @@ def get_shannan_paper(paper_time, queue_id, webpage_id):
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
+        if html_1 is None:
+            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//tr[2]/td/div/table/tbody/tr")
         for bm in all_bm:
@@ -115,4 +117,4 @@ def get_shannan_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_shannan_paper('2024-06-07', 111, 1111)
+# get_shannan_paper('2023-06-19', 111, 1111)

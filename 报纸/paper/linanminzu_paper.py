@@ -111,4 +111,4 @@ def get_linanminzu_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_linanminzu_paper('2024-08-22', 111, 1111)
+# get_linanminzu_paper('2016-08-07', 111, 1111)
