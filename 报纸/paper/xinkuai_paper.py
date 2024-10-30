@@ -61,6 +61,8 @@ def get_xinkuai_paper(paper_time, queue_id, webpage_id):
                 article_content = article_response.text
                 article_content = article_content.replace('\\', '')
                 article_html = etree.HTML(article_content)
+                if article_html is None:
+                    continue
                 # 获取文章名称
                 article_name = ''.join(article_html.xpath("//span[@class='fs14 blod']/text()")).strip()
                 # 获取文章内容
@@ -106,4 +108,4 @@ def get_xinkuai_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_xinkuai_paper('2024-10-11', 111, 1111)
+# get_xinkuai_paper('2017-01-12', 111, 1111)

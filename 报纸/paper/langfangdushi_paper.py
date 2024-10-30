@@ -141,7 +141,10 @@ def get_langfangdushi_paper_old(paper_time, queue_id, webpage_id):
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers)
             time.sleep(1)
-            bm_content = bm_response.content.decode()
+            try:
+                bm_content = bm_response.content.decode()
+            except:
+                continue
             bm_html = etree.HTML(bm_content)
             if bm_html is None:
                 continue
@@ -231,4 +234,4 @@ def get_langfangdushi_paper(paper_time, queue_id, webpage_id):
         # print('使用新方法')
         get_langfangdushi_paper_new(paper_time, queue_id, webpage_id)
 
-# get_langfangdushi_paper('2021-09-12', 111, 1111)
+# get_langfangdushi_paper('2017-03-27', 111, 1111)

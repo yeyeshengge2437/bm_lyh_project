@@ -7,32 +7,33 @@ import mysql.connector
 import requests
 from lxml import etree
 
-paper = "兰州新区报"
 
+paper = "甘肃日报"
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
-    # 'Cookie': 'Hm_lvt_c8237b7422ade53a38c2391c8a98d773=1725594882,1726104052',
+    # 'Cookie': 'Hm_lvt_c8237b7422ade53a38c2391c8a98d773=1727084613,1727747765,1728884870; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%22192d5f21130196a-0193d743c668a5c-26001051-1296000-192d5f211311901%22%2C%22first_id%22%3A%22%22%2C%22props%22%3A%7B%7D%2C%22identities%22%3A%22eyIkaWRlbnRpdHlfY29va2llX2lkIjoiMTkyZDVmMjExMzAxOTZhLTAxOTNkNzQzYzY2OGE1Yy0yNjAwMTA1MS0xMjk2MDAwLTE5MmQ1ZjIxMTMxMTkwMSJ9%22%2C%22history_login_id%22%3A%7B%22name%22%3A%22%22%2C%22value%22%3A%22%22%7D%7D; sajssdk_2015_cross_new_user=1',
     'Pragma': 'no-cache',
     'Sec-Fetch-Dest': 'document',
     'Sec-Fetch-Mode': 'navigate',
     'Sec-Fetch-Site': 'same-origin',
     'Sec-Fetch-User': '?1',
     'Upgrade-Insecure-Requests': '1',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-    'sec-ch-ua': '"Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36',
+    'sec-ch-ua': '"Google Chrome";v="129", "Not=A?Brand";v="8", "Chromium";v="129"',
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"Windows"',
 }
 
 
-def get_lanzhouxinqu_paper_new(paper_time, queue_id, webpage_id):
+
+def get_gansu_paper_new(paper_time, queue_id, webpage_id):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m/%d')
-    base_url = f'https://szb.gansudaily.com.cn/lzxqb/pc/layout/{paper_time}/'
+    base_url = f'https://szb.gansudaily.com.cn/gsrb/pc/layout/{paper_time}/'
     url = base_url + 'col01.html'
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
@@ -50,18 +51,16 @@ def get_lanzhouxinqu_paper_new(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            pdf_str = ''.join(re.findall(r'<!-- <p id="pdfUrl" style="display:none">(.*?)</p> -->', bm_content, re.S))
             # 版面的pdf
-            # bm_pdf = 'http://epaper.chuxiong.cn/' + "".join(bm_html.xpath("//div[@class='nav-list']/ul/li/a[@class='pdf']/@href")).strip('../..')
-            bm_pdf = 'https://szb.gansudaily.com.cn/lzxqb/pc/' + ''.join(
-                re.findall(r'<!-- <p id="pdfUrl" style="display:none">(.*?)</p> -->', bm_content)).strip('../../..')
+            bm_pdf = 'https://szb.gansudaily.com.cn/gsrb/pc/' + pdf_str.strip('../../..')
 
             # 获取所有文章的链接
             all_article = bm_html.xpath("//ul/li[@class='resultList']/a")
             pdf_set = set()
             for article in all_article:
                 # 获取文章链接
-                article_url = 'https://szb.gansudaily.com.cn/lzxqb/pc/' + ''.join(article.xpath("./@href")).strip(
-                    '../../..')
+                article_url = 'https://szb.gansudaily.com.cn/gsrb/pc/' + ''.join(article.xpath("./@href")).strip('../../..')
                 # 获取文章名称
                 article_name = ''.join(article.xpath("./h4/text()")).strip()
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -95,7 +94,7 @@ def get_lanzhouxinqu_paper_new(paper_time, queue_id, webpage_id):
                     conn_test.commit()
 
                 if judging_criteria(article_name, content):
-                    # if 1:
+                # if 1:
 
                     # print(content)
                     # return
@@ -111,6 +110,7 @@ def get_lanzhouxinqu_paper_new(paper_time, queue_id, webpage_id):
                 cursor_test.close()
                 conn_test.close()
 
+
         success_data = {
             'id': queue_id,
             'description': '数据获取成功',
@@ -120,21 +120,18 @@ def get_lanzhouxinqu_paper_new(paper_time, queue_id, webpage_id):
     else:
         raise Exception(f'该日期没有报纸')
 
-
-def get_lanzhouxinqu_paper_old(paper_time, queue_id, webpage_id):
+def get_gansu_paper_old(paper_time, queue_id, webpage_id):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m/%d')
-    base_url = f'https://szb.gansudaily.com.cn/lzxqb/{paper_time}/'
+    base_url = f'https://szb.gansudaily.com.cn/gsrb/{paper_time}/'
     url = base_url + 'col01.html'
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
-        if html_1 is None:
-            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
-        all_bm = html_1.xpath("//li[@class='posRelative']/a")
+        all_bm = html_1.xpath("//ul[@id='layoutlist']/li/a")
         for bm in all_bm:
             # 版面名称
             bm_name = "".join(bm.xpath("./text()")).strip()
@@ -146,15 +143,14 @@ def get_lanzhouxinqu_paper_old(paper_time, queue_id, webpage_id):
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
             # 版面的pdf
-            bm_pdf = "".join(bm_html.xpath('//*[@id="pdfUrl"]/text()'))
-            # bm_pdf = 'https://szb.gansudaily.com.cn/lzxqb/pc/' + ''.join(re.findall(r'<!-- <p id="pdfUrl" style="display:none">(.*?)</p> -->', bm_content)).strip('../../..')
+            bm_pdf = ''.join(bm_html.xpath('//*[@id="pdfUrl"]/text()'))
 
             # 获取所有文章的链接
-            all_article = bm_html.xpath("//li[@class='clearfix']/a")
+            all_article = bm_html.xpath("//ul[@id='articlelist']/li/a")
             pdf_set = set()
             for article in all_article:
                 # 获取文章链接
-                article_url = ''.join(article.xpath("./@href"))
+                article_url = ''.join(article.xpath("./@href")).strip('../../..')
                 # 获取文章名称
                 article_name = ''.join(article.xpath("./text()")).strip()
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -188,7 +184,7 @@ def get_lanzhouxinqu_paper_old(paper_time, queue_id, webpage_id):
                     conn_test.commit()
 
                 if judging_criteria(article_name, content):
-                    # if 1:
+                # if 1:
 
                     # print(content)
                     # return
@@ -204,6 +200,7 @@ def get_lanzhouxinqu_paper_old(paper_time, queue_id, webpage_id):
                 cursor_test.close()
                 conn_test.close()
 
+
         success_data = {
             'id': queue_id,
             'description': '数据获取成功',
@@ -213,13 +210,9 @@ def get_lanzhouxinqu_paper_old(paper_time, queue_id, webpage_id):
     else:
         raise Exception(f'该日期没有报纸')
 
-
-# get_lanzhouxinqu_paper_old('2022-08-30', 111, 1111)
-
-
-def get_lanzhouxinqu_paper(paper_time, queue_id, webpage_id):
+def get_gansu_paper(paper_time, queue_id, webpage_id):
     paper_time1 = datetime.strptime(paper_time, '%Y-%m-%d').date()
-    date_str = '2022-08-30'
+    date_str = '2022-05-09'
 
     # 将字符串转换为日期对象
     date_str = datetime.strptime(date_str, '%Y-%m-%d').date()
@@ -227,9 +220,10 @@ def get_lanzhouxinqu_paper(paper_time, queue_id, webpage_id):
     # 判断日期是否在范围内
     if paper_time1 <= date_str:
         # print('使用旧方法')
-        get_lanzhouxinqu_paper_old(paper_time, queue_id, webpage_id)
+        get_gansu_paper_old(paper_time, queue_id, webpage_id)
     else:
         # print('使用新方法')
-        get_lanzhouxinqu_paper_new(paper_time, queue_id, webpage_id)
+        get_gansu_paper_new(paper_time, queue_id, webpage_id)
 
-# get_lanzhouxinqu_paper('2012-08-02', 111, 1111)
+# get_gansu_paper('2022-12-31', 111, 1111)
+# get_gansu_paper_old('2022-05-09', 111, 1111)

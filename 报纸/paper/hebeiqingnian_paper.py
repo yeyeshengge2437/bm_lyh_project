@@ -35,6 +35,7 @@ def get_hebeiqingnian_paper(paper_time, queue_id, webpage_id):
     }
     url = 'https://www.hbynet.net/news_paper/newsPaperByList.do'
     response = requests.get(url, params=params, headers=headers)
+    time.sleep(3)
     if response.status_code == 200:
         content = response.json()
         all_bm = content["data"]["rows"]
@@ -60,7 +61,7 @@ def get_hebeiqingnian_paper(paper_time, queue_id, webpage_id):
                 host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
                 user="col2024",
                 password="Bm_a12a06",
-                database="col",
+                database="col_test",
             )
             cursor_test = conn_test.cursor()
             # print(bm_name, bm_pdf)
@@ -91,4 +92,4 @@ def get_hebeiqingnian_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_hebeiqingnian_paper('2019-06-04', 111, 1111)
+# get_hebeiqingnian_paper('2019-07-08', 111, 1111)

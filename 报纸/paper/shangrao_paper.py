@@ -38,18 +38,21 @@ def get_shangrao_paper_new(paper_time, queue_id, webpage_id):
             bm_name = "".join(bm.xpath("./a[@class='btn btn-block']/text()")).strip()
             # 版面链接
             bm_url = base_url + ''.join(bm.xpath("./a[@class='btn btn-block']/@href"))
-            # 版面的pdf
-            bm_pdf = 'http://paper.srxww.com/pc/' + "".join(
-                bm.xpath("./a[@class='pdf']/@href")).strip('../../..')
+
 
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers)
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
-
+            if bm_html is None:
+                continue
+                # 版面的pdf
+            bm_pdf = 'http://paper.srxww.com/pc/' + "".join(
+                bm_html.xpath("//a[@class='pdf']/@href")).strip('../../..')
             # 获取所有文章的链接
             all_article = bm_html.xpath("//div[@class='news-list']/ul/li[@class='resultList']/a")
+
             pdf_set = set()
             for article in all_article:
                 # 获取文章链接
@@ -232,4 +235,4 @@ def get_shangrao_paper(paper_time, queue_id, webpage_id):
         # print('使用新方法')
         get_shangrao_paper_new(paper_time, queue_id, webpage_id)
 
-# get_shangrao_paper('2023-05-28', 111, 1111)
+# get_shangrao_paper('2024-10-28', 111, 1111)

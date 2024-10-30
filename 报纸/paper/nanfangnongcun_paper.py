@@ -50,7 +50,6 @@ def get_nanfangnongcun_paper(paper_time, queue_id, webpage_id):
         url = base_url + 'Page01TB.htm'
     else:
         url = base_url + 'Page01KR.htm'
-    print(url)
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         try:
@@ -98,7 +97,10 @@ def get_nanfangnongcun_paper(paper_time, queue_id, webpage_id):
                 try:
                     article_content = article_response.content.decode('gbk')
                 except:
-                    article_content = article_response.content.decode()
+                    try:
+                        article_content = article_response.content.decode()
+                    except:
+                        continue
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
                 content = ''.join(article_html.xpath("//div[@class='contenttext']/text()")).strip()
@@ -143,4 +145,4 @@ def get_nanfangnongcun_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_nanfangnongcun_paper('2019-02-21', 111, 1111)
+# get_nanfangnongcun_paper('2023-08-01', 111, 1111)

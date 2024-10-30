@@ -9,7 +9,7 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 from lxml import etree
 
 co = ChromiumOptions()
-co = co.set_paths(local_port=9222)
+co = co.set_paths(local_port=9223)
 co = co.set_argument('--no-sandbox')  # 关闭沙箱模式, 解决`$DISPLAY`报错
 co = co.headless(True)  # 开启无头模式, 解决`浏览器无法连接`报错
 
@@ -144,4 +144,4 @@ def get_shichangdao_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_shichangdao_paper('2023-09-08', 111, 1111)
+# get_shichangdao_paper('2023-02-04', 111, 1111)

@@ -43,6 +43,8 @@ def get_qiyejia_paper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
             # 版面的pdf
             bm_pdf = 'http://www.entrepreneurdaily.cn' + "".join(bm_html.xpath("//h3[@class='lh-mob-h']/a/@href"))
 
@@ -115,4 +117,4 @@ def get_qiyejia_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_qiyejia_paper('2019-01-29', 111, 1111)
+# get_qiyejia_paper('2018-11-21', 111, 1111)

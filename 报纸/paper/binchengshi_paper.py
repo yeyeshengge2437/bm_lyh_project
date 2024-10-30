@@ -47,7 +47,10 @@ def get_binchengshi_paper(paper_time, queue_id, webpage_id):
             bm_pdf = None
             up_pdf = None
             # 获取所有文章的链接
-            all_article = re.findall(rf'var obj\d = (.*?);', content1, re.S)[count].replace('\n', '')
+            try:
+                all_article = re.findall(rf'var obj\d = (.*?);', content1, re.S)[count].replace('\n', '')
+            except:
+                continue
             article_dict = ast.literal_eval(all_article)
 
             pdf_set = set()
@@ -106,4 +109,4 @@ def get_binchengshi_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_binchengshi_paper('2024-07-11', 111, 1111)
+# get_binchengshi_paper('2024-10-20', 111, 1111)

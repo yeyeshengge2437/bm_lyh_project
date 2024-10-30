@@ -1731,7 +1731,10 @@ def get_chinakexue_paper(paper_time, queue_id, webpage_id):
                     if "pdf" in value:
                         pdf_list.append(value)
                 # 版面的pdf
-                bm_pdf = 'https://news.sciencenet.cn' + pdf_list[count]
+                try:
+                    bm_pdf = 'https://news.sciencenet.cn' + pdf_list[count]
+                except:
+                    continue
                 count += 1
                 # 版面链接
                 bm_url = bm_pdf
@@ -1799,4 +1802,4 @@ def get_chinakexue_paper(paper_time, queue_id, webpage_id):
         else:
             raise Exception(f'该日期没有报纸')
 
-# get_chinakexue_paper('2024-10-14', 111, 1111)
+# get_chinakexue_paper('2024-06-13', 111, 1111)

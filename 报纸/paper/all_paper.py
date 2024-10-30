@@ -248,6 +248,8 @@ from shanghaikeji_paper import get_shanghaikeji_paper  # 上海科技报
 from haikou_paper import get_haikou_paper  # 海口日报
 from tianshanjianshe_paper import get_tianshanjianshe_paper  # 天山建设报
 from xinan_lastpaper import get_xinan_lastpaper  # 新安晚报
+from gansu_paper import get_gansu_paper  # 甘肃日报
+from chinashehuikexue_paper import get_chinashehuikexue_paper  # 中国社会科学报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -498,6 +500,8 @@ methods = {
     '海口日报': get_haikou_paper,
     '天山建设报': get_tianshanjianshe_paper,
     '新安晚报': get_xinan_lastpaper,
+    '甘肃日报': get_gansu_paper,
+    '中国社会科学报': get_chinashehuikexue_paper,
 
 }
 
@@ -750,6 +754,9 @@ webpage_url_list = [
     'https://szb.hkwb.net',
     'https://www.tsjsb.net',
     'https://epaper.ahwang.cn/xawb',
+    'https://szb.gansudaily.com.cn/gsrb/pc/layout',
+    'https://epaper.csstoday.net',
+
 
 ]
 

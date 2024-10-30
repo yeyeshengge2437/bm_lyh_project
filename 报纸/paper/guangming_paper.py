@@ -50,6 +50,8 @@ def get_guangming_paper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
             # 版面的pdf
             bm_pdf = 'https://epaper.gmw.cn/gmrb/' + "".join(bm_html.xpath("//div[@class='ban']/div/img/@src")).strip('../../..')
 
@@ -119,4 +121,4 @@ def get_guangming_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_guangming_paper('2024-10-02', 111, 1111)
+# get_guangming_paper('2023-11-24', 111, 1111)

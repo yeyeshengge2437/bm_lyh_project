@@ -58,6 +58,8 @@ def get_zhengzhou_paper(paper_time, queue_id, webpage_id):
             except:
                 continue
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
 
             # 获取所有文章的链接
             all_article = bm_html.xpath("//table[3]//td[@class='default'][2]/a")
@@ -128,4 +130,4 @@ def get_zhengzhou_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_zhengzhou_paper('2014-03-12', 111, 1111)
+# get_zhengzhou_paper('2012-03-27', 111, 1111)
