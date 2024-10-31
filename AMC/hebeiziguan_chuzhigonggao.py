@@ -90,8 +90,8 @@ def get_hebeiziguan_chuzhigonggao(queue_id, webpage_id):
                     if not files:
                         files = ''
                         original_url = ''
-                    files = str(files)
-                    original_url = str(original_url)
+                    files = str(files).replace("'", '"')
+                    original_url = str(original_url).replace("'", '"')
 
                     title_html_info = res_title_html.xpath(
                         "//h3[@class='nv_tit']")

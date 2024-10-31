@@ -134,6 +134,8 @@ def get_chaidamu_paper_old(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
             # 版面的pdf
             bm_pdf = 'https://www.cdmrb.com.cn/html/' + "".join(bm_html.xpath("//td[4]/a/@href")).strip('../..')
 
@@ -224,5 +226,5 @@ def get_chaidamu_paper(paper_time, queue_id, webpage_id):
 
 
 
-# get_chaidamu_paper('2022-08-16', 111, 1111)
+# get_chaidamu_paper('2016-02-06', 111, 1111)
 

@@ -83,8 +83,8 @@ def get_shenzenzichan_chuzhigonggao(queue_id, webpage_id):
                 if not files:
                     files = ''
                     original_url = ''
-                files = str(files)
-                original_url = str(original_url)
+                files = str(files).replace("'", '"')
+                original_url = str(original_url).replace("'", '"')
 
                 image = get_image(page, title_url, "xpath=//div[@class='newsdetails ullist']")
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')

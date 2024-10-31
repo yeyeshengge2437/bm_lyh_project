@@ -92,8 +92,8 @@ def get_liaoningzichan_chuzhigonggao(queue_id, webpage_id):
                     if not files:
                         files = ''
                         original_url = ''
-                    files = str(files)
-                    original_url = str(original_url)
+                    files = str(files).replace("'", '"')
+                    original_url = str(original_url).replace("'", '"')
 
                     title_html_info = res_title_html.xpath(
                         "//h2[@class='text-center fs-sm-28 fs-lg-28 font-weight-bold fs-20 my-3']")

@@ -171,7 +171,10 @@ def get_luoyang_lastpaper_old(paper_time, queue_id, webpage_id):
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers_old)
             time.sleep(1)
-            bm_content = bm_response.content.decode('gbk')
+            try:
+                bm_content = bm_response.content.decode('gbk')
+            except:
+                continue
             bm_html = etree.HTML(bm_content)
             # 版面的pdf
             bm_pdf = 'https://lywb.lyd.com.cn/' + "".join(bm_html.xpath("//td[@class='px12'][3]/a/@href")).strip(
@@ -262,4 +265,4 @@ def get_luoyang_lastpaper(paper_time, queue_id, webpage_id):
         get_luoyang_lastpaper_new(paper_time, queue_id, webpage_id)
 
 
-# get_luoyang_lastpaper('2015-01-26', 111, 1111)
+# get_luoyang_lastpaper('2014-05-30', 111, 1111)

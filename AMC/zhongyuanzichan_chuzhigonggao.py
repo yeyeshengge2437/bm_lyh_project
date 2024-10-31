@@ -110,8 +110,8 @@ def get_zhongyuanzichan_chuzhigonggao(queue_id, webpage_id):
                 if not files:
                     files = ''
                     original_url = ''
-                files = str(files)
-                original_url = str(original_url)
+                files = str(files).replace("'", '"')
+                original_url = str(original_url).replace("'", '"')
                 content_etree = etree.HTML(content_html)
                 title_content = ''.join(content_etree.xpath('//text()')).strip()
 

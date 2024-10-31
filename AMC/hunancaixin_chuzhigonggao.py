@@ -86,8 +86,8 @@ def get_hunancaixin_chuzhigonggao(queue_id, webpage_id):
                     if not files:
                         files = ''
                         original_url = ''
-                    files = str(files)
-                    original_url = str(original_url)
+                    files = str(files).replace("'", '"')
+                    original_url = str(original_url).replace("'", '"')
 
                     title_html_info = res_title_html.xpath("//div[@class='wordcontent section_v container']/div[@class='top']")
                     # content_1 = res_title_html.xpath("//div[@class='bottom']/div[@class='text']")[0]

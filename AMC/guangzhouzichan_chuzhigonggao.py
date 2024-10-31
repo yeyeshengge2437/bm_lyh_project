@@ -13,7 +13,7 @@ from AMC.api_paper import get_image, judge_bm_repeat, upload_file, judge_title_r
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9136)
+co.set_paths(local_port=9236)
 
 
 headers = {
@@ -89,8 +89,8 @@ def get_guangzhouzichan_chuzhigonggao(queue_id, webpage_id):
                     if not files:
                         files = ''
                         original_url = ''
-                    files = str(files)
-                    original_url = str(original_url)
+                    files = str(files).replace("'", '"')
+                    original_url = str(original_url).replace("'", '"')
 
                     title_html_info = res_title_html.xpath(
                         "//div[@class='wrapper']")

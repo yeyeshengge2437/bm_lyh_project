@@ -164,8 +164,11 @@ def get_lanzhouxinqu_paper_old(paper_time, queue_id, webpage_id):
                 time.sleep(1)
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
-                # 获取文章内容
-                content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
+                if article_html is None:
+                    content = ''
+                else:
+                    # 获取文章内容
+                    content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -232,4 +235,4 @@ def get_lanzhouxinqu_paper(paper_time, queue_id, webpage_id):
         # print('使用新方法')
         get_lanzhouxinqu_paper_new(paper_time, queue_id, webpage_id)
 
-# get_lanzhouxinqu_paper('2012-08-02', 111, 1111)
+# get_lanzhouxinqu_paper('2020-04-03', 111, 1111)
