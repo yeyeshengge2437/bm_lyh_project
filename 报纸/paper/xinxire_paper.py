@@ -1461,7 +1461,10 @@ def get_xinxire_paper(paper_time, queue_id, webpage_id):
             # print(bm_name, bm_pdf)
             if bm_pdf not in pdf_set and judge_bm_repeat(paper, bm_url):
                 # 将报纸url上传
-                up_pdf = upload_file_by_url(bm_pdf, paper, "jpg", "paper")
+                try:
+                    up_pdf = upload_file_by_url(bm_pdf, paper, "jpg", "paper")
+                except:
+                    up_pdf = ''
                 pdf_set.add(bm_pdf)
                 # 上传到报纸的图片或PDF
                 insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
@@ -1485,4 +1488,4 @@ def get_xinxire_paper(paper_time, queue_id, webpage_id):
         page.close()
         raise Exception(f'该日期没有报纸')
 
-# get_xinxire_paper('2024-04-09', 111, 1111)
+# get_xinxire_paper('2023-10-08', 111, 1111)

@@ -15,7 +15,8 @@ while True:
         time.sleep(120)
         continue
     id_str = value['id']
-    img_url = value['img_url']
+    img_url = value['files']
+    img_url = json.loads(img_url)[0]
     print(img_url)
     identify_data = quark(img_url)
     time.sleep(randint(5, 20))
@@ -25,7 +26,7 @@ while True:
         identify_data = json.dumps(identify_data, ensure_ascii=False)
         data = {
             'id': int(id_str),
-            'quark_tables': str(identify_data),
+            'output_text': str(identify_data),
             'remark': '识别成功'
         }
         print(img_url_identify_success(data=data))
@@ -39,7 +40,7 @@ while True:
             identify_bigimg_data = json.dumps(identify_bigimg_data, ensure_ascii=False)
             data = {
                 'id': int(id_str),
-                'quark_tables': str(identify_bigimg_data),
+                'output_text': str(identify_bigimg_data),
                 'remark': '识别成功'
             }
             print(img_url_identify_success(data=data))

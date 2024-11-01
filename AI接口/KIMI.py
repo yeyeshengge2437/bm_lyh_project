@@ -1,6 +1,6 @@
 from pathlib import Path
 from openai import OpenAI
-from api_ai import img_url_to_fail
+from api_ai import img_url_to_file
 import os
 client = OpenAI(
         api_key="sk-hXUGUGNz8RN3mgLTUg3n8j0suiBiRnumBJxM1I6giYVYJk7h",
@@ -9,7 +9,7 @@ client = OpenAI(
 
 def kimi_file_chat(img_url, chat_text):
 
-    file_name = img_url_to_fail(img_url)
+    file_name = img_url_to_file(img_url)
 
     # 我们支持 pdf, doc 以及图片等格式, 对于图片和 pdf 文件，提供 ocr 相关能力
     file_object = client.files.create(file=Path(file_name), purpose="file-extract")
@@ -38,12 +38,14 @@ def kimi_file_chat(img_url, chat_text):
         temperature=0.3,
     )
 
-    print(completion.choices[0].message.content)
-    return completion.choices[0].message.content
+    input_token_num = completion.usage.completion_tokens
+    output_token_num = completion.usage.prompt_tokens
+    output_text = completion.choices[0].message.content
+    return input_token_num, output_token_num, output_text
 
 
 # kimi_file_chat(
-#     "https://res.debtop.com/manage/live/paper/202410/24/20241024110628f369258f291548b9.png?x-oss-process=image/resize,m_fixed,w_64/quality,Q_5",
+#     "https://res.debtop.com/manage/live/paper/202410/24/20241024002149e4fba06506cc48b5.png",
 #     "提取里面的文字，不需要总结和概括")
 
 def kimi_single_chat(chat_text):
@@ -58,8 +60,10 @@ def kimi_single_chat(chat_text):
         temperature=0.3,
     )
 
-    print(completion.choices[0].message.content)
-    return completion.choices[0].message.content
+    input_token_num = completion.usage.completion_tokens
+    output_token_num = completion.usage.prompt_tokens
+    output_text = completion.choices[0].message.content
+    return input_token_num, output_token_num, output_text
 
 
 # kimi_single_chat("你好")

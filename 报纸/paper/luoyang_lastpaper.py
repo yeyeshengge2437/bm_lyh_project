@@ -75,6 +75,8 @@ def get_luoyang_lastpaper_new(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
             # 版面的pdf
             bm_pdf = 'https://lywb.lyd.com.cn/' + "".join(bm_html.xpath("//span[@class='pdf-download']/a/@href")).strip(
                 '../../..')
@@ -265,4 +267,4 @@ def get_luoyang_lastpaper(paper_time, queue_id, webpage_id):
         get_luoyang_lastpaper_new(paper_time, queue_id, webpage_id)
 
 
-# get_luoyang_lastpaper('2014-05-30', 111, 1111)
+# get_luoyang_lastpaper('2018-05-02', 111, 1111)

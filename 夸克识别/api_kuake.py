@@ -8,7 +8,7 @@ requests.DEFAULT_RETRIES = 3
 s = requests.session()
 s.keep_alive = False
 
-produce_url = "http://121.43.164.84:29807/inner-api"
+produce_url = "http://121.43.164.84:29810"
 
 
 def get_img_url():
@@ -16,10 +16,12 @@ def get_img_url():
         'Content-Type': 'application/json'
     }
     data = {
-        "description": ''
+        'tell_tool_list': [
+            'quark_img_table_tell'
+        ]
     }
     data_str = json.dumps(data, ensure_ascii=False)
-    url = produce_url + "/paper-deal/quark/table-start"
+    url = produce_url + "/inner-api/paper-deal/tell-queue/next"
     response = s.post(url, headers=headers, data=data_str)
     result = response.json()
     print(result)
@@ -33,7 +35,7 @@ def img_url_identify_success(data=None):
     }
     if data is None:
         data = {}
-    url = produce_url + "/paper-deal/quark/table-success"
+    url = produce_url + "/inner-api/paper-deal/tell-queue/success"
     data_str = json.dumps(data, ensure_ascii=False)
 
     res = s.post(url=url, headers=headers, data=data_str)
@@ -59,7 +61,7 @@ def img_url_identify_fail(data=None):
     }
     if data is None:
         data = {}
-    url = produce_url + "/paper-deal/quark/table-fail"
+    url = produce_url + "/inner-api/paper-deal/tell-queue/fail"
     data_str = json.dumps(data, ensure_ascii=False)
 
     res = s.post(url=url, headers=headers, data=data_str)

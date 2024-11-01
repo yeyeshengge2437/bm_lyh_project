@@ -28,11 +28,13 @@ def zhipu_file_chat(url, chat_text):
             }
         ]
     )
-    print(response.choices[0].message.content)
-    return response.choices[0].message.content
+    input_token_num = response.usage.completion_tokens
+    output_token_num = response.usage.prompt_tokens
+    output_text = response.choices[0].message.content
+    return input_token_num, output_token_num, output_text
 
 
-zhipu_file_chat("https://res.debtop.com/manage/live/paper/202410/24/20241024002149e4fba06506cc48b5.png", "提取里面的文字，不需要总结和概括")
+# zhipu_file_chat("https://res.debtop.com/manage/live/paper/202410/24/20241024002149e4fba06506cc48b5.png", "提取里面的文字，不需要总结和概括")
 
 
 def zhipu_single_chat(chat_text):
@@ -45,15 +47,17 @@ def zhipu_single_chat(chat_text):
     :return:
     """
     response = client.chat.completions.create(
-        model="GLM-4-Flash",  # 填写需要调用的模型编码
+        model="GLM-4-Air",  # 填写需要调用的模型编码
         messages=[
             {"role": "system", "content": "你是一个乐于解答各种问题的助手，你的任务是为用户提供专业、准确、有见地的建议。"},
             {"role": "user",
-             "content": "农夫需要把狼、羊和白菜都带过河，但每次只能带一样物品，而且狼和羊不能单独相处，羊和白菜也不能单独相处，问农夫该如何过河。"}
+             "content": f"{chat_text}"}
         ],
     )
-    print(response.choices[0].message.content)
-    return response.choices[0].message.content
+    input_token_num = response.usage.completion_tokens
+    output_token_num = response.usage.prompt_tokens
+    output_text = response.choices[0].message.content
+    return input_token_num, output_token_num, output_text
 
 
 # zhipu_single_chat(111)
@@ -75,5 +79,7 @@ def zhipu_file_free_chat(chat_text):
         ],
     )
 
-    print(response.choices[0].message.content)
-    return response.choices[0].message.content
+    input_token_num = response.usage.completion_tokens
+    output_token_num = response.usage.prompt_tokens
+    output_text = response.choices[0].message.content
+    return input_token_num, output_token_num, output_text

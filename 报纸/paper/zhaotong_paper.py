@@ -97,8 +97,10 @@ def get_zhaotong_paper_new(paper_time, queue_id, webpage_id):
                 cursor_test = conn_test.cursor()
                 # print(bm_name, article_name, article_url, bm_pdf, content)
                 if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
-                    # 将报纸url上传
-                    up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
+                    try:
+                        up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
+                    except:
+                        up_pdf = ''
                     pdf_set.add(bm_pdf)
                     # 上传到报纸的图片或PDF
                     insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
@@ -194,7 +196,10 @@ def get_zhaotong_paper_old(paper_time, queue_id, webpage_id):
                 # print(bm_name, article_name, article_url, bm_pdf, content)
                 if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
-                    up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
+                    try:
+                        up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
+                    except:
+                        up_pdf = ''
                     pdf_set.add(bm_pdf)
                     # 上传到报纸的图片或PDF
                     insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
@@ -289,8 +294,10 @@ def get_zhaotong_paper_old_old(paper_time, queue_id, webpage_id):
                 cursor_test = conn_test.cursor()
                 # print(bm_name, article_name, article_url, bm_pdf, content)
                 if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
-                    # 将报纸url上传
-                    up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
+                    try:
+                        up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
+                    except:
+                        up_pdf = ''
                     pdf_set.add(bm_pdf)
                     # 上传到报纸的图片或PDF
                     insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
