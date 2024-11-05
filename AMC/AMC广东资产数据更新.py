@@ -45,6 +45,8 @@ def guangdong_gai(queue_id, webpage_id):
         "select id, page_url, update_time from col_paper_notice where paper = '广东粤财资产管理有限公司'")
     rows = cursor_test_1.fetchall()
     for id, page_url, update_time in rows:
+        if '18282' in page_url:
+            continue
         if update_time:
             continue
         title_url = page_url
@@ -118,3 +120,4 @@ data = {
 }
 paper_queue_success(data=data)
 # 1752755 16472
+# https://www.utrustamc.com/czgg/info.aspx?itemid=18282

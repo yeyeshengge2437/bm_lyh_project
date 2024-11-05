@@ -19,7 +19,7 @@ conn_test = mysql.connector.connect(
 
 cursor_test = conn_test.cursor()
 cursor_test.execute(
-    "SELECT id, webpage_name, status FROM col_web_queue WHERE webpage_name = '潇湘晨报'")
+    "SELECT id, webpage_name, status FROM col_web_queue WHERE webpage_name = '中国证券报'")
 # cursor_test.execute(
 #     "SELECT id, paper, page_url, original_img, img_url FROM col_paper_page WHERE id = 1293610")
 

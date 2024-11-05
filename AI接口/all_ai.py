@@ -25,7 +25,11 @@ ai_text_dict = {
 }
 while True:
     start_time = time.time()
-    value = ai_parse_next(data=ai_list)
+    try:
+        value = ai_parse_next(data=ai_list)
+    except:
+        time.sleep(360)
+        continue
     if value:
         queue_id = value['id']
         name = value['name']
