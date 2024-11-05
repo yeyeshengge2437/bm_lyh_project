@@ -154,5 +154,11 @@ def get_hebeidangxiao_paper(paper_time, queue_id, webpage_id):
             'description': '数据获取成功',
         }
         paper_queue_success(success_data)
+    else:
+        success_data = {
+            'id': queue_id,
+            'description': '数据获取成功',
+        }
+        paper_queue_success(success_data)
 
 # get_hebeidangxiao_paper('2024-10-05', 111, 1111)
