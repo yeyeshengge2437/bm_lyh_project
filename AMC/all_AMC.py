@@ -109,7 +109,7 @@ while True:
         paper_queue = paper_queue_next(webpage_url_list=web_list)
         if paper_queue is None or len(paper_queue) == 0:
             time.sleep(600)
-            pass
+            continue
         else:
             queue_id = paper_queue['id']
             webpage_id = paper_queue["webpage_id"]
