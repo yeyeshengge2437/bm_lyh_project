@@ -260,7 +260,10 @@ def get_zhaotong_paper_old_old(paper_time, queue_id, webpage_id):
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers_old, verify=False)
             time.sleep(1)
-            bm_content = bm_response.content.decode()
+            try:
+                bm_content = bm_response.content.decode()
+            except:
+                continue
             bm_html = etree.HTML(bm_content)
 
 
@@ -357,4 +360,4 @@ def get_zhaotong_paper(paper_time, queue_id, webpage_id):
         # print('使用新方法')
         get_zhaotong_paper_new(paper_time, queue_id, webpage_id)
 
-# get_zhaotong_paper('2008-06-06', 111, 1111)
+# get_zhaotong_paper('2013-12-04', 111, 1111)

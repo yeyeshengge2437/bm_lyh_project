@@ -42,6 +42,8 @@ def get_date():
                     date_dict[date_time] = url
                 else:
                     continue
+        else:
+            continue
     return date_dict
 
 
@@ -140,4 +142,4 @@ def get_huaxiazao_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_huaxiazao_paper('2022-10-21', 111, 1111)
+# get_huaxiazao_paper('2024-10-31', 111, 1111)
