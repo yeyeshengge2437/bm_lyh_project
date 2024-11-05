@@ -82,7 +82,7 @@ def get_xinyezichan_chuzhigonggao(queue_id, webpage_id):
                                 ann = 'http://www.ciamc.com.cn' + ann
                             file_type = ann.split('.')[-1]
                             if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
-                                             'png', ] and 'ciamc' in ann:
+                                             'png', 'jpg'] and 'ciamc' in ann:
                                 file_url = upload_file_by_url(ann, "xingye", file_type)
                                 # file_url = 111
                                 files.append(file_url)

@@ -97,7 +97,7 @@ def get_yueyang_paper(paper_time, queue_id, webpage_id):
                 else:
                     if bm_img not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
                         # pass
-                        if bm_img is None:
+                        if bm_img is None or bm_img == "":
                             up_pdf = None
                         else:
                             # 将报纸url上传

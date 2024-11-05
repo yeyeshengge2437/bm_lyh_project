@@ -119,6 +119,7 @@ def get_xinanshang_paper_old(paper_time, queue_id, webpage_id):
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m-%d')
     base_url = f'http://117.50.209.3:8001/obtain_column_img_hot.htm?url=index&dateTime={paper_time}'
     url = base_url
+    print(url)
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         content = response.content.decode()
@@ -131,7 +132,7 @@ def get_xinanshang_paper_old(paper_time, queue_id, webpage_id):
             # 版面链接
             bm_url = 'http://117.50.209.3:8001/' + ''.join(bm.xpath("./a[@class='fl']/@href"))
             # 版面的pdf
-            bm_pdf = "".join(bm.xpath("./a[@class='fr 111']/@href"))
+            bm_pdf = "".join(bm.xpath("./a[contains(@class, 'fr')]/@href"))
 
             # 获取版面详情
             bm_response = requests.get(bm_url, headers=headers)
@@ -166,16 +167,17 @@ def get_xinanshang_paper_old(paper_time, queue_id, webpage_id):
                 cursor_test = conn_test.cursor()
                 # print(bm_name, article_name, article_url, bm_pdf, content)
                 if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
-                    # 将报纸url上传
-                    up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
-                    pdf_set.add(bm_pdf)
-                    # 上传到报纸的图片或PDF
-                    insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
+                    if bm_pdf:
+                        # 将报纸url上传
+                        up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
+                        pdf_set.add(bm_pdf)
+                        # 上传到报纸的图片或PDF
+                        insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
 
-                    cursor_test.execute(insert_sql,
-                                        (day, paper, bm_name, bm_pdf, bm_url, up_pdf, create_time, queue_id,
-                                         create_date, webpage_id))
-                    conn_test.commit()
+                        cursor_test.execute(insert_sql,
+                                            (day, paper, bm_name, bm_pdf, bm_url, up_pdf, create_time, queue_id,
+                                             create_date, webpage_id))
+                        conn_test.commit()
 
                 if judging_criteria(article_name, content):
                 # if 1:
@@ -220,3 +222,5 @@ def get_xinanshang_paper(paper_time, queue_id, webpage_id):
     else:
         # print('使用新方法')
         get_xinanshang_paper_new(paper_time, queue_id, webpage_id)
+
+# get_xinanshang_paper('2023-03-17', 111, 1111)

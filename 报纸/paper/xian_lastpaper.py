@@ -38,6 +38,8 @@ def get_xian_lastpaper(paper_time, queue_id, webpage_id):
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
+        if html_1 is None:
+            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//tr[@class='bmdh_tr pile2']/td[@class='default']")
         for bm in all_bm:
@@ -124,4 +126,4 @@ def get_xian_lastpaper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_xian_lastpaper('2024-02-24', 111, 1111)
+# get_xian_lastpaper('2024-05-27', 111, 1111)
