@@ -79,7 +79,10 @@ def get_guangdazichan_chuzhigonggao(queue_id, webpage_id):
                 files = str(files).replace("'", '"')
                 original_url = str(original_url).replace("'", '"')
 
-                image = get_image(page, title_url, "xpath=//div[@class='article-container']")
+                try:
+                    image = get_image(page, title_url, "xpath=//div[@class='article-container']")
+                except:
+                    image = get_image(page, title_url, "xpath=//div[@class='col col-6-6 f-left']")
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 上传到测试数据库
