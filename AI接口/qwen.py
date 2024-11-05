@@ -34,7 +34,7 @@ def qwentext_free(chat_text):
     return input_token_num, output_token_num, output_text
 
 
-# print(qwen_text_free("你好"))
+# print(qwentext_free("你好"))
 
 
 
