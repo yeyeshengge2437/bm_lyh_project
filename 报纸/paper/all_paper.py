@@ -250,6 +250,7 @@ from tianshanjianshe_paper import get_tianshanjianshe_paper  # 天山建设报
 from xinan_lastpaper import get_xinan_lastpaper  # 新安晚报
 from gansu_paper import get_gansu_paper  # 甘肃日报
 from chinashehuikexue_paper import get_chinashehuikexue_paper  # 中国社会科学报
+from chinaxianyujingji_paper import get_chinaxianyujingji_paper  # 中国县域经济报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -502,6 +503,7 @@ methods = {
     '新安晚报': get_xinan_lastpaper,
     '甘肃日报': get_gansu_paper,
     '中国社会科学报': get_chinashehuikexue_paper,
+    '中国县域经济报': get_chinaxianyujingji_paper,
 
 }
 
@@ -756,8 +758,7 @@ webpage_url_list = [
     'https://epaper.ahwang.cn/xawb',
     'https://szb.gansudaily.com.cn/gsrb/pc/layout',
     'https://epaper.csstoday.net',
-
-
+    'https://www.xyshjj.cn/newsepaper/10193_151663_1721129_zgxyjjb.html',
 ]
 
 

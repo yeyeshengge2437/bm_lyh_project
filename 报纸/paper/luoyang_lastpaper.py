@@ -97,7 +97,10 @@ def get_luoyang_lastpaper_new(paper_time, queue_id, webpage_id):
                 try:
                     article_content = article_response.content.decode()
                 except:
-                    article_content = article_response.content.decode('gbk')
+                    try:
+                        article_content = article_response.content.decode('gbk')
+                    except:
+                        continue
                 article_html = etree.HTML(article_content)
                 if article_html is None:
                     content = ''
@@ -267,4 +270,4 @@ def get_luoyang_lastpaper(paper_time, queue_id, webpage_id):
         get_luoyang_lastpaper_new(paper_time, queue_id, webpage_id)
 
 
-# get_luoyang_lastpaper('2018-05-02', 111, 1111)
+# get_luoyang_lastpaper('2014-12-02', 111, 1111)

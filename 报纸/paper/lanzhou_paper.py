@@ -50,6 +50,8 @@ def get_lanzhou_paper(paper_time, queue_id, webpage_id):
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
+            if bm_html is None:
+                continue
             # 版面的pdf
             # bm_pdf = 'http://epaper.chuxiong.cn/' + "".join(bm_html.xpath("//div[@class='nav-list']/ul/li/a[@class='pdf']/@href")).strip('../..')
             bm_pdf = 'https://lzrb.lzbs.com.cn/' + "".join(bm_html.xpath("//img[@class='preview']/@src")).strip('../..').strip('.2')
@@ -122,4 +124,4 @@ def get_lanzhou_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_lanzhou_paper('2022-12-19', 111, 1111)
+# get_lanzhou_paper('2020-12-10', 111, 1111)
