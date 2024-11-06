@@ -5,8 +5,9 @@ from api_ai import img_url_to_file, ai_parse_next, ai_parse_success, ai_parse_fa
 from KIMI import kimi_single_chat, kimi_file_chat
 from 智谱 import zhipu_single_chat, zhipu_file_chat, zhipu_file_free_chat
 from KIMI_free import kimi_chat_free, kimi_file_chat_free
-from 跃问 import yuewen_chat, yuewen_file_chat
+from 跃问 import yuewen_chat, yuewen_file_chat, yuewen_freechat
 from qwen import qwentext_free
+from chatgpt_4mini import gpt_freechat
 
 ai_list = {
     'tell_tool_list': [
@@ -16,9 +17,11 @@ ai_list = {
         "glm_4v_plus",
         "step-1-8k",  # 跃问文字对话
         "step-1v-8k",  # 跃问文件图片对话
+        "yuewentext_free",  # 跃问免费文字对话
         "qwentext_free",  # 千问免费对话
         "kimi_chat_free",  # kimi免费对话
         "kimi_file_chat_free",  # kimi免费文件对话
+        # "gpt_freechat",  # gpt免费对话 需要搭梯子
     ]
 }
 ai_text_dict = {
@@ -28,9 +31,11 @@ ai_text_dict = {
     'glm_4v_plus': zhipu_file_chat,
     'step-1-8k': yuewen_chat,
     'step-1v-8k': yuewen_file_chat,
+    'yuewentext_free': yuewen_freechat,
     'qwentext_free': qwentext_free,
     'kimi_chat_free': kimi_chat_free,
     'kimi_file_chat_free': kimi_file_chat_free,
+    'gpt_freechat': gpt_freechat,
 }
 while True:
     start_time = time.time()

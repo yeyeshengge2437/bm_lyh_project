@@ -19,7 +19,7 @@ conn_test = mysql.connector.connect(
 
 cursor_test = conn_test.cursor()
 cursor_test.execute(
-    "SELECT id, webpage_name, status FROM col_web_queue WHERE webpage_name = '河北党校报'")
+    "SELECT id, webpage_name, status FROM col_web_queue WHERE webpage_name = '中国证券报'")
 # cursor_test.execute(
 #     "SELECT id, paper, page_url, original_img, img_url FROM col_paper_page WHERE id = 1293610")
 
@@ -27,7 +27,7 @@ rows = cursor_test.fetchall()
 for id, paper, status in rows:
     if status == 'doing':
         insert_sql = "UPDATE col_web_queue SET status = %s WHERE id = %s"
-        cursor_test.execute(insert_sql, ('todo', id))
+        cursor_test.execute(insert_sql, ('success', id))
         conn_test.commit()
     if status == 'todo':
         print(id, paper, status)

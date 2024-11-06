@@ -1,3 +1,4 @@
+import requests
 from openai import OpenAI
 
 client = OpenAI(api_key="3jzVuGeNZvuzMYeIz3cYXfdP5T7tUZx7i7DhqtmhQOth8LDA62L4XEHgiQPVx35hT",
@@ -61,3 +62,38 @@ def yuewen_file_chat(img_url, chat_text):
 
 # print(yuewen_file_chat("https://res.debtop.com/manage/live/paper/202410/24/20241024002149e4fba06506cc48b5.png",
 #                        "提取里面的文字，不需要总结和概括"))
+
+
+# 替换成你的refresh_token
+refresh_token = '2cff34b7330d7a983a9071c0e3db89096865ad95'
+api_url = 'https://stepfreeapi.shadow.cloudns.org/v1/chat/completions'
+
+
+def yuewen_freechat(user_input):
+    headers = {
+        'Authorization': f'Bearer {refresh_token}',
+        'Content-Type': 'application/json'
+    }
+    data = {
+        "model": "step",
+        "messages": [
+            # 在对话中传入图片，来实现基于图片的理解
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": f"{user_input}",
+                    },
+
+                ],
+            },
+        ],
+        "stream": False
+    }
+    response = requests.post(api_url, headers=headers, json=data)
+    response = response.json()
+    input_token_num = response['usage']['completion_tokens']
+    output_token_num = response['usage']['prompt_tokens']
+    output_text = response['choices'][0]['message']['content']
+    return input_token_num, output_token_num, output_text

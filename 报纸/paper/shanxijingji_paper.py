@@ -79,18 +79,20 @@ def get_shanxijingji_paper(paper_time, queue_id, webpage_id):
                 article_name = ''.join(article.xpath("./div/text()")).strip()
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
+                art_cookies = get_paper_url_cookies(article_url)
                 # 获取文章内容
-                article_response = requests.get(article_url, headers=headers, cookies=cookies)
+                article_response = requests.get(article_url, headers=headers, cookies=art_cookies)
                 time.sleep(1)
-                try:
-                    article_content = article_response.content.decode()
-                except:
-                    continue
+                # try:
+                article_content = article_response.content.decode()
+                # except:
+                #     continue
                 article_html = etree.HTML(article_content)
                 if article_html is None:
-                    continue
-                # 获取文章内容
-                content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
+                    content = ''
+                else:
+                    # 获取文章内容
+                    content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
@@ -140,4 +142,4 @@ def get_shanxijingji_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_shanxijingji_paper('2019-04-23', 111, 1111)
+# get_shanxijingji_paper('2024-11-06', 111, 1111)
