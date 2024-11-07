@@ -47,13 +47,14 @@ def get_chinaminzu_paper(paper_time, queue_id, webpage_id):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m%d')
+    print(paper_time)
     data = {
-        'docPubTime': f'{paper_time}',
+        'docPubTime': str(paper_time),
     }
     cookies = get_paper_url_cookies('https://jjjcb.ccdi.gov.cn/epaper/')
     response = requests.post('https://jjjcb.ccdi.gov.cn/reader/layout/findBmMenu.do', headers=headers, data=data, cookies=cookies, verify=False)
     if response.status_code == 200:
-        content = response.json()
+        content = response.content.decode()
         print(content)
         return
         # 获取所有版面的的链接
@@ -141,3 +142,4 @@ def get_chinaminzu_paper(paper_time, queue_id, webpage_id):
 
 
 get_chinaminzu_paper('2024-10-13', 111, 1111)
+

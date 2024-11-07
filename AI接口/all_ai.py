@@ -15,8 +15,8 @@ ai_list = {
         "kimi_32k",
         "glm_4_air",
         "glm_4v_plus",
-        "step-1-8k",  # 跃问文字对话
-        "step-1v-8k",  # 跃问文件图片对话
+        "step_1_8k",  # 跃问文字对话
+        "step_1v_8k",  # 跃问文件图片对话
         "yuewentext_free",  # 跃问免费文字对话
         "qwentext_free",  # 千问免费对话
         "kimi_chat_free",  # kimi免费对话
