@@ -68,7 +68,13 @@ def get_luoyang_paper_new(paper_time, queue_id, webpage_id):
     cookies = get_paper_url_cookies(url)
     response = requests.get(url, headers=headers, cookies=cookies)
     if response.status_code == 200:
-        content = response.content.decode()
+        try:
+            content = response.content.decode()
+        except:
+            try:
+                content = response.content.decode('gbk')
+            except:
+                raise Exception(f'该日期没有报纸')
         html_1 = etree.HTML(content)
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//table//td[@class='default']/a[@id='pageLink']")
@@ -265,5 +271,5 @@ def get_luoyang_paper(paper_time, queue_id, webpage_id):
         get_luoyang_paper_new(paper_time, queue_id, webpage_id)
 
 
-# get_luoyang_paper('2022-04-24', 111, 1111)
+# get_luoyang_paper('2022-05-03', 111, 1111)
 # get_luoyang_paper_new('2022-03-23', 111, 1111)
