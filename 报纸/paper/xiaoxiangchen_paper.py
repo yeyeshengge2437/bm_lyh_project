@@ -113,7 +113,7 @@ def get_xiaoxiangchen_paper_new(paper_time, queue_id, webpage_id):
             conn_test.close()
 
     tab_main.close()
-    # page.close()
+    page.close()
 
 
 def get_xiaoxiangchen_paper_old(paper_time, queue_id, webpage_id):
@@ -194,7 +194,7 @@ def get_xiaoxiangchen_paper_old(paper_time, queue_id, webpage_id):
             conn_test.close()
 
     tab_main.close()
-    # page.close()
+    page.close()
 
 
 def get_xiaoxiangchen_paper(paper_time, queue_id, webpage_id):
