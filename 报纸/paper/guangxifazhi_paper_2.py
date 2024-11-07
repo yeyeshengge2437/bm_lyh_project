@@ -1,22 +1,19 @@
-import os
+
 import json
-import re
 import time
+from multiprocessing import Process
 from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
-    parse_pdf, judge_bm_repeat, judging_bm_criteria
+    parse_pdf, judge_bm_repeat, judging_bm_criteria, paper_queue_next
 from datetime import datetime
-from DrissionPage import ChromiumPage, ChromiumOptions
 import mysql.connector
 import requests
-from lxml import etree
-import execjs
 
 
 paper = "广西法治日报"
-co = ChromiumOptions()
-co = co.set_argument('--no-sandbox')
-co = co.headless()
-co.set_paths(local_port=9156)
+# co = ChromiumOptions()
+# co = co.set_argument('--no-sandbox')
+# co = co.headless()
+# co.set_paths(local_port=9156)
 
 headers = {
     'ADMIN_ALLOW': '',
@@ -130,5 +127,63 @@ def get_guangxifazhi_paper(paper_time, queue_id, webpage_id):
 
 
 
-# get_guangxifazhi_paper('2022-08-19', 111, 1111)
+get_guangxifazhi_paper('2022-08-19', 111, 1111)
 
+# methods = {
+#     '广西法治日报': get_guangxifazhi_paper,
+# }
+#
+#
+# def get_paper_data():
+#     while True:
+#         try:
+#             # 调用paper_queue_next函数并获取返回值
+#             paper_queue = paper_queue_next(
+#                 webpage_url_list=['https://ipaper.pagx.cn'])
+#             # 检查返回值是否符合预期
+#             if paper_queue is None or len(paper_queue) == 0:
+#                 time.sleep(30)
+#                 pass
+#             else:
+#                 webpage_name = paper_queue['webpage_name']
+#                 queue_day = paper_queue['day']
+#                 queue_id = paper_queue['id']
+#                 webpage_id = paper_queue["webpage_id"]
+#                 print(queue_day)
+#                 try:
+#                     methods[webpage_name](queue_day, queue_id, webpage_id)
+#                 except Exception as e:
+#                     if '该日期没有报纸' in str(e):
+#                         print('该日期没有报纸')
+#                         data = {
+#                             "id": queue_id,
+#                             'description': f'该日期没有报纸',
+#                         }
+#                         paper_queue_delay(data)
+#                     else:
+#                         print(f"{e}")
+#                         fail_data = {
+#                             "id": queue_id,
+#                             'description': f'程序异常：{e}',
+#                         }
+#                         paper_queue_fail(fail_data)
+#
+#         except Exception as e:
+#             time.sleep(360)
+#             print(f"解析过程中发生错误: {e}")
+#
+#
+# if __name__ == '__main__':
+#     """
+#     多进程5个
+#     """
+#     process_list = []
+#     for i in range(5):
+#         process = Process(target=get_paper_data, args=())
+#         process_list.append(process)
+#
+#     for process in process_list:
+#         process.start()
+#
+#     for process in process_list:
+#         process.join()
