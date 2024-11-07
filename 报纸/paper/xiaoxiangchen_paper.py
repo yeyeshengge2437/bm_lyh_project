@@ -113,7 +113,9 @@ def get_xiaoxiangchen_paper_new(paper_time, queue_id, webpage_id):
             conn_test.close()
 
     tab_main.close()
+    page.close_tabs()
     page.close()
+    page.quit()
 
 
 def get_xiaoxiangchen_paper_old(paper_time, queue_id, webpage_id):
@@ -194,7 +196,10 @@ def get_xiaoxiangchen_paper_old(paper_time, queue_id, webpage_id):
             conn_test.close()
 
     tab_main.close()
+    page.close_tabs()
     page.close()
+    page.quit()
+
 
 
 def get_xiaoxiangchen_paper(paper_time, queue_id, webpage_id):
@@ -214,4 +219,4 @@ def get_xiaoxiangchen_paper(paper_time, queue_id, webpage_id):
 
 
 # get_xiaoxiangchen_paper('2009-11-17', 111, 1111)
-# get_xiaoxiangcheng_paper_old('2009-11-17', 111, 1111)
+
