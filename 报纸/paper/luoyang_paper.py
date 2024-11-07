@@ -42,11 +42,20 @@ headers_old = {
     'sec-ch-ua-platform': '"Windows"',
 }
 
-cookies = {
-    'Hm_lvt_6f25c71301bfc73e874e5940cd84affe': '1727319451',
-    'HMACCOUNT': 'FDD970C8B3C27398',
-    'Hm_lpvt_6f25c71301bfc73e874e5940cd84affe': '1727321352',
-}
+from DrissionPage import ChromiumPage, ChromiumOptions
+co = ChromiumOptions()
+co = co.set_paths(local_port=9249)
+co = co.set_argument('--no-sandbox')  # 关闭沙箱模式, 解决`$DISPLAY`报错
+co = co.headless(True)  # 开启无头模式, 解决`浏览器无法连接`报错
+def get_paper_url_cookies(url):
+    cookie_dict = {}
+    page = ChromiumPage(co)
+    page.get(url)
+    value_cookies = page.cookies()
+    for key in value_cookies:
+        cookie_dict[key['name']] = key['value']
+    page.close()
+    return cookie_dict
 
 
 def get_luoyang_paper_new(paper_time, queue_id, webpage_id):
@@ -56,7 +65,8 @@ def get_luoyang_paper_new(paper_time, queue_id, webpage_id):
     base_url = f'https://lyrb.lyd.com.cn/html2/{paper_time}/'
     url = base_url + 'node_3.htm'
     print(url)
-    response = requests.get(url, headers=headers)
+    cookies = get_paper_url_cookies(url)
+    response = requests.get(url, headers=headers, cookies=cookies)
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
@@ -68,7 +78,8 @@ def get_luoyang_paper_new(paper_time, queue_id, webpage_id):
             # 版面链接
             bm_url = base_url + ''.join(bm.xpath("./@href")).strip('./')
             # 获取版面详情
-            bm_response = requests.get(bm_url, headers=headers)
+            cookies = get_paper_url_cookies(bm_url)
+            bm_response = requests.get(bm_url, headers=headers, cookies=cookies)
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
@@ -87,7 +98,8 @@ def get_luoyang_paper_new(paper_time, queue_id, webpage_id):
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 获取文章内容
-                article_response = requests.get(article_url, headers=headers)
+                cookies = get_paper_url_cookies(article_url)
+                article_response = requests.get(article_url, headers=headers, cookies=cookies)
                 time.sleep(1)
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
@@ -147,7 +159,8 @@ def get_luoyang_paper_old(paper_time, queue_id, webpage_id):
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m/%d')
     base_url = f'https://lyrb.lyd.com.cn/html/{paper_time}/'
     url = base_url + 'node_4105.htm'
-    response = requests.get(url, headers=headers_old)
+    cookies = get_paper_url_cookies(url)
+    response = requests.get(url, headers=headers_old, cookies=cookies)
     if response.status_code == 200:
         content = response.content.decode('gbk')
         html_1 = etree.HTML(content)
@@ -160,7 +173,8 @@ def get_luoyang_paper_old(paper_time, queue_id, webpage_id):
             bm_url_str = ''.join(bm.xpath("./@href")).split('/')[-1]
             bm_url = base_url + bm_url_str
             # 获取版面详情
-            bm_response = requests.get(bm_url, headers=headers_old)
+            cookies = get_paper_url_cookies(bm_url)
+            bm_response = requests.get(bm_url, headers=headers_old, cookies=cookies)
             time.sleep(1)
             bm_content = bm_response.content.decode('gbk')
             bm_html = etree.HTML(bm_content)
@@ -178,7 +192,8 @@ def get_luoyang_paper_old(paper_time, queue_id, webpage_id):
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 获取文章内容
-                article_response = requests.get(article_url, headers=headers_old)
+                cookies = get_paper_url_cookies(article_url)
+                article_response = requests.get(article_url, headers=headers_old, cookies=cookies)
                 time.sleep(1)
                 article_content = article_response.content.decode('gbk')
                 article_html = etree.HTML(article_content)

@@ -230,7 +230,7 @@ def get_chinaxianyujingji_paper(paper_time, queue_id, webpage_id):
         else:
             raise Exception(f'该日期没有报纸')
 
-    page = ChromiumPage()
+    page = ChromiumPage(co)
     tab = page.new_tab()
     tab.get(url)
     if tag:
@@ -244,13 +244,13 @@ def get_chinaxianyujingji_paper(paper_time, queue_id, webpage_id):
         elements = tab.eles("xpath=//ul[@class='catalogList']/li")
         for element in elements:
             article_name = element.text
-            print(article_name)
+            # print(article_name)
             element.click(by_js=True)
             article_url = tab.url
             try:
                 text_ele = tab.ele("xpath=//div[@class='articleContent'] | //div[@class='articleContent']")
                 content = text_ele.text
-                print(content)
+                # print(content)
             except:
                 content = ''
             tab.ele("目录").click(by_js=True)

@@ -511,7 +511,7 @@ webpage_url_list = [
     'https://newpaper.dahe.cn/hnsb/html',
     'https://szb.gansudaily.com.cn/gsjjrb',
     'https://epaper.kf.cn/paper/kfrb',
-    # 'https://lyrb.lyd.com.cn',  # 洛阳日报封ip严重
+    'https://lyrb.lyd.com.cn',  # 洛阳日报封ip严重
     'https://epaper.lnd.com.cn',
     'https://www.scxb.com.cn',
     # 'https://tmrb.tmwcn.com/tmrb',  # 天门日报没有pdf
