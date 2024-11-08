@@ -4,8 +4,17 @@ import os
 
 from revKimi import Chatbot
 from api_ai import img_url_to_file
+import random
 
-chatbot = Chatbot(config_path='./config.json')
+# 定义两个文件的文件名
+file1 = './config.json'
+file2 = './config_1.json'
+file3 = './config_2.json'
+
+# 使用random.choice()从两个文件名中随机选择一个
+selected_file = random.choice([file1, file2, file3])
+
+chatbot = Chatbot(config_path=selected_file)
 
 
 def kimi_file_chat_free(img_file, chat_text):
@@ -39,6 +48,7 @@ def kimi_chat_free(chat_text):
     massages = resp['text']
     return 0, 0, massages
 
-# print(kimi_chat_free('你好'))
+
+# print(kimi_chat_free('你是谁'))
 # print(kimi_file_chat_free('https://res.debtop.com/manage/live/paper/202410/24/20241024001845a058b9867f544a9f.png',
 # '提取图片文字'))

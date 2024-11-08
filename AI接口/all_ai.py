@@ -61,15 +61,24 @@ while True:
                 outcome_time = end_time - start_time
                 if outcome_time < 20:
                     time.sleep(20 - outcome_time)
-                success_data = {
-                    'id': f'{queue_id}',
-                    'remark': name,
-                    'input_token_num': input_token_num,
-                    'output_token_num': output_token_num,
-                    'output_text': output_text,
-                }
-                print(success_data)
-                ai_parse_success(data=success_data)
+                if "您的账号已达频率限制" in output_text:
+                    fail_data = {
+                        'id': f'{queue_id}',
+                        'remark': f'调用失败,原因{output_text}'
+                    }
+                    time.sleep(60)
+                    print(fail_data)
+                    ai_parse_fail(data=fail_data)
+                else:
+                    success_data = {
+                        'id': f'{queue_id}',
+                        'remark': name,
+                        'input_token_num': input_token_num,
+                        'output_token_num': output_token_num,
+                        'output_text': output_text,
+                    }
+                    print(success_data)
+                    ai_parse_success(data=success_data)
             except Exception as e:
                 fail_data = {
                     'id': f'{queue_id}',
