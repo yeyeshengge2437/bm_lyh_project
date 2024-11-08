@@ -39,6 +39,7 @@ ai_text_dict = {
 }
 while True:
     start_time = time.time()
+    print(start_time, 1111111)
     try:
         value = ai_parse_next(data=ai_list)
     except:
@@ -58,13 +59,16 @@ while True:
                 else:
                     input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](input_text)
                 end_time = time.time()
+                print(end_time, 2222222222)
                 outcome_time = end_time - start_time
-                if outcome_time < 20:
+                print(outcome_time, 33333)
+                if int(outcome_time) < 30:
+                    print(f'等待{20 - outcome_time}秒')
                     time.sleep(20 - outcome_time)
                 if "您的账号已达频率限制" in output_text:
                     fail_data = {
                         'id': f'{queue_id}',
-                        'remark': f'调用失败,原因{output_text}'
+                        'remark': f'调用失败,原因:{output_text}'
                     }
                     time.sleep(60)
                     print(fail_data)
@@ -86,6 +90,9 @@ while True:
                 }
                 print(fail_data)
                 ai_parse_fail(data=fail_data)
+                if "您的账号已达频率限制" in str(e):
+                    print('您的账号已达频率限制' + "等待60秒")
+                    time.sleep(60)
 
         else:
             fail_data = {
@@ -96,3 +103,4 @@ while True:
             ai_parse_fail(data=fail_data)
     else:
         time.sleep(30)
+    break
