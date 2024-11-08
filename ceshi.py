@@ -1,36 +1,27 @@
 import requests
 
 cookies = {
-    '_trs_uv': 'm1n0z125_4878_bybu',
-    'HMF_CI': 'b51b612efcab0fb27c3cf129d01b6f576d0c929838ef33795b2a3248fab5cf3237ef343d0a656219569221d9889767da80671c1052806a443aae5a45b359153801',
-    'HMY_JC': 'f9c952a99e74b7b8db90062bba84e331e73760f235814dd7bc94a6b1224e047723,',
-    '_trs_ua_s_1': 'm36zeb1j_4878_bqb7',
-    'HBB_HC': 'b87b5c43a9290d26ce3b2333435d134b7a6f450e714f503071fdc1c253d222b3a8b0d5a9acd1cb377d3b634eab3a0b07d3',
+    'zycna': 'CBuEnko+IykBAbeApvyz0wcQ',
+    'HKIIUU9O618PPTHK': '2015be9f8fe7c26a9139029a4aec544c7e64952',
+    'HKIIUU9O618PPTHP': 'MTczMTA0zMTExMjI5RFVyazFranBrVDRHa28xZDBEbTBsRDF5YzMxZj3h3MENqR0U0d21oMzV5czg2MzNqbjdLMXAIzMlMwNVk0b2jdyMHdaMzVm2U0g783WMDBzTTMx2SzZBRa21nNnZuNWNEM0M1ZzFmdHIyZzUzNjJ3Y3ZTajgzMWJnNjF4Zm4yMkE1Zzk3N0t3Sm1xOWw2bzNoemtaRzFuWXBrM2dmbjNsb2loODUwcG03OGtIMzQzbGd1S1kxa2gyU253MTExMEZZMTExbTUweXdIMGJIdDExMTY1YWtuU0EwbEFtNWc1MTExcGZnMEFZbTMyam9sQTZoZXlKdGIzVnpaWGdpT2lJeE1EQXdNQ0lzSW0xdmRYTmxlU0k2SWpFd01EQXdJaXdpYzJOeVpXVnVkeUk2SWpFd01EQXdJaXdpYzJOeVpXVnVhQ0k2SWpFd01EQXdJaXdpYm05b1pXRmtaWElpT2lKdWJ5SXNJbTV2YldGc0lqb2llV1Z6SWl3aVlXcGhlQ0k2SW1GaFlXRmhJaXdpYm05M1gzVnVhWEYxWlNJNklqSXdNVFZpWlRsbU9HWmxOMk15Tm1FNU1UTTVNREk1WVRSaFpXTTFORFJqTjJVMk5EazFNaUlzSW5Ob1pXSmxhU0k2SWxkbFlpSXNJbTVoZG1sbllYUnZjaUk2SWlJc0luVjFhV1JmWm1seGRYSmxJam9pT0RobU4yVTRaRGRpWVdZM1pHWXlOekV5TkRFeU9UQXlOVEJsWXpCbFpUVWlmUT09',
 }
 
 headers = {
-    'Accept': 'application/json, text/javascript, */*; q=0.01',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
-    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    # 'Cookie': '_trs_uv=m1n0z125_4878_bybu; HMF_CI=b51b612efcab0fb27c3cf129d01b6f576d0c929838ef33795b2a3248fab5cf3237ef343d0a656219569221d9889767da80671c1052806a443aae5a45b359153801; HMY_JC=f9c952a99e74b7b8db90062bba84e331e73760f235814dd7bc94a6b1224e047723,; _trs_ua_s_1=m36zeb1j_4878_bqb7; HBB_HC=b87b5c43a9290d26ce3b2333435d134b7a6f450e714f503071fdc1c253d222b3a8b0d5a9acd1cb377d3b634eab3a0b07d3',
-    'Origin': 'https://jjjcb.ccdi.gov.cn',
+    # 'Cookie': 'zycna=CBuEnko+IykBAbeApvyz0wcQ; HKIIUU9O618PPTHK=2015be9f8fe7c26a9139029a4aec544c7e64952; HKIIUU9O618PPTHP=MTczMTA0zMTExMjI5RFVyazFranBrVDRHa28xZDBEbTBsRDF5YzMxZj3h3MENqR0U0d21oMzV5czg2MzNqbjdLMXAIzMlMwNVk0b2jdyMHdaMzVm2U0g783WMDBzTTMx2SzZBRa21nNnZuNWNEM0M1ZzFmdHIyZzUzNjJ3Y3ZTajgzMWJnNjF4Zm4yMkE1Zzk3N0t3Sm1xOWw2bzNoemtaRzFuWXBrM2dmbjNsb2loODUwcG03OGtIMzQzbGd1S1kxa2gyU253MTExMEZZMTExbTUweXdIMGJIdDExMTY1YWtuU0EwbEFtNWc1MTExcGZnMEFZbTMyam9sQTZoZXlKdGIzVnpaWGdpT2lJeE1EQXdNQ0lzSW0xdmRYTmxlU0k2SWpFd01EQXdJaXdpYzJOeVpXVnVkeUk2SWpFd01EQXdJaXdpYzJOeVpXVnVhQ0k2SWpFd01EQXdJaXdpYm05b1pXRmtaWElpT2lKdWJ5SXNJbTV2YldGc0lqb2llV1Z6SWl3aVlXcGhlQ0k2SW1GaFlXRmhJaXdpYm05M1gzVnVhWEYxWlNJNklqSXdNVFZpWlRsbU9HWmxOMk15Tm1FNU1UTTVNREk1WVRSaFpXTTFORFJqTjJVMk5EazFNaUlzSW5Ob1pXSmxhU0k2SWxkbFlpSXNJbTVoZG1sbllYUnZjaUk2SWlJc0luVjFhV1JmWm1seGRYSmxJam9pT0RobU4yVTRaRGRpWVdZM1pHWXlOekV5TkRFeU9UQXlOVEJsWXpCbFpUVWlmUT09',
     'Pragma': 'no-cache',
-    'Referer': 'https://jjjcb.ccdi.gov.cn/epaper/',
-    'Sec-Fetch-Dest': 'empty',
-    'Sec-Fetch-Mode': 'cors',
-    'Sec-Fetch-Site': 'same-origin',
+    'Referer': 'http://epaper.legaldaily.com.cn/fzrb/content/20230530/Page12TB.htm',
+    'Upgrade-Insecure-Requests': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
-    'X-Requested-With': 'XMLHttpRequest',
-    'sec-ch-ua': '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
 }
 
-data = {
-    'docPubTime': '20241103',
-}
-
-response = requests.post('https://jjjcb.ccdi.gov.cn/reader/layout/findBmMenu.do', cookies=cookies, headers=headers, data=data)
+response = requests.get(
+    'http://epaper.legaldaily.com.cn/fzrb/content/20230530/Page12TB.htm',
+    cookies=cookies,
+    headers=headers,
+    verify=False,
+)
 print(response.text)
