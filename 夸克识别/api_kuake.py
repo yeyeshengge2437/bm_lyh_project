@@ -8,7 +8,7 @@ requests.DEFAULT_RETRIES = 3
 s = requests.session()
 s.keep_alive = False
 
-produce_url = "http://121.43.164.84:29810"
+produce_url = "http://118.31.45.18:29810"
 
 
 def get_img_url():
