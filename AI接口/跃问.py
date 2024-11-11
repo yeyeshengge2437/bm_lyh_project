@@ -97,3 +97,5 @@ def yuewen_freechat(user_input):
     output_token_num = response['usage']['prompt_tokens']
     output_text = response['choices'][0]['message']['content']
     return input_token_num, output_token_num, output_text
+
+

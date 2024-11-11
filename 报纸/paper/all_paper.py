@@ -647,7 +647,7 @@ webpage_url_list = [
     'http://lzcbszb.benliuxinwen.com',
     'https://lzwb.lzbs.com.cn',
     'http://epaper.xiancn.com/newxawb',
-    'http://epaper.xxcb.cn/xxcba',
+    # 'http://epaper.xxcb.cn/xxcba',
     'https://papers.803.com.cn/yyrb',
     'https://zzwb.zynews.cn/html',
     'http://qjwb.thehour.cn',

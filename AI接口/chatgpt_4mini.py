@@ -28,4 +28,4 @@ def gpt_freechat(chat_text):
     return input_token_num, output_token_num, output_text
 
 
-# print(gpt_chat("你好，你所用的模型是什么"))
+# print(gpt_freechat(""))

@@ -1,4 +1,5 @@
 import json
+import random
 import time
 
 from api_ai import img_url_to_file, ai_parse_next, ai_parse_success, ai_parse_fail
@@ -8,6 +9,7 @@ from KIMI_free import kimi_chat_free, kimi_file_chat_free
 from 跃问 import yuewen_chat, yuewen_file_chat, yuewen_freechat
 from qwen import qwentext_free
 from chatgpt_4mini import gpt_freechat
+from deepseek import deepseek_chat
 
 ai_list = {
     'tell_tool_list': [
@@ -21,6 +23,7 @@ ai_list = {
         "qwentext_free",  # 千问免费对话
         "kimi_chat_free",  # kimi免费对话
         "kimi_file_chat_free",  # kimi免费文件对话
+        "deepseek_chat",  # deepseek文字对话
         # "gpt_freechat",  # gpt免费对话 需要搭梯子
     ]
 }
@@ -33,13 +36,14 @@ ai_text_dict = {
     'step-1v-8k': yuewen_file_chat,
     'yuewentext_free': yuewen_freechat,
     'qwentext_free': qwentext_free,
-    'kimi_chat_free': kimi_chat_free,
+    # 'kimi_chat_free': kimi_chat_free,
+    'kimi_chat_free': kimi_single_chat,
     'kimi_file_chat_free': kimi_file_chat_free,
     'gpt_freechat': gpt_freechat,
+    'deepseek_chat': deepseek_chat,
 }
 while True:
     start_time = time.time()
-    print(start_time, 1111111)
     try:
         value = ai_parse_next(data=ai_list)
     except:
@@ -59,12 +63,10 @@ while True:
                 else:
                     input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](input_text)
                 end_time = time.time()
-                print(end_time, 2222222222)
                 outcome_time = end_time - start_time
-                print(outcome_time, 33333)
-                if int(outcome_time) < 30:
-                    print(f'等待{20 - outcome_time}秒')
-                    time.sleep(20 - outcome_time)
+                if 0 < int(outcome_time) < 20:
+                    num = random.randint(5, 20)
+                    time.sleep(num)
                 if "您的账号已达频率限制" in output_text:
                     fail_data = {
                         'id': f'{queue_id}',
@@ -103,4 +105,3 @@ while True:
             ai_parse_fail(data=fail_data)
     else:
         time.sleep(30)
-    break
