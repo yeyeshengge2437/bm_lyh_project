@@ -71,7 +71,7 @@ def get_fazhi_paper(paper_time, queue_id, webpage_id):
                         if value:
                             # 上传到数据库
                             conn_test = mysql.connector.connect(
-                                host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                                host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
                                 user="col2024",
                                 password="Bm_a12a06",
                                 database="col"
@@ -98,7 +98,7 @@ def get_fazhi_paper(paper_time, queue_id, webpage_id):
                     for content in ann_contents:
                         if judging_criteria(title_name, content):
                             conn_test = mysql.connector.connect(
-                                host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                                host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
                                 user="col2024",
                                 password="Bm_a12a06",
                                 database="col"

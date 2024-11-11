@@ -73,7 +73,7 @@ def get_chanpinchoucha_data(queue_id, webpage_id):
         time.sleep(4)
         data_list = res_json["returnValue"]["value"]
         conn_test = mysql.connector.connect(
-            host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+            host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
             user="col2024",
             password="Bm_a12a06",
             database='col'

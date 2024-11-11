@@ -76,7 +76,7 @@ def judge_url_repeat(origin):
     url_set = set()
     # 连接数据库
     conn_test = mysql.connector.connect(
-        host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
         user="col2024",
         password="Bm_a12a06",
         database="col",
@@ -103,7 +103,7 @@ def parse_data(url_set, query, queue_id, webpage_id):
     response = requests.post('https://cfws.samr.gov.cn/queryDoc', headers=headers, data=data)
     time.sleep(0.5)
     conn_test = mysql.connector.connect(
-        host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
         user="col2024",
         password="Bm_a12a06",
         database='col',

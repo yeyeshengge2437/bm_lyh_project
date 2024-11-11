@@ -137,7 +137,7 @@ def get_gonggao_data(queue_id, webpage_id, zhao_type, crawl_num=None):
             md5_key = hashlib.md5(json.dumps(uni_data).encode('utf-8')).hexdigest()
             create_date = datetime.now().strftime('%Y-%m-%d')
             conn_test = mysql.connector.connect(
-                host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
                 user="col2024",
                 password="Bm_a12a06",
                 database='col',
@@ -224,7 +224,7 @@ def get_xinwen_data(queue_id, webpage_id, db, database="col", num_page=None):
         md5_key = hashlib.md5(json.dumps(uni_data).encode('utf-8')).hexdigest()
         create_date = datetime.now().strftime('%Y-%m-%d')
         conn_test = mysql.connector.connect(
-            host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+            host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
             user="col2024",
             password="Bm_a12a06",
             database=database

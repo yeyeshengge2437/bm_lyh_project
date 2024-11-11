@@ -125,7 +125,7 @@ def get_quanguoyichangminglu_data(queue_id, webpage_id):
                     md5_key = hashlib.md5(json.dumps(uni_data).encode('utf-8')).hexdigest()
                     create_date = datetime.now().strftime('%Y-%m-%d')
                     conn_test = mysql.connector.connect(
-                        host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
                         user="col2024",
                         password="Bm_a12a06",
                         database='col',
@@ -166,7 +166,7 @@ def get_quanguodizhikanchadanwei_data(queue_id, webpage_id):
         try:
             page.set.load_mode.none()
             conn_test = mysql.connector.connect(
-                host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
                 user="col2024",
                 password="Bm_a12a06",
                 database='col',
@@ -276,7 +276,7 @@ def get_yanzhongshixinmingdan_data(queue_id, webpage_id):
         try:
             page.set.load_mode.none()
             conn_test = mysql.connector.connect(
-                host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
                 user="col2024",
                 password="Bm_a12a06",
                 database='col',

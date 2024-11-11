@@ -83,7 +83,7 @@ def warning_message_processing():
     return warning_flag
 
 
-produce_url = "http://121.43.164.84:29875"  # 生产环境
+produce_url = "http://118.31.45.18:29875"  # 生产环境
 # produce_url = "http://121.43.164.84:29775"    # 测试环境
 test_url = produce_url
 
@@ -238,7 +238,7 @@ def get_part_data():
                 new_num += 1
                 # 连接到测试库
                 conn_test = mysql.connector.connect(
-                    host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                    host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
                     user="col2024",
                     password="Bm_a12a06",
                     database="col"
@@ -343,7 +343,7 @@ def get_court_data(page):
                                 redis_conn.sadd("guangdong_region_set", hash_value)
                                 # 连接到数据库
                                 conn_test = mysql.connector.connect(
-                                    host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                                    host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
                                     user="col2024",
                                     password="Bm_a12a06",
                                     database="col"

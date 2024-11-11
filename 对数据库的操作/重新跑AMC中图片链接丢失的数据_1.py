@@ -11,7 +11,7 @@ from AMC.api_paper import upload_file_by_url, get_image, get_now_image, upload_f
 
 # 连接到测试库
 conn_test = mysql.connector.connect(
-    host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+    host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
     user="col2024",
     password="Bm_a12a06",
     database="col"

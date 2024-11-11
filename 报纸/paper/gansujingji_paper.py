@@ -62,7 +62,7 @@ def get_gansujingji_paper_new(paper_time, queue_id, webpage_id):
                     except:
                         article_content = ''
                     conn_test = mysql.connector.connect(
-                        host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
                         user="col2024",
                         password="Bm_a12a06",
                         database="col"
@@ -160,7 +160,7 @@ def get_gansujingji_paper_old(paper_time, queue_id, webpage_id):
 
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
-                    host="rm-bp1u9285s2m2p42t08o.mysql.rds.aliyuncs.com",
+                    host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
                     user="col2024",
                     password="Bm_a12a06",
                     database="col",
