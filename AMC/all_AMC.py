@@ -32,6 +32,7 @@ from shenzenzichan_chuzhigonggao import get_shenzenzichan_chuzhigonggao  # 深�
 from shenzhenzhaoshang_chuzhigonggao import get_shenzhenzhaoshang_chuzhigonggao  # 深圳市招商平安资产管理有限责任公司
 from liaoningzichan_chuzhigonggao import get_liaoningzichan_chuzhigonggao  # 辽宁资产管理有限公司
 from azhuiguohou_chuzhigonggao import get_azhuiguohou_chuzhigonggao  # 安徽国厚金融资产管理有限公司
+from GZH_zhongxinjinrongjiangsu import zhongxinjinrongjiangsu_gzh  # 中国中信金融资产江苏分公司(公众号)
 
 methods = {
     'https://www.zsamc.com/index.php/infor/index/20.html#tabNav': get_zhejiangzheshang_chuzhigonggao,  # 浙江省浙商资产管理有限公司
@@ -67,6 +68,7 @@ methods = {
     'https://www.cmamc.net.cn/zichan_ye.php?fid=8': get_shenzhenzhaoshang_chuzhigonggao,  # 深圳市招商平安资产管理有限责任公司
     'https://www.lnzcgs.cn/list_34': get_liaoningzichan_chuzhigonggao,  # 辽宁资产管理有限公司
     'http://www.gohoamc.com/info.php?class_id=102104': get_azhuiguohou_chuzhigonggao,  # 安徽国厚金融资产管理有限公司
+    'https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI5ODk2MTY1Mg==&action=getalbum&album_id=3421134606546747396#wechat_redirect': zhongxinjinrongjiangsu_gzh,  # 中国资产管理有限公司
 
 }
 
@@ -102,6 +104,7 @@ web_list = [
     'https://www.cmamc.net.cn/zichan_ye.php?fid=8',
     'https://www.lnzcgs.cn/list_34',
     'http://www.gohoamc.com/info.php?class_id=102104',
+    'https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI5ODk2MTY1Mg==&action=getalbum&album_id=3421134606546747396#wechat_redirect',
 ]
 
 while True:
