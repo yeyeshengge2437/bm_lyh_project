@@ -3,7 +3,7 @@ from openai import OpenAI
 from api_ai import img_url_to_file
 import os
 client = OpenAI(
-        api_key="sk-hXUGUGNz8RN3mgLTUg3n8j0suiBiRnumBJxM1I6giYVYJk7h",
+        api_key="sk-ioLk3ty8Z1MHhUPibFyjpLerKame3596sP0FjwRggEx0aJeM",
         base_url="https://api.moonshot.cn/v1",
     )
 
