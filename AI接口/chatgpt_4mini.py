@@ -28,4 +28,4 @@ def gpt_freechat(chat_text):
     return input_token_num, output_token_num, output_text
 
 
-# print(gpt_freechat(""))
+# print(gpt_freechat('输入文字过多，你会怎样'))

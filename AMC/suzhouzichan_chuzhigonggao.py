@@ -3,7 +3,7 @@ import random
 import re
 import time
 from datetime import datetime
-
+import base64
 import mysql.connector
 import requests
 from lxml import etree
@@ -14,7 +14,6 @@ co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
 co.set_paths(local_port=9132)
-
 
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -34,6 +33,7 @@ headers = {
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"Windows"',
 }
+
 
 def get_suzhouzichan_chuzhigonggao(queue_id, webpage_id):
     page = ChromiumPage(co)
@@ -60,6 +60,7 @@ def get_suzhouzichan_chuzhigonggao(queue_id, webpage_id):
                     title_date = ''
                 title_url = "https://www.sz-amc.com" + "".join(title.xpath("./li/a/@href"))
                 if title_url not in title_set:
+                # if 1:
                     res_title = requests.get(title_url, headers=headers)
                     res_title_html1 = res_title.content.decode()
                     res_title_html = etree.HTML(res_title_html1)
@@ -83,8 +84,22 @@ def get_suzhouzichan_chuzhigonggao(queue_id, webpage_id):
                         files = []
                         original_url = []
                         for ann in annex:
-                            if "http" not in ann:
+                            if "http" not in ann and len(ann) < 100:
                                 ann = 'http://www.sz-amc.com' + ann
+                            elif "http" not in ann and len(ann) > 100:
+                                ann = re.sub(r'data:image/png;base64,', '', ann)
+                                num_img = random.randint(1, 999999)
+                                # 解码Base64字符串为二进制数据
+                                image_data = base64.b64decode(ann)
+                                with open(f'{num_img}.png', 'wb') as f:
+                                    f.write(image_data)
+                                file_url = upload_file(num_img, "png")
+                                files.append(file_url)
+                                original_url.append(file_url)
+                                # 删除图片
+                                if os.path.exists(f'{num_img}.png'):
+                                    os.remove(f'{num_img}.png')
+
                             file_type = ann.split('.')[-1]
                             if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
                                              'png', 'jpg'] and 'upload' in ann:
@@ -107,6 +122,7 @@ def get_suzhouzichan_chuzhigonggao(queue_id, webpage_id):
                     for con in title_html_info:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
                     content_html = content_html + title_content_html.strip('\"')
+                    content_html = re.sub(r'src="[^"]*"', '', content_html)
 
                     image = get_image(page, title_url,
                                       "xpath=//div[@class='description news-detail']", down_offset=80)
@@ -121,6 +137,7 @@ def get_suzhouzichan_chuzhigonggao(queue_id, webpage_id):
                     )
                     cursor_test = conn_test.cursor()
                     # print(name, title_name, title_url, image, title_content)
+                    # print(files, original_url)
                     if image not in img_set and judge_bm_repeat(name, title_url):
                         # 将报纸url上传
                         up_img = upload_file(image, "png", "paper")
@@ -154,5 +171,6 @@ def get_suzhouzichan_chuzhigonggao(queue_id, webpage_id):
     except Exception as e:
         page.close()
         raise Exception(e)
+
 
 # get_suzhouzichan_chuzhigonggao(111, 222)

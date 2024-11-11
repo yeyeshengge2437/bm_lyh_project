@@ -1,7 +1,9 @@
 # 131
+import base64
 import json
 import os
 import re
+import random
 
 import mysql.connector
 import time
@@ -43,25 +45,89 @@ def guangdong_gai(queue_id, webpage_id):
 
     cursor_test_1 = conn_test_1.cursor()
     cursor_test_1.execute(
-        "select id, page_url, update_time, original_files, files from col_paper_notice where paper = '苏州资产管理有限公司'")
+        "select id, page_url, content_html, original_files, files from col_paper_notice where paper = '苏州资产管理有限公司'")
     rows = cursor_test_1.fetchall()
-    for id, page_url, update_time, original_files, files in rows:
+    for id, page_url, content_html, original_files, files in rows:
+        content_html1 = etree.HTML(content_html)
+        annex = content_html1.xpath("//a/@href | //@src")
+        # if annex:
+        #     print(annex)
+        if annex:
+            # print(page_url, annex)
+            files = []
+            original_url = []
+            for ann in annex:
+                if "http" not in ann and len(ann) < 100:
+                    ann = 'http://www.sz-amc.com' + ann
+                elif "http" not in ann and len(ann) > 100:
+                    ann = re.sub(r'data:image/png;base64,', '', ann)
+                    num_img = random.randint(1, 999999)
+                    # 解码Base64字符串为二进制数据
+                    image_data = base64.b64decode(ann)
+                    with open(f'{num_img}.png', 'wb') as f:
+                        f.write(image_data)
+                    file_url = upload_file(num_img, "png")
+                    files.append(file_url)
+                    original_url.append(file_url)
+                    # 删除图片
+                    if os.path.exists(f'{num_img}.png'):
+                        os.remove(f'{num_img}.png')
+
+                file_type = ann.split('.')[-1]
+                if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
+                                 'png', 'jpg'] and 'upload' in ann:
+                    file_url = upload_file_by_url(ann, "suzhou", file_type)
+                    # file_url = 111
+                    files.append(file_url)
+                    original_url.append(ann)
+        else:
+            files = ''
+            original_url = ''
+        if not files:
+            files = ''
+            original_url = ''
+        files = str(files).replace("'", '"')
+        original_url = str(original_url).replace("'", '"')
+        # print(files, original_url)
+        content_html = re.sub(r'src="[^"]*"', '', content_html)
+        update_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        # 上传到测试数据库
+        conn_test = mysql.connector.connect(
+            host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
+            user="col2024",
+            password="Bm_a12a06",
+            database="col",
+        )
+        cursor_test = conn_test.cursor()
+        # print(queue_id, update_time, id)
+        insert_sql = "UPDATE col_paper_page SET from_queue=%s, update_time=%s WHERE id = %s"
+        cursor_test.execute(insert_sql, (queue_id, update_time, id))
+        conn_test.commit()
+
+        insert_sql = "UPDATE col_paper_notice SET from_queue=%s, update_time=%s, content_html=%s, original_files=%s, files=%s WHERE id = %s"
+        cursor_test.execute(insert_sql, (queue_id, update_time, content_html, original_url, files, id))
+        conn_test.commit()
+
+        cursor_test.close()
+        conn_test.close()
         # if update_time:
         #     continue
-        title_url = page_url
+        # title_url = page_url
+        # print(title_url)
         # print(title_url, original_files, files)
         # title_url = "https://www.sz-amc.com/index/newsInfo?articleId=2203"
-
-        res_title = requests.get(title_url, headers=headers)
-        res_title_html1 = res_title.content.decode()
-
-        title_json_html = \
-            re.findall(r'<script>let notice = (.*);.*?let headerIndex = 3;</script>', res_title_html1, re.S)[0]
-        title_json_html = json.loads(title_json_html)
-        ann_file = title_json_html['filePath']
-        if ann_file:
-            if original_files:
-                print(original_files)
+        #
+        # res_title = requests.get(title_url, headers=headers)
+        # res_title_html1 = res_title.content.decode()
+        #
+        # title_json_html = \
+        #     re.findall(r'<script>let notice = (.*);.*?let headerIndex = 3;</script>', res_title_html1, re.S)[0]
+        # title_json_html = json.loads(title_json_html)
+        # ann_file = title_json_html['filePath']
+        # if ann_file:
+        #     if original_files:
+        #         print(original_files)
             #     original_files = json.loads(original_files)
             #     original_files.append(ann_file)
             #     file_type = ann_file.split('.')[-1]
@@ -106,17 +172,17 @@ def guangdong_gai(queue_id, webpage_id):
     conn_test_1.close()
 
 
-guangdong_gai(111, 222)
+# guangdong_gai(111, 222)
 
-# paper_queue = paper_queue_next(webpage_url_list=['https://www.sz-amc.com/business/Publicity?id=3'])
-# queue_id = paper_queue['id']
-# webpage_id = paper_queue["webpage_id"]
-# print(queue_id, webpage_id)
-# guangdong_gai(queue_id, webpage_id)
-# data = {
-#     "id": queue_id,
-#     'description': f'数据获取成功',
-# }
-# paper_queue_success(data=data)
-# 1753197 16443
+paper_queue = paper_queue_next(webpage_url_list=['https://www.sz-amc.com/business/Publicity?id=3'])
+queue_id = paper_queue['id']
+webpage_id = paper_queue["webpage_id"]
+print(queue_id, webpage_id)
+guangdong_gai(queue_id, webpage_id)
+data = {
+    "id": queue_id,
+    'description': f'数据获取成功',
+}
+paper_queue_success(data=data)
+# 1755487 16443
 

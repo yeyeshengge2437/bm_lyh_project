@@ -24,7 +24,7 @@ ai_list = {
         "kimi_chat_free",  # kimi免费对话
         "kimi_file_chat_free",  # kimi免费文件对话
         "deepseek_chat",  # deepseek文字对话
-        # "gpt_freechat",  # gpt免费对话 需要搭梯子
+        "gpt_freechat",  # gpt免费对话 需要搭梯子
     ]
 }
 ai_text_dict = {
