@@ -1,6 +1,7 @@
 import json
 import re
 import requests
+import mysql.connector
 
 requests.DEFAULT_RETRIES = 3
 s = requests.session()
@@ -114,3 +115,75 @@ data = {
     'remark' : '识别失败'
     }
 """
+
+
+def str_to_list(value):
+    value = value.replace("'", '"')
+    value = json.loads(value)
+    return value
+
+
+def list_is_resaved():
+    """
+    将数据库中为列表的依次插入
+    :return:
+    """
+    conn_test = mysql.connector.connect(
+        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
+        user="col2024",
+        password="Bm_a12a06",
+        database="col",
+    )
+    cursor_test = conn_test.cursor()
+    cursor_test.execute(
+        "select id, name, former_name, gender, id_num, address, role, company, office, relationship, asset, is_died, other, create_time, from_id, paper_id, input_key from col_paper_people")
+    rows = cursor_test.fetchall()
+    for id, name, former_name, gender, id_num, address, role, company, office, relationship, asset, is_died, other, create_time, from_id, paper_id, input_key in rows:
+        # print(name, type(name))
+        name = name.replace("'", '"')
+        # print(name, type(name))
+        try:
+            name = json.loads(name)
+            if isinstance(name, list):
+                former_name = str_to_list(former_name)
+                gender = str_to_list(gender)
+                id_num = str_to_list(id_num)
+                address = str_to_list(address)
+                role = str_to_list(role)
+                company = str_to_list(company)
+                office = str_to_list(office)
+                relationship = str_to_list(relationship)
+                asset = str_to_list(asset)
+                is_died = str_to_list(is_died)
+                other = str_to_list(other)
+                # 将所有变量放入一个列表中
+                variables = [name, former_name, gender, id_num, address, role, company, office, relationship, asset,
+                             is_died, other]
+
+                # 获取第一个变量的长度
+                first_length = len(variables[0])
+
+                # 检查所有变量的长度是否与第一个变量的长度相等
+                all_lengths_equal = all(len(var) == first_length for var in variables)
+
+                if all_lengths_equal:
+                    for i in range(first_length):
+                        # 遍历到每个列表的值
+                        insert_sql = "INSERT INTO col_paper_people (name, former_name, gender, id_num, address, role, company, office, relationship, asset, is_died, other,create_time, from_id, paper_id, input_key) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                        cursor_test.execute(insert_sql, (name[i], former_name[i], gender[i], id_num[i], address[i], role[i], company[i], office[i], relationship[i], asset[i], is_died[i], other[i], create_time, from_id, paper_id, input_key))
+                    conn_test.commit()
+                    # 删除原数据
+                    delete_sql = "DELETE FROM col_paper_people WHERE id = %s"
+                    cursor_test.execute(delete_sql, (id,))
+                    conn_test.commit()
+                else:
+                    print("至少有一个变量的长度不相等")
+
+        except:
+            pass
+
+    cursor_test.close()
+    conn_test.close()
+
+
+# list_is_resaved()
