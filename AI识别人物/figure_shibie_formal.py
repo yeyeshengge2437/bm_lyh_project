@@ -65,7 +65,7 @@ def save_database_company(all_info, from_id, paper_id, input_key):
 # 深度求索识别人的信息
 def deepseek_identify_people(chat_text):
     a, b, value = deepseek_chat(
-        chat_text + "提取文中所有个人的关键字包含：姓名（不重复），曾用名，性别（没有填''），身份证号，住址，角色（此人在此公告中的角色），关联公司（与该人有关联的公司，不得为空），职务，人物关系，名下资产，是否去世，其他（与该人有关的信息）。缺失值用''表示。不要遗漏个人信息（不要文末联系人信息），不要总结和前置语。格式为：姓名:潘静如,曾用名:潘静,性别: 女,身份证号: 440106197908020026,住址: 广州市天河区珠江新城华夏路,角色: 担保人,关联公司: 揭阳市榕城区合润化工经营部,职务: 法人,人物关系: 系潘婷之女,名下资产: 2000万,是否去世: 否,其他:无;")
+        chat_text + "提取文中所有个人的关键字包含：姓名（不重复），曾用名，性别（没有填：无），身份证号，住址，角色（此人在此公告中的角色），关联公司（与该人有关联的公司，不得为空），职务，人物关系，名下资产，是否去世，其他（与该人有关的信息）。缺失值用'无'表示。不要遗漏个人信息（不要文末联系人信息），不要总结和前置语。格式为：姓名:潘静如,曾用名:潘静,性别: 女,身份证号: 440106197908020026,住址: 广州市天河区珠江新城华夏路,角色: 担保人,关联公司: 揭阳市榕城区合润化工经营部,职务: 法人,人物关系: 系潘婷之女,名下资产: 2000万,是否去世: 否,其他:无;")
     value = re.sub(r'\n', '', value)
     value = re.sub(r' ', '', value)
     print("个人信息识别：" + value)
@@ -86,8 +86,32 @@ def deepseek_identify_people(chat_text):
         asset = re.findall(r'名下资产:(.*?),', block)[0]
         is_dead = re.findall(r'是否去世:(.*?),', block)[0]
         other = re.findall(r'其他:(.*)', block)[0]
-        if name == '':
+        if name == '无':
             continue
+        if len(name) > 4:
+            continue
+        if former_name == '无':
+            former_name = ''
+        if gender == '无':
+            gender = ''
+        if id_num == '无':
+            id_num = ''
+        if address == '无':
+            address = ''
+        if role == '无':
+            role = ''
+        if company_name == '无':
+            company_name = ''
+        if office == '无':
+            office = ''
+        if relationship == '无':
+            relationship = ''
+        if asset == '无':
+            asset = ''
+        if is_dead == '无':
+            is_dead = ''
+        if other == '无':
+            other = ''
 
         company_info = {
             '姓名': name,

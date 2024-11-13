@@ -37,23 +37,30 @@ for row in rows:
         "other": row[12]
     }
 
-    # 处理其他字段
-    fields = ["former_name", "gender", "id_num", "address", "role", "company", "office", "relationship", "asset", "is_died", "other"]
-    for field in fields:
-        if data[field] in ['无', None, []]:
-            data[field] = ''
-
-    # 更新数据库中的记录
-    update_query = """
-    UPDATE col_paper_people
-    SET former_name = %s, gender = %s, id_num = %s, address = %s, role = %s, company = %s, office = %s, relationship = %s, asset = %s, is_died = %s, other = %s
-    WHERE id = %s
-    """
-    cursor_test.execute(update_query, (
-        data["former_name"], data["gender"], data["id_num"], data["address"], data["role"], data["company"], data["office"],
-        data["relationship"], data["asset"], data["is_died"], data["other"], data["id"]
-    ))
-    conn_test.commit()
+    # # 处理其他字段
+    # fields = ["former_name", "gender", "id_num", "address", "role", "company", "office", "relationship", "asset", "is_died", "other"]
+    # for field in fields:
+    #     if data[field] in ['无', None, [], "''"]:
+    #         data[field] = ''
+    #
+    # # 更新数据库中的记录
+    # update_query = """
+    # UPDATE col_paper_people
+    # SET former_name = %s, gender = %s, id_num = %s, address = %s, role = %s, company = %s, office = %s, relationship = %s, asset = %s, is_died = %s, other = %s
+    # WHERE id = %s
+    # """
+    # cursor_test.execute(update_query, (
+    #     data["former_name"], data["gender"], data["id_num"], data["address"], data["role"], data["company"], data["office"],
+    #     data["relationship"], data["asset"], data["is_died"], data["other"], data["id"]
+    # ))
+    # conn_test.commit()
+    name = data["name"]
+    print(name)
+    if len(name) > 4:
+        print(name)
+        # del_query = "DELETE FROM col_paper_people WHERE id = %s"
+        # cursor_test.execute(del_query, (data["id"],))
+        # conn_test.commit()
 
 cursor_test.close()
 conn_test.close()
