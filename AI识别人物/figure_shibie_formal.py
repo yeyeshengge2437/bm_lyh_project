@@ -1,5 +1,6 @@
 import json
 import re
+import time
 from datetime import datetime
 
 import mysql.connector
@@ -185,6 +186,9 @@ ai_list = {
 }
 while True:
     value = ai_parse_next(data=ai_list)
+    if value is None:
+        time.sleep(30)
+        continue
     identify_text = value['input_text']
     identify_text = re.sub(r"\n", "", identify_text)
     print(identify_text)
