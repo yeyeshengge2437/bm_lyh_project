@@ -12,4 +12,5 @@ while True:
     # 计算运行时间，如果小于5分钟，等到剩余时间
     if end_time - start_time < 300:
         time.sleep(300 - (end_time - start_time))
+    print("保活机制")
 

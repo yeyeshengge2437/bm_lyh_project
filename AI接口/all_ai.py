@@ -36,7 +36,7 @@ ai_text_dict = {
     'step-1v-8k': yuewen_file_chat,
     'yuewentext_free': yuewen_freechat,
     'qwentext_free': qwentext_free,
-    'kimi_chat_free': kimifile_free,
+    'kimi_chat_free': kimitext_free,
     'kimi_file_chat_free': kimifile_free,
     'gpt_freechat': gpt_freechat,
     'deepseek_chat': deepseek_chat,
