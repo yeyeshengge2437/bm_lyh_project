@@ -1393,9 +1393,8 @@ date_dict = {'2024-10-12': 'https://jiangxi.jxnews.com.cn/system/2024/10/11/0206
              '2020-01-02': 'https://jiangxi.jxnews.com.cn/system/2020/01/02/018710003.shtml'}
 
 
-def get_date():
+def get_date(page):
     date_dict = {}
-    page = ChromiumPage(co)
     tab = page.new_tab()
     max_num = 100
     for i in range(max_num, 84, -1):
@@ -1420,18 +1419,19 @@ def get_date():
 
 
 def get_xinxire_paper(paper_time, queue_id, webpage_id):
+    page = ChromiumPage(co)
+    tab = page.new_tab()
     # 判断如果日期超过2024-10-12
     if paper_time > '2024-10-12':
         # 判断日期是否在字典中
         if paper_time not in date_dict:
-            get_date()
+            get_date(page)
     if paper_time not in date_dict:
         raise Exception(f'该日期没有报纸')
     # 将today的格式进行改变
     day = paper_time
     url = date_dict[paper_time]
-    page = ChromiumPage(co)
-    tab = page.new_tab()
+
     tab.get(url)
     if tab.url_available:
         content = tab.html

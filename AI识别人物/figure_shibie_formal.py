@@ -185,7 +185,11 @@ ai_list = {
     ]
 }
 while True:
-    value = ai_parse_next(data=ai_list)
+    try:
+        value = ai_parse_next(data=ai_list)
+    except:
+        time.sleep(30)
+        continue
     if value is None:
         time.sleep(30)
         continue
