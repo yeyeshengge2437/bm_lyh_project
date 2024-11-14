@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import time
+
 import requests
 
 refresh_token1 = 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ1c2VyLWNlbnRlciIsImV4cCI6MTczOTM0NTcyOSwiaWF0IjoxNzMxNTY5NzI5LCJqdGkiOiJjc3FxZ2dibXZxOGtnYW5yN285ZyIsInR5cCI6InJlZnJlc2giLCJhcHBfaWQiOiJraW1pIiwic3ViIjoiY3NxcWdnYm12cThrZ2FucjdvOGciLCJzcGFjZV9pZCI6ImNzcXFnZ2JtdnE4a2dhbnI3bzgwIiwiYWJzdHJhY3RfdXNlcl9pZCI6ImNzcXFnZ2JtdnE4a2dhbnI3bzdnIiwic3NpZCI6IjE3MzEwOTMwOTcwNTAwNTU0MzMiLCJkZXZpY2VfaWQiOiI3Mzk0MzMxNjA1MDc2NDIxMTIxIn0.UBO4s9gGZ1yKsBNtzoTFDtOvHvxzpE2Mvg-PWrCwK8NopsowHn2yp-spv8PDmcCBiP3lxpRbYqOuOPDroVuJgQ'
@@ -64,6 +66,7 @@ def kimitext_free(chat_text):
     input_token_num = response['usage']['completion_tokens']
     output_token_num = response['usage']['prompt_tokens']
     output_text = response['choices'][0]['message']['content']
+    time.sleep(10)
     return input_token_num, output_token_num, output_text
 
 
@@ -72,6 +75,7 @@ def kimifile_free(img_file_url, chat_text):
     input_token_num = response['usage']['completion_tokens']
     output_token_num = response['usage']['prompt_tokens']
     output_text = response['choices'][0]['message']['content']
+    time.sleep(10)
     return input_token_num, output_token_num, output_text
 
 
