@@ -5,7 +5,7 @@ import time
 from api_ai import img_url_to_file, ai_parse_next, ai_parse_success, ai_parse_fail
 from KIMI import kimi_single_chat, kimi_file_chat
 from 智谱 import zhipu_single_chat, zhipu_file_chat, zhipu_file_free_chat
-from KIMI_free import kimi_chat_free, kimi_file_chat_free
+from KIMI_free_api import kimitext_free, kimifile_free
 from 跃问 import yuewen_chat, yuewen_file_chat, yuewen_freechat
 from qwen import qwentext_free
 from chatgpt_4mini import gpt_freechat
@@ -36,9 +36,8 @@ ai_text_dict = {
     'step-1v-8k': yuewen_file_chat,
     'yuewentext_free': yuewen_freechat,
     'qwentext_free': qwentext_free,
-    # 'kimi_chat_free': kimi_chat_free,
-    'kimi_chat_free': kimi_single_chat,
-    'kimi_file_chat_free': kimi_file_chat_free,
+    'kimi_chat_free': kimifile_free,
+    'kimi_file_chat_free': kimifile_free,
     'gpt_freechat': gpt_freechat,
     'deepseek_chat': deepseek_chat,
 }
