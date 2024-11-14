@@ -1396,6 +1396,7 @@ date_dict = {'2024-10-12': 'https://jiangxi.jxnews.com.cn/system/2024/10/11/0206
 def get_date():
     date_dict = {}
     page = ChromiumPage(co)
+    tab = page.new_tab()
     max_num = 100
     for i in range(max_num, 84, -1):
         if i == max_num:
@@ -1405,8 +1406,8 @@ def get_date():
                 i = '0' + str(i)
             url = f'https://jiangxi.jxnews.com.cn/system/count//0002056/003000000000/000/000/c0002056003000000000_0000000{i}.shtml'
 
-        page.get(url)
-        content = page.html
+        tab.get(url)
+        content = tab.html
         html_1 = etree.HTML(content)
         all_bm = html_1.xpath("//table[2]/tbody/tr/td/table/tbody/tr/td")
         for bm in all_bm:
@@ -1414,7 +1415,7 @@ def get_date():
             bm_url = "".join(bm.xpath("./div/a/@href")).strip("../..")
             if bm_name not in date_dict:
                 date_dict[bm_name] = bm_url
-    page.close()
+    tab.close()
     return date_dict
 
 
@@ -1430,9 +1431,10 @@ def get_xinxire_paper(paper_time, queue_id, webpage_id):
     day = paper_time
     url = date_dict[paper_time]
     page = ChromiumPage(co)
-    page.get(url)
-    if page.url_available:
-        content = page.html
+    tab = page.new_tab()
+    tab.get(url)
+    if tab.url_available:
+        content = tab.html
         html_1 = etree.HTML(content)
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//table[3]//td/div/a/@href")
@@ -1482,10 +1484,10 @@ def get_xinxire_paper(paper_time, queue_id, webpage_id):
             'description': '数据获取成功',
         }
         paper_queue_success(success_data)
-        page.close()
+        tab.close()
 
     else:
-        page.close()
+        tab.close()
         raise Exception(f'该日期没有报纸')
 
 # get_xinxire_paper('2023-10-08', 111, 1111)
