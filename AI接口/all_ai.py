@@ -1,5 +1,6 @@
 import json
 import random
+import re
 import time
 
 from api_ai import img_url_to_file, ai_parse_next, ai_parse_success, ai_parse_fail
@@ -10,6 +11,14 @@ from 跃问 import yuewen_chat, yuewen_file_chat, yuewen_freechat
 from qwen import qwentext_free
 from chatgpt_4mini import gpt_freechat
 from deepseek import deepseek_chat
+
+def text_change(chat_text):
+    chat_text = re.sub(r'\n', '', chat_text)
+    chat_text = re.sub(r' ', '', chat_text)
+    chat_text = re.sub(r'\u3000', '', chat_text)
+    chat_text = re.sub(r'\xa0', '', chat_text)
+    return chat_text
+
 
 ai_list = {
     'tell_tool_list': [
@@ -54,6 +63,7 @@ while True:
         tell_tool = value['tell_tool']
         input_text = value['input_text']
         file = value.get('files')
+        input_text = text_change(input_text)
         if input_text:
             try:
                 if file:

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 import time
 
 import requests
@@ -32,6 +33,7 @@ def get_response_from_api(user_input):
         "stream": False
     }
     response = requests.post(api_url, headers=headers, json=data)
+    print(response.text)
     return response.json()
 
 
@@ -63,8 +65,8 @@ def get_response_from_api_free(img_file_url, user_input):
 
 def kimitext_free(chat_text):
     response = get_response_from_api(chat_text)
-    input_token_num = response['usage']['completion_tokens']
-    output_token_num = response['usage']['prompt_tokens']
+    input_token_num = 0
+    output_token_num = 0
     output_text = response['choices'][0]['message']['content']
     time.sleep(10)
     return input_token_num, output_token_num, output_text
@@ -72,8 +74,9 @@ def kimitext_free(chat_text):
 
 def kimifile_free(img_file_url, chat_text):
     response = get_response_from_api_free(img_file_url, chat_text)
-    input_token_num = response['usage']['completion_tokens']
-    output_token_num = response['usage']['prompt_tokens']
+    print(response)
+    input_token_num = 0
+    output_token_num = 0
     output_text = response['choices'][0]['message']['content']
     time.sleep(10)
     return input_token_num, output_token_num, output_text
