@@ -28,4 +28,4 @@ def gpt_freechat(chat_text):
     return input_token_num, output_token_num, output_text
 
 
-print(gpt_freechat('\n\n为什么海洋总是很蓝？\n\n因为鱼在里面游泳时总是说：“水真好！”，这个笑话的笑点在哪？'))
+# print(gpt_freechat('\n\n为什么海洋总是很蓝？\n\n因为鱼在里面游泳时总是说：“水真好！”，这个笑话的笑点在哪？'))
