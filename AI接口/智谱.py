@@ -6,7 +6,7 @@ from zhipuai import ZhipuAI
 client = ZhipuAI(api_key="71af9f1dc48c2e4169dd97e48e4e6623.Hl9rvL7a3hA8kolA")  # 填写您自己的APIKey
 
 
-def zhipu_file_chat(url, chat_text):
+def zhipu_file_chat(url, chat_text, system_content=''):
     response = client.chat.completions.create(
         model="glm-4v-plus",  # 填写需要调用的模型名称
         # model="glm-4v",  # 填写需要调用的模型名称
@@ -37,7 +37,7 @@ def zhipu_file_chat(url, chat_text):
 # zhipu_file_chat("https://res.debtop.com/manage/live/paper/202410/24/20241024002149e4fba06506cc48b5.png", "提取里面的文字，不需要总结和概括")
 
 
-def zhipu_single_chat(chat_text):
+def zhipu_single_chat(chat_text, system_content="你是一个乐于解答各种问题的助手，你的任务是为用户提供专业、准确、有见地的建议。"):
     """
     GLM-4-AirX	极速推理：具有超快的推理速度和强大的推理效果	8K	4K
     GLM-4-Air	高性价比：推理能力和价格之间最平衡的模型	128K	4K
@@ -49,7 +49,7 @@ def zhipu_single_chat(chat_text):
     response = client.chat.completions.create(
         model="GLM-4-Air",  # 填写需要调用的模型编码
         messages=[
-            {"role": "system", "content": "你是一个乐于解答各种问题的助手，你的任务是为用户提供专业、准确、有见地的建议。"},
+            {"role": "system", "content": system_content},
             {"role": "user",
              "content": f"{chat_text}"}
         ],

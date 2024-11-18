@@ -5,11 +5,11 @@ from openai import OpenAI
 client = OpenAI(api_key="sk-9a76d51f714449d8b6ff81c74c02a5d0", base_url="https://api.deepseek.com/beta")
 
 
-def deepseek_chat(chat_text):
+def deepseek_chat(chat_text, system_content="您是个乐于助人的助手"):
     response = client.chat.completions.create(
         model="deepseek-chat",
         messages=[
-            {"role": "system", "content": "您是个乐于助人的助手"},
+            {"role": "system", "content": system_content},
             {"role": "user", "content": f"{chat_text}"},
         ],
         max_tokens=8192,
