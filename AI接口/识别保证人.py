@@ -26,7 +26,7 @@ def guarantor(model_name=deepseek_chat):
             print(id, guarantee_new, content)
             try:
                 a, b, guarantee_new = model_name(
-                    content, system_content="请从中提取保证人(包含公司和个人,当担保人没有特殊说明时默认为保证人)， 抵押人/质押人(包含公司和个人)，抵押物/质押物信息，单个主体以','分割，不要输出其他无关字段,没有保证人返回'空'，没有抵押人/质押人返回'空'，没有抵押物/质押物返回'空'，严格按照执行。案例：保证人:某某有限公司,李某某,王某某; 抵押人/质押人:某某公司，某某人; 抵押物/质押物:某处房产;(每项用';'结束)注意：此案例为借鉴数据，请不要引用里面的数据，不要将其他与保证人无关的主体放在保证人里面。")
+                    content, system_content="请从中提取保证人(包含公司和个人,当担保人没有特殊说明时默认为保证人)， 抵押人/质押人(包含公司和个人)，抵押物/质押物信息，单个主体以','分割，不要输出其他无关字段,没有保证人返回'空'，没有抵押人/质押人返回'空'，没有抵押物/质押物返回'空'，严格按照执行。案例：保证人:某某有限公司,李某某,王某某; 抵押人/质押人:某某公司，某某人; 抵押物/质押物:位于某处房产,某工厂;(每项用';'结束)注意：此案例为借鉴数据，请不要引用里面的数据，不要将其他与保证人无关的主体放在保证人里面。")
                 print(guarantee_new)
                 guarantor = ''.join(re.findall(r'保证人:(.*?);', guarantee_new))
                 mortgage_person = ''.join(re.findall(r'抵押人/质押人:(.*?);', guarantee_new))
@@ -41,23 +41,23 @@ def guarantor(model_name=deepseek_chat):
                     guarantor = "空"
                 if mortgage_person == "某某公司":
                     mortgage_person = "空"
-                if mortgage_goods == "某处房产":
+                if mortgage_goods == "位于某处房产,某工厂":
                     mortgage_goods = "空"
-                if 1:
-                    cursor_test1 = conn_test.cursor()
-                    insert_sql = "UPDATE tmp_paper_collateral SET guarantee_new = %s WHERE id = %s"
-                    cursor_test1.execute(insert_sql, (guarantor, id))
-                    conn_test.commit()
-                if 1:
-                    cursor_test1 = conn_test.cursor()
-                    insert_sql = "UPDATE tmp_paper_collateral SET mortgagor_new = %s WHERE id = %s"
-                    cursor_test1.execute(insert_sql, (mortgage_person, id))
-                    conn_test.commit()
-                if 1:
-                    cursor_test1 = conn_test.cursor()
-                    insert_sql = "UPDATE tmp_paper_collateral SET collateral_new = %s WHERE id = %s"
-                    cursor_test1.execute(insert_sql, (mortgage_goods, id))
-                    conn_test.commit()
+
+                cursor_test1 = conn_test.cursor()
+                insert_sql = "UPDATE tmp_paper_collateral SET guarantee_new = %s WHERE id = %s"
+                cursor_test1.execute(insert_sql, (guarantor, id))
+                conn_test.commit()
+
+                cursor_test1 = conn_test.cursor()
+                insert_sql = "UPDATE tmp_paper_collateral SET mortgagor_new = %s WHERE id = %s"
+                cursor_test1.execute(insert_sql, (mortgage_person, id))
+                conn_test.commit()
+
+                cursor_test1 = conn_test.cursor()
+                insert_sql = "UPDATE tmp_paper_collateral SET collateral_new = %s WHERE id = %s"
+                cursor_test1.execute(insert_sql, (mortgage_goods, id))
+                conn_test.commit()
             except:
                 print("发生错误")
                 continue
