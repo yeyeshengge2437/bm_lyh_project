@@ -1,3 +1,4 @@
+import json
 import os
 import random
 import re
@@ -107,6 +108,17 @@ def get_suzhouzichan_chuzhigonggao(queue_id, webpage_id):
                                 # file_url = 111
                                 files.append(file_url)
                                 original_url.append(ann)
+                        tab = page.new_tab()
+                        tab.get(title_url)
+                        tab.wait(2)
+                        href = tab.ele("xpath=//a[@id='download']").attr('href')
+                        if "http" in href:
+                            original_url.append(href)
+                            file_type = href.split('.')[-1]
+                            file_url = upload_file_by_url(href, "suzhou", file_type)
+                            files.append(file_url)
+                        tab.close()
+
                     else:
                         files = ''
                         original_url = ''
@@ -167,9 +179,12 @@ def get_suzhouzichan_chuzhigonggao(queue_id, webpage_id):
 
                     cursor_test.close()
                     conn_test.close()
-        page.close()
+        page.quit()
     except Exception as e:
-        page.close()
+        try:
+            page.quit()
+        except:
+            pass
         raise Exception(e)
 
 

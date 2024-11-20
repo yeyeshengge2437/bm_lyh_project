@@ -44,6 +44,8 @@ def compare_columns_and_fill(file_path, sheet_name=0, col1=None, col2=None, colo
             guarantee = ""
         if str(guarantee_new) == '空':
             guarantee_new = ""
+        if str(guarantee_new) == 'nan':
+            guarantee_new = ""
         print(guarantee, 111)
         guarantee_num = count_chinese_chars(guarantee)
         print(guarantee_new, 222)
@@ -60,6 +62,6 @@ def compare_columns_and_fill(file_path, sheet_name=0, col1=None, col2=None, colo
 
 # color="00EE90" # 淡绿色
 # color="FFFF0000" # 红色
-# color="FFFF00"
+# color="FFFF00"  # 黄色
 
-compare_columns_and_fill("deepseek.xlsx", sheet_name=0, col1="I", col2="J", color='00EE90')
+compare_columns_and_fill("deepseek_ai.xlsx", sheet_name=0, col1="I", col2="J", color='00EE90')

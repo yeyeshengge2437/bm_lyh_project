@@ -3,7 +3,8 @@ from openai import OpenAI
 from api_ai import img_url_to_file
 import os
 client = OpenAI(
-        api_key="sk-ioLk3ty8Z1MHhUPibFyjpLerKame3596sP0FjwRggEx0aJeM",
+        # api_key="sk-ioLk3ty8Z1MHhUPibFyjpLerKame3596sP0FjwRggEx0aJeM",
+        api_key="sk-KbRvg0mnfEaVk3MTndc963r6tDmLOL0pTWFWXQaZt5qsEQvi",
         base_url="https://api.moonshot.cn/v1",
     )
 
@@ -48,7 +49,7 @@ def kimi_file_chat(img_url, chat_text):
 #     "https://res.debtop.com/manage/live/paper/202410/24/20241024002149e4fba06506cc48b5.png",
 #     "提取里面的文字，不需要总结和概括")
 
-def kimi_single_chat(chat_text, system_content="你是 Kimi，由 Moonshot AI 提供的人工智能助手，你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。同时，你会拒绝一切涉及恐怖主义，种族歧视，黄色暴力等问题的回答。Moonshot AI 为专有名词，不可翻译成其他语言。"):
+def kimi_single_chat(chat_text, system_content="你是 Kimi，由 Moonshot AI 提供的人工智能助手，你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。同时，你会拒绝一切涉及恐怖主义，种族歧视，黄色暴力等问题的回答。Moonshot AI 为专有名词，不可翻译成其他语言。", temperature=0.3):
 
     completion = client.chat.completions.create(
         model="moonshot-v1-8k",
@@ -57,7 +58,7 @@ def kimi_single_chat(chat_text, system_content="你是 Kimi，由 Moonshot AI �
              "content": system_content},
             {"role": "user", "content": f"{chat_text}"}
         ],
-        temperature=0.3,
+        temperature=temperature,
     )
 
     input_token_num = completion.usage.completion_tokens

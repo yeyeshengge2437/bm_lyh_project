@@ -7,7 +7,7 @@ from KIMI import kimi_single_chat
 import mysql.connector
 
 
-def guarantor(model_name=kimi_single_chat):
+def guarantor(model_name=deepseek_chat):
     # 上传到测试数据库
     conn_test = mysql.connector.connect(
         host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
@@ -19,7 +19,7 @@ def guarantor(model_name=kimi_single_chat):
 
     # 查询数据
     cursor_test.execute(
-        "SELECT id, guarantee_new, mortgagor_new, collateral_new, content FROM tmp_paper_collateral1"
+        "SELECT id, guarantee_new, mortgagor_new, collateral_new, content FROM tmp_paper_collateral2"
     )
     rows = cursor_test.fetchall()
     for id, guarantee_new, mortgagor_new, collateral_new, content in rows:
@@ -43,13 +43,12 @@ def guarantor(model_name=kimi_single_chat):
                     guarantor = "空"
 
                 cursor_test1 = conn_test.cursor()
-                insert_sql = "UPDATE tmp_paper_collateral1 SET guarantee_new = %s WHERE id = %s"
+                insert_sql = "UPDATE tmp_paper_collateral2 SET guarantee_new = %s WHERE id = %s"
                 cursor_test1.execute(insert_sql, (guarantor, id))
                 conn_test.commit()
-                time.sleep(30)
-            except Exception as e:
-                print(f"------------------发生错误{e}")
-                time.sleep(30)
+                # time.sleep(20)
+            except:
+                print("发生错误")
                 continue
         if not mortgagor_new:
             try:
@@ -73,13 +72,12 @@ def guarantor(model_name=kimi_single_chat):
                     mortgagor = "空"
 
                 cursor_test1 = conn_test.cursor()
-                insert_sql = "UPDATE tmp_paper_collateral1 SET mortgagor_new = %s WHERE id = %s"
+                insert_sql = "UPDATE tmp_paper_collateral2 SET mortgagor_new = %s WHERE id = %s"
                 cursor_test1.execute(insert_sql, (mortgagor, id))
                 conn_test.commit()
-                time.sleep(30)
-            except Exception as e:
-                print(f"--------------发生错误{e}")
-                time.sleep(30)
+                # time.sleep(20)
+            except:
+                print("发生错误")
                 continue
         if not collateral_new:
             try:
@@ -98,13 +96,12 @@ def guarantor(model_name=kimi_single_chat):
                     collateral = "空"
 
                 cursor_test1 = conn_test.cursor()
-                insert_sql = "UPDATE tmp_paper_collateral1 SET collateral_new = %s WHERE id = %s"
+                insert_sql = "UPDATE tmp_paper_collateral2 SET collateral_new = %s WHERE id = %s"
                 cursor_test1.execute(insert_sql, (collateral, id))
                 conn_test.commit()
-                time.sleep(30)
-            except Exception as e:
-                print(f"-------------------发生错误{e}")
-                time.sleep(30)
+                # time.sleep(20)
+            except:
+                print("发生错误")
                 continue
 
     cursor_test.close()

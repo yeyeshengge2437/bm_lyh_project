@@ -66,7 +66,8 @@ def save_database_company(all_info, from_id, paper_id, input_key):
 # 深度求索识别人的信息
 def deepseek_identify_people(chat_text):
     a, b, value = deepseek_chat(
-        chat_text + "提取文中所有个人的关键字包含：姓名（不重复），曾用名，性别（没有填：无），身份证号，住址，角色（此人在此公告中的角色），关联公司（与该人有关联的公司，不得为空），职务，人物关系，名下资产，是否去世，其他（与该人有关的信息）。缺失值用'无'表示。不要遗漏个人信息（不要文末联系人信息），不要总结和前置语。格式为：姓名:潘静如,曾用名:潘静,性别: 女,身份证号: 440106197908020026,住址: 广州市天河区珠江新城华夏路,角色: 担保人,关联公司: 揭阳市榕城区合润化工经营部,职务: 法人,人物关系: 系潘婷之女,名下资产: 2000万,是否去世: 否,其他:无;")
+        chat_text + "提取文中所有个人的关键字包含：姓名（不重复），曾用名，性别（没有填：无），身份证号，住址，角色（此人在此公告中的角色），关联公司（与该人有关联的公司，不得为空），职务，人物关系，名下资产，是否去世，其他（与该人有关的信息）。缺失值用'无'表示。不要遗漏个人信息（不要文末联系人信息），不要总结和前置语。格式为：姓名:潘静如,曾用名:潘静,性别: 女,身份证号: 440106197908020026,住址: 广州市天河区珠江新城华夏路,角色: 担保人,关联公司: 揭阳市榕城区合润化工经营部,职务: 法人,人物关系: 系潘婷之女,名下资产: 2000万,是否去世: 否,其他:无;",
+        beta=True)
     value = re.sub(r'\n', '', value)
     value = re.sub(r' ', '', value)
     print("个人信息识别：" + value)
@@ -180,7 +181,6 @@ def gpt_identify_company(chat_text):
     #     save_database_company(company, from_id, paper_id, input_key)
 
 
-
 ai_list = {
     'tell_tool_list': [
         "paper_subject_tell",
@@ -210,8 +210,8 @@ while True:
         company_companies = gpt_identify_company(chat_text)
     except Exception as e:
         fail_data = {
-                    'id': f'{queue_id}',
-                    'remark': f'{e}',
+            'id': f'{queue_id}',
+            'remark': f'{e}',
         }
         ai_parse_fail(data=fail_data)
         continue
@@ -222,10 +222,7 @@ while True:
         save_database_company(company, queue_id, paper_id, input_key)
 
     success_data = {
-                    'id': f'{queue_id}',
-                    'remark': '',
-                }
+        'id': f'{queue_id}',
+        'remark': '',
+    }
     ai_parse_success(data=success_data)
-
-
-
