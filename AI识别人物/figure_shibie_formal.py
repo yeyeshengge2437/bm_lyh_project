@@ -89,6 +89,8 @@ def deepseek_identify_people(chat_text):
         other = re.findall(r'其他:(.*)', block)[0]
         if name == '无':
             continue
+        if name == "潘静如":
+            continue
         if len(name) > 4:
             continue
         if former_name == '无':

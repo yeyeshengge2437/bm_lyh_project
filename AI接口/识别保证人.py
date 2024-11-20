@@ -2,6 +2,7 @@ import re
 
 from KIMI_free_api import kimitext_free
 from deepseek import deepseek_chat
+from KIMI import kimi_single_chat
 import mysql.connector
 
 
@@ -26,11 +27,13 @@ def guarantor(model_name=deepseek_chat):
         if not guarantee_new:
             try:
                 a, b, guarantor = model_name(
-                    content,
-                    system_content="请从中提取保证人(包含公司和个人,当担保人没有特殊说明时默认为保证人。保证人之间如有明确亲属关系，在保证人后面追加（）说明。)主体，单个主体以','分割，不要输出其他无关字段,没有保证人返回'空'，严格按照执行。案例：保证人:某某有限公司,李某某,王某某;(每项用';'结束)注意：此案例为借鉴数据，请不要引用里面的数据，不要将其他与保证人无关的主体放在保证人里面，抵押人或质押人不应被视为保证人。")
+                    content + "请从中提取保证人(包含公司和个人,当担保人没有特殊说明时默认为保证人。保证人之间如有明确亲属关系，在保证人后面追加（）说明。)主体，单个主体以','分割，不要输出其他无关字段,没有保证人返回'空'，严格按照执行。案例：保证人:某某有限公司,李某某,王某某;(每项用';'结束)注意：此案例为借鉴数据，请不要引用里面的数据，不要将其他与保证人无关的主体放在保证人里面，抵押人或质押人不应被视为保证人。")
                 guarantor = re.sub(r'保证人：', '', guarantor)
                 guarantor = re.sub(r'保证人:', '', guarantor)
-                guarantor = re.sub(r';', '', guarantor)
+                guarantor = re.sub(r';', ',', guarantor)
+                guarantor = re.sub(r"\(每项用''结束\)", '', guarantor)
+                if guarantor[-1] == ',':
+                    guarantor = guarantor[:-1]
                 if not guarantor:
                     guarantor = "空"
                 if guarantor == "某某有限公司,李某某,王某某":
@@ -48,11 +51,14 @@ def guarantor(model_name=deepseek_chat):
         if not mortgagor_new:
             try:
                 a, b, mortgagor = model_name(
-                    content,
-                    system_content="从中提取抵押人/质押人主体名称，单个主体以','分割，不要输出其他无关字段,没有抵押人/质押人返回'空'，严格按照执行。案例：抵押人/质押人:某某有限公司,李某某,王某某;(每项用';'结束)注意：此案例为借鉴数据，请不要引用里面的数据。文中没有明确说明担保人是抵押人/质押人时，担保人不可作为抵押人/质押人。")
+                    content+"从中提取抵押人/质押人主体名称（企业名称/个人名称），主体之间以','分割，严格执行。不要输出其他无关字段,没有抵押人/质押人返回'空'，严格按照执行。案例：抵押人/质押人:某某有限公司,李某某,王某某;(每项用';'结束)注意：此案例为借鉴数据，请不要引用里面的数据。文中没有明确说明担保人是抵押人/质押人时，担保人不可作为抵押人/质押人，抵押人/质押人名称可能存在于抵押物/质押物中。")
                 mortgagor = re.sub(r'抵押人/质押人：', '', mortgagor)
                 mortgagor = re.sub(r'抵押人/质押人:', '', mortgagor)
-                mortgagor = re.sub(r';', '', mortgagor)
+                mortgagor = re.sub(r'抵押人：|质押人：', '', mortgagor)
+                mortgagor = re.sub(r'抵押人:|质押人:', '', mortgagor)
+                mortgagor = re.sub(r';', ',', mortgagor)
+                if mortgagor[-1] == ',':
+                    mortgagor = mortgagor[:-1]
                 if not mortgagor:
                     print(1111)
                     mortgagor = "空"
@@ -71,8 +77,7 @@ def guarantor(model_name=deepseek_chat):
         if not collateral_new:
             try:
                 a, b, collateral = model_name(
-                    content,
-                    system_content="请从中提取抵押物/质押物(当担保物没有特殊说明时默认为抵押物/质押物)信息，单个主体以','分割，不要输出其他无关字段,没有抵押物/质押物返回'空'，严格按照执行。案例：抵押物/质押物:位于某处房产,某工厂;(每项用';'结束)注意：此案例为借鉴数据，请不要引用里面的数据，不要将其他与抵押物/质押物无关的主体放在抵押物/质押物里面，抵质押物情况中有主体的也要保存。")
+                    content + "请从中提取抵押物/质押物(当担保物没有特殊说明时默认为抵押物/质押物)信息，单个主体以','分割，不要输出其他无关字段,没有抵押物/质押物返回'空'，严格按照执行。案例：抵押物/质押物:位于某处房产,某工厂;(每项用';'结束)注意：此案例为借鉴数据，请不要引用里面的数据，不要将其他与抵押物/质押物无关的主体放在抵押物/质押物里面，抵质押物情况中有主体的也要保存。")
                 collateral = re.sub(r'抵押物/质押物：', '', collateral)
                 collateral = re.sub(r'抵押物/质押物:', '', collateral)
                 collateral = re.sub(r'抵押物：|质押物：', '', collateral)
