@@ -116,4 +116,4 @@ def get_lianhe_paper(paper_time, queue_id, webpage_id):
     paper_queue_success(success_data)
 
 
-# get_lianhe_paper('2023-10-10', 111, 1111)
+# get_lianhe_paper('2024-11-19', 111, 1111)

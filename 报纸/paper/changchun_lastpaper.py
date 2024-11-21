@@ -31,6 +31,8 @@ def get_changchun_lastpaper(paper_time, queue_id, webpage_id):
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
+        if not html_1:
+            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//ul[@id='layoutlist']/li[@class='posRelative']")
         for bm in all_bm:
@@ -112,4 +114,4 @@ def get_changchun_lastpaper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_changchun_lastpaper('2024-08-22', 111, 1111)
+# get_changchun_lastpaper('2024-11-20', 111, 1111)

@@ -202,19 +202,6 @@ def single_pages(file_pdf_url, xs, ys, xe, ye):
 # doc.close()
 
 
-# 未识别成功的文字为矢量图的证据
-# import fitz  # 导入PyMuPDF库
-#
-# # 打开PDF文件
-# doc = fitz.open("redacted_area.pdf")
-# page = doc[0]
-# # 获取页面上的所有矢量图形
-# paths = page.get_drawings()
-#
-# # 打印矢量图形的路径信息
-# for path in paths:
-#     print(path)
-# doc.close()
 
 
 
