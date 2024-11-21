@@ -19,10 +19,10 @@ def create_demo_param(client_id, client_secret):
 
 
     param = {
-        "dataUrl": "https://res.debtop.com/col/live/paper/202410/29/20241029164429a3ec3d9c27704729.pdf",
-        "dataType": "pdf",
-        "serviceOption": "structure",
-        "inputConfigs": '{"function_option": "RecognizeTable"}',
+        "dataUrl": "https://res.debtop.com/manage/live/paper/202411/08/20241108065038fd2373ffe36546bb.png",
+        "dataType": "image",
+        "serviceOption": "ocr",
+        "inputConfigs": "",
         "outputConfigs": "",
         "reqId": req_id,
         "clientId": client_id,

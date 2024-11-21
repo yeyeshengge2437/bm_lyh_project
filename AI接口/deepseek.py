@@ -1,11 +1,12 @@
 # Please install OpenAI SDK first: `pip3 install openai`
 
 from openai import OpenAI
-
+# api_key="sk-9a76d51f714449d8b6ff81c74c02a5d0"
+api_key="sk-d11beb24cc234b9b9f5df67cee7c69a1"
 
 def deepseek_chat(chat_text, system_content="您是个乐于助人的助手", temperature=1.0, beta=False):
     if beta:
-        client = OpenAI(api_key="sk-9a76d51f714449d8b6ff81c74c02a5d0", base_url="https://api.deepseek.com/beta")
+        client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com/beta")
         response = client.chat.completions.create(
             model="deepseek-chat",
             messages=[
@@ -22,7 +23,7 @@ def deepseek_chat(chat_text, system_content="您是个乐于助人的助手", te
         output_text = response.choices[0].message.content
         return input_token_num, output_token_num, output_text
     else:
-        client = OpenAI(api_key="sk-9a76d51f714449d8b6ff81c74c02a5d0", base_url="https://api.deepseek.com")
+        client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
         response = client.chat.completions.create(
             model="deepseek-chat",
             messages=[

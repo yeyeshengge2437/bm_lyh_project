@@ -64,4 +64,4 @@ def compare_columns_and_fill(file_path, sheet_name=0, col1=None, col2=None, colo
 # color="FFFF0000" # 红色
 # color="FFFF00"  # 黄色
 
-compare_columns_and_fill("deepseek_ai.xlsx", sheet_name=0, col1="I", col2="J", color='00EE90')
+compare_columns_and_fill("kimi_new.xlsx", sheet_name=0, col1="I", col2="J", color='00EE90')
