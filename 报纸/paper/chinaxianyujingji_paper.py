@@ -253,7 +253,10 @@ def get_chinaxianyujingji_paper(paper_time, queue_id, webpage_id):
                 # print(content)
             except:
                 content = ''
-            tab.ele("目录").click(by_js=True)
+            try:
+                tab.ele("目录").click(by_js=True)
+            except:
+                continue
             create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             create_date = datetime.now().strftime('%Y-%m-%d')
             # 上传到测试数据库
@@ -301,7 +304,10 @@ def get_chinaxianyujingji_paper(paper_time, queue_id, webpage_id):
 
     # tab.wait(3)
     tab.close()
-    # page.close()
+    try:
+        page.quit()
+    except:
+        pass
     success_data = {
         'id': queue_id,
         'description': '数据获取成功',
@@ -310,4 +316,4 @@ def get_chinaxianyujingji_paper(paper_time, queue_id, webpage_id):
 
 
 
-# get_chinaxianyujingji_paper('2024-12-09', '11', '222')
+# get_chinaxianyujingji_paper('2024-11-21', '11', '222')
