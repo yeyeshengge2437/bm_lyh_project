@@ -83,7 +83,7 @@ if __name__ == '__main__':
     多进程5个
     """
     process_list = []
-    for i in range(4):
+    for i in range(5):
         process = Process(target=get_charater_data, args=())
         process_list.append(process)
 

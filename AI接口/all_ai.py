@@ -12,6 +12,7 @@ from qwen import qwentext_free
 from chatgpt_4mini import gpt_freechat
 from deepseek import deepseek_chat
 from character_classificatio import identify_guarantee, identify_mortgagor, identify_collateral
+from quark_text import quark_text
 
 def text_change(chat_text):
     chat_text = re.sub(r'\n', '', chat_text)
@@ -35,6 +36,7 @@ ai_list = {
         "kimi_file_chat_free",  # kimi免费文件对话
         "deepseek_chat",  # deepseek文字对话
         "gpt_freechat",  # gpt免费对话 需要搭梯子
+        "quark_text",  # quark文字识别
     ]
 }
 ai_text_dict = {
@@ -50,6 +52,7 @@ ai_text_dict = {
     'kimi_file_chat_free': kimifile_free,
     'gpt_freechat': gpt_freechat,
     'deepseek_chat': deepseek_chat,
+    'quark_text': quark_text,
 }
 while True:
     start_time = time.time()
@@ -65,53 +68,47 @@ while True:
         input_text = value['input_text']
         file = value.get('files')
         # input_text = text_change(input_text)
-        if input_text:
-            try:
-                if file:
-                    file_url = json.loads(file)[0]
-                    input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](file_url, input_text)
-                else:
-                    input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](input_text)
-                end_time = time.time()
-                outcome_time = end_time - start_time
-                if 0 < int(outcome_time) < 20:
-                    num = random.randint(5, 20)
-                    time.sleep(num)
-                if "您的账号已达频率限制" in output_text:
-                    fail_data = {
-                        'id': f'{queue_id}',
-                        'remark': f'调用失败,原因:{output_text}'
-                    }
-                    time.sleep(60)
-                    print(fail_data)
-                    ai_parse_fail(data=fail_data)
-                else:
-                    success_data = {
-                        'id': f'{queue_id}',
-                        'remark': name,
-                        'input_token_num': input_token_num,
-                        'output_token_num': output_token_num,
-                        'output_text': output_text,
-                    }
-                    print(success_data)
-                    ai_parse_success(data=success_data)
-            except Exception as e:
+        try:
+            if input_text and file:
+                file_url = json.loads(file)[0]
+                input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](file_url, input_text)
+            elif input_text and not file:
+                input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](input_text)
+            elif file and not input_text:
+                file_url = json.loads(file)[0]
+                input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](file_url)
+            else:
                 fail_data = {
                     'id': f'{queue_id}',
-                    'remark': f'调用失败,原因{e}'
+                    'remark': f'传参错误'
                 }
                 print(fail_data)
                 ai_parse_fail(data=fail_data)
-                if "您的账号已达频率限制" in str(e):
-                    print('您的账号已达频率限制' + "等待60秒")
-                    time.sleep(60)
-
-        else:
+                continue
+            end_time = time.time()
+            outcome_time = end_time - start_time
+            if 0 < int(outcome_time) < 20:
+                num = random.randint(5, 20)
+                time.sleep(num)
+            else:
+                success_data = {
+                    'id': f'{queue_id}',
+                    'remark': name,
+                    'input_token_num': input_token_num,
+                    'output_token_num': output_token_num,
+                    'output_text': output_text,
+                }
+                print(success_data)
+                ai_parse_success(data=success_data)
+        except Exception as e:
             fail_data = {
                 'id': f'{queue_id}',
-                'remark': f'input_text为空'
+                'remark': f'调用失败,原因{e}'
             }
             print(fail_data)
             ai_parse_fail(data=fail_data)
+            if "您的账号已达频率限制" in str(e):
+                print('您的账号已达频率限制' + "等待60秒")
+                time.sleep(60)
     else:
         time.sleep(30)

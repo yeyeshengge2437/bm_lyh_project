@@ -53,7 +53,7 @@ def get_signature(client_id, client_secret, business, sign_method, sign_nonce, t
     return sign
 
 
-def main(img_url):
+def quark_text(img_url):
     client_id = "test"
     client_secret = "6zGXp1QZ6GcLWoEn"
     http_client = get_http_client()
