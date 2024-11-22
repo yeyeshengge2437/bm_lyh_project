@@ -42,6 +42,14 @@ def get_charater_data():
             tell_tool = value['tell_tool']
             input_text = value['input_text']
             file = value.get('files')
+            if "重复" in name:
+                fail_data = {
+                    'id': f'{queue_id}',
+                    'remark': f'重复数据'
+                }
+                print(fail_data)
+                ai_parse_fail(data=fail_data)
+                continue
             # input_text = text_change(input_text)
             if input_text:
                 try:
@@ -75,7 +83,7 @@ def get_charater_data():
                 print(fail_data)
                 ai_parse_fail(data=fail_data)
         else:
-            time.sleep(30)
+            time.sleep(1)
 
 
 if __name__ == '__main__':
@@ -83,7 +91,7 @@ if __name__ == '__main__':
     多进程5个
     """
     process_list = []
-    for i in range(5):
+    for i in range(10):
         process = Process(target=get_charater_data, args=())
         process_list.append(process)
 

@@ -9,8 +9,6 @@ api_key_li = "sk-d11beb24cc234b9b9f5df67cee7c69a1"
 api_key_zhou = "sk-76f7b57a786e49028921aa98dc677422"
 
 
-
-
 def deepseek_chat(chat_text, system_content="您是个乐于助人的助手", temperature=1.0, beta=False):
     api_key = random.Random().choice([api_key_li, api_key_zhou])
     if beta:
@@ -63,4 +61,4 @@ def get_balance(token):
     print(response.text)
 
 
-# get_balance(api_key_zhou)
+# get_balance(api_key_li)
