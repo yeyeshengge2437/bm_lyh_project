@@ -11,6 +11,7 @@ from 跃问 import yuewen_chat, yuewen_file_chat, yuewen_freechat
 from qwen import qwentext_free
 from chatgpt_4mini import gpt_freechat
 from deepseek import deepseek_chat
+from character_classificatio import identify_guarantee, identify_mortgagor, identify_collateral
 
 def text_change(chat_text):
     chat_text = re.sub(r'\n', '', chat_text)
@@ -63,7 +64,7 @@ while True:
         tell_tool = value['tell_tool']
         input_text = value['input_text']
         file = value.get('files')
-        input_text = text_change(input_text)
+        # input_text = text_change(input_text)
         if input_text:
             try:
                 if file:

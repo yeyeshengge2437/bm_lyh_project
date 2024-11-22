@@ -41,7 +41,7 @@ def guarantor(model_name=kimi_single_chat):
                     guarantor = "空"
                 if guarantor == "某某有限公司,李某某,王某某":
                     guarantor = "空"
-
+                print(guarantor)
                 cursor_test1 = conn_test.cursor()
                 insert_sql = "UPDATE tmp_paper_collateral1 SET guarantee_new = %s WHERE id = %s"
                 cursor_test1.execute(insert_sql, (guarantor, id))
@@ -54,7 +54,7 @@ def guarantor(model_name=kimi_single_chat):
         if not mortgagor_new:
             try:
                 a, b, mortgagor = model_name(
-                    content + "\n\n从中提取抵押人/质押人主体名称（担保人在未说明为抵押人/质押人时不可视为抵押人/质押人，保证人在未说明为抵押人/质押人时不可视为抵押人/质押人。），主体之间以','分割，严格执行。未明确为抵押人/质押人不做推理，不要输出其他无关字段,没有抵押人/质押人返回'空'，严格按照执行。案例：抵押人/质押人:某某有限公司,李某某,王某某;(每项用';'结束)注意：此案例为借鉴数据，请不要引用里面的数据。",
+                    content + "\n\n从中提取抵押人/质押人主体名称（担保人在未说明为抵押人/质押人时不可视为抵押人/质押人，保证人在未说明为抵押人/质押人时不可视为抵押人/质押人。），主体之间以,分割，严格执行。未明确为抵押人/质押人不做推理，不要输出其他无关字段,没有抵押人/质押人返回'空'，严格按照执行。案例：抵押人/质押人:某某有限公司,李某某,王某某;(每项用';'结束)注意：此案例为借鉴数据，请不要引用里面的数据。",
                     temperature=1.0)
                 mortgagor = re.sub(r'抵押人/质押人：', '', mortgagor)
                 mortgagor = re.sub(r'抵押人/质押人:', '', mortgagor)

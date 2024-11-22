@@ -9,7 +9,7 @@ def get_http_client():
     return requests.session()
 
 
-def create_demo_param(client_id, client_secret):
+def create_demo_param(client_id, client_secret, img_url):
     business = "vision"
     sign_method = "SHA3-256"
     sign_nonce = uuid.uuid4().hex
@@ -19,7 +19,7 @@ def create_demo_param(client_id, client_secret):
 
 
     param = {
-        "dataUrl": "https://res.debtop.com/manage/live/paper/202411/08/20241108065038fd2373ffe36546bb.png",
+        "dataUrl": img_url,
         "dataType": "image",
         "serviceOption": "ocr",
         "inputConfigs": "",
@@ -53,11 +53,11 @@ def get_signature(client_id, client_secret, business, sign_method, sign_nonce, t
     return sign
 
 
-def main():
+def main(img_url):
     client_id = "test"
     client_secret = "6zGXp1QZ6GcLWoEn"
     http_client = get_http_client()
-    param = create_demo_param(client_id, client_secret)
+    param = create_demo_param(client_id, client_secret, img_url)
     req_id = uuid.uuid4().hex
     url = "https://scan-business.quark.cn/vision"
     headers = {
@@ -68,10 +68,11 @@ def main():
         body = response.json()
         code = body.get("code")
         print(body)
-        print("ocr request result:", code)
+        return 0, 0, body
     else:
-        print("http request error")
+        print("HTTP 请求错误")
+        return 0, 0, None
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main("https://res.debtop.com/manage/live/paper/202410/30/20241030002538578330edc14545a2.png")
