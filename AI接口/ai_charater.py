@@ -42,7 +42,8 @@ def get_charater_data():
             tell_tool = value['tell_tool']
             input_text = value['input_text']
             file = value.get('files')
-            if "重复" in name:
+            remark = value.get('remark')
+            if "重复" in remark:
                 fail_data = {
                     'id': f'{queue_id}',
                     'remark': f'重复数据'
