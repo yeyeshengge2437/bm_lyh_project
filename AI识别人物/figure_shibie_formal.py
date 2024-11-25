@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 
 import mysql.connector
-from AI接口.deepseek import deepseek_chat, deepseek_people
+from AI接口.deepseek import deepseek_chat
 from AI接口.chatgpt_4mini import gpt_freechat
 from api_ai import ai_parse_next, ai_parse_success, ai_parse_fail
 

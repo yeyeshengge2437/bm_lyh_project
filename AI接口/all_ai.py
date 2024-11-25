@@ -15,6 +15,12 @@ from character_classificatio import identify_guarantee, identify_mortgagor, iden
 from quark_text import quark_text
 
 def text_change(chat_text):
+    """
+    去除空格、换行符、全角空格、不间断空格
+    （目前暂不使用）
+    :param chat_text: 对话文字
+    :return: 处理后的对话文字
+    """
     chat_text = re.sub(r'\n', '', chat_text)
     chat_text = re.sub(r' ', '', chat_text)
     chat_text = re.sub(r'\u3000', '', chat_text)

@@ -252,6 +252,9 @@ from gansu_paper import get_gansu_paper  # 甘肃日报
 from chinashehuikexue_paper import get_chinashehuikexue_paper  # 中国社会科学报
 from chinaxianyujingji_paper import get_chinaxianyujingji_paper  # 中国县域经济报
 from fazhirebao_paper import get_fazhirebao_paper  # 法治日报
+from xibeixinxi_paper import get_xibeixinxi_paper  # 西北信息报
+from laodongshi_paper import get_laodongshi_paper  # 劳动时报
+from henanrebaononcun_paper import get_henanrebaononcun_paper  # 河南日报农村版
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -506,6 +509,9 @@ methods = {
     '中国社会科学报': get_chinashehuikexue_paper,
     '中国县域经济报': get_chinaxianyujingji_paper,
     '法治日报': get_fazhirebao_paper,
+    '西北信息报': get_xibeixinxi_paper,
+    '劳动时报': get_laodongshi_paper,
+    '河南日报农村版': get_henanrebaononcun_paper,
 
 }
 
@@ -761,6 +767,10 @@ webpage_url_list = [
     'https://szb.gansudaily.com.cn/gsrb/pc/layout',
     'https://epaper.csstoday.net',
     'https://www.xyshjj.cn/newsepaper/10193_151663_1721129_zgxyjjb.html',
+    'https://epaper.xbxxb.com/xbxxb',
+    'http://www.gzqgw.cn',
+    'https://newpaper.dahe.cn/hnrbncb',
+
 ]
 
 

@@ -1,3 +1,4 @@
+import base64
 from time import time
 import requests
 import json
@@ -9,7 +10,13 @@ def get_http_client():
     return requests.session()
 
 
-def create_demo_param(client_id, client_secret):
+def img_to_base64(path):
+    with open(path, 'rb') as f:
+        base64_data = base64.b64encode(f.read()).decode('utf-8')
+    return base64_data
+
+
+def create_demo_param(client_id, client_secret, img_path):
     business = "vision"
     sign_method = "SHA3-256"
     sign_nonce = uuid.uuid4().hex
@@ -17,9 +24,8 @@ def create_demo_param(client_id, client_secret):
     signature = get_signature(client_id, client_secret, business, sign_method, sign_nonce, timestamp)
     req_id = uuid.uuid4().hex
 
-
     param = {
-        "dataUrl": "https://res.debtop.com/manage/live/paper/202410/24/20241024110628f369258f291548b9.png",
+        "dataBase64": img_to_base64(img_path),
         "dataType": "image",
         "serviceOption": "structure",
         "inputConfigs": '{"function_option": "RecognizeTable"}',
@@ -53,11 +59,11 @@ def get_signature(client_id, client_secret, business, sign_method, sign_nonce, t
     return sign
 
 
-def main():
+def quark_text(img_path):
     client_id = "test"
     client_secret = "6zGXp1QZ6GcLWoEn"
     http_client = get_http_client()
-    param = create_demo_param(client_id, client_secret)
+    param = create_demo_param(client_id, client_secret, img_path)
     req_id = uuid.uuid4().hex
     url = "https://scan-business.quark.cn/vision"
     headers = {
@@ -67,11 +73,8 @@ def main():
     if response.status_code == 200:
         body = response.json()
         code = body.get("code")
-        print(body)
         print("ocr request result:", code)
+        return body
     else:
         print("http request error")
-
-
-if __name__ == "__main__":
-    main()
+        return None

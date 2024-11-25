@@ -13,7 +13,7 @@ from AMC.api_paper import get_image, judge_bm_repeat, upload_file, judge_title_r
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9236)
+co.set_paths(local_port=9238)
 
 
 headers = {
