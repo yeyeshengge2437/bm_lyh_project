@@ -124,8 +124,8 @@ def single_pages(file_pdf_url, xs, ys, xe, ye):
     return tag_str
 
 
-# print(single_pages("https://res.debtop.com/manage/live/paper/202408/01/202408010900551ae44f53fec140c1.pdf", 0.008982763, 0.858560048, 0.99077446,
-#                    0.993837367))
+print(single_pages("https://res.debtop.com/manage/live/paper/202408/01/202408010900551ae44f53fec140c1.pdf", 0.008982763, 0.858560048, 0.99077446,
+                   0.993837367))
 
 # print(single_pages("https://res.debtop.com/manage/live/paper/202408/01/202408010900551ae44f53fec140c1.pdf", 0.008982763,0.753194048, 0.99077446,
 #                    0.850142793))

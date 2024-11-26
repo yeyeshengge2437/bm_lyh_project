@@ -18,6 +18,11 @@ def allowed_file(filename):
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+@app.route("/", methods=["GET"])
+def index():
+    return "Hello, World! 你好， 世界!"
+
+
 @app.route('/img_to_text', methods=['POST'])
 def upload():
     # 检查是否有文件被上传
@@ -52,10 +57,16 @@ def upload():
             img.verify()
     except (IOError, SyntaxError):
         return jsonify({'error': '文件不是图像'}), 400
-
-    identify_results = quark_text(file_path)
+    try:
+        identify_results = quark_text(file_path)
+    except:
+        return jsonify({'error': '识别失败'}), 400
     return jsonify({'message': identify_results}), 200
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # 开启调试调试模式（开发阶段）
+    # app.run(debug=True)
+    # 更改端口信息，让所有主机都可访问
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=True, host='0.0.0.0', port=port)
