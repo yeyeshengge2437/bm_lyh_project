@@ -15,12 +15,12 @@ ALLOWED_EXTENSIONS = {'jpeg', 'jpg', 'png', 'gif'}
 
 def allowed_file(filename):
     return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+        filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
 @app.route("/", methods=["GET"])
 def index():
-    return "Hello, World! 你好， 世界!"
+    return "Hello, World!"
 
 
 @app.route('/img_to_text', methods=['POST'])
@@ -30,7 +30,7 @@ def upload():
         return jsonify({'error': '请求中没有文件部分'}), 400
 
     file = request.files['file']
-    print(file)
+    file_name = secure_filename(file.filename)
 
     # 如果用户没有选择文件，浏览器也会提交一个空的文件部分，不进行处理
     if file.filename == '':
@@ -43,24 +43,13 @@ def upload():
     # 检查文件扩展名
     if not allowed_file(file.filename):
         return jsonify({'error': '不允许使用文件扩展名'}), 400
-
-    # 进一步验证文件是否为图片
-    filename = secure_filename(file.filename)
-    # 如果没有uploads文件夹，则创建
-    if not os.path.exists('/uploads'):
-        os.makedirs('/uploads')
-    file_path = os.path.join('/uploads', filename)
-
+    # 保存文件到本地uploads文件夹
+    file.save(file_name)
     try:
-        # 尝试打开图片
-        with Image.open(file.stream) as img:
-            img.verify()
-    except (IOError, SyntaxError):
-        return jsonify({'error': '文件不是图像'}), 400
-    try:
-        identify_results = quark_text(file_path)
+        identify_results = quark_text(file_name)
     except:
         return jsonify({'error': '识别失败'}), 400
+    os.remove(file_name)  # 删除临时文件
     return jsonify({'message': identify_results}), 200
 
 

@@ -1,45 +1,52 @@
-import re
+"""
+将pdf中目标位置进行图片保存，使用识别ocr识别目标区域的字符数，后提取pdf中的目标中的字体数，进行文字数对比，如果在文字数在误差的范围内则提取文字。
+如果不在误差的范围内，则将目标区域作为图片保存，使用表格识别，利用PIL将表格覆盖，之后利用ai将文本提取。
+"""
 
-import fitz  # PyMuPDF
-
-
-def remove_table(file_path):
-    text_all = ""
-    table_text = ''
-    doc = fitz.open(file_path)  # 打开PDF文件
-    for page in doc:  # 遍历每一页
-        text = page.get_text()  # 提取页面文本
-        # print(text)
-        text_all += text
-    text_all = re.sub(r'\s', '', text_all)
-    print(text_all)
-
-    for i in range(doc.page_count):
-        page = doc[i]
-
-        # 检测页面中的表格
-        tables = page.find_tables()
-        for table in tables:
-            # 提取表格内容
-            table_data = table.extract()
-
-            # 遍历表格的每一行
-            for row in table_data:
-                for cell in row:
-                    if cell:
-                        table_text += cell
-
-    # 关闭文档
-    doc.close()
-    table_text = re.sub(r'\s', '', table_text)
-    print(table_text)
-    first_str_num_five = table_text[0:5]
-    last_str_num_five = table_text[-5:]
-    remove_table_text = re.sub(fr'{first_str_num_five}.*{last_str_num_five}', '', text_all)
-    if len(remove_table_text) == len(text_all):
-        return False
-    else:
-        return remove_table_text
+import fitz
 
 
-print(remove_table("eeee.pdf"))
+# 打开PDF文件
+doc = fitz.open("qqqq.pdf")
+# 获取第一页
+page = doc[0]
+
+
+
+blocks = page.get_text("dict")["blocks"]
+titles = []
+span_size_num = 0
+count = 0
+for block in blocks:
+    try:
+        for line in block["lines"]:
+            for span in line["spans"]:
+                count += 1
+                # 计算平均span的字体大小
+                size = span["size"]
+                span_size_num += size
+    except:
+        pass
+average_size = span_size_num / count
+print(average_size)
+# 如果大于数的百分之50
+for block in blocks:
+    try:
+        for line in block["lines"]:
+            for span in line["spans"]:
+                if span["size"] > average_size * 1.5:
+                    print(span['bbox'])
+                    print(span['text'])
+                    # 将其“删除”
+                    # 获取位置信息
+                    coordinate = span['bbox']
+                    rect = fitz.Rect(coordinate[0], coordinate[1], coordinate[2], coordinate[3])
+                    # 添加红action注释到该矩形区域
+                    page.add_redact_annot(rect)
+                    # 应用红action注释，删除表格
+        page.apply_redactions()
+    except:
+        pass
+doc.save("new.pdf")
+# 关闭文档
+doc.close()

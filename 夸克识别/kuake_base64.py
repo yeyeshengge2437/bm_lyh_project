@@ -89,6 +89,6 @@ def quark_base64(img_url):
         return None
 
 
-# quark_base64('https://res.debtop.com/manage/live/paper/202410/24/20241024011804833e306331d34b3b.png')
+# quark_base64('https://res.debtop.com/manage/live/paper/202410/24/20241024005945eb4af6b5d82f45f0.png')
 # quark_base64('https://res.debtop.com/manage/live/paper/202410/24/2024102401301999a053971b424897.png')
 # quark_base64('https://res.debtop.com/manage/live/paper/202410/24/20241024110628f369258f291548b9.png')

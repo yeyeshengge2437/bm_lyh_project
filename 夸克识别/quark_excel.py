@@ -16,7 +16,7 @@ def img_to_base64(path):
     return base64_data
 
 
-def create_demo_param(client_id, client_secret):
+def create_demo_param(client_id, client_secret, img_path):
     business = "vision"
     sign_method = "SHA3-256"
     sign_nonce = uuid.uuid4().hex
@@ -24,12 +24,11 @@ def create_demo_param(client_id, client_secret):
     signature = get_signature(client_id, client_secret, business, sign_method, sign_nonce, timestamp)
     req_id = uuid.uuid4().hex
 
-
     param = {
-        "dataBase64": img_to_base64("rotated_document.pdf"),
-        "dataType": "pdf",
-        "serviceOption": "structure",
-        "inputConfigs": '{"function_option": "RecognizeTable"}',
+        "dataBase64": img_to_base64(img_path),
+        "dataType": "image",
+        "serviceOption": "typeset",
+        "inputConfigs": '{"function_option": "excel"}',
         "outputConfigs": "",
         "reqId": req_id,
         "clientId": client_id,
@@ -60,11 +59,11 @@ def get_signature(client_id, client_secret, business, sign_method, sign_nonce, t
     return sign
 
 
-def main():
+def quark_excel(img_path):
     client_id = "test"
     client_secret = "6zGXp1QZ6GcLWoEn"
     http_client = get_http_client()
-    param = create_demo_param(client_id, client_secret)
+    param = create_demo_param(client_id, client_secret, img_path)
     req_id = uuid.uuid4().hex
     url = "https://scan-business.quark.cn/vision"
     headers = {
@@ -74,11 +73,9 @@ def main():
     if response.status_code == 200:
         body = response.json()
         code = body.get("code")
-        print(body)
-        print("ocr request result:", code)
+        return body
     else:
         print("http request error")
+        return None
 
 
-if __name__ == "__main__":
-    main()
