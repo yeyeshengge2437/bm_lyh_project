@@ -5,48 +5,51 @@
 
 import fitz
 
-
 # 打开PDF文件
 doc = fitz.open("qqqq.pdf")
 # 获取第一页
 page = doc[0]
 
 
+def get_pdf_suspicious_title(page):
+    blocks = page.get_text("dict")["blocks"]
+    span_size_num = 0
+    count = 0
+    for block in blocks:
+        try:
+            for line in block["lines"]:
+                for span in line["spans"]:
+                    count += 1
+                    # 计算平均span的字体大小
+                    size = span["size"]
+                    span_size_num += size
+        except:
+            pass
+    average_size = span_size_num / count
+    # print(average_size)
+    # 如果大于数的百分之50
+    location_information = {}
+    for block in blocks:
+        try:
+            for line in block["lines"]:
+                for span in line["spans"]:
+                    if span["size"] > average_size * 1.5:
+                        location = span['bbox']
+                        location_information[location] = span['text']
+            #             print(span['text'])
+            #             # 将其“删除”
+            #             # 获取位置信息
+            #             coordinate = span['bbox']
+            #             rect = fitz.Rect(coordinate[0], coordinate[1], coordinate[2], coordinate[3])
+            #             # 添加红action注释到该矩形区域
+            #             page.add_redact_annot(rect)
+            #             # 应用红action注释，删除表格
+            # page.apply_redactions()
+        except:
+            pass
+    return location_information
 
-blocks = page.get_text("dict")["blocks"]
-titles = []
-span_size_num = 0
-count = 0
-for block in blocks:
-    try:
-        for line in block["lines"]:
-            for span in line["spans"]:
-                count += 1
-                # 计算平均span的字体大小
-                size = span["size"]
-                span_size_num += size
-    except:
-        pass
-average_size = span_size_num / count
-print(average_size)
-# 如果大于数的百分之50
-for block in blocks:
-    try:
-        for line in block["lines"]:
-            for span in line["spans"]:
-                if span["size"] > average_size * 1.5:
-                    print(span['bbox'])
-                    print(span['text'])
-                    # 将其“删除”
-                    # 获取位置信息
-                    coordinate = span['bbox']
-                    rect = fitz.Rect(coordinate[0], coordinate[1], coordinate[2], coordinate[3])
-                    # 添加红action注释到该矩形区域
-                    page.add_redact_annot(rect)
-                    # 应用红action注释，删除表格
-        page.apply_redactions()
-    except:
-        pass
-doc.save("new.pdf")
+
+# doc.save("new.pdf")
 # 关闭文档
-doc.close()
+print(get_pdf_suspicious_title(page))
