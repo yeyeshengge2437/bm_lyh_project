@@ -1,3 +1,6 @@
+"""
+保证人，抵押人/质押人， 保证物/质押物识别
+"""
 import json
 import random
 import re
@@ -84,7 +87,7 @@ def get_charater_data():
                 print(fail_data)
                 ai_parse_fail(data=fail_data)
         else:
-            time.sleep(1)
+            time.sleep(30)
 
 
 if __name__ == '__main__':
@@ -92,7 +95,7 @@ if __name__ == '__main__':
     多进程5个
     """
     process_list = []
-    for i in range(10):
+    for i in range(2):
         process = Process(target=get_charater_data, args=())
         process_list.append(process)
 

@@ -1,3 +1,6 @@
+"""
+pdf识别
+"""
 import os
 import fitz  # PyMuPDF
 import requests
@@ -41,6 +44,8 @@ def get_pdf_suspicious_title(page):
                     span_size_num += size
         except:
             pass
+    if count == 0:
+        return False
     average_size = span_size_num / count
     # print(average_size)
     # 如果大于数的百分之50
@@ -119,7 +124,7 @@ def single_pages(file_pdf_url, xs, ys, xe, ye, title_sx=0, title_sy=0, title_ex=
     y0 = ys * height
     x1 = xe * width
     y1 = ye * height
-    suspicious_title = get_pdf_suspicious_title(page)
+
     tag_rect = fitz.Rect(x0, y0, x1, y1)
     tabs = page.find_tables(clip=tag_rect)
     for table in tabs:
@@ -133,14 +138,16 @@ def single_pages(file_pdf_url, xs, ys, xe, ye, title_sx=0, title_sy=0, title_ex=
         page.apply_redactions()
     title_text = ''
     if title_sy == 0 and title_ey == 0 and title_sx == 0 and title_ex == 0:
-        for location, text in suspicious_title.items():
-            print(location, text)
-            if (x0 <= location[2]) and (x1 >= location[0]) and (y0 <= location[3]) and (y1 >= location[1]):
-                title_text = text
-                title_rect = fitz.Rect(location[0], location[1], location[2], location[3])
-                # 删除
-                page.add_redact_annot(title_rect)
-                doc.save("1.pdf")
+        suspicious_title = get_pdf_suspicious_title(page)
+        if suspicious_title:
+            for location, text in suspicious_title.items():
+                # print(location, text)
+                if (x0 <= location[2]) and (x1 >= location[0]) and (y0 <= location[3]) and (y1 >= location[1]):
+                    title_text = text
+                    title_rect = fitz.Rect(location[0], location[1], location[2], location[3])
+                    # 删除
+                    page.add_redact_annot(title_rect)
+                    # doc.save("1.pdf")
 
     else:
         title_rect = fitz.Rect(title_sx * width, title_sy * height, title_ex * width, title_ey * height)
@@ -235,6 +242,6 @@ while True:
             'id': f'{queue_id}',
         }
         ai_parse_success(data=success_data)
-        break
+
     else:
         time.sleep(30)

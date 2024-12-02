@@ -1,3 +1,6 @@
+"""
+夸克表格识别
+"""
 import json
 import time
 from random import randint

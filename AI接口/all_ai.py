@@ -93,19 +93,19 @@ while True:
                 continue
             end_time = time.time()
             outcome_time = end_time - start_time
-            if 0 < int(outcome_time) < 20:
-                num = random.randint(5, 20)
+            if 0 < int(outcome_time) < 10:
+                num = random.randint(5, 10)
                 time.sleep(num)
-            else:
-                success_data = {
-                    'id': f'{queue_id}',
-                    'remark': name,
-                    'input_token_num': input_token_num,
-                    'output_token_num': output_token_num,
-                    'output_text': output_text,
-                }
-                print(success_data)
-                ai_parse_success(data=success_data)
+
+            success_data = {
+                'id': f'{queue_id}',
+                'remark': name,
+                'input_token_num': input_token_num,
+                'output_token_num': output_token_num,
+                'output_text': output_text,
+            }
+            print('成功', success_data)
+            ai_parse_success(data=success_data)
         except Exception as e:
             fail_data = {
                 'id': f'{queue_id}',
