@@ -4,8 +4,8 @@ import time
 from datetime import datetime
 
 import mysql.connector
-from AI接口.deepseek import deepseek_chat
-from AI接口.chatgpt_4mini import gpt_freechat
+from deepseek import deepseek_chat
+from chatgpt_4mini import gpt_freechat
 from api_ai import ai_parse_next, ai_parse_success, ai_parse_fail
 
 
@@ -181,48 +181,48 @@ def gpt_identify_company(chat_text):
     #     save_database_company(company, from_id, paper_id, input_key)
 
 
-ai_list = {
-    'tell_tool_list': [
-        "paper_subject_tell",
-    ]
-}
-while True:
-    try:
-        value = ai_parse_next(data=ai_list)
-    except:
-        time.sleep(30)
-        continue
-    if value is None:
-        time.sleep(30)
-        continue
-    identify_text = value['input_text']
-    # identify_text = re.sub(r"\n", "", identify_text)
-    print(identify_text)
-    queue_id = value['id']
-    paper_id = value['paper_id']
-    input_key = value['input_key']
-    chat_text = identify_text
-
-    try:
-        # 深度求索识别人的信息
-        people_companies = deepseek_identify_people(chat_text)
-        # 深度求索识别公司的信息
-        company_companies = gpt_identify_company(chat_text)
-    except Exception as e:
-        fail_data = {
-            'id': f'{queue_id}',
-            'remark': f'{e}',
-        }
-        ai_parse_fail(data=fail_data)
-        continue
-
-    for company in people_companies:
-        save_database_people(company, queue_id, paper_id, input_key)
-    for company in company_companies:
-        save_database_company(company, queue_id, paper_id, input_key)
-
-    success_data = {
-        'id': f'{queue_id}',
-        'remark': '',
-    }
-    ai_parse_success(data=success_data)
+# ai_list = {
+#     'tell_tool_list': [
+#         "paper_subject_tell",
+#     ]
+# }
+# while True:
+#     try:
+#         value = ai_parse_next(data=ai_list)
+#     except:
+#         time.sleep(30)
+#         continue
+#     if value is None:
+#         time.sleep(30)
+#         continue
+#     identify_text = value['input_text']
+#     # identify_text = re.sub(r"\n", "", identify_text)
+#     print(identify_text)
+#     queue_id = value['id']
+#     paper_id = value['paper_id']
+#     input_key = value['input_key']
+#     chat_text = identify_text
+#
+#     try:
+#         # 深度求索识别人的信息
+#         people_companies = deepseek_identify_people(chat_text)
+#         # 深度求索识别公司的信息
+#         company_companies = gpt_identify_company(chat_text)
+#     except Exception as e:
+#         fail_data = {
+#             'id': f'{queue_id}',
+#             'remark': f'{e}',
+#         }
+#         ai_parse_fail(data=fail_data)
+#         continue
+#
+#     for company in people_companies:
+#         save_database_people(company, queue_id, paper_id, input_key)
+#     for company in company_companies:
+#         save_database_company(company, queue_id, paper_id, input_key)
+#
+#     success_data = {
+#         'id': f'{queue_id}',
+#         'remark': '',
+#     }
+#     ai_parse_success(data=success_data)

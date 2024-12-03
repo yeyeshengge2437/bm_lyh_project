@@ -13,7 +13,7 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 
 
 co = ChromiumOptions()
-co = co.set_user_data_path(r'C:\Users\24379\AppData\Local\Google\Chrome\User Data')
+co = co.set_user_data_path(r'D:\chome_data\data_one')
 co.set_paths(local_port=9136)
 def get_anhao(anhao_set, html):
     tree = etree.HTML(html)

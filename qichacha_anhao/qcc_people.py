@@ -7,7 +7,7 @@ from lxml import etree
 from DrissionPage import ChromiumPage, ChromiumOptions
 
 co = ChromiumOptions()
-co = co.set_user_data_path(r'C:\Users\24379\AppData\Local\Google\Chrome\User Data')
+co = co.set_user_data_path(r"D:\chome_data\data_one")
 co.set_paths(local_port=9136)
 
 
@@ -15,6 +15,7 @@ def get_paper_url_cookies(url):
     cookie_dict = {}
     page = ChromiumPage(co)
     page.get(url)
+    input()
     value_cookies = page.cookies()
     for key in value_cookies:
         cookie_dict[key['name']] = key['value']
@@ -56,14 +57,14 @@ main_person = content_json["company"]["companyDetail"]["Employees"]
 # print(main_person)
 for key in main_person:
     print(key.get("Name"))
+print("------------------法代--------------------------")
+legal_person = content_json["company"]["companyDetail"]["Oper"]["Name"]
+print(legal_person)
+print("------------------股东信息--------------------------")
+shareholder = content_json["company"]["companyDetail"]["Partners"]
+for key in shareholder:
+    print(key.get("StockName"))
 
-# ------------------历史主要人员----------------------
-print("------------------历史主要人员----------------------")
-# params = {
-#     'isNewAgg': 'true',
-#     'keyNo': '6a6a2bdfcfec0102221e27582488b71f',
-#     'pageIndex': '3',
-# }
-# response = requests.get('https://www.qcc.com/api/datalist/hismainmember', params=params, cookies=cookies, headers=headers)
-# print(response.content.decode())
+
+
 
