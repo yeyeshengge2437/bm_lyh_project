@@ -46,14 +46,15 @@ def get_charater_data():
             input_text = value['input_text']
             file = value.get('files')
             remark = value.get('remark')
-            if "重复" in remark:
-                fail_data = {
-                    'id': f'{queue_id}',
-                    'remark': f'重复数据'
-                }
-                print(fail_data)
-                ai_parse_fail(data=fail_data)
-                continue
+            if remark:
+                if "重复" in remark:
+                    fail_data = {
+                        'id': f'{queue_id}',
+                        'remark': f'重复数据'
+                    }
+                    print(fail_data)
+                    ai_parse_fail(data=fail_data)
+                    continue
             # input_text = text_change(input_text)
             if input_text:
                 try:

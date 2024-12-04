@@ -4,8 +4,8 @@ import time
 from datetime import datetime
 
 import mysql.connector
-from deepseek import deepseek_chat
-from chatgpt_4mini import gpt_freechat
+from AI接口.deepseek import deepseek_chat
+from AI接口.chatgpt_4mini import gpt_freechat
 from api_ai import ai_parse_next, ai_parse_success, ai_parse_fail
 
 
@@ -43,6 +43,7 @@ def save_database_people(all_info, from_id, paper_id, input_key):
 
 def save_database_company(all_info, from_id, paper_id, input_key):
     company_name = all_info.get("公司名称")
+    role = all_info.get("角色")
     nickname = all_info.get("别称")
     former_name = all_info.get("曾用名")
     uscc = all_info.get("统一社会信用代码")
@@ -56,10 +57,10 @@ def save_database_company(all_info, from_id, paper_id, input_key):
     )
     cursor_test = conn_test.cursor()
     # 上传到报纸的内容
-    insert_sql = "INSERT INTO col_paper_company (company_name, nickname, former_name, uscc, create_time, from_id, paper_id, input_key) VALUES (%s,%s,%s,%s, %s, %s,%s,%s)"
+    insert_sql = "INSERT INTO col_paper_company (company_name, nickname,role, former_name, uscc, create_time, from_id, paper_id, input_key) VALUES (%s,%s,%s,%s,%s, %s, %s,%s,%s)"
 
     cursor_test.execute(insert_sql,
-                        (company_name, nickname, former_name, uscc, create_time, from_id, paper_id, input_key))
+                        (company_name, nickname,role, former_name, uscc, create_time, from_id, paper_id, input_key))
     conn_test.commit()
 
 
@@ -143,7 +144,7 @@ def deepseek_identify_people(chat_text):
 def gpt_identify_company(chat_text):
     # chat_4识别公司信息
     a, b, value = deepseek_chat(
-        chat_text + "\n提取文中所有公司的关键字包含：名称（人名不要提取），别称（简称），以及曾用名（原名），和统一社会信用代码，没有的字段放回无。不要遗漏公司，不要总结和前置语。格式为：公司名称：某某有限公司,别称：无,曾用名：无,统一社会信用代码：无;")
+        chat_text + "\n提取文中所有公司的关键字包含：名称（人名不要提取），角色（公司在公告中的角色），别称（简称），以及曾用名（原名），和统一社会信用代码，没有的字段放回无。不要遗漏公司，不要总结和前置语。格式为：公司名称：某某有限公司,角色：债务人,别称：无,曾用名：无,统一社会信用代码：无;")
     # value = '公司名称：中国长城资产管理股份有限公司上海市分公司,别称：无,曾用名：无,统一社会信用代码：无'
     # 分割数据
     value = re.sub(r'\n', '', value)
@@ -155,11 +156,14 @@ def gpt_identify_company(chat_text):
         if not block:
             continue
         company_name = re.findall(r'公司名称：(.*?),', block)[0]
+        role = re.findall(r'角色：(.*?),', block)[0]
         alias = re.findall(r'别称：(.*?),', block)[0]
         former_name = re.findall(r'曾用名：(.*?),', block)[0]
         credit_code = re.findall(r'统一社会信用代码：(.*)', block)[0]
         if company_name == '无':
             continue
+        if role == '无':
+            role = ''
         if alias == '无':
             alias = ''
         if former_name == '无':
@@ -169,6 +173,7 @@ def gpt_identify_company(chat_text):
 
         company_info = {
             '公司名称': company_name,
+            '角色': role,
             '别称': alias,
             '曾用名': former_name,
             '统一社会信用代码': credit_code
