@@ -129,4 +129,4 @@ def get_yiyang_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_yiyang_paper('2021-03-23', 111, 1111)
+# get_yiyang_paper('2024-12-01', 111, 1111)

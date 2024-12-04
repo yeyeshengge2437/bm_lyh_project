@@ -23,7 +23,10 @@ data_dict = {'20240919': 'http://www.tmjnews.net/newspaper.Asp?Nid=1047', '20240
 
 def get_new_dates():
     res = requests.get('http://www.tmjnews.net/review.asp?Page=1', headers=headers)
-    html = etree.HTML(res.content.decode('gbk'))
+    try:
+        html = etree.HTML(res.content.decode('gbk'))
+    except:
+        return
     dates = html.xpath("//div[@class='review_list']/div[1]/ul/li/span/a")
     for date in dates:
         if date.xpath("./text()")[0].strip('期') not in data_dict.keys():
@@ -128,4 +131,4 @@ def get_tumenjiang_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_tumenjiang_paper('2021-12-26', 111, 1111)
+# get_tumenjiang_paper('2024-12-01', 111, 1111)

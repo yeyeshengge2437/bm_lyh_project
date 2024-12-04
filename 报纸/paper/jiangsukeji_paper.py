@@ -144,4 +144,4 @@ def get_jiangsukeji_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_jiangsukeji_paper('2024-08-21', 111, 1111)
+# get_jiangsukeji_paper('2024-12-02', 111, 1111)
