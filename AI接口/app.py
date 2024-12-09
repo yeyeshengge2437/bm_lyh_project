@@ -1,3 +1,5 @@
+import re
+
 from flask import Flask, request, jsonify
 from werkzeug.utils import secure_filename
 from PIL import Image
@@ -12,9 +14,17 @@ from quark_text import quark_text
 from figure_shibie_formal import deepseek_identify_people, gpt_identify_company, save_database_people, \
     save_database_company
 from kuake_table_url import quark
+from character_classificatio_flask import identify_guarantee, identify_mortgagor, identify_collateral, deepseek_item_guarantee_2, deepseek_item_mortgagor_2
+
 
 app = Flask(__name__)
-
+@app.route("/test", methods=["GET"])
+def test():
+    value = {
+        "success": 1,
+        "remark": "测试成功"
+    }
+    return jsonify(value)
 
 
 @app.route('/get_ai_response', methods=['POST'])
@@ -263,6 +273,106 @@ def get_ai_response():
                     "success": 0
                 }
                 return jsonify(value)
+        except Exception as e:
+            value = {
+                "id": id,
+                "remark": str(e),
+                "success": 0
+            }
+            return jsonify(value)
+    elif tell_tool == "identify_guarantee":
+        try:
+            input_token_num, output_token_num, guarantor, prompt = identify_guarantee(input_text)
+            value = {
+                'id': id,
+                'remark': name,
+                'input_token_num': input_token_num,
+                'output_token_num': output_token_num,
+                'output_text': guarantor,
+                'prompt': prompt,
+                'success': 1
+            }
+            return jsonify(value)
+        except Exception as e:
+            value = {
+                "id": id,
+                "remark": str(e),
+                "success": 0
+            }
+            return jsonify(value)
+    elif tell_tool == "deepseek_item_guarantee_2":
+        try:
+            input_token_num, output_token_num, guarantor, prompt = deepseek_item_guarantee_2(input_text)
+            value = {
+                'id': id,
+                'remark': name,
+                'input_token_num': input_token_num,
+                'output_token_num': output_token_num,
+                'output_text': guarantor,
+                'prompt': prompt,
+                'success': 1
+            }
+            return jsonify(value)
+        except Exception as e:
+            value = {
+                "id": id,
+                "remark": str(e),
+                "success": 0
+            }
+            return jsonify(value)
+    elif tell_tool == "identify_mortgagor":
+        try:
+            input_token_num, output_token_num, mortgagor, prompt = identify_mortgagor(input_text)
+            value = {
+                'id': id,
+                'remark': name,
+                'input_token_num': input_token_num,
+                'output_token_num': output_token_num,
+                'output_text': mortgagor,
+                'prompt': prompt,
+                'success': 1
+            }
+            return jsonify(value)
+        except Exception as e:
+            value = {
+                "id": id,
+                "remark": str(e),
+                "success": 0
+            }
+            return jsonify(value)
+    elif tell_tool == "identify_collateral":
+        try:
+            input_token_num, output_token_num, collateral, prompt = identify_collateral(input_text)
+            value = {
+                'id': id,
+                'remark': name,
+                'input_token_num': input_token_num,
+                'output_token_num': output_token_num,
+                'output_text': collateral,
+                'prompt': prompt,
+                'success': 1
+            }
+            return jsonify(value)
+        except Exception as e:
+            value = {
+                "id": id,
+                "remark": str(e),
+                "success": 0
+            }
+            return jsonify(value)
+    elif tell_tool == "deepseek_item_mortgagor_2":
+        try:
+            input_token_num, output_token_num, mortgagor, prompt = deepseek_item_mortgagor_2(input_text)
+            value = {
+                'id': id,
+                'remark': name,
+                'input_token_num': input_token_num,
+                'output_token_num': output_token_num,
+                'output_text': mortgagor,
+                'prompt': prompt,
+                'success': 1
+            }
+            return jsonify(value)
         except Exception as e:
             value = {
                 "id": id,

@@ -7,7 +7,7 @@ import re
 import time
 from multiprocessing import Process
 from api_ai import img_url_to_file, ai_parse_next, ai_parse_success, ai_parse_fail
-from character_classificatio import identify_guarantee, identify_mortgagor, identify_collateral
+from character_classificatio import identify_guarantee, identify_mortgagor, identify_collateral, deepseek_item_guarantee_2, deepseek_item_mortgagor_2
 
 
 def text_change(chat_text):
@@ -23,12 +23,16 @@ ai_list = {
         "deepseek_item_guarantee",
         "deepseek_item_mortgagor",
         "deepseek_item_collateral",
+        "deepseek_item_guarantee_2",
+        "deepseek_item_mortgagor_2"
     ]
 }
 ai_text_dict = {
     "deepseek_item_guarantee": identify_guarantee,  # deepseek-公告债权保证人
     "deepseek_item_mortgagor": identify_mortgagor,  # deepseek-公告债权抵押人
-    "deepseek_item_collateral": identify_collateral  # deepseek-公告债权抵押物
+    "deepseek_item_collateral": identify_collateral,  # deepseek-公告债权抵押物
+    "deepseek_item_guarantee_2": deepseek_item_guarantee_2,  # deepseek-公告债权保证人-告警处理
+    "deepseek_item_mortgagor_2": deepseek_item_mortgagor_2,  # deepseek-公告债权抵押人-告警处理
 }
 
 
@@ -60,15 +64,16 @@ def get_charater_data():
                 try:
                     if file:
                         file_url = json.loads(file)[0]
-                        input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](file_url, input_text)
+                        input_token_num, output_token_num, output_text, prompt = ai_text_dict[tell_tool](file_url, input_text)
                     else:
-                        input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](input_text)
+                        input_token_num, output_token_num, output_text, prompt = ai_text_dict[tell_tool](input_text)
                     success_data = {
                         'id': f'{queue_id}',
                         'remark': name,
                         'input_token_num': input_token_num,
                         'output_token_num': output_token_num,
                         'output_text': output_text,
+                        'prompt': prompt
                     }
                     print(success_data)
                     ai_parse_success(data=success_data)

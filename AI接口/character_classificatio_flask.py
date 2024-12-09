@@ -24,7 +24,7 @@ def identify_guarantee(content):
     if guarantor == "空":
         guarantor = ''
     guarantor = re.sub(r'\n', '', guarantor)
-    print(guarantor)
+    # print(guarantor)
     return a, b, guarantor, prompt
 
 
@@ -48,7 +48,7 @@ def deepseek_item_guarantee_2(content):
     if guarantor == "空":
         guarantor = ''
     guarantor = re.sub(r'\n', '', guarantor)
-    print(guarantor)
+    # print(guarantor)
     return a, b, guarantor, prompt
 
 
@@ -75,7 +75,7 @@ def identify_mortgagor(content):
     if mortgagor == "空":
         mortgagor = ''
     mortgagor = re.sub(r'\n', '', mortgagor)
-    print(mortgagor)
+    # print(mortgagor)
     return a, b, mortgagor, prompt
 
 
@@ -101,7 +101,7 @@ def deepseek_item_mortgagor_2(content):
         mortgagor = "空"
     if mortgagor == "空":
         mortgagor = ''
-    print(mortgagor)
+    # print(mortgagor)
     mortgagor = re.sub(r'\n', '', mortgagor)
     return a, b, mortgagor, prompt
 
@@ -124,5 +124,5 @@ def identify_collateral(content):
     if collateral == "空":
         collateral = ''
     collateral = re.sub(r'\n', '', collateral)
-    print(collateral)
+    # print(collateral)
     return a, b, collateral, prompt
