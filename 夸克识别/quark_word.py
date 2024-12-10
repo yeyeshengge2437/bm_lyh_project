@@ -4,7 +4,6 @@ import requests
 import json
 import uuid
 import hashlib
-import pandas as pd
 
 
 def get_http_client():
@@ -16,21 +15,25 @@ def img_to_base64(path):
         base64_data = base64.b64encode(f.read()).decode('utf-8')
     return base64_data
 
-
-def create_demo_param(client_id, client_secret):
-    business = "table_ocr"
+def create_demo_param(client_id, client_secret, path_img):
+    business = "vision"
     sign_method = "SHA3-256"
     sign_nonce = uuid.uuid4().hex
     timestamp = int(time() * 1000)
     signature = get_signature(client_id, client_secret, business, sign_method, sign_nonce, timestamp)
+    req_id = uuid.uuid4().hex
 
     param = {
+        "dataBase64": img_to_base64(path_img),
+        "dataType": "image",
+        "serviceOption": "typeset",
+        "inputConfigs": '{"function_option": "word"}',
+        "outputConfigs": "",
+        "reqId": req_id,
         "clientId": client_id,
-        "business": business,
         "signMethod": sign_method,
         "signNonce": sign_nonce,
         "timestamp": timestamp,
-        "imgBase64": img_to_base64("page2_image1.png"),
         "signature": signature
     }
     return param
@@ -39,7 +42,6 @@ def create_demo_param(client_id, client_secret):
 def get_signature(client_id, client_secret, business, sign_method, sign_nonce, timestamp):
     raw_str = f"{client_id}_{business}_{sign_method}_{sign_nonce}_{timestamp}_{client_secret}"
     utf8_bytes = raw_str.encode("utf-8")
-
     # 根据sign_method选择不同的摘要算法
     if sign_method.lower() == "sha256":
         digest = hashlib.sha256(utf8_bytes).hexdigest()
@@ -51,35 +53,31 @@ def get_signature(client_id, client_secret, business, sign_method, sign_nonce, t
         digest = hashlib.sha3_256(utf8_bytes).hexdigest()
     else:
         raise ValueError("Unsupported sign method")
-
     # 将摘要转换为小写十六进制字符串
     sign = digest.lower()
     return sign
 
 
-def main():
+def quark_word(path_img):
     client_id = "test"
     client_secret = "6zGXp1QZ6GcLWoEn"
     http_client = get_http_client()
-    param = create_demo_param(client_id, client_secret)
+    param = create_demo_param(client_id, client_secret, path_img)
     req_id = uuid.uuid4().hex
-    url = f"https://scan-business.quark.cn/api/ocr/handleBase64?reqId={req_id}"
-
+    url = "https://scan-business.quark.cn/vision"
     headers = {
         "Content-Type": "application/json",
     }
-
-    response = http_client.post(url, data=json.dumps(param), headers=headers)
-
+    response = http_client.post(url, json=param, headers=headers)
     if response.status_code == 200:
         body = response.json()
         code = body.get("code")
-        print(body)
-        print("ocr request result:", code)
+        # print(body)
         return body
     else:
-        print("http request error")
+        print("HTTP 请求错误")
+        return None
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     quark_text("img.png")

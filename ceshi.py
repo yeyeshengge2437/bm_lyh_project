@@ -1,12 +1,17 @@
-file_path = "extracted_text.txt"  # 假设这是提取PDF文本后的文件路径
-try:
-    with open(file_path, 'r', encoding='utf-8') as file:
-        text = file.read()
-        for char in text:
-            try:
-                unicode_code = ord(char)
-                print(f"字符 {char} 的Unicode编码为: {unicode_code}")
-            except TypeError as e:
-                print(f"字符 {char} 处理出错: {e}")
-except FileNotFoundError as e:
-    print(f"文件不存在错误: {e}")
+from PIL import Image
+from openpyxl import load_workbook
+from openpyxl.drawing.image import Image as OpenpyxlImage
+from io import BytesIO
+
+# 加载Excel工作簿
+wb = load_workbook('1111.xlsx')
+sheet = wb.active
+
+# 将Excel工作表转换为图片
+img = Image.new('RGB', (sheet.max_column, sheet.max_row), color='white')
+for row in sheet.iter_rows(min_row=1, max_row=sheet.max_row, min_col=1, max_col=sheet.max_column):
+    for cell in row:
+        img.paste(OpenpyxlImage(cell.value), (cell.column-1, cell.row-1))
+
+# 保存图片
+img.save('excel_image.png')

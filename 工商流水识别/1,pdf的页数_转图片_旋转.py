@@ -20,10 +20,10 @@ def save_first_seven_pages(input_pdf, output_pdf, start_page, end_page):
     doc.close()
 
 
-# 使用示例
-input_pdf = "20241120-农行、浦发、兴业流水反馈.pdf"  # 替换为你的PDF文件路径
-output_pdf = "target_1918张兰娣_1.pdf"  # 输出文件的路径
-save_first_seven_pages(input_pdf, output_pdf, 25, 50)
+# # 使用示例
+# input_pdf = "20241120-农行、浦发、兴业流水反馈.pdf"  # 替换为你的PDF文件路径
+# output_pdf = "target_1918张兰娣.pdf"  # 输出文件的路径
+# save_first_seven_pages(input_pdf, output_pdf, 25, 50)
 
 
 
@@ -92,10 +92,10 @@ def rotate_images_180_degrees(input_folder, output_folder):
             print(f"Rotated and saved: {output_path}")
 
 
-# # 使用示例
-# input_folder = "pdf_images_1918张兰娣"  # 替换为你的输入文件夹路径
-# output_folder = "pdf_images_1918张兰娣_rollback"  # 替换为你的输出文件夹路径
-# rotate_images_180_degrees(input_folder, output_folder)
+# 使用示例
+input_folder = "pdf_images_1918张兰娣"  # 替换为你的输入文件夹路径
+output_folder = "pdf_images_1918张兰娣_rollback"  # 替换为你的输出文件夹路径
+rotate_images_180_degrees(input_folder, output_folder)
 
 # 图片变清晰的步骤
 def clarity_image(path_img):

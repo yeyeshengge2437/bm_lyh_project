@@ -29,7 +29,7 @@ def identify_guarantee(content):
 
 
 def deepseek_item_guarantee_2(content):
-    prompt = "\n\n从文中提取保证人(担保人默认为保证人)主体，单个主体以,分割，不要输出其他无关字段（去重）,没有保证人返回'空'。"
+    prompt = "\n\n从文中提取保证人(担保人默认为保证人, 公司)主体，单个主体以,分割，不要输出其他无关字段（去重）,没有保证人返回'空',智能忽略换行。"
     a, b, guarantor = model_name(
         content + prompt)
     guarantor = re.sub(r'保证人：', '', guarantor)
