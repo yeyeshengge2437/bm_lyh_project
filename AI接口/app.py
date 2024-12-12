@@ -31,8 +31,9 @@ def test():
 @app.route('/get_ai_response', methods=['POST'])
 def get_ai_response():
     # 获取post请求的json数据
-    data = request.get_json()
-    data = data[0]
+    data = request.get_data()
+    data = data.decode('utf-8')
+    data = json.loads(data)
     # 判断传入的工具列表
     id = data.get('id')
     name = data.get('name')
@@ -260,7 +261,6 @@ def get_ai_response():
         # print(files)
         # 夸克识别表格
         try:
-            print(files)
             output_text = quark(files)
             code = output_text.get("code")
             if code == "00000":

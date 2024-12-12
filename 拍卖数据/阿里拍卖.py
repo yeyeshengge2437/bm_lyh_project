@@ -2,6 +2,7 @@ import random
 import re
 from datetime import datetime, timedelta
 import pandas as pd
+import mysql.connector
 from DrissionPage import ChromiumPage, ChromiumOptions
 from lxml import etree
 from urllib.parse import urlencode, urljoin
@@ -11,6 +12,34 @@ co = co.set_user_data_path(r"D:\chome_data\ali_one")
 # co = co.set_argument('--no-sandbox')
 # co = co.headless()
 co.set_paths(local_port=9153)
+
+
+def judge_repeat(url_href):
+    """
+    判断链接是否重复
+    :return:
+    """
+    # 创建版面链接集合
+    bm_url_set = set()
+    # 连接数据库
+    conn_test = mysql.connector.connect(
+        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
+        user="col2024",
+        password="Bm_a12a06",
+        database="col_test",
+    )
+    cursor_test = conn_test.cursor()
+    # 获取版面来源的版面链接
+    cursor_test.execute(f"SELECT id, url FROM col_judicial_auctions")
+    rows = cursor_test.fetchall()
+    for id, url in rows:
+        bm_url_set.add(url)
+    cursor_test.close()
+    conn_test.close()
+    if url_href in bm_url_set:
+        return False
+    else:
+        return True
 
 
 def encounter_verify(tab):
@@ -52,13 +81,11 @@ def time_str_to_date(time_str, add=True):
     return str(result_time)
 
 
-data_dict = {}
 data_list = []
 page = ChromiumPage(co)
-tab_1 = page.new_tab()
 page_num = 0
 while True:
-# for i in range(3):
+    tab_1 = page.new_tab()
     page_num += 1
     print(f"第{page_num}页")
     status_orders = 2
@@ -84,12 +111,17 @@ while True:
         break
     count = 0
     for info in info_list:
+        data_dict = {}
         href_text = info.text
         if "同类商品" not in href_text:
             href_url = info.attr("href")
+            url_text = re.sub(r"\?.*", "", href_url)
+            if not judge_repeat(url_text):
+                continue
             tab_2 = page.new_tab()
             tab_2.get(href_url)
-            data_dict["链接"] = href_url
+
+            data_dict["链接"] = url_text
             # tab_2.get("https://zc-item.taobao.com/auction/858628010713.htm?spm=a2129.27076131.puimod-pc-search-list_2004318340.11&pmid=2175852518_1653962822378&pmtk=20140647.0.0.0.27064540.puimod-zc-focus-2021_2860107850.35879&path=27181431%2C27076131&track_id=7c0d2dea-2697-4448-bca9-474a89c6a04f")
             tab_2.wait(2)
             tab_2 = encounter_verify(tab_2)
@@ -98,10 +130,18 @@ while True:
             if title:
                 title = title.text  # 标题
                 data_dict["标题"] = title
+            if status_orders == 2:
+                data_dict["状态"] = "已结束"
+            if status_orders == 0:
+                data_dict["状态"] = "正在进行中"
+            if status_orders == 1:
+                data_dict["状态"] = "即将拍卖"
+            if status_orders == 6:
+                data_dict["状态"] = "招商中"
             state = tab_2.ele("xpath=//div[@id='page']//h1/span[@class='item-status']")  # 状态
             if state:
                 state = state.text  # 状态
-                data_dict["状态"] = state
+                data_dict["阶段"] = state
             location = tab_2.ele("xpath=//div[@id='itemAddress']")  # 所在地
             if location:
                 location = location.text  # 所在地
@@ -111,7 +151,8 @@ while True:
                 sf_price = sf_price.text  # 起拍价
                 data_dict["起拍价"] = sf_price + "元"
             if status_orders == 2:
-                auction_results = tab_2.ele("xpath=//h1[@class='bid-fail'] | //h1[@class='bid-fail']/following-sibling::p")  # 拍卖结果
+                auction_results = tab_2.ele(
+                    "xpath=//h1[@class='bid-fail'] | //h1[@class='bid-fail']/following-sibling::p")  # 拍卖结果
                 if auction_results:
                     auction_results = auction_results.text  # 拍卖结果
                     data_dict["拍卖结果"] = auction_results
@@ -139,7 +180,8 @@ while True:
                 # print(procedure)
                 procedure = ''.join(re.findall(r"程序(.*?)延时", procedure))  # 获取程序
                 procedure = procedure.replace(":", "")
-                data_dict["程序"] = procedure
+                if procedure:
+                    data_dict["程序"] = procedure
             about_price = tab_2.ele("xpath=//li[@id='sf-price']")  # 关于价格
             if about_price:
                 about_price = about_price.text  # 关于价格
@@ -187,11 +229,16 @@ while True:
                 bidd_set = set()
                 for value in bidding_records:
                     bidd_set.add(value.text)
-                bidding_stat = ''.join(etree_html.xpath("//div[@id='J_RecordContent'][1]/table[@id='J_RecordList']//tr[@class='get']/td[1]//text()"))
-                bidding_number = ''.join(etree_html.xpath("//div[@id='J_RecordContent'][1]/table[@id='J_RecordList']//tr[@class='get']/td[2]//text()"))
-                bidding_price = ''.join(etree_html.xpath("//div[@id='J_RecordContent'][1]/table[@id='J_RecordList']//tr[@class='get']/td[3]//text()")) + "元"
-                bidding_time = ''.join(etree_html.xpath("//div[@id='J_RecordContent'][1]/table[@id='J_RecordList']//tr[@class='get']/td[4]//text()"))
-                str_bidding = "竞买状态:" + bidding_stat + " 竞买号:" + bidding_number + " 竞买价:" + bidding_price + " 竞买时间:" + bidding_time + " 竞买人数:" + str(len(bidd_set))
+                bidding_stat = ''.join(etree_html.xpath(
+                    "//div[@id='J_RecordContent'][1]/table[@id='J_RecordList']//tr[@class='get']/td[1]//text()"))
+                bidding_number = ''.join(etree_html.xpath(
+                    "//div[@id='J_RecordContent'][1]/table[@id='J_RecordList']//tr[@class='get']/td[2]//text()"))
+                bidding_price = ''.join(etree_html.xpath(
+                    "//div[@id='J_RecordContent'][1]/table[@id='J_RecordList']//tr[@class='get']/td[3]//text()")) + "元"
+                bidding_time = ''.join(etree_html.xpath(
+                    "//div[@id='J_RecordContent'][1]/table[@id='J_RecordList']//tr[@class='get']/td[4]//text()"))
+                str_bidding = "竞买状态:" + bidding_stat + " 竞买号:" + bidding_number + " 竞买价:" + bidding_price + " 竞买时间:" + bidding_time + " 竞买人数:" + str(
+                    len(bidd_set))
                 data_dict["竞价记录"] = str_bidding
             else:
                 str_bidding = "竞买次数:0"
@@ -224,25 +271,55 @@ while True:
             target_ann = tab_3.ele("xpath=//div[@class='notice-detail']/table")  # 拍卖公告
             if target_ann:
                 target_ann = target_ann.html  # 拍卖公告,html信息
+                target_ann = str(target_ann)
+                target_ann = re.sub(r"\n", '', target_ann)
+                target_ann = re.sub(r" ", '', target_ann)
                 data_dict["拍卖公告"] = target_ann
             tab_3.close()
-            data_list.append(data_dict.copy())
-            print(data_dict)
-            data_dict.clear()
             tab_2.close()
-        # count += 1
-        # if count == 10:
-        #     break
-        # break
+        url = data_dict.get("链接")
+        title = data_dict.get("标题")
+        state = data_dict.get("状态")
+        stage = data_dict.get("阶段")
+        address = data_dict.get("所在地")
+        start_bid = data_dict.get("起拍价")
+        sold_price = data_dict.get("成交价")
+        outcome = data_dict.get("拍卖结果")
+        end_time = data_dict.get("结束时间")
+        procedure_str = data_dict.get("程序")
+        disposal_unit = data_dict.get("处置单位")
+        auction_history = data_dict.get("竞价记录")
+        people_num = data_dict.get("报名人数")
+        subject_info = data_dict.get("标的信息")
+        subject_annex = data_dict.get("标的信息附件")
+        subject_annex_up = subject_annex
+        auction_html = data_dict.get("拍卖公告")
+        create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        create_date = datetime.now().strftime('%Y-%m-%d')
+        print(procedure_str)
+        from_queue = 123
+        # 上传到测试数据库
+        conn_test = mysql.connector.connect(
+            host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
+            user="col2024",
+            password="Bm_a12a06",
+            database="col_test",
+        )
+        cursor_test = conn_test.cursor()
+        # # 上传到报纸的图片或PDF
+        # insert_sql = "INSERT INTO col_judicial_auctions (url, title, state, stage, address, start_bid, sold_price, outcome, end_time, procedure, disposal_unit, auction_history, people_num, subject_info, subject_annex, auction_html, create_time, create_date, from_queue) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s,%s,%s,%s, %s,%s, %s, %s, %s, %s)"
+        #
+        # cursor_test.execute(insert_sql,
+        #                                               (url, title, state, stage, address, start_bid, sold_price, outcome, end_time, procedure,disposal_unit, auction_history, people_num, subject_info, subject_annex, auction_html, create_time, create_date, from_queue))
+        # 上传到报纸的图片或PDF
+        insert_sql = "INSERT INTO col_judicial_auctions (url, title, state, stage, address, start_bid, sold_price, outcome, end_time, procedure_str, auction_html, subject_annex_up, subject_info, disposal_unit, auction_history, people_num, subject_annex, create_time, create_date, from_queue) VALUES (%s,%s,%s,%s, %s,%s,%s,%s, %s,%s,%s,%s,%s,%s, %s,%s, %s, %s,%s,%s)"
 
-tab_1.close()
+        cursor_test.execute(insert_sql,
+                                                 (url, title, state, stage, address, start_bid, sold_price, outcome, end_time, procedure_str,auction_html, subject_annex_up, subject_info, disposal_unit, auction_history, people_num, subject_annex, create_time, create_date, from_queue))
+        conn_test.commit()
+        cursor_test.close()
+        conn_test.close()
+        print(data_dict)
 
-
-# 将数据转换为DataFrame
-df = pd.DataFrame(data_list)
-# 将DataFrame写入Excel文件
-excel_path = '结果.xlsx'  # 你想要保存的Excel文件路径
-df.to_excel(excel_path, index=False)  # index=False表示不将行索引写入Excel文件
-
-print(f'数据已写入{excel_path}')
+    tab_1.close()
 page.quit()

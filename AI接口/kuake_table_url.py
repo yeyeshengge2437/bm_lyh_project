@@ -74,7 +74,7 @@ def quark(img_url):
     if response.status_code == 200:
         body = response.json()
         code = body.get("code")
-        print(body)
+        # print(body)
         return body
     else:
         print("HTTP 请求错误")
