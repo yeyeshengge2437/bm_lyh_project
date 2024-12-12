@@ -1,33 +1,14 @@
-import requests
-import json
+from PIL import Image
+import io
 
-def get_file_content(filePath):
-    with open(filePath, 'rb') as fp:
-        return fp.read()
+# 您的二进制数据
+png_data = b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00m\x00\x00\x00\x17\x08\x06\x00\x00\x00\x01A\xc1\xf1\x00\x00\x00\tpHYs\x00\x00\x0e\xc4\x00\x00\x0e\xc4\x01\x95+\x0e\x1b\x00\x00\x00OIDATx\x9c\xed\xd1\xb1\r\x80\x00\x10\xc4\xb0\xdf\x7fi\x18#\x82s\xe1>R\xee\xee\x1e>'\x0f\xc0\xb4\ty\x00\xa6M\xc8\x030mB\x1e\x80i\x13\xf2\x00L\x9b\x90\x07`\xda\x84<\x00\xd3&\xe4\x01\x986!\x0f\xc0\xb4\ty\x00\xa6M\xc8\x030\xed\xff^\x0f\x98\xc1\xbd\xe3e\xd4\x1c\x00\x00\x00\x00IEND\xaeB`\x82"
 
-class CommonOcr(object):
-    def __init__(self, img_path):
-        # 请登录后前往 “工作台-账号设置-开发者信息” 查看 x-ti-app-id
-        # 示例代码中 x-ti-app-id 非真实数据
-        self._app_id = 'c81f*************************e9ff'
-        # 请登录后前往 “工作台-账号设置-开发者信息” 查看 x-ti-secret-code
-        # 示例代码中 x-ti-secret-code 非真实数据
-        self._secret_code = '5508***********************1c17'
-        self._img_path = img_path
+# 将二进制数据转换为 BytesIO 对象
+image_stream = io.BytesIO(png_data)
 
-    def recognize(self):
-        # 通用表格识别
-        url = 'https://api.textin.com/ai/service/v2/recognize/table/multipage'
-        head = {}
-        try:
-            image = get_file_content(self._img_path)
-            head['x-ti-app-id'] = self._app_id
-            head['x-ti-secret-code'] = self._secret_code
-            result = requests.post(url, data=image, headers=head)
-            return result.text
-        except Exception as e:
-            return e
+# 使用 PIL 加载图片
+image = Image.open(image_stream)
 
-if __name__ == "__main__":
-    response = CommonOcr(r'example.jpg')
-    print(response.recognize())
+# 保存图片到文件
+image.save("output_image.png")

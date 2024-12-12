@@ -1,3 +1,4 @@
+import json
 import re
 
 from flask import Flask, request, jsonify
@@ -31,6 +32,7 @@ def test():
 def get_ai_response():
     # 获取post请求的json数据
     data = request.get_json()
+    data = data[0]
     # 判断传入的工具列表
     id = data.get('id')
     name = data.get('name')
@@ -38,6 +40,9 @@ def get_ai_response():
     tell_type = data.get('tell_type')
     tell_tool = data.get('tell_tool')
     files = data.get('files')
+    if files:
+        files = json.loads(files)
+        files = files[0]
     input_text = data.get('input_text')
     input_key = data.get('input_key')
     if tell_tool == "kimi_8k":
@@ -255,6 +260,7 @@ def get_ai_response():
         # print(files)
         # 夸克识别表格
         try:
+            print(files)
             output_text = quark(files)
             code = output_text.get("code")
             if code == "00000":
@@ -389,4 +395,4 @@ if __name__ == '__main__':
     # app.run(debug=True)
     # 更改端口信息，让所有主机都可访问
     port = int(os.environ.get("PORT", 5000))
-    app.run(debug=True, host='0.0.0.0', port=port)
+    app.run(debug=False, host='0.0.0.0', port=port)
