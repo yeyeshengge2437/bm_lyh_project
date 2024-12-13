@@ -12,7 +12,29 @@ co = co.set_user_data_path(r"D:\chome_data\ali_two")
 # co = co.set_argument('--no-sandbox')
 # co = co.headless()
 co.set_paths(local_port=9154)
-
+def judge_repeat_invest(url_href):
+    """
+    判断链接是否重复
+    :return:
+    """
+    # 创建版面链接集合
+    bm_url_set = set()
+    # 连接数据库
+    conn_test = mysql.connector.connect(
+        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
+        user="col2024",
+        password="Bm_a12a06",
+        database="col_test",
+    )
+    cursor_test = conn_test.cursor()
+    # 获取版面来源的版面链接
+    # cursor_test.execute(f"SELECT id, url, state FROM col_judicial_auctions")
+    cursor_test.execute(f"SELECT id FROM col_judicial_auctions_investing WHERE url = '{url_href}' LIMIT 1;")
+    rows = cursor_test.fetchall()
+    if rows:
+        return True
+    else:
+        return False
 
 def encounter_verify(tab):
     tab.wait(2)
@@ -57,9 +79,11 @@ for info in info_list:
             data_dict["标题"] = title.text
         href_url = info.attr("href")
         url_text = re.sub(r"&.*", "", href_url)
+        if judge_repeat_invest(url_text):
+            continue
         tab_2 = page.new_tab()
-        # tab_2.get(href_url)
-        tab_2.get("https://zc-paimai.taobao.com/zc/mn_detail.htm?id=180386&spm=a2129.27076131.puimod-pc-search-list_2004318340.25&pmid=2175852518_1653962822378&pmtk=20140647.0.0.0.27064540.puimod-zc-focus-2021_2860107850.35879&path=27181431%2C27076131&track_id=f36ba7d9-e768-4e22-9342-0ee897b09fd4")
+        tab_2.get(href_url)
+        # tab_2.get("https://zc-paimai.taobao.com/zc/mn_detail.htm?id=180386&spm=a2129.27076131.puimod-pc-search-list_2004318340.25&pmid=2175852518_1653962822378&pmtk=20140647.0.0.0.27064540.puimod-zc-focus-2021_2860107850.35879&path=27181431%2C27076131&track_id=f36ba7d9-e768-4e22-9342-0ee897b09fd4")
         data_dict["链接"] = url_text
         tab_2.wait(2)
         tab_2 = encounter_verify(tab_2)
@@ -84,7 +108,7 @@ for info in info_list:
         if annexs:
             annex_info = ""
             for annex in annexs:
-                if "https" not in annex:
+                if "https" not in annex[0:5]:
                     annex_url = "https:" + annex + ","
                 else:
                     annex_url = annex + ","
@@ -95,7 +119,7 @@ for info in info_list:
         # 上传数据库
         url = data_dict.get("链接")
         title = data_dict.get("标题")
-        disposition_subject = data_dict.get("处置主体")
+        disposition_subject = data_dict.get("资产处置主体")
         phone = data_dict.get("咨询电话")
         reference_value = data_dict.get("参考价值")
         recruitment_time = data_dict.get("招募时间")
@@ -121,11 +145,11 @@ for info in info_list:
             host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
             user="col2024",
             password="Bm_a12a06",
-            database="col",
+            database="col_test",
         )
         cursor_test = conn_test.cursor()
         # 上传文件
-        insert_sql = "INSERT INTO col_judicial_auctions (url, title, disposition_subject, phone, reference_value, recruitment_time, type, process, guarantee_method, total, situation, guarantor, collateral, detail, more_info, supple_mater, original_annex, up_annex,create_time, create_date, from_queue) VALUES (%s,%s,%s,%s, %s,%s,%s,%s, %s,%s,%s,%s,%s,%s, %s,%s,%s,%s, %s,%s,%s)"
+        insert_sql = "INSERT INTO col_judicial_auctions_investing (url, title, disposition_subject, phone, reference_value, recruitment_time, type, process, guarantee_method, total, situation, guarantor, collateral, detail, more_info, supple_mater, original_annex, up_annex,create_time, create_date, from_queue) VALUES (%s,%s,%s,%s, %s,%s,%s,%s, %s,%s,%s,%s,%s,%s, %s,%s,%s,%s, %s,%s,%s)"
 
         cursor_test.execute(insert_sql,(url, title, disposition_subject, phone, reference_value, recruitment_time, type, process, guarantee_method, total, situation, guarantor, collateral, detail, more_info, supple_mater, original_annex, up_annex,create_time, create_date, from_queue))
         conn_test.commit()
@@ -134,7 +158,7 @@ for info in info_list:
         conn_test.close()
         print(data_dict)
         tab_2.close()
-        break
+page.quit()
 
 
 

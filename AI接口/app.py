@@ -54,7 +54,7 @@ def get_ai_response():
                 "remark": "",
                 "input_token_num": input_token_num,
                 "output_token_num": output_token_num,
-                "output_text": output_text,
+                "output_text": str(output_text),
                 "success": 1
             }
             # 返回json数据
@@ -74,7 +74,7 @@ def get_ai_response():
                 "remark": "",
                 "input_token_num": input_token_num,
                 "output_token_num": output_token_num,
-                "output_text": output_text,
+                "output_text": str(output_text),
                 "success": 1
             }
             # 返回json数据
@@ -94,7 +94,7 @@ def get_ai_response():
                 "remark": "",
                 "input_token_num": input_token_num,
                 "output_token_num": output_token_num,
-                "output_text": output_text,
+                "output_text": str(output_text),
                 "success": 1
             }
             # 返回json数据
@@ -114,7 +114,7 @@ def get_ai_response():
                 "remark": "",
                 "input_token_num": input_token_num,
                 "output_token_num": output_token_num,
-                "output_text": output_text,
+                "output_text": str(output_text),
                 "success": 1
             }
             # 返回json数据
@@ -134,7 +134,7 @@ def get_ai_response():
                 "remark": "",
                 "input_token_num": input_token_num,
                 "output_token_num": output_token_num,
-                "output_text": output_text,
+                "output_text": str(output_text),
                 "success": 1
             }
             # 返回json数据
@@ -154,7 +154,7 @@ def get_ai_response():
                 "remark": "",
                 "input_token_num": input_token_num,
                 "output_token_num": output_token_num,
-                "output_text": output_text,
+                "output_text": str(output_text),
                 "success": 1
             }
             # 返回json数据
@@ -174,7 +174,7 @@ def get_ai_response():
                 "remark": "",
                 "input_token_num": input_token_num,
                 "output_token_num": output_token_num,
-                "output_text": output_text,
+                "output_text": str(output_text),
                 "success": 1
             }
             # 返回json数据
@@ -195,7 +195,7 @@ def get_ai_response():
                 "remark": "",
                 "input_token_num": input_token_num,
                 "output_token_num": output_token_num,
-                "output_text": output_text,
+                "output_text": str(output_text),
                 "success": 1
             }
             # 返回json数据
@@ -216,7 +216,7 @@ def get_ai_response():
                 "remark": "",
                 "input_token_num": input_token_num,
                 "output_token_num": output_token_num,
-                "output_text": output_text,
+                "output_text": str(output_text),
                 "success": 1
             }
             # 返回json数据
@@ -267,7 +267,7 @@ def get_ai_response():
                 value = {
                     "id": id,
                     "remark": "",
-                    "output_text": output_text,
+                    "output_text": str(output_text),
                     "success": 1
                 }
                 # 返回json数据
@@ -294,7 +294,7 @@ def get_ai_response():
                 'remark': name,
                 'input_token_num': input_token_num,
                 'output_token_num': output_token_num,
-                'output_text': guarantor,
+                'output_text': str(guarantor),
                 'prompt': prompt,
                 'success': 1
             }
@@ -314,7 +314,7 @@ def get_ai_response():
                 'remark': name,
                 'input_token_num': input_token_num,
                 'output_token_num': output_token_num,
-                'output_text': guarantor,
+                'output_text': str(guarantor),
                 'prompt': prompt,
                 'success': 1
             }
@@ -334,7 +334,7 @@ def get_ai_response():
                 'remark': name,
                 'input_token_num': input_token_num,
                 'output_token_num': output_token_num,
-                'output_text': mortgagor,
+                'output_text': str(mortgagor),
                 'prompt': prompt,
                 'success': 1
             }
@@ -354,7 +354,7 @@ def get_ai_response():
                 'remark': name,
                 'input_token_num': input_token_num,
                 'output_token_num': output_token_num,
-                'output_text': collateral,
+                'output_text': str(collateral),
                 'prompt': prompt,
                 'success': 1
             }
@@ -374,7 +374,7 @@ def get_ai_response():
                 'remark': name,
                 'input_token_num': input_token_num,
                 'output_token_num': output_token_num,
-                'output_text': mortgagor,
+                'output_text': str(mortgagor),
                 'prompt': prompt,
                 'success': 1
             }
