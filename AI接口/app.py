@@ -1,6 +1,7 @@
 import json
 import re
-
+import xlrd
+from xlutils.copy import copy
 from flask import Flask, request, jsonify
 from werkzeug.utils import secure_filename
 from PIL import Image
@@ -15,10 +16,13 @@ from quark_text import quark_text
 from figure_shibie_formal import deepseek_identify_people, gpt_identify_company, save_database_people, \
     save_database_company
 from kuake_table_url import quark
-from character_classificatio_flask import identify_guarantee, identify_mortgagor, identify_collateral, deepseek_item_guarantee_2, deepseek_item_mortgagor_2
-
+from character_classificatio_flask import identify_guarantee, identify_mortgagor, identify_collateral, \
+    deepseek_item_guarantee_2, deepseek_item_mortgagor_2
+from dispose_excel import get_excel_data
 
 app = Flask(__name__)
+
+
 @app.route("/test", methods=["GET"])
 def test():
     value = {
@@ -190,11 +194,10 @@ def get_ai_response():
         # 夸克识别文字
         try:
             input_token_num, output_token_num, output_text = quark_text(files)
+            output_text = json.dumps(output_text, ensure_ascii=False)
             value = {
                 "id": id,
                 "remark": "",
-                "input_token_num": input_token_num,
-                "output_token_num": output_token_num,
                 "output_text": str(output_text),
                 "success": 1
             }
@@ -264,6 +267,7 @@ def get_ai_response():
             output_text = quark(files)
             code = output_text.get("code")
             if code == "00000":
+                output_text = json.dumps(output_text, ensure_ascii=False)
                 value = {
                     "id": id,
                     "remark": "",
@@ -388,6 +392,22 @@ def get_ai_response():
             return jsonify(value)
     else:
         return jsonify({"success": 0, "id": id, "remark": "未知的工具名称"})
+
+
+@app.route("/get_excel_value", methods=["POST"])
+def get_excel_value():
+    data = request.get_data()
+    data = data.decode('utf-8')
+    data = json.loads(data)
+    id = data.get("id")
+    file_url = data.get("file_url")
+    if file_url:
+        value_data = get_excel_data(file_url)
+        if not value_data:
+            return jsonify({"success": 0, "id": id, "remark": "未知的文件类型"})
+        return jsonify({"success": 1, "id": id, "value_data": value_data})
+    else:
+        return jsonify({"success": 0, "id": id, "remark": "缺少file_url参数"})
 
 
 if __name__ == '__main__':

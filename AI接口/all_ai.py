@@ -96,16 +96,25 @@ while True:
             if 0 < int(outcome_time) < 10:
                 num = random.randint(5, 10)
                 time.sleep(num)
-
-            success_data = {
-                'id': f'{queue_id}',
-                'remark': name,
-                'input_token_num': input_token_num,
-                'output_token_num': output_token_num,
-                'output_text': output_text,
-            }
-            print('成功', success_data)
-            ai_parse_success(data=success_data)
+            if tell_tool == "quark_text":
+                output_text = json.dumps(output_text, ensure_ascii=False)
+                success_data = {
+                    'id': queue_id,
+                    'remark': name,
+                    'output_text': str(output_text),
+                }
+                print('成功', success_data)
+                ai_parse_success(data=success_data)
+            else:
+                success_data = {
+                    'id': f'{queue_id}',
+                    'remark': name,
+                    'input_token_num': input_token_num,
+                    'output_token_num': output_token_num,
+                    'output_text': output_text,
+                }
+                print('成功', success_data)
+                ai_parse_success(data=success_data)
         except Exception as e:
             fail_data = {
                 'id': f'{queue_id}',

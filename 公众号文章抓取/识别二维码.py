@@ -1,7 +1,7 @@
 from DrissionPage import ChromiumPage, ChromiumOptions
 import cv2
 
-image = cv2.imread('qrcode.png')
+image = cv2.imread('img_2.png')
 detector = cv2.QRCodeDetector()
 data, vertices_array, binary_qrcode = detector.detectAndDecode(image)
 if data:

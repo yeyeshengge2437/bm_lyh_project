@@ -82,4 +82,4 @@ def quark(img_url):
         return None
 
 
-# quark('https://res.debtop.com/manage/live/paper/202410/24/2024102401301999a053971b424897.png')
+# quark('https://res.debtop.com/col/live/paper/202411/05/202411051906433de1a4054bbf44a3.png')

@@ -176,9 +176,9 @@ def time_str_to_date(time_str, add=True):
 
 def ali_paimai(from_queue):
     page = ChromiumPage(co)
-    page_num = 0
     for code in zip_code:
         for status_orders in [2, 1, 0, 6]:
+            page_num = 0
             while True:
                 tab_1 = page.new_tab()
                 page_num += 1
@@ -203,6 +203,7 @@ def ali_paimai(from_queue):
                 tab_1.wait(2)
                 info_list = tab_1.eles("xpath=//div[@id='guid-2004318340']//div/a")
                 if not info_list:
+                    tab_1.close()
                     break
                 if status_orders == 6:
                     for info in info_list:
@@ -277,7 +278,6 @@ def ali_paimai(from_queue):
                             update_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                             create_date = datetime.now().strftime('%Y-%m-%d')
 
-                            from_queue = "1233"
                             conn_test = mysql.connector.connect(
                                 host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
                                 user="col2024",
@@ -298,7 +298,6 @@ def ali_paimai(from_queue):
                             conn_test.close()
                             print(data_dict)
                             tab_2.close()
-                    tab_1.close()
                 else:
                     flag = False
                     for info in info_list:
@@ -545,5 +544,5 @@ def ali_paimai(from_queue):
                             cursor_test.close()
                             conn_test.close()
                             print(data_dict)
-                    tab_1.close()
-        page.quit()
+                tab_1.close()
+    page.quit()
