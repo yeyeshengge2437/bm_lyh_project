@@ -7,7 +7,7 @@ for page in doc:
     # print(len(blocks))
     for block in blocks:
         try:
-            font_type = block["lines"][0]["dir"]
+            font_type = block["bbox"]
             print(font_type)
             # if font_type == 1:
             #     print(block)

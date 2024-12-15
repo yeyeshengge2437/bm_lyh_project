@@ -136,27 +136,7 @@ def single_pages(file_pdf_url, xs, ys, xe, ye, title_sx=0, title_sy=0, title_ex=
             page.add_redact_annot(rect)
         # 应用红action注释，删除表格
         page.apply_redactions()
-    title_text = ''
-    if title_sy == 0 and title_ey == 0 and title_sx == 0 and title_ex == 0:
-        suspicious_title = get_pdf_suspicious_title(page)
-        if suspicious_title:
-            for location, text in suspicious_title.items():
-                # print(location, text)
-                if (x0 <= location[2]) and (x1 >= location[0]) and (y0 <= location[3]) and (y1 >= location[1]):
-                    title_text = text
-                    title_rect = fitz.Rect(location[0], location[1], location[2], location[3])
-                    # 删除
-                    page.add_redact_annot(title_rect)
-                    # doc.save("1.pdf")
 
-    else:
-        title_rect = fitz.Rect(title_sx * width, title_sy * height, title_ex * width, title_ey * height)
-        text = page.get_text(clip=title_rect)
-        title_text = text
-        # 删除
-        page.add_redact_annot(title_rect)
-        # 保存新的PDF文件
-        # doc.save("1.pdf")
 
 
     # 上方区域
@@ -168,6 +148,63 @@ def single_pages(file_pdf_url, xs, ys, xe, ye, title_sx=0, title_sy=0, title_ex=
     # # 右侧区域
     page.add_redact_annot(fitz.Rect(x1, y0 - 200, width, y1 + 200))  # 添加右侧区域
     page.apply_redactions()
+    title_text = ''
+    if title_sy == 0 and title_ey == 0 and title_sx == 0 and title_ex == 0:
+        title_loc = []
+        suspicious_title = get_pdf_suspicious_title(page)
+        if suspicious_title:
+            for location, text in suspicious_title.items():
+                # print(location, text)
+                if (x0 <= location[2]) and (x1 >= location[0]) and (y0 <= location[3]) and (y1 >= location[1]):
+                    title_text = text
+                    title_rect = fitz.Rect(location[0], location[1], location[2], location[3])
+                    title_loc.append((location[0], location[1], location[2], location[3]))
+                    # 删除
+                    page.add_redact_annot(title_rect)
+                    # doc.save("1.pdf")
+        block_loc_list = {}
+        blocks_tager = page.get_text("dict", clip=tag_rect)["blocks"]
+        for block in blocks_tager:
+            try:
+                block_loc_list[block['bbox']] = block["lines"][0]["spans"][0]["text"]
+            except:
+                pass
+        for loc in title_loc:
+            title_center_x = (loc[0] + loc[2]) / 2
+            title_center_y = (loc[1] + loc[3]) / 2
+            for location_key, value_text in block_loc_list.items():
+                # 获取中心点
+                center_x = (location_key[0] + location_key[2]) / 2
+                center_y = (location_key[1] + location_key[3]) / 2
+                if title_rect.x0 <= center_x <= title_rect.x1 and title_center_y > center_y:  # 表明在标题上方且中心点在标题的范围内
+                    title_text += value_text
+
+    else:
+        # 获取公告中的文本块的坐标位置
+        block_loc_list = {}
+        blocks_tager = page.get_text("dict", clip=tag_rect)["blocks"]
+        for block in blocks_tager:
+            try:
+                block_loc_list[block['bbox']] = block["lines"][0]["spans"][0]["text"]
+            except:
+                pass
+        title_rect = fitz.Rect(title_sx * width, title_sy * height, title_ex * width, title_ey * height)
+        title_center_x = (title_rect.x0 + title_rect.x1) / 2
+        title_center_y = (title_rect.y0 + title_rect.y1) / 2
+        for location_key, value_text in block_loc_list.items():
+            # 获取中心点
+            center_x = (location_key[0] + location_key[2]) / 2
+            center_y = (location_key[1] + location_key[3]) / 2
+            if title_rect.x0 <= center_x <= title_rect.x1 and title_center_y > center_y:  # 表明在标题上方且中心点在标题的范围内
+                title_text += value_text
+
+        text = page.get_text(clip=title_rect)
+        title_text += text
+        # 删除
+        page.add_redact_annot(title_rect)
+        # 保存新的PDF文件
+        # doc.save("1.pdf")
+    page.apply_redactions()
     # 保存新的PDF文件
     # doc.save("2.pdf")
     # # 保存修改后的PDF文件
@@ -177,6 +214,7 @@ def single_pages(file_pdf_url, xs, ys, xe, ye, title_sx=0, title_sy=0, title_ex=
     doc.close()
     if os.path.exists(file_pdf):
         os.remove(file_pdf)
+    print(tag_str, title_text)
     return tag_str, title_text
 
 
