@@ -19,6 +19,7 @@ from kuake_table_url import quark
 from character_classificatio_flask import identify_guarantee, identify_mortgagor, identify_collateral, \
     deepseek_item_guarantee_2, deepseek_item_mortgagor_2
 from dispose_excel import get_excel_data
+from 识别二维码 import is_qr_code_def
 
 app = Flask(__name__)
 
@@ -408,6 +409,24 @@ def get_excel_value():
         return jsonify({"success": 1, "id": id, "value_data": value_data})
     else:
         return jsonify({"success": 0, "id": id, "remark": "缺少file_url参数"})
+
+
+@app.route("/is_qr_code", methods=["POST"])
+def is_qr_code():
+    data = request.get_data()
+    data = data.decode('utf-8')
+    data = json.loads(data)
+    id = data.get("id")
+    img_url = data.get("img_url")
+    if img_url:
+        qr_url = is_qr_code_def(img_url)
+        if qr_url:
+            return jsonify({"success": 1, "id": id, "qr_url": str(qr_url)})
+        else:
+            return jsonify({"success": 1, "id": id, "qr_url": ""})
+    else:
+        return jsonify({"success": 0, "id": id, "remark": "缺少img_url参数"})
+
 
 
 if __name__ == '__main__':
