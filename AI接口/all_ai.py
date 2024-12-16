@@ -2,7 +2,7 @@ import json
 import random
 import re
 import time
-
+from multiprocessing import Process
 from api_ai import img_url_to_file, ai_parse_next, ai_parse_success, ai_parse_fail
 from KIMI import kimi_single_chat, kimi_file_chat
 from 智谱 import zhipu_single_chat, zhipu_file_chat, zhipu_file_free_chat
@@ -60,70 +60,83 @@ ai_text_dict = {
     'deepseek_chat': deepseek_chat,
     'quark_text': quark_text,
 }
-while True:
-    start_time = time.time()
-    try:
-        value = ai_parse_next(data=ai_list)
-    except:
-        time.sleep(360)
-        continue
-    if value:
-        queue_id = value['id']
-        name = value['name']
-        tell_tool = value['tell_tool']
-        input_text = value['input_text']
-        file = value.get('files')
-        # input_text = text_change(input_text)
+
+def get_ai_value():
+    while True:
+        start_time = time.time()
         try:
-            if input_text and file:
-                file_url = json.loads(file)[0]
-                input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](file_url, input_text)
-            elif input_text and not file:
-                input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](input_text)
-            elif file and not input_text:
-                file_url = json.loads(file)[0]
-                input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](file_url)
-            else:
+            value = ai_parse_next(data=ai_list)
+        except:
+            time.sleep(360)
+            continue
+        if value:
+            queue_id = value['id']
+            name = value['name']
+            tell_tool = value['tell_tool']
+            input_text = value['input_text']
+            file = value.get('files')
+            # input_text = text_change(input_text)
+            try:
+                if input_text and file:
+                    file_url = json.loads(file)[0]
+                    input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](file_url, input_text)
+                elif input_text and not file:
+                    input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](input_text)
+                elif file and not input_text:
+                    file_url = json.loads(file)[0]
+                    input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](file_url)
+                else:
+                    fail_data = {
+                        'id': f'{queue_id}',
+                        'remark': f'传参错误'
+                    }
+                    print(fail_data)
+                    ai_parse_fail(data=fail_data)
+                    continue
+                if tell_tool == "quark_text":
+                    output_text = json.dumps(output_text, ensure_ascii=False)
+                    success_data = {
+                        'id': queue_id,
+                        'remark': name,
+                        'output_text': str(output_text),
+                    }
+                    print('成功', success_data)
+                    ai_parse_success(data=success_data)
+                else:
+                    success_data = {
+                        'id': f'{queue_id}',
+                        'remark': name,
+                        'input_token_num': input_token_num,
+                        'output_token_num': output_token_num,
+                        'output_text': output_text,
+                    }
+                    print('成功', success_data)
+                    ai_parse_success(data=success_data)
+            except Exception as e:
                 fail_data = {
                     'id': f'{queue_id}',
-                    'remark': f'传参错误'
+                    'remark': f'调用失败,原因{e}'
                 }
                 print(fail_data)
                 ai_parse_fail(data=fail_data)
-                continue
-            end_time = time.time()
-            outcome_time = end_time - start_time
-            if 0 < int(outcome_time) < 10:
-                num = random.randint(5, 10)
-                time.sleep(num)
-            if tell_tool == "quark_text":
-                output_text = json.dumps(output_text, ensure_ascii=False)
-                success_data = {
-                    'id': queue_id,
-                    'remark': name,
-                    'output_text': str(output_text),
-                }
-                print('成功', success_data)
-                ai_parse_success(data=success_data)
-            else:
-                success_data = {
-                    'id': f'{queue_id}',
-                    'remark': name,
-                    'input_token_num': input_token_num,
-                    'output_token_num': output_token_num,
-                    'output_text': output_text,
-                }
-                print('成功', success_data)
-                ai_parse_success(data=success_data)
-        except Exception as e:
-            fail_data = {
-                'id': f'{queue_id}',
-                'remark': f'调用失败,原因{e}'
-            }
-            print(fail_data)
-            ai_parse_fail(data=fail_data)
-            if "您的账号已达频率限制" in str(e):
-                print('您的账号已达频率限制' + "等待60秒")
-                time.sleep(60)
-    else:
-        time.sleep(30)
+                if "您的账号已达频率限制" in str(e):
+                    print('您的账号已达频率限制' + "等待60秒")
+                    time.sleep(60)
+        else:
+            time.sleep(10)
+
+
+if __name__ == '__main__':
+    """
+    多进程2个
+    """
+    process_list = []
+    for i in range(2):
+        process = Process(target=get_ai_value, args=())
+        process_list.append(process)
+
+    for process in process_list:
+        process.start()
+
+    for process in process_list:
+        process.join()

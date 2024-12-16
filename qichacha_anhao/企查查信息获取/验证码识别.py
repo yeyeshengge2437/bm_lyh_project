@@ -10,15 +10,16 @@ co = ChromiumOptions()
 co = co.set_user_data_path(r"D:\chome_data\data_one")
 co.set_paths(local_port=9136)
 random_float = random.uniform(1, 5)
-# 连接浏览器
-page = ChromiumPage(co)
-tab = page.get_tab()
-# 访问网页
-tab.get("111.html")
-time.sleep(3)
+
 
 
 def get_captcha(page, tab):
+    # 连接浏览器
+    page = ChromiumPage(co)
+    tab = page.get_tab()
+    # 访问网页
+    tab.get("111.html")
+    time.sleep(3)
     # 验证码处理
     captcha_ele = tab.get_frame(1)
     captcha_url = captcha_ele.attr("src")
@@ -35,7 +36,7 @@ def get_captcha(page, tab):
     # print(captcha_img_size)
     # captcha_img = tab.ele(f"xpath=//*")
     base_str = captcha_img.get_screenshot(as_base64=True)
-    with open("captcha.png", "wb") as f:
+    with open("../captcha.png", "wb") as f:
         f.write(base64.b64decode(base_str))
 
     # # 测试
