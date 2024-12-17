@@ -130,6 +130,8 @@ def judge_repeat(url_href):
     # cursor_test.execute(f"SELECT id, url, state FROM col_judicial_auctions")
     cursor_test.execute(f"SELECT id, state FROM col_judicial_auctions WHERE url = '{url_href}' LIMIT 1;")
     rows = cursor_test.fetchall()
+    cursor_test.close()
+    conn_test.close()
     if rows:
         id = rows[0][0]
         state = rows[0][1]
@@ -159,7 +161,7 @@ def judge_repeat(url_href):
 #     return tab
 
 def encounter_verify(tab):
-    tab.wait(2)
+    tab.wait(3)
     # 随机0.15到1之间的数
     num = random.uniform(0.2, 0.4)
     if "亲，请拖动下方滑块完成验证" in tab.html:

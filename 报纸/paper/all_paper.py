@@ -255,6 +255,10 @@ from fazhirebao_paper import get_fazhirebao_paper  # 法治日报
 from xibeixinxi_paper import get_xibeixinxi_paper  # 西北信息报
 from laodongshi_paper import get_laodongshi_paper  # 劳动时报
 from henanrebaononcun_paper import get_henanrebaononcun_paper  # 河南日报农村版
+from xinjiangfazhi_paper import get_xinjiangfazhi_paper  # 新疆法制报
+from china_zhengquan_paper import get_china_zhengquan_paper  # 中国证券报
+from shanghaizhengquan_paper import get_shanghaizhengquan_paper   # 上海证券报
+from jinrongtouzi_paper import get_jinrongtouzi_paper  # 金融投资报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -512,6 +516,10 @@ methods = {
     '西北信息报': get_xibeixinxi_paper,
     '劳动时报': get_laodongshi_paper,
     '河南日报农村版': get_henanrebaononcun_paper,
+    '新疆法制报': get_xinjiangfazhi_paper,
+    '中国证券报': get_china_zhengquan_paper,
+    '上海证券报': get_shanghaizhengquan_paper,
+    '金融投资报': get_jinrongtouzi_paper,
 
 }
 
@@ -770,6 +778,10 @@ webpage_url_list = [
     'https://epaper.xbxxb.com/xbxxb',
     'http://www.gzqgw.cn',
     'https://newpaper.dahe.cn/hnrbncb',
+    'https://www.xjfzb.com/fzb',
+    'https://epaper.cs.com.cn/zgzqb',
+    'https://paper.cnstock.com',
+    'https://stocknews.scol.com.cn/shtml/jrtzb',
 
 ]
 
