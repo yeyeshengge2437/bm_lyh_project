@@ -6,25 +6,25 @@ from PIL import Image
 from yunma_api import verify_tap, verify_slider  # 点选验证码识别, 滑块验证码识别
 from DrissionPage import ChromiumPage, ChromiumOptions
 
-co = ChromiumOptions()
-co = co.set_user_data_path(r"D:\chome_data\data_one")
-co.set_paths(local_port=9136)
+# co = ChromiumOptions()
+# co = co.set_user_data_path(r"D:\chome_data\data_one")
+# co.set_paths(local_port=9136)
 random_float = random.uniform(1, 5)
 
 
 
-def get_captcha(page, tab):
-    # 连接浏览器
-    page = ChromiumPage(co)
-    tab = page.get_tab()
+def get_captcha(page):
+    # # 连接浏览器
+    # page = ChromiumPage(co)
+    tab = page.new_tab()
     # 访问网页
     tab.get("111.html")
     time.sleep(3)
     # 验证码处理
     captcha_ele = tab.get_frame(1)
     captcha_url = captcha_ele.attr("src")
-    new_tab = page.new_tab()
-    tab = new_tab
+    # new_tab = page.new_tab()
+    # tab = new_tab
     tab.get(captcha_url)
     button = tab.ele("xpath=//div[@class='captcha-panel']/a")
     button.click(by_js=True)
@@ -62,8 +62,8 @@ def get_captcha(page, tab):
         slider = tab.ele(f"xpath=//div[contains(@class, 'geetest_track')]/div[contains(@class, 'geetest_btn')]")
         # 获取滑块位置
         slider_loc = slider.rect.location
-        tab.actions.move_to(slider.rect.location)
-        tab.actions.hold(slider).move_to((210 + move_num, 460), duration=0.45).release()
+        tab.actions.move_to(slider_loc)
+        tab.actions.hold(slider).move_to((slider_loc[0] + move_num, slider_loc[1]), duration=0.45).release()
         # print(f"使用滑块验证码")
         # input()
     elif "依次点击" in captcha_text:
@@ -85,8 +85,13 @@ def get_captcha(page, tab):
             tab.actions.move_to((0, 0))
             time.sleep(0.5)
         # 点击确定按钮
-        tab.ele("确定").click(by_js=None)
+        tab.ele("确定").click(by_js=True)
+    # if "您的操作过于频繁，验证后再操作" not in tab.html:
+    #     tab.close()
+    # else:
+    #     input("请重试：")
+    #     get_captcha(page)
     tab.close()
 
 
-get_captcha(page, tab)
+

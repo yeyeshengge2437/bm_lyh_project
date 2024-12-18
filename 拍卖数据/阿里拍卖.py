@@ -9,7 +9,7 @@ from urllib.parse import urlencode, urljoin
 import redis
 
 co = ChromiumOptions()
-co = co.set_user_data_path(r"D:\chome_data\ali_one")
+co = co.set_user_data_path(r"D:\chome_data\ali_two")
 # co = co.set_argument('--no-sandbox')
 # co = co.headless()
 co.set_paths(local_port=9153)
@@ -558,61 +558,154 @@ def ali_paimai(from_queue):
                                         data_dict["拍卖公告"] = target_ann
                                     tab_3.close()
                                 tab_2.close()
-                                url = data_dict.get("链接")
-                                title = data_dict.get("标题")
-                                state = data_dict.get("状态")
-                                stage = data_dict.get("阶段")
-                                address = data_dict.get("所在地")
-                                start_bid = data_dict.get("起拍价")
-                                sold_price = data_dict.get("成交价")
-                                outcome = data_dict.get("拍卖结果")
-                                end_time = data_dict.get("结束时间")
-                                procedure_str = data_dict.get("程序")
-                                disposal_unit = data_dict.get("处置单位")
-                                auction_history = data_dict.get("竞价记录")
-                                people_num = data_dict.get("报名人数")
-                                subject_info = data_dict.get("标的信息")
-                                subject_annex = data_dict.get("标的信息附件")
-                                subject_annex_up = subject_annex
-                                auction_html = data_dict.get("拍卖公告")
-                                create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                                update_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                                create_date = datetime.now().strftime('%Y-%m-%d')
-                                print(procedure_str)
-                                # 上传到测试数据库
-                                conn_test = mysql.connector.connect(
-                                    host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
-                                    user="col2024",
-                                    password="Bm_a12a06",
-                                    database="col",
-                                )
-                                if not flag:
+                                if data_dict:
+                                    url = data_dict.get("链接")
+                                    title = data_dict.get("标题")
+                                    state = data_dict.get("状态")
+                                    stage = data_dict.get("阶段")
+                                    address = data_dict.get("所在地")
+                                    start_bid = data_dict.get("起拍价")
+                                    sold_price = data_dict.get("成交价")
+                                    outcome = data_dict.get("拍卖结果")
+                                    end_time = data_dict.get("结束时间")
+                                    procedure_str = data_dict.get("程序")
+                                    disposal_unit = data_dict.get("处置单位")
+                                    auction_history = data_dict.get("竞价记录")
+                                    people_num = data_dict.get("报名人数")
+                                    subject_info = data_dict.get("标的信息")
+                                    subject_annex = data_dict.get("标的信息附件")
+                                    subject_annex_up = subject_annex
+                                    auction_html = data_dict.get("拍卖公告")
+                                    create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                    update_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                    create_date = datetime.now().strftime('%Y-%m-%d')
+                                    print(procedure_str)
+                                    # 上传到测试数据库
+                                    conn_test = mysql.connector.connect(
+                                        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
+                                        user="col2024",
+                                        password="Bm_a12a06",
+                                        database="col",
+                                    )
+                                    if not flag:
+                                        cursor_test = conn_test.cursor()
+                                        # 上传文件
+                                        insert_sql = "INSERT INTO col_judicial_auctions (url, title, state, stage, address, start_bid, sold_price, outcome, end_time, procedure_str, auction_html, subject_annex_up, subject_info, disposal_unit, auction_history, people_num, subject_annex, create_time, create_date, from_queue) VALUES (%s,%s,%s,%s, %s,%s,%s,%s, %s,%s,%s,%s,%s,%s, %s,%s, %s, %s,%s,%s)"
+
+                                        cursor_test.execute(insert_sql,
+                                                            (url, title, state, stage, address, start_bid, sold_price, outcome,
+                                                             end_time, procedure_str, auction_html, subject_annex_up, subject_info,
+                                                             disposal_unit, auction_history, people_num, subject_annex, create_time,
+                                                             create_date, from_queue))
+                                        conn_test.commit()
+                                    else:
+                                        cursor_test = conn_test.cursor()
+                                        # 上传文件
+                                        update_sql = "UPDATE col_judicial_auctions SET url = %s, title = %s, state = %s, stage = %s, address = %s, start_bid = %s, sold_price = %s, outcome = %s, end_time = %s, procedure_str = %s, auction_html = %s, subject_annex_up = %s, subject_info = %s, disposal_unit = %s, auction_history = %s, people_num = %s, subject_annex = %s, update_time = %s, from_queue = %s WHERE id = %s;"
+                                        cursor_test.execute(update_sql,
+                                                            (url, title, state, stage, address, start_bid, sold_price, outcome,
+                                                             end_time,
+                                                             procedure_str, auction_html, subject_annex_up, subject_info,
+                                                             disposal_unit,
+                                                             auction_history, people_num, subject_annex, update_time, from_queue,
+                                                             old_id))
+                                        conn_test.commit()
+
+                                    cursor_test.close()
+                                    conn_test.close()
+                                    print(data_dict)
+                                else:    # 可能为招商已结束
+                                    title = info.ele("xpath=/div/div/span[@class='text']")
+                                    if title:
+                                        data_dict["标题"] = title.text
+                                    href_url = info.attr("href")
+                                    url_text = re.sub(r"&.*", "", href_url)
+                                    if judge_repeat_invest(url_text):
+                                        continue
+                                    tab_2 = page.new_tab()
+                                    tab_2.get(href_url)
+                                    # tab_2.get("https://zc-paimai.taobao.com/zc/mn_detail.htm?id=180386&spm=a2129.27076131.puimod-pc-search-list_2004318340.25&pmid=2175852518_1653962822378&pmtk=20140647.0.0.0.27064540.puimod-zc-focus-2021_2860107850.35879&path=27181431%2C27076131&track_id=f36ba7d9-e768-4e22-9342-0ee897b09fd4")
+                                    data_dict["链接"] = url_text
+                                    tab_2.wait(2)
+                                    tab_2 = encounter_verify(tab_2)
+                                    tab_2.wait(2)
+                                    info_html = tab_2.html
+                                    info_etree = etree.HTML(info_html)
+                                    for num in range(1, 16 + 1):
+                                        key = info_etree.xpath(
+                                            f"//div[@class='notice-detail']/table/tbody/tr[{num}]/td[@class='odd']")
+                                        if key:
+                                            key_str = "".join(key[0].xpath(".//text()")).strip()
+                                            value = info_etree.xpath(
+                                                f"//div[@class='notice-detail']/table/tbody/tr[{num}]/td[2]")
+                                            value_str = "".join(value[0].xpath(".//text()")).strip()
+                                            if key_str == "抵押物":
+                                                value_html = ""
+                                                for i in value:
+                                                    value_html += ''.join(
+                                                        etree.tostring(i, method='html', encoding='unicode'))
+                                                data_dict[key_str] = value_html
+                                            else:
+                                                data_dict[key_str] = value_str
+                                    # 获取附件信息
+                                    annexs = info_etree.xpath(
+                                        "//div[@class='notice-detail']//@src | //div[@class='notice-detail']//@href")
+                                    if annexs:
+                                        annex_info = ""
+                                        for annex in annexs:
+                                            if "https" not in annex[0:5]:
+                                                annex_url = "https:" + annex + ","
+                                            else:
+                                                annex_url = annex + ","
+                                            annex_info += annex_url
+                                        annex_info = annex_info[:-1]
+                                        data_dict["附件"] = annex_info
+
+                                    # 上传数据库
+                                    url = data_dict.get("链接")
+                                    title = data_dict.get("标题")
+                                    disposition_subject = data_dict.get("资产处置主体")
+                                    phone = data_dict.get("咨询电话")
+                                    reference_value = data_dict.get("参考价值")
+                                    recruitment_time = data_dict.get("招募时间")
+                                    type = data_dict.get("资产类型")
+                                    process = data_dict.get("流程")
+                                    guarantee_method = data_dict.get("担保方式")
+                                    total = data_dict.get("债权总额")
+                                    situation = data_dict.get("债务人情况")
+                                    guarantor = data_dict.get("保证人")
+                                    collateral = data_dict.get("抵押物")
+                                    detail = data_dict.get("公告详情")
+                                    more_info = data_dict.get("更多信息")
+                                    supple_mater = data_dict.get("补充材料")
+                                    original_annex = data_dict.get("附件")
+                                    up_annex = original_annex
+                                    create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                    update_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                    create_date = datetime.now().strftime('%Y-%m-%d')
+
+                                    conn_test = mysql.connector.connect(
+                                        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
+                                        user="col2024",
+                                        password="Bm_a12a06",
+                                        database="col",
+                                    )
                                     cursor_test = conn_test.cursor()
                                     # 上传文件
-                                    insert_sql = "INSERT INTO col_judicial_auctions (url, title, state, stage, address, start_bid, sold_price, outcome, end_time, procedure_str, auction_html, subject_annex_up, subject_info, disposal_unit, auction_history, people_num, subject_annex, create_time, create_date, from_queue) VALUES (%s,%s,%s,%s, %s,%s,%s,%s, %s,%s,%s,%s,%s,%s, %s,%s, %s, %s,%s,%s)"
+                                    insert_sql = "INSERT INTO col_judicial_auctions_investing (url, title, disposition_subject, phone, reference_value, recruitment_time, type, process, guarantee_method, total, situation, guarantor, collateral, detail, more_info, supple_mater, original_annex, up_annex,create_time, create_date, from_queue) VALUES (%s,%s,%s,%s, %s,%s,%s,%s, %s,%s,%s,%s,%s,%s, %s,%s,%s,%s, %s,%s,%s)"
 
-                                    cursor_test.execute(insert_sql,
-                                                        (url, title, state, stage, address, start_bid, sold_price, outcome,
-                                                         end_time, procedure_str, auction_html, subject_annex_up, subject_info,
-                                                         disposal_unit, auction_history, people_num, subject_annex, create_time,
-                                                         create_date, from_queue))
-                                    conn_test.commit()
-                                else:
-                                    cursor_test = conn_test.cursor()
-                                    # 上传文件
-                                    update_sql = "UPDATE col_judicial_auctions SET url = %s, title = %s, state = %s, stage = %s, address = %s, start_bid = %s, sold_price = %s, outcome = %s, end_time = %s, procedure_str = %s, auction_html = %s, subject_annex_up = %s, subject_info = %s, disposal_unit = %s, auction_history = %s, people_num = %s, subject_annex = %s, update_time = %s, from_queue = %s WHERE id = %s;"
-                                    cursor_test.execute(update_sql,
-                                                        (url, title, state, stage, address, start_bid, sold_price, outcome,
-                                                         end_time,
-                                                         procedure_str, auction_html, subject_annex_up, subject_info,
-                                                         disposal_unit,
-                                                         auction_history, people_num, subject_annex, update_time, from_queue,
-                                                         old_id))
+                                    cursor_test.execute(insert_sql, (
+                                        url, title, disposition_subject, phone, reference_value, recruitment_time, type,
+                                        process,
+                                        guarantee_method, total, situation, guarantor, collateral, detail, more_info,
+                                        supple_mater,
+                                        original_annex, up_annex, create_time, create_date, from_queue))
                                     conn_test.commit()
 
-                                cursor_test.close()
-                                conn_test.close()
-                                print(data_dict)
+                                    cursor_test.close()
+                                    conn_test.close()
+                                    print(data_dict)
+
                     tab_1.close()
         value_end = r.lpop('paimai_list')
         # print(value_end, "结束")
