@@ -1,13 +1,35 @@
 import re
 from deepseek import deepseek_chat
+from doubao import doubao_pro_32k
 
 model_name = deepseek_chat
 
 
 def identify_guarantee(content):
-    prompt = "\n\n从文中提取保证人(担保人默认为保证人)主体，单个主体以,分割，不要输出其他无关字段（去重）,没有保证人返回'空'。"
+    content_prompt = f"""
+你的任务是从给定的文本中提取保证人主体（担保人默认为保证人），单个主体以逗号分割，如果没有保证人则返回'空'。不要输出其他无关字段且保证主体去重。以下是文本详情：
+<文本详情>
+{{{content}}}
+</文本详情>
+操作步骤如下：
+1. 仔细阅读文本详情的内容。
+2. 识别其中提到的保证人主体（即承担担保责任的个人或组织）。
+3. 去除重复的主体内容。
+4. 将所有保证人主体以逗号分割的形式整理好。
+5. 如果未发现保证人主体，则直接返回'空'。
+"""
+    prompt_ = """你的任务是从给定的文本中提取保证人主体（担保人默认为保证人），单个主体以逗号分割，如果没有保证人则返回'空'。不要输出其他无关字段且保证主体去重。以下是文本详情：
+<文本详情>
+{{content}}
+</文本详情>
+操作步骤如下：
+1. 仔细阅读担保情况的内容。
+2. 识别其中提到的保证人主体（即承担担保责任的个人或组织）。
+3. 去除重复的主体内容。
+4. 将所有保证人主体以逗号分割的形式整理好。
+5. 如果未发现保证人主体，则直接返回'空'。"""
     a, b, guarantor = model_name(
-        content + prompt)
+        content_prompt)
     guarantor = re.sub(r'保证人：', '', guarantor)
     guarantor = re.sub(r'保证人:', '', guarantor)
     guarantor = re.sub(r';', ',', guarantor)
@@ -25,13 +47,41 @@ def identify_guarantee(content):
         guarantor = ''
     guarantor = re.sub(r'\n', '', guarantor)
     print(guarantor)
-    return a, b, guarantor, prompt
+    return a, b, guarantor, prompt_
 
 
 def deepseek_item_guarantee_2(content):
-    prompt = "\n\n从文中提取保证人(担保人默认为保证人, 公司)主体，单个主体以,分割，不要输出其他无关字段（去重）,没有保证人返回'空',智能忽略换行。"
+    content_prompt = f"""你的任务是从给定的文本中提取保证人主体。保证人主体之间以逗号分割，如果没有保证人则返回'空'。请仔细阅读以下文本：
+<text>
+{content}
+</text>
+首先，明确债务加入主体和保证人主体的概念区别。债务加入主体是指主动加入债务关系承担债务的主体，而保证人主体是为债务提供保证担保的主体，我们这里仅需提取保证人主体，不要混淆二者。
+接下来按照以下步骤提取保证人主体：
+1. 仔细阅读文本内容。
+2. 寻找与保证或担保相关的表述部分。
+3. 在确定疑似保证人主体时，可以通过对文本中与担保相关的表述进行逐句分析，标记已确定的保证人主体，避免遗漏。
+4. 在确定保证人主体时，必须以最简洁的形式呈现，不允许包含任何与主体本身无关的额外信息，例如括号内的更名、限定词（如“自然人”）、无关表述（如“已去世”等）。对于夫妇等可能存在组合主体的情况，需要单独列出个体作为保证人主体，例如“蔡福林夫妇”应拆分为“蔡福林”，而不能拆分为“蔡福林”和“蔡福林的夫人”这种包含多余表述的形式。
+5. 确定其中涉及的保证人主体，将它们记录下来并去除重复项。
+6. 如果没有发现任何保证人主体，则直接返回'空'。
+
+请按照上述要求准确地提取保证人主体并输出结果。
+"""
+    prompt_ = """你的任务是从给定的文本中提取保证人主体。保证人主体之间以逗号分割，如果没有保证人则返回'空'。请仔细阅读以下文本：
+<text>
+{content}
+</text>
+首先，明确债务加入主体和保证人主体的概念区别。债务加入主体是指主动加入债务关系承担债务的主体，而保证人主体是为债务提供保证担保的主体，我们这里仅需提取保证人主体，不要混淆二者。
+接下来按照以下步骤提取保证人主体：
+1. 仔细阅读文本内容。
+2. 寻找与保证或担保相关的表述部分。
+3. 在确定疑似保证人主体时，可以通过对文本中与担保相关的表述进行逐句分析，标记已确定的保证人主体，避免遗漏。
+4. 在确定保证人主体时，必须以最简洁的形式呈现，不允许包含任何与主体本身无关的额外信息，例如括号内的更名、限定词（如“自然人”）、无关表述（如“已去世”等）。对于夫妇等可能存在组合主体的情况，需要单独列出个体作为保证人主体，例如“蔡福林夫妇”应拆分为“蔡福林”，而不能拆分为“蔡福林”和“蔡福林的夫人”这种包含多余表述的形式。
+5. 确定其中涉及的保证人主体，将它们记录下来并去除重复项。
+6. 如果没有发现任何保证人主体，则直接返回'空'。
+
+请按照上述要求准确地提取保证人主体并输出结果。"""
     a, b, guarantor = model_name(
-        content + prompt)
+        content_prompt)
     guarantor = re.sub(r'保证人：', '', guarantor)
     guarantor = re.sub(r'保证人:', '', guarantor)
     guarantor = re.sub(r';', ',', guarantor)
@@ -49,13 +99,24 @@ def deepseek_item_guarantee_2(content):
         guarantor = ''
     guarantor = re.sub(r'\n', '', guarantor)
     print(guarantor)
-    return a, b, guarantor, prompt
+    return a, b, guarantor, prompt_
 
 
 def identify_mortgagor(content):
-    prompt = "\n\n从中提取抵押人/质押人主体名称（担保人在未说明为抵押人/质押人时不可视为抵押人/质押人，保证人在未说明为抵押人/质押人时不可视为抵押人/质押人。），主体之间以,分割。未明确为抵押人/质押人不做推理，不要输出其他无关字段,没有抵押人/质押人返回'空'，严格按照执行。案例：抵押人/质押人:某某有限公司,李某某,王某某;(每项用';'结束)注意：此案例为借鉴数据，请不要引用里面的数据。"
+    content_prompt = f"""你的任务是从给定的文本中提取抵押人/质押人主体名称。请注意以下要求：担保人在未说明为抵押人/质押人时不可视为抵押人/质押人，保证人在未说明为抵押人/质押人时不可视为抵押人/质押人；主体之间以,分割；未明确为抵押人/质押人不做推理，不要输出其他无关字段，如果没有抵押人/质押人则返回'空'，严格按照此执行。
+这里是需要你处理的文本：
+<text>
+{{{content}}}
+</text>
+按照上述规则仔细分析文本内容，从中提取符合要求的抵押人/质押人主体名称，直接输出结果。如果有多个主体名称，按照要求用,分隔。"""
+    prompt_ = """你的任务是从给定的文本中提取抵押人/质押人主体名称。请注意以下要求：担保人在未说明为抵押人/质押人时不可视为抵押人/质押人，保证人在未说明为抵押人/质押人时不可视为抵押人/质押人；主体之间以,分割；未明确为抵押人/质押人不做推理，不要输出其他无关字段，如果没有抵押人/质押人则返回'空'，严格按照此执行。
+这里是需要你处理的文本：
+<text>
+{{{content}}}
+</text>
+按照上述规则仔细分析文本内容，从中提取符合要求的抵押人/质押人主体名称，直接输出结果。如果有多个主体名称，按照要求用,分隔。"""
     a, b, mortgagor = model_name(
-        content + prompt)
+        content_prompt)
     mortgagor = re.sub(r'抵押人/质押人：', '', mortgagor)
     mortgagor = re.sub(r'抵押人/质押人:', '', mortgagor)
     mortgagor = re.sub(r'抵押人：|质押人：', '', mortgagor)
@@ -76,13 +137,25 @@ def identify_mortgagor(content):
         mortgagor = ''
     mortgagor = re.sub(r'\n', '', mortgagor)
     print(mortgagor)
-    return a, b, mortgagor, prompt
+    return a, b, mortgagor, prompt_
 
 
 def deepseek_item_mortgagor_2(content):
-    prompt = "\n\n提取所有抵质押人的名称，输出结果：XX有限公司,张三,李四（去重，单个主体以“,”分割，没有返回‘空’，不要输出其他无关字段）。"
+    content_prompt = f"""你的任务是从给定的关于债权相关的文字中提取抵质押人的主体名称。
+以下是关于债权的文字内容：
+<debt_related_text>
+{{{content}}}
+</debt_related_text>
+你需要仔细阅读这段文字，从中找出抵质押人的主体名称，将所有主体名称用逗号隔开后直接输出。不需要进行额外的解释或者添加其他内容，只输出主体名称即可。现在开始提取。"""
+    prompt_ = """你的任务是从给定的关于债权相关的文字中提取抵质押人的主体名称。
+以下是关于债权的文字内容：
+<debt_related_text>
+{{content}}
+</debt_related_text>
+你需要仔细阅读这段文字，从中找出抵质押人的主体名称，将所有主体名称用逗号隔开后直接输出。不需要进行额外的解释或者添加其他内容，只输出主体名称即可。现在开始提取。
+"""
     a, b, mortgagor = model_name(
-        content + prompt)
+        content_prompt)
     mortgagor = re.sub(r'抵押人/质押人：', '', mortgagor)
     mortgagor = re.sub(r'抵押人/质押人:', '', mortgagor)
     mortgagor = re.sub(r'抵押人：|质押人：', '', mortgagor)
@@ -103,13 +176,30 @@ def deepseek_item_mortgagor_2(content):
         mortgagor = ''
     print(mortgagor)
     mortgagor = re.sub(r'\n', '', mortgagor)
-    return a, b, mortgagor, prompt
+    return a, b, mortgagor, prompt_
 
 
 def identify_collateral(content):
-    prompt = "\n\n从中提取抵押物/质押物(当担保物没有特殊说明时默认为抵押物/质押物)信息，不要输出其他无关字段,没有抵押物/质押物返回'空'，严格按照执行。案例：抵押物/质押物:位于某处房产,某工厂;注意：此案例为借鉴数据，请不要引用里面的数据。"
+    content_prompt = f"""你的任务是从给定的文本中提取抵押物/质押物信息。当担保物没有特殊说明时默认为抵押物/质押物，如果没有抵押物/质押物则返回'空'。请仔细阅读以下文本：
+<text>
+{{{content}}}
+</text>
+按照以下步骤进行操作：
+1. 仔细浏览整个文本内容。
+2. 查找与抵押物/质押物相关的表述。
+3. 只提取抵押物/质押物相关的信息，不要输出其他无关字段。
+请直接给出提取的抵押物/质押物信息或者'空'。"""
+    prompt_ = """你的任务是从给定的文本中提取抵押物/质押物信息。当担保物没有特殊说明时默认为抵押物/质押物，如果没有抵押物/质押物则返回'空'。请仔细阅读以下文本：
+<text>
+{{content}}
+</text>
+按照以下步骤进行操作：
+1. 仔细浏览整个文本内容。
+2. 查找与抵押物/质押物相关的表述。
+3. 只提取抵押物/质押物相关的信息，不要输出其他无关字段。
+请直接给出提取的抵押物/质押物信息或者'空'。"""
     a, b, collateral = model_name(
-        content + prompt)
+        content_prompt)
     collateral = re.sub(r'抵押物/质押物：', '', collateral)
     collateral = re.sub(r'抵押物/质押物:', '', collateral)
     collateral = re.sub(r'抵押物：|质押物：', '', collateral)
@@ -125,4 +215,4 @@ def identify_collateral(content):
         collateral = ''
     collateral = re.sub(r'\n', '', collateral)
     print(collateral)
-    return a, b, collateral, prompt
+    return a, b, collateral, prompt_

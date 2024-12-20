@@ -20,6 +20,7 @@ from character_classificatio_flask import identify_guarantee, identify_mortgagor
     deepseek_item_guarantee_2, deepseek_item_mortgagor_2
 from dispose_excel import get_excel_data
 from 识别二维码 import is_qr_code_def
+from doubao import doubao_pro_32k
 
 app = Flask(__name__)
 
@@ -46,11 +47,32 @@ def get_ai_response():
     tell_type = data.get('tell_type')
     tell_tool = data.get('tell_tool')
     files = data.get('files')
+    paper_item_id = data.get('paper_item_id')
     if files:
         files = json.loads(files)
         files = files[0]
     input_text = data.get('input_text')
     input_key = data.get('input_key')
+    if tell_tool == "doubao_pro_32k":
+        try:
+            input_token_num, output_token_num, output_text = doubao_pro_32k(input_text)
+            value = {
+                "id": id,
+                "remark": "",
+                "input_token_num": input_token_num,
+                "output_token_num": output_token_num,
+                "output_text": str(output_text),
+                "success": 1
+            }
+            # 返回json数据
+            return jsonify(value)
+        except Exception as e:
+            value = {
+                "id": id,
+                "remark": str(e),
+                "success": 0
+            }
+            return jsonify(value)
     if tell_tool == "kimi_8k":
         try:
             input_token_num, output_token_num, output_text = kimi_single_chat(input_text)
@@ -244,9 +266,9 @@ def get_ai_response():
             company_companies = gpt_identify_company(input_text)
 
             for company in people_companies:
-                save_database_people(company, id, paper_id, input_key)
+                save_database_people(company, id, paper_id, input_key, paper_item_id)
             for company in company_companies:
-                save_database_company(company, id, paper_id, input_key)
+                save_database_company(company, id, paper_id, input_key, paper_item_id)
 
             success_data = {
                 'id': id,

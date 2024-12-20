@@ -13,7 +13,7 @@ from chatgpt_4mini import gpt_freechat
 from deepseek import deepseek_chat
 from character_classificatio import identify_guarantee, identify_mortgagor, identify_collateral
 from quark_text import quark_text
-
+from doubao import doubao_pro_32k
 def text_change(chat_text):
     """
     去除空格、换行符、全角空格、不间断空格
@@ -43,6 +43,7 @@ ai_list = {
         "deepseek_chat",  # deepseek文字对话
         "gpt_freechat",  # gpt免费对话 需要搭梯子
         "quark_text",  # quark文字识别
+        "doubao_pro_32k"  # doubao文字对话
     ]
 }
 ai_text_dict = {
@@ -59,6 +60,7 @@ ai_text_dict = {
     'gpt_freechat': gpt_freechat,
     'deepseek_chat': deepseek_chat,
     'quark_text': quark_text,
+    'doubao_pro_32k': doubao_pro_32k
 }
 
 def get_ai_value():

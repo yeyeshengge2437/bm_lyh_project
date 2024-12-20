@@ -6,8 +6,8 @@ from openai import OpenAI
 
 # api_key="sk-9a76d51f714449d8b6ff81c74c02a5d0"
 # api_key_li = "sk-d11beb24cc234b9b9f5df67cee7c69a1"   # 李健
-api_key_zhou = "sk-76f7b57a786e49028921aa98dc677422"   # 周冰
-api_key_ren = "sk-e659618a2ea54a09a289ac9861bb61b8"   # 任梁
+api_key_zhou = "sk-76f7b57a786e49028921aa98dc677422"  # 周冰
+api_key_ren = "sk-e659618a2ea54a09a289ac9861bb61b8"  # 任梁
 
 
 def deepseek_chat(chat_text, system_content="您是个乐于助人的助手", temperature=1.0, beta=False):
@@ -59,10 +59,12 @@ def get_balance(token):
 
     response = requests.request("GET", url, headers=headers, data=payload)
 
-    print(response.text)
+    value = response.json()
+    total_balance = value["balance_infos"][0]["total_balance"]
+    return total_balance
 
 
-# get_balance(api_key_li)
+# print(get_balance(api_key_zhou))
 # print(deepseek_chat("""
 # 从文中提取保证人(担保人默认为保证人, 公司)主体，单个主体以,分割，不要输出其他无关字段（去重）,没有保证人返回'空',智能忽略换行。
 # 担保人名称：
