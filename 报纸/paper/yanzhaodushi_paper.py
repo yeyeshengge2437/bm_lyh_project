@@ -49,7 +49,7 @@ def get_yanzhaodushi_paper(paper_time, queue_id, webpage_id):
             if bm_html is None:
                 continue
             # 版面的pdf
-            bm_pdf = 'https://yzdsb.hebnews.cn/pc/paper/' + "".join(bm_html.xpath("//div[@class='newspaper-pic pull-left']/a[1]/@href")).strip('../../..')
+            bm_pdf = 'https://yzdsb.hebnews.cn/pc/paper/' + "".join(bm_html.xpath("//div[@class='newspaper-pic pull-left']/a[1]/@href | //p[@id='pdfUrl']//text()")).strip('../../..')
 
             # 获取所有文章的链接
             all_article = bm_html.xpath("//li[@class='clearfix']/a")
@@ -117,4 +117,4 @@ def get_yanzhaodushi_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_yanzhaodushi_paper('2022-03-30', 111, 1111)
+# get_yanzhaodushi_paper('2019-05-29', 111, 1111)
