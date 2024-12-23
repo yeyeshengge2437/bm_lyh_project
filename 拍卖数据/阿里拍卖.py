@@ -170,13 +170,72 @@ def encounter_verify(tab):
         loc_value = end_loc.rect.corners
         right_up = loc_value[1]
         right_down = loc_value[3]
-        tager_x = right_up[0] + random.randint(10, 150)
+        tager_x = right_up[0]
         tager_y = (right_up[1] + right_down[1] // 2) + random.randint(-50, 50)
         # input()
         tab.wait(2)
         slider_loc = tab.ele("xpath=//span[@id='nc_1_n1z']")
         print(slider_loc.rect.location)
+        print(tager_x)
         tab.actions.hold(slider_loc).move_to((tager_x, tager_y), duration=num).release()
+        # slider_loc.run_js(f"""
+        #     var slider = this;
+        #     var targetX = arguments[0];
+        #     var duration = 1000; // 动画持续时间，单位毫秒
+        #     var startTime = performance.now();
+        #     var vibrationAmplitude = 5; // 抖动幅度
+        #     var vibrationFrequency = 4; // 抖动频率
+        #
+        #     // 变加速到变减速的公式
+        #     function easing(t) {{
+        #         return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        #     }}
+        #
+        #     var move = function(to, duration) {{
+        #         var start = slider.offsetLeft,
+        #             change = to - start,
+        #             startTime = performance.now();
+        #         var animate = function() {{
+        #             var timeElapsed = performance.now() - startTime;
+        #             var run = Math.min(timeElapsed / duration, 1);
+        #             var progress = easing(run);
+        #
+        #             var currentX = start + change * progress;
+        #
+        #             // y轴抖动效果
+        #             var vibrationPhase = (timeElapsed / 1000) * vibrationFrequency;
+        #             var yVibration = Math.sin(vibrationPhase) * vibrationAmplitude;
+        #
+        #             // 设置元素的新位置
+        #             slider.style.transform = 'translate3d(' + currentX + 'px, ' + slider.offsetTop + 'px, 0)';
+        #
+        #             if (run < 1) {{
+        #                 requestAnimationFrame(animate);
+        #             }} else {{
+        #                 // 到达目标位置后，模拟鼠标释放事件
+        #                 slider.dispatchEvent(new MouseEvent('mouseup', {{
+        #                     view: window,
+        #                     bubbles: true,
+        #                     cancelable: true,
+        #                     clientX: slider.getBoundingClientRect().right,
+        #                     clientY: slider.getBoundingClientRect().top + slider.offsetHeight / 2
+        #                 }}));
+        #                 slider.style.transform = 'translate3d(' + to + 'px, ' + slider.offsetTop + 'px, 0)';
+        #             }}
+        #         }};
+        #         requestAnimationFrame(animate);
+        #
+        #         // 模拟鼠标按下事件，开始拖动
+        #         slider.dispatchEvent(new MouseEvent('mousedown', {{
+        #             view: window,
+        #             bubbles: true,
+        #             cancelable: true,
+        #             clientX: slider.getBoundingClientRect().left,
+        #             clientY: slider.getBoundingClientRect().top + slider.offsetHeight / 2
+        #         }}));
+        #     }};
+        #     move(targetX, duration); // 1000毫秒内完成拖动
+        # """, tager_x)
         tab.wait(2)
         if "验证失败" in tab.html:
             tab.ele("验证失败").click(by_js=None)

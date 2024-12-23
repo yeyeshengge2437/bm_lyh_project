@@ -49,8 +49,14 @@ def get_yanzhaodushi_paper(paper_time, queue_id, webpage_id):
             if bm_html is None:
                 continue
             # 版面的pdf
-            bm_pdf = 'https://yzdsb.hebnews.cn/pc/paper/' + "".join(bm_html.xpath("//div[@class='newspaper-pic pull-left']/a[1]/@href | //p[@id='pdfUrl']//text()")).strip('../../..')
-
+            # bm_pdf = 'https://yzdsb.hebnews.cn/pc/paper/' + "".join(bm_html.xpath("//div[@class='newspaper-pic pull-left']/a[1]/@href | //p[@id='pdfUrl']//text()")).strip('../../..')
+            bm_pdf_str = "".join(bm_html.xpath("//div[@class='pull-right']/a/@href")).strip('../../..')
+            if bm_pdf_str:
+                # 版面的pdf
+                bm_pdf = 'https://yzdsb.hebnews.cn/pc/paper/' + bm_pdf_str
+            else:
+                bm_pdf_str = "".join(bm_html.xpath("//*[@id='pdfUrl']/text()")).strip('../../..')
+                bm_pdf = 'https://yzdsb.hebnews.cn/pc/paper/' + bm_pdf_str
             # 获取所有文章的链接
             all_article = bm_html.xpath("//li[@class='clearfix']/a")
             pdf_set = set()

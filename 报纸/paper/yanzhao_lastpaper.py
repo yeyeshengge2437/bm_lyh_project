@@ -48,9 +48,13 @@ def get_yanzhao_lastpaper(paper_time, queue_id, webpage_id):
             bm_html = etree.HTML(bm_content)
             if bm_html is None:
                 continue
-            bm_pdf_str = "".join(bm_html.xpath("//div[@class='pull-right']/a/@href | //*[@id='pdfUrl']/text()")).strip('../../..')
-            # 版面的pdf
-            bm_pdf = 'http://yzwb.sjzdaily.com.cn/yzwbpaper/pc/' + bm_pdf_str
+            bm_pdf_str = "".join(bm_html.xpath("//div[@class='pull-right']/a/@href")).strip('../../..')
+            if bm_pdf_str:
+                # 版面的pdf
+                bm_pdf = 'http://yzwb.sjzdaily.com.cn/yzwbpaper/pc/' + bm_pdf_str
+            else:
+                bm_pdf_str = "".join(bm_html.xpath("//*[@id='pdfUrl']/text()")).strip('../../..')
+                bm_pdf = 'http://yzwb.sjzdaily.com.cn/yzwbpaper/pc/' + bm_pdf_str
 
             # 获取所有文章的链接
             all_article = bm_html.xpath("//li[@class='clearfix']/a")

@@ -21,6 +21,7 @@ from character_classificatio_flask import identify_guarantee, identify_mortgagor
 from dispose_excel import get_excel_data
 from 识别二维码 import is_qr_code_def
 from doubao import doubao_pro_32k
+from quark_excel import quark_excel
 
 app = Flask(__name__)
 
@@ -53,6 +54,27 @@ def get_ai_response():
         files = files[0]
     input_text = data.get('input_text')
     input_key = data.get('input_key')
+    if tell_tool == "quark_excel":
+        try:
+            input_token_num, output_token_num, output_text = quark_excel(files)
+            value = {
+                "id": id,
+                "remark": "",
+                "input_token_num": input_token_num,
+                "output_token_num": output_token_num,
+                "output_text": str(output_text),
+                "success": 1
+            }
+            # 返回json数据
+            return jsonify(value)
+        except Exception as e:
+            value = {
+                "id": id,
+                "remark": str(e),
+                "success": 0
+            }
+            return jsonify(value)
+
     if tell_tool == "doubao_pro_32k":
         try:
             input_token_num, output_token_num, output_text = doubao_pro_32k(input_text)

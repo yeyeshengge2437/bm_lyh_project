@@ -154,8 +154,10 @@ def get_outbound_investment_info(tab):
             is_frames = tab.get_frames(timeout=3)
             for is_frame in is_frames:
                 if is_frame and "您的操作过于频繁，验证后再操作" in is_frame.html:
-                    print("存在验证码")
-                    print(is_frame.html)
+                    get_captcha(page)
+                    tab.refresh()
+                    outbound_.click(by_js=True)
+                    break
                 else:
                     print("没有验证码")
             info_writer(tab, outbound_investment, 'investlist', "tablist", "对外投资")

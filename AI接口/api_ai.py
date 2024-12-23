@@ -1,4 +1,6 @@
 import json
+import os
+import random
 import re
 import requests
 
@@ -129,3 +131,19 @@ def pdf_content_except_table_update(data=None):
     result = res.json()
 
     return result
+
+
+def upload_file_by_url(file_name, file_type, type="paper", verify=None):
+    pdf_path = f"{file_name}.{file_type}"
+    # 上传接口
+    fr = open(pdf_path, 'rb')
+    file_data = {"file": fr}
+    url = "http://118.31.45.18:29875" + f"/file/upload/file?type={type}"
+    headers1 = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'
+    }
+    res = requests.post(url=url, headers=headers1, files=file_data)
+    result = res.json()
+    fr.close()
+    os.remove(pdf_path)
+    return result.get("value")["file_url"]
