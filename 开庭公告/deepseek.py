@@ -28,7 +28,7 @@ def deepseek_chat(chat_text, system_content="您是个乐于助人的助手", te
         output_token_num = response.usage.completion_tokens
         input_token_num = response.usage.prompt_tokens
         output_text = response.choices[0].message.content
-        return input_token_num, output_token_num, output_text
+        return output_text
     else:
         client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
         response = client.chat.completions.create(
@@ -44,7 +44,7 @@ def deepseek_chat(chat_text, system_content="您是个乐于助人的助手", te
         output_token_num = response.usage.completion_tokens
         input_token_num = response.usage.prompt_tokens
         output_text = response.choices[0].message.content
-        return input_token_num, output_token_num, output_text
+        return output_text
 
 
 # print(deepseek_chat("""你好，介绍一下你自己"""))
@@ -64,7 +64,7 @@ def get_balance(token):
     return total_balance
 
 
-# print(get_balance(api_key_ren))
+# print(get_balance(api_key_zhou))
 # print(deepseek_chat("""
 # 从文中提取保证人(担保人默认为保证人, 公司)主体，单个主体以,分割，不要输出其他无关字段（去重）,没有保证人返回'空',智能忽略换行。
 # 担保人名称：

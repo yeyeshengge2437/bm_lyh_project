@@ -54,8 +54,8 @@ def doubao_pro_32k(chat_text):
 
 
 def doubao_pro_256k_coiled(chat_text):
-    client = OpenAI(api_key="5e03d000-02e5-4d1c-b344-f25609f8182b", base_url="https://ark.cn-beijing.volces.com/api/v3")
-    models = "ep-20241223174105-cj59k"
+    client = OpenAI(api_key="9b301c44-9686-43da-9aaa-29feeb4a7e36", base_url="https://ark.cn-beijing.volces.com/api/v3")
+    models = "ep-20241223161507-5d5vh"
     target_content = ""
     # Round 1
     messages = [{"role": "user", "content": f"{chat_text}"}]
@@ -64,8 +64,13 @@ def doubao_pro_256k_coiled(chat_text):
         messages=messages
     )
     finish_reason = response.choices[0].finish_reason
-    messages.append(response.choices[0].message)
-    target_content += messages[-1].content + "\n\n"
+    # messages.append(response.choices[0].message)
+    # print(messages)
+    target_content += response.choices[0].message.content + "\n\n"
+    print(response.choices[0].message.content)
+    print(target_content)
+    messages.append({"role": "assistant", "content": f"{response.choices[0].message.content}"})
+    # print(messages)
     if finish_reason == "length":
         # Round 2
         messages.append({"role": "user", "content": "继续生成"})
@@ -74,8 +79,10 @@ def doubao_pro_256k_coiled(chat_text):
             messages=messages
         )
         finish_reason = response.choices[0].finish_reason
-        messages.append(response.choices[0].message)
-        target_content += messages[-1].content + "\n\n"
+        target_content += response.choices[0].message.content + "\n\n"
+        print(response.choices[0].message.content)
+        print(target_content)
+        messages.append({"role": "assistant", "content": f"{response.choices[0].message.content}"})
         if finish_reason == "length":
             messages.append({"role": "user", "content": "继续生成"})
             response = client.chat.completions.create(
@@ -83,8 +90,10 @@ def doubao_pro_256k_coiled(chat_text):
                 messages=messages
             )
             finish_reason = response.choices[0].finish_reason
-            messages.append(response.choices[0].message)
-            target_content += messages[-1].content + "\n\n"
+            target_content += response.choices[0].message.content + "\n\n"
+            print(response.choices[0].message.content)
+            print(target_content)
+            messages.append({"role": "assistant", "content": f"{response.choices[0].message.content}"})
             if finish_reason == "length":
                 messages.append({"role": "user", "content": "继续生成"})
                 response = client.chat.completions.create(
@@ -92,8 +101,10 @@ def doubao_pro_256k_coiled(chat_text):
                     messages=messages
                 )
                 finish_reason = response.choices[0].finish_reason
-                messages.append(response.choices[0].message)
-                target_content += messages[-1].content + "\n\n"
+                target_content += response.choices[0].message.content + "\n\n"
+                print(response.choices[0].message.content)
+                print(target_content)
+                messages.append({"role": "assistant", "content": f"{response.choices[0].message.content}"})
                 if finish_reason == "length":
                     messages.append({"role": "user", "content": "继续生成"})
                     response = client.chat.completions.create(
@@ -101,17 +112,19 @@ def doubao_pro_256k_coiled(chat_text):
                         messages=messages
                     )
                     finish_reason = response.choices[0].finish_reason
-                    messages.append(response.choices[0].message)
-                    target_content += messages[-1].content + "\n\n"
+                    target_content += response.choices[0].message.content + "\n\n"
+                    print(response.choices[0].message.content)
+                    print(target_content)
+                    messages.append({"role": "assistant", "content": f"{response.choices[0].message.content}"})
                     if finish_reason == 'length':
                         messages.append({"role": "user", "content": "继续生成"})
                         response = client.chat.completions.create(
                             model=models,
                             messages=messages
                         )
-                        finish_reason = response.choices[0].finish_reason
-                        messages.append(response.choices[0].message)
-                        target_content += messages[-1].content + "\n\n"
+                        target_content += response.choices[0].message.content + "\n\n"
+                        print(response.choices[0].message.content)
+                        print(target_content)
     return target_content
 
 

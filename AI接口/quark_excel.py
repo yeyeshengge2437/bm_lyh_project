@@ -93,4 +93,4 @@ def quark_excel(img_url):
     return 0, 0, excel_url
 
 
-print(quark_excel("https://res.debtop.com/manage/live/paper/202410/24/202410240122013548c2b0a7784dd6.png"))
+# print(quark_excel("https://res.debtop.com/manage/live/paper/202410/24/202410240122013548c2b0a7784dd6.png"))

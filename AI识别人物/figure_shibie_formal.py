@@ -46,6 +46,7 @@ def save_database_company(all_info, from_id, paper_id, input_key, paper_item_id)
     role = all_info.get("角色")
     nickname = all_info.get("别称")
     former_name = all_info.get("曾用名")
+    asset = all_info.get("公司名下资产")
     uscc = all_info.get("统一社会信用代码")
     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     # 上传到测试数据库
@@ -57,10 +58,10 @@ def save_database_company(all_info, from_id, paper_id, input_key, paper_item_id)
     )
     cursor_test = conn_test.cursor()
     # 上传到报纸的内容
-    insert_sql = "INSERT INTO col_paper_company (company_name, nickname,role, former_name, uscc, create_time, from_id, paper_id, input_key, paper_item_id) VALUES (%s,%s,%s,%s,%s,%s, %s, %s,%s,%s)"
+    insert_sql = "INSERT INTO col_paper_company (company_name, nickname,role,asset, former_name, uscc, create_time, from_id, paper_id, input_key, paper_item_id) VALUES (%s,%s,%s,%s,%s,%s,%s, %s, %s,%s,%s)"
 
     cursor_test.execute(insert_sql,
-                        (company_name, nickname,role, former_name, uscc, create_time, from_id, paper_id, input_key, paper_item_id))
+                        (company_name, nickname,role, asset, former_name, uscc, create_time, from_id, paper_id, input_key, paper_item_id))
     conn_test.commit()
 
 
@@ -144,7 +145,7 @@ def deepseek_identify_people(chat_text):
 def gpt_identify_company(chat_text):
     # chat_4识别公司信息
     a, b, value = deepseek_chat(
-        chat_text + "\n提取文中所有公司的关键字包含：名称（人名不要提取），角色（公司在公告中的角色），别称（简称），以及曾用名（原名），和统一社会信用代码，没有的字段放回无。不要遗漏公司，不要总结和前置语。格式为：公司名称：某某有限公司,角色：债务人,别称：无,曾用名：无,统一社会信用代码：无;")
+        chat_text + "\n提取文中所有公司的关键字包含：名称（人名不要提取），角色（公司在公告中的角色），别称（简称），以及曾用名（原名），公司名下资产，和统一社会信用代码，没有的字段放回无。不要遗漏公司，不要总结和前置语。格式为：公司名称：某某有限公司,角色：债务人,别称：无,曾用名：无,公司名下资产：无,统一社会信用代码：无;")
     # value = '公司名称：中国长城资产管理股份有限公司上海市分公司,别称：无,曾用名：无,统一社会信用代码：无'
     # 分割数据
     value = re.sub(r'\n', '', value)
@@ -159,6 +160,7 @@ def gpt_identify_company(chat_text):
         role = re.findall(r'角色：(.*?),', block)[0]
         alias = re.findall(r'别称：(.*?),', block)[0]
         former_name = re.findall(r'曾用名：(.*?),', block)[0]
+        asset = re.findall(r'公司名下资产：(.*?),', block)[0]
         credit_code = re.findall(r'统一社会信用代码：(.*)', block)[0]
         if company_name == '无':
             continue
@@ -170,12 +172,15 @@ def gpt_identify_company(chat_text):
             former_name = ''
         if credit_code == '无':
             credit_code = ''
+        if asset == '无':
+            asset = ''
 
         company_info = {
             '公司名称': company_name,
             '角色': role,
             '别称': alias,
             '曾用名': former_name,
+            '公司名下资产': asset,
             '统一社会信用代码': credit_code
         }
         companies.append(company_info)
