@@ -3,7 +3,7 @@ import re
 import time
 import mysql.connector
 import requests
-from a_ktgg_api import judge_repeat_invest
+from a_ktgg_api import judge_repeat_case
 
 courts = {
     "M00": "重庆市高级人民法院",
@@ -79,7 +79,7 @@ origin_domain = "cqfygzfw.gov.cn"
 def get_cqcourt_info(from_queue, webpage_id):
     for court_code, court_name in courts.items():
         for day_num in range(0, 30 + 1):
-            for page_num in range(1, 1 + 1):
+            for page_num in range(1, 4 + 1):
                 # 获取今天时间
                 today = datetime.datetime.now()
                 # 计算day_num天后的时间
@@ -115,7 +115,11 @@ def get_cqcourt_info(from_queue, webpage_id):
                     content = data_value["ggnr"]
                     case_num = data_value["ahqc"]
                     id_value = data_value["id"]
+                    if judge_repeat_case(case_num):
+                        continue
                     court_room = ''.join(re.findall(r'在(.*?)开庭审理', content))
+                    if not court_room:
+                        court_room = ''.join(re.findall(r'在(.*?)庭询、谈话', content))
 
                     data = {
                         'id': f'{id_value}',
@@ -135,8 +139,6 @@ def get_cqcourt_info(from_queue, webpage_id):
                     except:
                         room_leader = ''
                         url = f'http://www.cqfygzfw.gov.cn/gggs/getKtggInfoNL.shtml?id={id_value}'
-                    if judge_repeat_invest(url):
-                        continue
                     print(
                         f"开庭时间：{court_time}, 法院：{court_name}, 案号：{case_num}, 法庭：{court_room}, 承办人：{room_leader}, 内容：{content},详情链接：{url}, id：{id_value}")
                     create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -158,7 +160,7 @@ def get_cqcourt_info(from_queue, webpage_id):
                         url, case_num, content, court_name, court_time, court_room, room_leader,
                         department,
                         origin,
-                        origin_domain, create_time, create_date, from_queue, webpage_id))
+                         origin_domain, create_time, create_date, from_queue, webpage_id))
                     # print("插入成功")
                     conn_test.commit()
                     cursor_test.close()

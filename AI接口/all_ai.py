@@ -15,6 +15,7 @@ from character_classificatio import identify_guarantee, identify_mortgagor, iden
 from quark_text import quark_text
 from doubao import doubao_pro_32k
 from quark_excel import quark_excel
+from identify_qrcode import is_qr_code
 
 
 def text_change(chat_text):
@@ -48,6 +49,7 @@ ai_list = {
         "quark_text",  # quark文字识别
         "doubao_pro_32k",  # doubao文字对话
         "quark_excel",    # quark图片转表格
+        "img_code_tell",
     ]
 }
 ai_text_dict = {
@@ -66,6 +68,7 @@ ai_text_dict = {
     'quark_text': quark_text,
     'doubao_pro_32k': doubao_pro_32k,
     'quark_excel': quark_excel,
+    'img_code_tell': is_qr_code,
 }
 
 
@@ -118,8 +121,8 @@ def get_ai_value():
                         'output_token_num': output_token_num,
                         'output_text': output_text,
                     }
-                    print('成功', success_data)
                     ai_parse_success(data=success_data)
+                    print('成功', success_data)
             except Exception as e:
                 fail_data = {
                     'id': f'{queue_id}',

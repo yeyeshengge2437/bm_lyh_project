@@ -125,7 +125,8 @@ def single_pages(file_pdf_url, xs, ys, xe, ye, title_sx=0, title_sy=0, title_ex=
     x1 = xe * width
     y1 = ye * height
 
-    tag_rect = fitz.Rect(x0, y0, x1, y1)
+    # tag_rect = fitz.Rect(x0, y0, x1, y1)
+    tag_rect = fitz.Rect()
     tabs = page.find_tables(clip=tag_rect)
     for table in tabs:
         # 对于每个表格中的每个单元格，添加红action注释

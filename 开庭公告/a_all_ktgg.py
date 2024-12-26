@@ -2,15 +2,18 @@ import time
 
 from heilongjiang_ktgg import get_lhjcourt_info
 from chongqing_ktgg import get_cqcourt_info
+from zhejiang_ktgg import get_zjcourt_info
 from a_ktgg_api import queue_next, queue_success, queue_fail
 
 methods = {
     'http://www.hljcourt.gov.cn/ktgg': get_lhjcourt_info,  # 黑龙江省高级人民法院
     'http://www.cqfygzfw.gov.cn/gggs/toListKtggNL.shtml?page=1': get_cqcourt_info,  # 重庆法院公众服务网
+    'https://www.zjsfgkw.gov.cn/jkts/search/ktgglist.do': get_zjcourt_info,  # 浙江法院网
 }
 web_list = [
     'http://www.hljcourt.gov.cn/ktgg',
     'http://www.cqfygzfw.gov.cn/gggs/toListKtggNL.shtml?page=1',
+    'https://www.zjsfgkw.gov.cn/jkts/search/ktgglist.do'
 ]
 
 while True:

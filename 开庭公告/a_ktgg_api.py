@@ -96,3 +96,25 @@ def judge_repeat_invest(url_href):
         return True
     else:
         return False
+
+def judge_repeat_case(case):
+    """
+    判断案号是否重复
+    :return:
+    """
+    # 连接数据库
+    conn_test = mysql.connector.connect(
+        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
+        user="col2024",
+        password="Bm_a12a06",
+        database="col",
+    )
+    cursor_test = conn_test.cursor()
+    # 获取版面来源的版面链接
+    # cursor_test.execute(f"SELECT id, url, state FROM col_judicial_auctions")
+    cursor_test.execute(f"SELECT id FROM col_case_open WHERE case_no = '{case}' LIMIT 1;")
+    rows = cursor_test.fetchall()
+    if rows:
+        return True
+    else:
+        return False
