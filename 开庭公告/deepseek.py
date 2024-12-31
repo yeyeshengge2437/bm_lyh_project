@@ -7,11 +7,11 @@ from openai import OpenAI
 # api_key="sk-9a76d51f714449d8b6ff81c74c02a5d0"
 # api_key_li = "sk-d11beb24cc234b9b9f5df67cee7c69a1"   # 李健
 # api_key_zhou = "sk-76f7b57a786e49028921aa98dc677422"  # 周冰
-api_key_ren = "sk-e659618a2ea54a09a289ac9861bb61b8"  # 任梁
+api_key_liu = "sk-8d54fe4e5cc843978361174a8c0d02c8"  # 刘可恒
 
 
 def deepseek_chat(chat_text, system_content="您是个乐于助人的助手", temperature=1.0, beta=False):
-    api_key = random.Random().choice([api_key_ren])
+    api_key = random.Random().choice([api_key_liu])
     if beta:
         client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com/beta")
         response = client.chat.completions.create(

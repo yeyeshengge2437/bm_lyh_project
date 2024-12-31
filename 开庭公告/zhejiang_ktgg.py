@@ -1,5 +1,6 @@
 import re
-
+import time
+from a_ktgg_api import judge_repeat_case
 import requests
 from lxml import etree
 import datetime
@@ -35,6 +36,7 @@ def get_zjcourt_info(from_queue, webpage_id):
     }
     response = requests.get('https://www.zjsfgkw.gov.cn/jkts/search/ktgglist.do', params=params, headers=headers)
     res_html = response.text
+    time.sleep(2)
     html_res_1 = etree.HTML(res_html)
     page_str = ''.join(html_res_1.xpath("//div[@id='pagination']/span//text()"))
     page_num = ''.join(re.findall(r'共 (\d+) 条', page_str))
@@ -48,6 +50,7 @@ def get_zjcourt_info(from_queue, webpage_id):
 
         response = requests.get('https://www.zjsfgkw.gov.cn/jkts/search/ktgglist.do', params=params, headers=headers)
         res = response.text
+        time.sleep(2)
         html_res = etree.HTML(res)
         list_data = html_res.xpath("//div[@class='jsearch-result-box']")
         for data in list_data:
@@ -58,6 +61,8 @@ def get_zjcourt_info(from_queue, webpage_id):
             cause = ''.join(data.xpath(".//td[@class='td'][6]/text()")).strip()
             room_leader = ''.join(data.xpath(".//td[@class='td'][8]/text()")).strip()
             members = ''.join(data.xpath(".//td[@class='td'][9]/text()")).strip() + ',' + ''.join(data.xpath(".//td[@class='td'][10]/text()")).strip()
+            if judge_repeat_case(case_no):
+                continue
             print(f"法院：{court}，法庭：{court_room}，开庭时间：{open_time}，案号：{case_no}，案由：{cause}，审判长：{room_leader}，成员：{members}")
             create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             # 设置创建日期
@@ -72,10 +77,10 @@ def get_zjcourt_info(from_queue, webpage_id):
             )
             cursor_test = conn_test.cursor()
             # 将数据插入到表中
-            insert_sql = "INSERT INTO col_case_open (case_no,  court,  open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,%s,%s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            insert_sql = "INSERT INTO col_case_open (case_no,  court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
             cursor_test.execute(insert_sql, (
-                case_no, court, open_time, court_room, room_leader,
+                case_no, court, members, open_time, court_room, room_leader,
                 department,
                 origin,
                 origin_domain, create_time, create_date, from_queue, webpage_id))

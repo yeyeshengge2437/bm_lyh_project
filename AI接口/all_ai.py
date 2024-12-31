@@ -74,67 +74,70 @@ ai_text_dict = {
 
 def get_ai_value():
     while True:
-        start_time = time.time()
         try:
-            value = ai_parse_next(data=ai_list)
-        except:
-            time.sleep(360)
-            continue
-        if value:
-            queue_id = value['id']
-            name = value['name']
-            tell_tool = value['tell_tool']
-            input_text = value['input_text']
-            file = value.get('files')
-            # input_text = text_change(input_text)
+            start_time = time.time()
             try:
-                if input_text and file:
-                    file_url = json.loads(file)[0]
-                    input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](file_url, input_text)
-                elif input_text and not file:
-                    input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](input_text)
-                elif file and not input_text:
-                    file_url = json.loads(file)[0]
-                    input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](file_url)
-                else:
+                value = ai_parse_next(data=ai_list)
+            except:
+                time.sleep(360)
+                continue
+            if value:
+                queue_id = value['id']
+                name = value['name']
+                tell_tool = value['tell_tool']
+                input_text = value['input_text']
+                file = value.get('files')
+                # input_text = text_change(input_text)
+                try:
+                    if input_text and file:
+                        file_url = json.loads(file)[0]
+                        input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](file_url, input_text)
+                    elif input_text and not file:
+                        input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](input_text)
+                    elif file and not input_text:
+                        file_url = json.loads(file)[0]
+                        input_token_num, output_token_num, output_text = ai_text_dict[tell_tool](file_url)
+                    else:
+                        fail_data = {
+                            'id': f'{queue_id}',
+                            'remark': f'传参错误'
+                        }
+                        print(fail_data)
+                        ai_parse_fail(data=fail_data)
+                        continue
+                    if tell_tool == "quark_text":
+                        output_text = json.dumps(output_text, ensure_ascii=False)
+                        success_data = {
+                            'id': queue_id,
+                            'remark': name,
+                            'output_text': str(output_text),
+                        }
+                        print('成功', success_data)
+                        ai_parse_success(data=success_data)
+                    else:
+                        success_data = {
+                            'id': f'{queue_id}',
+                            'remark': name,
+                            'input_token_num': input_token_num,
+                            'output_token_num': output_token_num,
+                            'output_text': output_text,
+                        }
+                        ai_parse_success(data=success_data)
+                        print('成功', success_data)
+                except Exception as e:
                     fail_data = {
                         'id': f'{queue_id}',
-                        'remark': f'传参错误'
+                        'remark': f'调用失败,原因{e}'
                     }
                     print(fail_data)
                     ai_parse_fail(data=fail_data)
-                    continue
-                if tell_tool == "quark_text":
-                    output_text = json.dumps(output_text, ensure_ascii=False)
-                    success_data = {
-                        'id': queue_id,
-                        'remark': name,
-                        'output_text': str(output_text),
-                    }
-                    print('成功', success_data)
-                    ai_parse_success(data=success_data)
-                else:
-                    success_data = {
-                        'id': f'{queue_id}',
-                        'remark': name,
-                        'input_token_num': input_token_num,
-                        'output_token_num': output_token_num,
-                        'output_text': output_text,
-                    }
-                    ai_parse_success(data=success_data)
-                    print('成功', success_data)
-            except Exception as e:
-                fail_data = {
-                    'id': f'{queue_id}',
-                    'remark': f'调用失败,原因{e}'
-                }
-                print(fail_data)
-                ai_parse_fail(data=fail_data)
-                if "您的账号已达频率限制" in str(e):
-                    print('您的账号已达频率限制' + "等待60秒")
-                    time.sleep(60)
-        else:
-            time.sleep(10)
+                    if "您的账号已达频率限制" in str(e):
+                        print('您的账号已达频率限制' + "等待60秒")
+                        time.sleep(60)
+            else:
+                time.sleep(10)
+        except Exception as e:
+            print(e)
 
 
 if __name__ == '__main__':
