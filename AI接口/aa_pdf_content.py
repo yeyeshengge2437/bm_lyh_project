@@ -149,6 +149,7 @@ def single_pages(file_pdf_url, xs, ys, xe, ye, title_sx=0, title_sy=0, title_ex=
     # # 右侧区域
     page.add_redact_annot(fitz.Rect(x1, y0 - 200, width, y1 + 200))  # 添加右侧区域
     page.apply_redactions()
+    # doc.save("1.pdf")
     title_text = ''
     if title_sy == 0 and title_ey == 0 and title_sx == 0 and title_ex == 0:
         title_text_1 = ""
@@ -193,7 +194,7 @@ def single_pages(file_pdf_url, xs, ys, xe, ye, title_sx=0, title_sy=0, title_ex=
                 block_loc_list[block['bbox']] = block["lines"][0]["spans"][0]["text"]
             except:
                 pass
-        title_rect = fitz.Rect(title_sx * width, title_sy * height, title_ex * width, title_ey * height)
+        title_rect = fitz.Rect(title_sx * width + 2, title_sy * height + 2, title_ex * width - 2, title_ey * height - 2)
         title_center_x = (title_rect.x0 + title_rect.x1) / 2
         title_center_y = (title_rect.y0 + title_rect.y1) / 2
         for location_key, value_text in block_loc_list.items():
@@ -215,7 +216,7 @@ def single_pages(file_pdf_url, xs, ys, xe, ye, title_sx=0, title_sy=0, title_ex=
     # doc.save("2.pdf")
     # # 保存修改后的PDF文件
     # doc.save("modified_example.pdf")
-    text = page.get_text(clip=tag_rect)  # 提取页面文本
+    text = page.get_text()  # 提取页面文本
     tag_str += text + '\n'
     doc.close()
     if os.path.exists(file_pdf):
