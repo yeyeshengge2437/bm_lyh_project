@@ -29,6 +29,7 @@ def create_demo_param(client_id, client_secret, img_path):
         "dataType": "image",
         "serviceOption": "typeset",
         "inputConfigs": '{"function_option": "excel"}',
+        # "outputConfigs": '{"need_return_image":"True"}',
         "outputConfigs": "",
         "reqId": req_id,
         "clientId": client_id,

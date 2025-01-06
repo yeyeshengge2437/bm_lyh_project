@@ -51,6 +51,7 @@ def get_guangxifazhi_paper(paper_time, queue_id, webpage_id):
     response = requests.post('http://ipaper.pagx.cn/data/query', headers=headers, data=data, verify=False)
     if response.status_code == 200:
         content = response.json()
+        time.sleep(2)
         bm_list = content["hits"]["hits"]
         pdf_set = set()
         for bm in bm_list:
@@ -70,6 +71,7 @@ def get_guangxifazhi_paper(paper_time, queue_id, webpage_id):
 
             if bm_response.status_code == 200:
                 bm_content = bm_response.json()
+                time.sleep(2)
                 article_list = bm_content["hits"]["hits"]
                 for article in article_list:
                     article_id = article["_id"]
@@ -130,5 +132,5 @@ def get_guangxifazhi_paper(paper_time, queue_id, webpage_id):
 
 
 
-# get_guangxifazhi_paper('2022-08-19', 111, 1111)
+# get_guangxifazhi_paper('2022-11-23', 111, 1111)
 

@@ -72,7 +72,6 @@ def get_shanxi_paper(paper_time, queue_id, webpage_id):
                 )
                 cursor_test = conn_test.cursor()
                 # print(bm_name, article_name, article_url, bm_pdf, content)
-
                 if judging_criteria(article_name, content):
 
                     # 上传到报纸的内容
@@ -104,4 +103,4 @@ def get_shanxi_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_shanxi_paper('2023-01-15', 111, 1111)
+# get_shanxi_paper('2023-04-20', 111, 1111)

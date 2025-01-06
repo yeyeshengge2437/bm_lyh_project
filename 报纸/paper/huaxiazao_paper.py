@@ -29,6 +29,7 @@ def get_date():
         url = f'http://epaper.cmnpnews.com/index.asp?Nid={i}'
         response = requests.get(url, headers=headers, verify=False)
         if response.status_code == 200:
+            time.sleep(2)
             content = response.content.decode('gbk')
             html = etree.HTML(content)
             date = ''.join(html.xpath("//span[@class='fl qikan_menu']/text()"))
@@ -142,4 +143,4 @@ def get_huaxiazao_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_huaxiazao_paper('2024-10-31', 111, 1111)
+# get_huaxiazao_paper('2022-11-23', 111, 1111)

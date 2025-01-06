@@ -102,8 +102,11 @@ def get_nanfangnongcun_paper(paper_time, queue_id, webpage_id):
                     except:
                         continue
                 article_html = etree.HTML(article_content)
-                # 获取文章内容
-                content = ''.join(article_html.xpath("//div[@class='contenttext']/text()")).strip()
+                if article_html is None:
+                    content = ''
+                else:
+                    # 获取文章内容
+                    content = ''.join(article_html.xpath("//div[@class='contenttext']/text()")).strip()
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
@@ -145,4 +148,4 @@ def get_nanfangnongcun_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_nanfangnongcun_paper('2023-08-01', 111, 1111)
+# get_nanfangnongcun_paper('2021-04-13', 111, 1111)

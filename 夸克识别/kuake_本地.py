@@ -26,6 +26,7 @@ def create_demo_param(client_id, client_secret):
 
     param = {
         "clientId": client_id,
+        "outputConfigs": '{"need_return_image":"True"}',
         "business": business,
         "signMethod": sign_method,
         "signNonce": sign_nonce,

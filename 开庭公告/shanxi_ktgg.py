@@ -1,8 +1,9 @@
 import datetime
 import re
 import time
-
+import mysql.connector
 import requests
+from a_ktgg_api import judge_repeat_case
 
 chinese_num_map = {
     '二十日': "20日", '二十一日': "21日", '二十二日': "22日", '二十三日': "23日", '二十四日': "24日",
@@ -42,45 +43,76 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
     'X-Requested-With': 'XMLHttpRequest',
 }
-now_time = datetime.datetime.now().strftime('%Y-%m-%d')
-month_time = (datetime.datetime.now() + datetime.timedelta(days=30)).strftime('%Y-%m-%d')
 
-data = {
-    'fydm': '',
-    'kssj': f'{str(now_time)}',
-    'jssj': f'{str(month_time)}',
-    'page': '1',
-}
 
-response = requests.post(
-    'http://sxgaofa.cn/sxssfw/ktgg/ktggList.shtml;jsessionid=65BE0DF10785CEDB5A010146249B6F74',
-    headers=headers,
-    data=data,
-    verify=False,
-)
-json_value = response.json()
-page_court = json_value.get('pageCount')
-for page_num in range(1, page_court + 1):
+def get_sxcourt_1_info(from_queue, webpage_id):
+    origin = '陕西法院诉讼服务网'
+    origin_domain = 'sxgaofa.cn'
+    now_time = datetime.datetime.now().strftime('%Y-%m-%d')
+    month_time = (datetime.datetime.now() + datetime.timedelta(days=30)).strftime('%Y-%m-%d')
+
     data = {
         'fydm': '',
-        'kssj': '2025-01-02',
-        'jssj': '2025-02-02',
-        'page': f'{page_num}',
+        'kssj': f'{str(now_time)}',
+        'jssj': f'{str(month_time)}',
+        'page': '1',
     }
-    res = requests.post(
+
+    response = requests.post(
         'http://sxgaofa.cn/sxssfw/ktgg/ktggList.shtml;jsessionid=65BE0DF10785CEDB5A010146249B6F74',
         headers=headers,
         data=data,
         verify=False,
     )
-    value = res.json()
-    time.sleep(2)
-    for item in value.get('data'):
-        case = item.get('ahqc')
-        content = item.get('ggnr')
-        court = item.get('fymc')
-        start_time = ''.join(re.findall(r'本院定于(.*?)到', content))
-        start_time = chinese_to_arabic(start_time)
-        start_time = start_time.replace('年', '-').replace('月', '-').replace('日', ' ')
-        place = ''.join(re.findall(rf'在(.*?)开庭审理', content))
-        print(f"案号:{case},法院:{court},开庭时间:{start_time},地点:{place},内容:{content}")
+    json_value = response.json()
+    page_court = json_value.get('pageCount')
+    for page_num in range(1, page_court + 1):
+        data = {
+            'fydm': '',
+            'kssj': f'{str(now_time)}',
+            'jssj': f'{str(month_time)}',
+            'page': f'{page_num}',
+        }
+        res = requests.post(
+            'http://sxgaofa.cn/sxssfw/ktgg/ktggList.shtml;jsessionid=65BE0DF10785CEDB5A010146249B6F74',
+            headers=headers,
+            data=data,
+            verify=False,
+        )
+        value = res.json()
+        time.sleep(2)
+        for item in value.get('data'):
+            case_no = item.get('ahqc')
+            if judge_repeat_case(case_no):
+                continue
+            content = item.get('ggnr')
+            court = item.get('fymc')
+            start_time_1 = ''.join(re.findall(r'本院定于(.*?)到', content))
+            start_time_2 = chinese_to_arabic(start_time_1)
+            open_time = start_time_2.replace('年', '-').replace('月', '-').replace('日', ' ')
+            court_room = ''.join(re.findall(rf'在(.*?)开庭审理', content))
+
+            create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            # 设置创建日期
+            create_date = datetime.datetime.now().strftime('%Y-%m-%d')
+            department = ''
+            # 连接到测试库
+            conn_test = mysql.connector.connect(
+                host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
+                user="col2024",
+                password="Bm_a12a06",
+                database="col"
+            )
+            cursor_test = conn_test.cursor()
+            # 将数据插入到表中
+            insert_sql = "INSERT INTO col_case_open (case_no,  court,  open_time, court_room,  department,  origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,%s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+
+            cursor_test.execute(insert_sql, (
+                case_no, court, open_time, court_room,
+                department,
+                origin,
+                origin_domain, create_time, create_date, from_queue, webpage_id))
+            # print("插入成功")
+            conn_test.commit()
+            cursor_test.close()
+            conn_test.close()

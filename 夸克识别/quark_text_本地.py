@@ -29,7 +29,7 @@ def create_demo_param(client_id, client_secret, path_img):
         "dataType": "image",
         "serviceOption": "ocr",
         "inputConfigs": "{\"function_option\":\"RecognizeGeneralDocument\"}",
-        "outputConfigs": '',
+        "outputConfigs": '{"need_return_image":"True"}',
         "reqId": req_id,
         "clientId": client_id,
         "signMethod": sign_method,
