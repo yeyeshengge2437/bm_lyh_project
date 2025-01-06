@@ -4,6 +4,11 @@ from heilongjiang_ktgg import get_lhjcourt_info
 from chongqing_ktgg import get_cqcourt_info
 from zhejiang_ktgg import get_zjcourt_info
 from shanxi_ktgg import get_sxcourt_1_info
+from jiangsu_ktgg import get_jscourt_info
+from shanghai_ktgg import get_shcourt_info
+from xuzhou_ktgg import get_xzcourt_info
+from wuxi_ktgg import get_wxcourt_info
+from guangdong_ktgg import get_gdcourt_info
 from a_ktgg_api import queue_next, queue_success, queue_fail
 
 methods = {
@@ -11,12 +16,22 @@ methods = {
     'http://www.cqfygzfw.gov.cn/gggs/toListKtggNL.shtml?page=1': get_cqcourt_info,  # 重庆法院公众服务网
     'https://www.zjsfgkw.gov.cn/jkts/search/ktgglist.do': get_zjcourt_info,  # 浙江法院网
     'http://sxgaofa.cn/sxssfw/ktgg/toListKtggNL.shtml': get_sxcourt_1_info,  # 陕西法院诉讼服务网
+    'https://ssfw.jsfy.gov.cn/#/ywym?onetitle=4&title=ktgg': get_xzcourt_info,  # 江苏法院诉讼服务网
+    'https://www.hshfy.sh.cn/shwfy/ssfww/ktgg.jsp': get_shcourt_info,  # 上海法院诉讼服务网
+    "https://ssfw.xzfy.gov.cn/#/fyxx?label=0": get_xzcourt_info,  # 徐州法院诉讼服务网
+    "https://ssfw.wxfy.gov.cn/lawsuit/case/#/sfgk": get_wxcourt_info,  # 无锡法院诉讼服务网
+    "https://www.gdcourts.gov.cn/ktgg/index.html": get_gdcourt_info,  # 广东法院网
 }
 web_list = [
     'http://www.hljcourt.gov.cn/ktgg',
     'http://www.cqfygzfw.gov.cn/gggs/toListKtggNL.shtml?page=1',
     'https://www.zjsfgkw.gov.cn/jkts/search/ktgglist.do',
-    'http://sxgaofa.cn/sxssfw/ktgg/toListKtggNL.shtml'
+    'http://sxgaofa.cn/sxssfw/ktgg/toListKtggNL.shtml',
+    'https://ssfw.jsfy.gov.cn/#/ywym?onetitle=4&title=ktgg',
+    'https://www.hshfy.sh.cn/shwfy/ssfww/ktgg.jsp',
+    "https://ssfw.xzfy.gov.cn/#/fyxx?label=0",
+    "https://ssfw.wxfy.gov.cn/lawsuit/case/#/sfgk",
+    "https://www.gdcourts.gov.cn/ktgg/index.html",
 ]
 
 while True:
