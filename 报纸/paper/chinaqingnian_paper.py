@@ -37,6 +37,8 @@ def get_chinaqingnian_paper(paper_time, queue_id, webpage_id):
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
+        if html_1 is None:
+            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//a[@id='pageLink']")
         for bm in all_bm:
@@ -52,6 +54,8 @@ def get_chinaqingnian_paper(paper_time, queue_id, webpage_id):
             # 版面的pdf
             bm_pdf = None
             up_pdf = None
+            if bm_html is None:
+                continue
             # 获取所有文章的链接
             all_article = bm_html.xpath("//div[@id='titleList']/ul/li/a")
             pdf_set = set()
@@ -67,8 +71,11 @@ def get_chinaqingnian_paper(paper_time, queue_id, webpage_id):
                 time.sleep(1)
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
-                # 获取文章内容
-                content = ''.join(article_html.xpath("//div[@id='ozoom']/p/text()")).strip()
+                if article_html is None:
+                    content = ''
+                else:
+                    # 获取文章内容
+                    content = ''.join(article_html.xpath("//div[@id='ozoom']/p/text()")).strip()
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
@@ -78,7 +85,6 @@ def get_chinaqingnian_paper(paper_time, queue_id, webpage_id):
                 )
                 cursor_test = conn_test.cursor()
                 # print(bm_name, article_name, article_url, bm_pdf, content)
-
                 if judging_criteria(article_name, content):
 
                     # 上传到报纸的内容
@@ -110,4 +116,4 @@ def get_chinaqingnian_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_chinaqingnian_paper('2024-08-22', 111, 1111)
+# get_chinaqingnian_paper('2022-07-14', 111, 1111)

@@ -92,6 +92,8 @@ def judge_repeat_invest(url_href):
     # cursor_test.execute(f"SELECT id, url, state FROM col_judicial_auctions")
     cursor_test.execute(f"SELECT id FROM col_case_open WHERE url = '{url_href}' LIMIT 1;")
     rows = cursor_test.fetchall()
+    cursor_test.close()
+    conn_test.close()
     if rows:
         return True
     else:
@@ -114,6 +116,8 @@ def judge_repeat_case(case):
     # cursor_test.execute(f"SELECT id, url, state FROM col_judicial_auctions")
     cursor_test.execute(f"SELECT id FROM col_case_open WHERE case_no = '{case}' LIMIT 1;")
     rows = cursor_test.fetchall()
+    cursor_test.close()
+    conn_test.close()
     if rows:
         return True
     else:

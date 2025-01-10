@@ -9,6 +9,9 @@ from shanghai_ktgg import get_shcourt_info
 from xuzhou_ktgg import get_xzcourt_info
 from wuxi_ktgg import get_wxcourt_info
 from guangdong_ktgg import get_gdcourt_info
+from shanxi_ktgg_shan import get_sxcourt_info_shan
+from chinashenpan_ktgg import get_chinacourt_info
+from beijing_ktgg import get_bjcourt_info
 from a_ktgg_api import queue_next, queue_success, queue_fail
 
 methods = {
@@ -21,6 +24,9 @@ methods = {
     "https://ssfw.xzfy.gov.cn/#/fyxx?label=0": get_xzcourt_info,  # 徐州法院诉讼服务网
     "https://ssfw.wxfy.gov.cn/lawsuit/case/#/sfgk": get_wxcourt_info,  # 无锡法院诉讼服务网
     "https://www.gdcourts.gov.cn/ktgg/index.html": get_gdcourt_info,  # 广东法院网
+    "https://www.shanxify.gov.cn/ktgg/index.jhtml": get_sxcourt_info_shan,  # 山西法院诉讼服务网
+    "https://splcgk.court.gov.cn/gzfwww//ktgg": get_chinacourt_info,  # 中国审判流程信息公开网
+    "https://www.bjcourt.gov.cn": get_bjcourt_info,  # 北京法院审判信息网
 }
 web_list = [
     'http://www.hljcourt.gov.cn/ktgg',
@@ -32,6 +38,9 @@ web_list = [
     "https://ssfw.xzfy.gov.cn/#/fyxx?label=0",
     "https://ssfw.wxfy.gov.cn/lawsuit/case/#/sfgk",
     "https://www.gdcourts.gov.cn/ktgg/index.html",
+    "https://www.shanxify.gov.cn/ktgg/index.jhtml",
+    "https://splcgk.court.gov.cn/gzfwww//ktgg",
+    "https://www.bjcourt.gov.cn",
 ]
 
 while True:

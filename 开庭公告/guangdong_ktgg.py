@@ -33,8 +33,6 @@ def get_gdcourt_info(from_queue, webpage_id):
             url = f'https://www.gdcourts.gov.cn/ktgg/index_{page}.html'
         response = requests.get(url, headers=headers)
         time.sleep(2)
-        if response.status_code != 200:
-            return
         res = response.text
         res_html = etree.HTML(res)
         kt_list = res_html.xpath('//tr')
