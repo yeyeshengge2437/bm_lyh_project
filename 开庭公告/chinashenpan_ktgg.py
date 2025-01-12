@@ -49,27 +49,28 @@ def get_chinacourt_info(from_queue, webpage_id):
                 create_date = datetime.datetime.now().strftime('%Y-%m-%d')
                 department = ''
                 # 连接到测试库
-                conn_test = mysql.connector.connect(
-                    host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
-                    user="col2024",
-                    password="Bm_a12a06",
-                    database="col"
-                )
-                cursor_test = conn_test.cursor()
-                # 将数据插入到表中
-                insert_sql = "INSERT INTO col_case_open (court,  open_time, court_room, department, origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                try:
+                    conn_test = mysql.connector.connect(
+                        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
+                        user="col2024",
+                        password="Bm_a12a06",
+                        database="col"
+                    )
+                    cursor_test = conn_test.cursor()
+                    # 将数据插入到表中
+                    insert_sql = "INSERT INTO col_case_open (court,  open_time, court_room, content, url, department, origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-                cursor_test.execute(insert_sql, (
-                    court_name, open_time, court_room,
-                    department,
-                    origin,
-                    origin_domain, create_time, create_date, from_queue, webpage_id))
-                # print("插入成功")
-                conn_test.commit()
-                cursor_test.close()
-                conn_test.close()
-                print(
-                    f"内容：{content} 案由：{cause} 开庭时间：{open_time} 法庭：{court_room} 当事人：{members} url：{url} 法院：{court_name} 发布时间：{release}\n")
+                    cursor_test.execute(insert_sql, (
+                        court_name, open_time, court_room, content, url,
+                        department,
+                        origin,
+                        origin_domain, create_time, create_date, from_queue, webpage_id))
+                    # print("插入成功")
+                    conn_test.commit()
+                    cursor_test.close()
+                    conn_test.close()
+                except:
+                    continue
 
     page.quit()
 

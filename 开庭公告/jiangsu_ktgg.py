@@ -67,26 +67,29 @@ def get_jscourt_info(from_queue, webpage_id):
                 create_date = datetime.datetime.now().strftime('%Y-%m-%d')
                 department = ''
                 # 连接到测试库
-                conn_test = mysql.connector.connect(
-                    host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
-                    user="col2024",
-                    password="Bm_a12a06",
-                    database="col"
-                )
-                cursor_test = conn_test.cursor()
-                # 将数据插入到表中
-                insert_sql = "INSERT INTO col_case_open (case_no, cause,  court,  open_time, court_room, room_leader, department, members, origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,%s,%s,%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                try:
+                    conn_test = mysql.connector.connect(
+                        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
+                        user="col2024",
+                        password="Bm_a12a06",
+                        database="col"
+                    )
+                    cursor_test = conn_test.cursor()
+                    # 将数据插入到表中
+                    insert_sql = "INSERT INTO col_case_open (case_no, cause,  court,  open_time, court_room, room_leader, department, members, origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,%s,%s,%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-                cursor_test.execute(insert_sql, (
-                    case_no, brief, court_name, open_time, court_room, room_leader,
-                    department,members,
-                    origin,
-                    origin_domain, create_time, create_date, from_queue, webpage_id))
-                # print("插入成功")
-                conn_test.commit()
-                cursor_test.close()
-                conn_test.close()
-                print(f'法院：{court_name}, 案号：{case_no}, 案由：{brief}, 当事人：{members}, 开庭时间：{open_time}, 法庭：{court_room}, 承办人：{room_leader}')
+                    cursor_test.execute(insert_sql, (
+                        case_no, brief, court_name, open_time, court_room, room_leader,
+                        department,members,
+                        origin,
+                        origin_domain, create_time, create_date, from_queue, webpage_id))
+                    # print("插入成功")
+                    conn_test.commit()
+                    cursor_test.close()
+                    conn_test.close()
+                except:
+                    continue
+                # print(f'法院：{court_name}, 案号：{case_no}, 案由：{brief}, 当事人：{members}, 开庭时间：{open_time}, 法庭：{court_room}, 承办人：{room_leader}')
         else:
             print(f"请求失败，状态码: {response.status_code}")
             print("响应内容:", response.text)

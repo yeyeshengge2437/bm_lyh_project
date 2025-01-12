@@ -4,6 +4,7 @@ import time
 import mysql.connector
 import requests
 from lxml import etree
+from a_ktgg_api import judge_repeat_invest
 
 cookies = {
     'clientlanguage': 'zh_CN',
@@ -30,7 +31,7 @@ headers = {
 }
 
 def get_sxcourt_info_shan(from_queue, webpage_id):
-    for page in range(1, 180 + 1):
+    for page in range(1, 30 + 1):
         params = {
             'channelId': '307',
             'listsize': '192',
@@ -42,13 +43,19 @@ def get_sxcourt_info_shan(from_queue, webpage_id):
         response = requests.get('https://www.shanxify.gov.cn/ktggPage.jspx', params=params, cookies=cookies, headers=headers)
         res = response.text
         res_html = etree.HTML(res)
+        if res_html is None:
+            continue
         kt_list = res_html.xpath("//div[@class='text']/ul/li")
         for kt in kt_list:
             text = ''.join(kt.xpath("./a/text()"))
             url = ''.join(kt.xpath("./a/@href"))
+            if judge_repeat_invest(url):
+                continue
             con_res = requests.get(url, cookies=cookies, headers=headers)
             time.sleep(2)
             con_res_html = etree.HTML(con_res.text)
+            if con_res_html is None:
+                continue
             content = ''.join(con_res_html.xpath("//div[@class='text']/h1//text()"))
             open_time = ''.join(re.findall("(.*?)在", content))
             court_name = ''.join(re.findall("在(.*?法院)", content))
@@ -66,7 +73,7 @@ def get_sxcourt_info_shan(from_queue, webpage_id):
             )
             cursor_test = conn_test.cursor()
             # 将数据插入到表中
-            insert_sql = "INSERT INTO col_case_open ( court,  open_time, court_room, department,content, origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,%s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            insert_sql = "INSERT INTO col_case_open ( court,  open_time, court_room,department,content, origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,%s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
             cursor_test.execute(insert_sql, (
                 court_name, open_time, court_room,
@@ -77,4 +84,7 @@ def get_sxcourt_info_shan(from_queue, webpage_id):
             conn_test.commit()
             cursor_test.close()
             conn_test.close()
-            print(f"开庭时间：{open_time}, 法院：{court_name}, 地点：{court_room}, 内容：{content}, 链接：{url}")
+            # print(f"开庭时间：{open_time}, 法院：{court_name}, 地点：{court_room}, 内容：{content}, 链接：{url}")
+
+
+# get_sxcourt_info_shan(111, 322)

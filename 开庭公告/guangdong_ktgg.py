@@ -1,6 +1,6 @@
 import datetime
 import time
-
+from a_ktgg_api import judge_repeat_invest
 import mysql.connector
 import requests
 from lxml import etree
@@ -37,58 +37,44 @@ def get_gdcourt_info(from_queue, webpage_id):
         res_html = etree.HTML(res)
         kt_list = res_html.xpath('//tr')
         for kt in kt_list[1:]:
+            url = ''.join(kt.xpath('./td[3]/a//@href'))
+            if judge_repeat_invest(url):
+                continue
             open_time = ''.join(kt.xpath('./td[1]//text()'))
             court_str = ''.join(kt.xpath('./td[2]//text()'))
             court_str_list = court_str.split('\n')
             court_name = court_str_list[0]
             court_room = court_str_list[1]
             case_no = ''.join(kt.xpath('./td[3]/a//text()'))
-            url = ''.join(kt.xpath('./td[3]/a//@href'))
 
-            create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            # 设置创建日期
-            create_date = datetime.datetime.now().strftime('%Y-%m-%d')
-            # 连接到测试库
-            conn_test = mysql.connector.connect(
-                host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
-                user="col2024",
-                password="Bm_a12a06",
-                database="col"
-            )
-            cursor_test = conn_test.cursor()
-            # 将数据插入到表中
-            insert_sql = "INSERT INTO col_case_open (case_no, court,  open_time, court_room, origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,%s,%s,%s, %s,%s, %s, %s, %s, %s,)"
 
-            cursor_test.execute(insert_sql, (
-                case_no, court_name, open_time, court_room,
-                origin,
-                origin_domain, create_time, create_date, from_queue, webpage_id))
-            conn_test.commit()
-            cursor_test.close()
-            conn_test.close()
             create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             # 设置创建日期
             create_date = datetime.datetime.now().strftime('%Y-%m-%d')
             department = ''
             # 连接到测试库
-            conn_test = mysql.connector.connect(
-                host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
-                user="col2024",
-                password="Bm_a12a06",
-                database="col"
-            )
-            cursor_test = conn_test.cursor()
-            # 将数据插入到表中
-            insert_sql = "INSERT INTO col_case_open (case_no,  court,  open_time, court_room, department, origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            try:
+                conn_test = mysql.connector.connect(
+                    host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
+                    user="col2024",
+                    password="Bm_a12a06",
+                    database="col"
+                )
+                cursor_test = conn_test.cursor()
+                # 将数据插入到表中
+                insert_sql = "INSERT INTO col_case_open (case_no,  court,  open_time, court_room, url, department, origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-            cursor_test.execute(insert_sql, (
-                case_no, court_name, open_time, court_room,
-                department,
-                origin,
-                origin_domain, create_time, create_date, from_queue, webpage_id))
-            # print("插入成功")
-            conn_test.commit()
-            cursor_test.close()
-            conn_test.close()
-            print(f"开庭时间：{open_time}, 法院：{court_name}, 地点：{court_room}, 案号：{case_no}, 链接：{url}")
+                cursor_test.execute(insert_sql, (
+                    case_no, court_name, open_time, court_room, url,
+                    department,
+                    origin,
+                    origin_domain, create_time, create_date, from_queue, webpage_id))
+                # print("插入成功")
+                conn_test.commit()
+                cursor_test.close()
+                conn_test.close()
+            except:
+                continue
+            # print(f"开庭时间：{open_time}, 法院：{court_name}, 地点：{court_room}, 案号：{case_no}, 链接：{url}")
 
+# get_gdcourt_info(111, 222)

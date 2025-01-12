@@ -27,7 +27,7 @@ headers = {
 
 
 def get_lhjcourt_info(from_queue, webpage_id):
-    for page in range(0, 99 + 1):
+    for page in range(0, 50 + 1):
         params = {
             'p': f'{page}',
             'st': '',
@@ -84,25 +84,28 @@ def get_lhjcourt_info(from_queue, webpage_id):
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 department = ''
                 # 连接到测试库
-                conn_test = mysql.connector.connect(
-                    host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
-                    user="col2024",
-                    password="Bm_a12a06",
-                    database="col"
-                )
-                cursor_test = conn_test.cursor()
-                # 将数据插入到表中
-                insert_sql = "INSERT INTO col_case_open (url, case_no, content, cause, court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,  %s, %s,%s, %s,%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                try:
+                    conn_test = mysql.connector.connect(
+                        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
+                        user="col2024",
+                        password="Bm_a12a06",
+                        database="col"
+                    )
+                    cursor_test = conn_test.cursor()
+                    # 将数据插入到表中
+                    insert_sql = "INSERT INTO col_case_open (url, case_no, content, cause, court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,  %s, %s,%s, %s,%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-                cursor_test.execute(insert_sql, (
-                    links, case_no, content, cause, trial_court, members, open_date, court_room, room_leader,
-                    department,
-                    origin,
-                    origin_domain, create_time, create_date, from_queue, webpage_id))
-                # print("插入成功")
-                conn_test.commit()
-                cursor_test.close()
-                conn_test.close()
+                    cursor_test.execute(insert_sql, (
+                        links, case_no, content, cause, trial_court, members, open_date, court_room, room_leader,
+                        department,
+                        origin,
+                        origin_domain, create_time, create_date, from_queue, webpage_id))
+                    # print("插入成功")
+                    conn_test.commit()
+                    cursor_test.close()
+                    conn_test.close()
+                except:
+                    continue
 
 
 # get_lhjcourt_info(111, 222)

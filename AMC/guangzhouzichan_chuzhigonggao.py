@@ -71,7 +71,7 @@ def get_guangzhouzichan_chuzhigonggao(queue_id, webpage_id):
                     title_content = "".join(res_title_html.xpath(
                         "//div[@class='wrapper']//text()"))
 
-                    annex = res_title_html.xpath("//div[@class='wrapper']//a/@src")
+                    annex = res_title_html.xpath("//div[@class='wrapper']//a/@src | //div[@class='wrapper']//a/@href")
                     if annex:
                         files = []
                         original_url = []
