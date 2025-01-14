@@ -88,7 +88,7 @@ def get_lianhe_paper(paper_time, queue_id, webpage_id):
                 insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
 
                 cursor_test.execute(insert_sql,
-                                    (day, paper, bm_name, bm_pdf, bm_url, up_pdf, create_time, queue_id,
+                                    (day, paper, bm_name, bm_pdf, bm_pdf, up_pdf, create_time, queue_id,
                                      create_date, webpage_id))
                 conn_test.commit()
 

@@ -3,7 +3,7 @@ import os
 import random
 import re
 from datetime import datetime
-
+from tool.mysql_connection_pool import get_connection
 import mysql.connector
 import pdfplumber
 import requests
@@ -253,12 +253,7 @@ def judge_bm_repeat(origin, bm_url):
     # 创建版面链接集合
     bm_url_set = set()
     # 连接数据库
-    conn_test = mysql.connector.connect(
-        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
-        user="col2024",
-        password="Bm_a12a06",
-        database="col",
-    )
+    conn_test = get_connection()
     cursor_test = conn_test.cursor()
     # 获取版面来源的版面链接
     cursor_test.execute(f"SELECT id, page_url FROM col_paper_page WHERE paper = '{origin}'")

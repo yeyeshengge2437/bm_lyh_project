@@ -5,6 +5,7 @@ import requests
 from lxml import etree
 import datetime
 import mysql.connector
+from tool.mysql_connection_pool import get_connection
 
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -63,19 +64,14 @@ def get_zjcourt_info(from_queue, webpage_id):
             members = ''.join(data.xpath(".//td[@class='td'][9]/text()")).strip() + ',' + ''.join(data.xpath(".//td[@class='td'][10]/text()")).strip()
             if judge_repeat_case(case_no):
                 continue
-            print(f"法院：{court}，法庭：{court_room}，开庭时间：{open_time}，案号：{case_no}，案由：{cause}，审判长：{room_leader}，成员：{members}")
+            # print(f"法院：{court}，法庭：{court_room}，开庭时间：{open_time}，案号：{case_no}，案由：{cause}，审判长：{room_leader}，成员：{members}")
             create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             # 设置创建日期
             create_date = datetime.datetime.now().strftime('%Y-%m-%d')
             department = ''
             # 连接到测试库
             try:
-                conn_test = mysql.connector.connect(
-                    host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
-                    user="col2024",
-                    password="Bm_a12a06",
-                    database="col"
-                )
+                conn_test = get_connection()
                 cursor_test = conn_test.cursor()
                 # 将数据插入到表中
                 insert_sql = "INSERT INTO col_case_open (case_no,  court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
@@ -90,6 +86,7 @@ def get_zjcourt_info(from_queue, webpage_id):
                 cursor_test.close()
                 conn_test.close()
             except:
+                print("数据库连接超时")
                 continue
 
 

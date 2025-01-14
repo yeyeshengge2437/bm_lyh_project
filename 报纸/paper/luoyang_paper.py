@@ -253,7 +253,7 @@ def get_luoyang_paper_old(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_luoyang_lastpaper('2024-08-22', 111, 1111)
+# get_luoyang_paper_new('2024-08-22', 111, 1111)
 # get_luoyang_lastpaper_old('2014-08-22', 111, 1111)
 def get_luoyang_paper(paper_time, queue_id, webpage_id):
     paper_time1 = datetime.strptime(paper_time, '%Y-%m-%d').date()

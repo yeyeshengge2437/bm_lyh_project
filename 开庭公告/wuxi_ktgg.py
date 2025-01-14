@@ -4,6 +4,7 @@ import time
 import mysql.connector
 import requests
 from a_ktgg_api import judge_repeat_case
+from tool.mysql_connection_pool import get_connection
 
 # 请求 URL
 url = "https://ssfw.wxfy.gov.cn/lawsuit/api/case-center/v1/third/court/external/getCourtAnnouncementInfo"
@@ -62,12 +63,7 @@ def get_wxcourt_info(from_queue, webpage_id):
                 # 设置创建日期
                 create_date = datetime.datetime.now().strftime('%Y-%m-%d')
                 try:
-                    conn_test = mysql.connector.connect(
-                        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
-                        user="col2024",
-                        password="Bm_a12a06",
-                        database="col"
-                    )
+                    conn_test = get_connection()
                     cursor_test = conn_test.cursor()
                     # 将数据插入到表中
                     insert_sql = "INSERT INTO col_case_open (case_no, cause,  court,  open_time, court_room, room_leader, department, members, origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,%s,%s,%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"

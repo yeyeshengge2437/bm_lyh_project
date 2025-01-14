@@ -45,7 +45,7 @@ def identify_guarantee(content):
         guarantor = "空"
     if guarantor == "空":
         guarantor = ''
-    guarantor = re.sub(r'\n', '', guarantor)
+    # guarantor = re.sub(r'\n', '', guarantor)
     print(guarantor)
     return a, b, guarantor, prompt_
 
@@ -97,7 +97,7 @@ def deepseek_item_guarantee_2(content):
         guarantor = "空"
     if guarantor == "空":
         guarantor = ''
-    guarantor = re.sub(r'\n', '', guarantor)
+    # guarantor = re.sub(r'\n', '', guarantor)
     print(guarantor)
     return a, b, guarantor, prompt_
 
@@ -144,7 +144,7 @@ def identify_mortgagor(content):
         mortgagor = "空"
     if mortgagor == "空":
         mortgagor = ''
-    mortgagor = re.sub(r'\n', '', mortgagor)
+    # mortgagor = re.sub(r'\n', '', mortgagor)
     print(mortgagor)
     return a, b, mortgagor, prompt_
 
@@ -184,7 +184,7 @@ def deepseek_item_mortgagor_2(content):
     if mortgagor == "空":
         mortgagor = ''
     print(mortgagor)
-    mortgagor = re.sub(r'\n', '', mortgagor)
+    # mortgagor = re.sub(r'\n', '', mortgagor)
     return a, b, mortgagor, prompt_
 
 
@@ -213,7 +213,7 @@ def identify_collateral(content):
     collateral = re.sub(r'抵押物/质押物:', '', collateral)
     collateral = re.sub(r'抵押物：|质押物：', '', collateral)
     collateral = re.sub(r'抵押物:|质押物:', '', collateral)
-    collateral = re.sub(r';', '', collateral)
+    collateral = re.sub(r';', ',', collateral)
     collateral = re.sub(r'；', ',', collateral)
     collateral = re.sub(r'，', ',', collateral)
     if not collateral:
@@ -222,6 +222,6 @@ def identify_collateral(content):
         collateral = "空"
     if collateral == "空":
         collateral = ''
-    collateral = re.sub(r'\n', '', collateral)
+    # collateral = re.sub(r'\n', '', collateral)
     print(collateral)
     return a, b, collateral, prompt_

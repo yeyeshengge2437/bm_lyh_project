@@ -5,6 +5,7 @@ import requests
 import mysql.connector
 from lxml import etree
 from deepseek import deepseek_chat
+from tool.mysql_connection_pool import get_connection
 
 cookies = {
     'security_session_verify': 'fae70c76ad45c6e3b506bc9ca936f3cb',
@@ -70,33 +71,19 @@ def get_lhjcourt_info(from_queue, webpage_id):
                 except:
                     ktgg_other = ''
 
-                cause = ''.join(deepseek_chat(f"获取这段信息里的案由，不要输出其他字段：{ktgg_content}")).strip(
-                    "案由：")
-
-                members = ''.join(
-                    deepseek_chat(f"获取这段信息里的当事人注明原告和被告，不要输出其他字段：{ktgg_content}")).strip(
-                    " ")
-
-                # print(
-                #     f"公告内容:{ktgg_content}, 案由：{cause}，公告类型:{ktgg_type}, 承办人:{room_leader}, 当事人:{members}，其他信息:{ktgg_other}")
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 # 设置创建日期
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 department = ''
                 # 连接到测试库
                 try:
-                    conn_test = mysql.connector.connect(
-                        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
-                        user="col2024",
-                        password="Bm_a12a06",
-                        database="col"
-                    )
+                    conn_test = get_connection()
                     cursor_test = conn_test.cursor()
                     # 将数据插入到表中
-                    insert_sql = "INSERT INTO col_case_open (url, case_no, content, cause, court, members, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,  %s, %s,%s, %s,%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                    insert_sql = "INSERT INTO col_case_open (url, case_no, content,  court, open_time, court_room, room_leader, department,  origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,  %s,  %s,%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
                     cursor_test.execute(insert_sql, (
-                        links, case_no, content, cause, trial_court, members, open_date, court_room, room_leader,
+                        links, case_no, content, trial_court, open_date, court_room, room_leader,
                         department,
                         origin,
                         origin_domain, create_time, create_date, from_queue, webpage_id))

@@ -4,6 +4,7 @@ import time
 import mysql.connector
 import requests
 from a_ktgg_api import judge_repeat_case
+from tool.mysql_connection_pool import get_connection
 
 chinese_num_map = {
     '二十日': "20日", '二十一日': "21日", '二十二日': "22日", '二十三日': "23日", '二十四日': "24日",
@@ -98,12 +99,7 @@ def get_sxcourt_1_info(from_queue, webpage_id):
             department = ''
             # 连接到测试库
             try:
-                conn_test = mysql.connector.connect(
-                    host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
-                    user="col2024",
-                    password="Bm_a12a06",
-                    database="col"
-                )
+                conn_test = get_connection()
                 cursor_test = conn_test.cursor()
                 # 将数据插入到表中
                 insert_sql = "INSERT INTO col_case_open (case_no,  court,  open_time, court_room, content, department,  origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s,%s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"

@@ -2,7 +2,7 @@ import base64
 import json
 import time
 from datetime import datetime
-
+from tool.mysql_connection_pool import get_connection
 from DrissionPage import ChromiumPage, ChromiumOptions
 import os
 import json
@@ -81,12 +81,7 @@ def judge_repeat_invest(url_href):
     :return:
     """
     # 连接数据库
-    conn_test = mysql.connector.connect(
-        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
-        user="col2024",
-        password="Bm_a12a06",
-        database="col",
-    )
+    conn_test = get_connection()
     cursor_test = conn_test.cursor()
     # 获取版面来源的版面链接
     # cursor_test.execute(f"SELECT id, url, state FROM col_judicial_auctions")
@@ -105,12 +100,7 @@ def judge_repeat_case(case):
     :return:
     """
     # 连接数据库
-    conn_test = mysql.connector.connect(
-        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
-        user="col2024",
-        password="Bm_a12a06",
-        database="col",
-    )
+    conn_test = get_connection()
     cursor_test = conn_test.cursor()
     # 获取版面来源的版面链接
     # cursor_test.execute(f"SELECT id, url, state FROM col_judicial_auctions")

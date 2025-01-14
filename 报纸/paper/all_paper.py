@@ -259,6 +259,7 @@ from xinjiangfazhi_paper import get_xinjiangfazhi_paper  # 新疆法制报
 from china_zhengquan_paper import get_china_zhengquan_paper  # 中国证券报
 from shanghaizhengquan_paper import get_shanghaizhengquan_paper   # 上海证券报
 from jinrongtouzi_paper import get_jinrongtouzi_paper  # 金融投资报
+from leshan_paper import get_leshan_paper  # 乐山日报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -520,6 +521,7 @@ methods = {
     '中国证券报': get_china_zhengquan_paper,
     '上海证券报': get_shanghaizhengquan_paper,
     '金融投资报': get_jinrongtouzi_paper,
+    '乐山日报': get_leshan_paper,
 
 }
 
@@ -782,6 +784,7 @@ webpage_url_list = [
     'https://epaper.cs.com.cn/zgzqb',
     'https://paper.cnstock.com',
     'https://stocknews.scol.com.cn/shtml/jrtzb',
+    'http://rb.lsrbs.net',
 
 ]
 
@@ -831,7 +834,7 @@ if __name__ == '__main__':
     多进程5个
     """
     process_list = []
-    for i in range(4):
+    for i in range(1):
         process = Process(target=get_paper_data, args=())
         process_list.append(process)
 

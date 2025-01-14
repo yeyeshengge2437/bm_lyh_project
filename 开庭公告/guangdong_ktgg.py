@@ -4,6 +4,7 @@ from a_ktgg_api import judge_repeat_invest
 import mysql.connector
 import requests
 from lxml import etree
+from tool.mysql_connection_pool import get_connection
 
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -54,12 +55,7 @@ def get_gdcourt_info(from_queue, webpage_id):
             department = ''
             # 连接到测试库
             try:
-                conn_test = mysql.connector.connect(
-                    host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
-                    user="col2024",
-                    password="Bm_a12a06",
-                    database="col"
-                )
+                conn_test = get_connection()
                 cursor_test = conn_test.cursor()
                 # 将数据插入到表中
                 insert_sql = "INSERT INTO col_case_open (case_no,  court,  open_time, court_room, url, department, origin, origin_domain, create_time, create_date, from_queue, webpage_id) VALUES (%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"

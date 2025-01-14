@@ -355,14 +355,13 @@ page = ChromiumPage(co)
 new_tab = page.get_tab()
 # 访问网页
 # new_tab.get('https://www.qcc.com/pl/p67ef1577cd9222739c209094dfe70b6.html')
-# new_tab.get('https://www.qcc.com/pl/p17aa3a46341d0acd0d8069fbce5bfc2.html')
-new_tab.get('https://www.qcc.com/pl/p1910534b4ae98fea35ddbeb1d61cd44.html')  # 雷军
-# get_legal_representative_info(new_tab)  # 法人代表
+new_tab.get('https://www.qcc.com/pl/p17aa3a46341d0acd0d8069fbce5bfc2.html')
+# new_tab.get('https://www.qcc.com/pl/p1910534b4ae98fea35ddbeb1d61cd44.html')  # 雷军
+get_legal_representative_info(new_tab)  # 法人代表
 get_outbound_investment_info(new_tab)  # 对外投资
-# get_outbound_appointment_info(new_tab)  # 对外任职
-# get_affiliates_info(new_tab)          # 全部关联企业
-# get_partners_info(new_tab)         # 合作伙伴
-# supple_historical_info(new_tab)   # 补充历史信息
+get_outbound_appointment_info(new_tab)  # 对外任职
+get_affiliates_info(new_tab)          # 全部关联企业
+get_partners_info(new_tab)         # 合作伙伴
+supple_historical_info(new_tab)   # 补充历史信息
 print(discovered_subject_dict)
-input()
 page.quit()
