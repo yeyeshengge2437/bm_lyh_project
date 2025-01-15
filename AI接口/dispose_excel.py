@@ -76,6 +76,7 @@ def get_excel_data(url):
                 # 创建一行新单元格
                 new_row = []
                 for cell in row:
+                    # print(sheet, cell.row, cell.column, cell.value)
                     # 获取单元格的值
                     new_cell = new_ws.cell(row=cell.row, column=cell.column, value=cell.value)
                     new_row.append(new_cell)
@@ -95,7 +96,7 @@ def get_excel_data(url):
         return False
 
 
-# print(get_excel_value("https://res.debtop.com/col/live/paper/202410/24/2024102419443821b0c98627e64e1b.xls"))
+# print(get_excel_data("https://res.debtop.com/col/live/paper/202410/29/2024102911300893260a4b1aa24dcb.xlsx"))
 
 
 

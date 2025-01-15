@@ -41,14 +41,14 @@ def get_guangdongkeji_paper(paper_time, queue_id, webpage_id):
         content = response.content.decode()
         html_1 = etree.HTML(content)
         # 获取所有版面的的链接
-        all_bm = html_1.xpath("//p[@class='thumbs-title']")
+        all_bm = html_1.xpath("//div[2]//div[2]/div[1]/div/div")
         for bm in all_bm:
             # 版面名称
-            bm_name = "".join(bm.xpath("./text()")).strip()
+            bm_name = "".join(bm.xpath(".//p//text()")).strip()
 
             # 版面的pdf
             date_num = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m%d')
-            bm_pdf = f'https://cdn.gdkjb.com/epaper/kejibao/{date_num}/{bm_name}.pdf'
+            bm_pdf = "".join(bm.xpath(".//@data-fileurl"))
             # 版面链接
             bm_url = bm_pdf
 
@@ -76,11 +76,8 @@ def get_guangdongkeji_paper(paper_time, queue_id, webpage_id):
                                      create_date, webpage_id))
                 conn_test.commit()
 
-
-
             cursor_test.close()
             conn_test.close()
-
 
         success_data = {
             'id': queue_id,
@@ -92,4 +89,4 @@ def get_guangdongkeji_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_guangdongkeji_paper('2024-09-06', 111, 1111)
+# get_guangdongkeji_paper('2025-01-03', 111, 1111)

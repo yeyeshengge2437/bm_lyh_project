@@ -19,21 +19,25 @@ def img_to_base64(path):
 
 
 def create_demo_param(client_id, client_secret, img_url):
-    business = "table_ocr"
+    business = "vision"
     sign_method = "SHA3-256"
     sign_nonce = uuid.uuid4().hex
     timestamp = int(time() * 1000)
     signature = get_signature(client_id, client_secret, business, sign_method, sign_nonce, timestamp)
+    req_id = uuid.uuid4().hex
 
     param = {
         "clientId": client_id,
+        "serviceOption": "structure",
+        "inputConfigs": '{"function_option": "RecognizeTable"}',
         "outputConfigs": '{"need_return_image":"True"}',
-        "business": business,
         "signMethod": sign_method,
         "signNonce": sign_nonce,
         "timestamp": timestamp,
-        "imgUrl": img_url,
-        "signature": signature
+        "dataUrl": img_url,
+        "signature": signature,
+        "dataType": "image",
+        "reqId": req_id,
     }
     return param
 
@@ -66,7 +70,7 @@ def quark(img_url):
     http_client = get_http_client()
     param = create_demo_param(client_id, client_secret, img_url)
     req_id = uuid.uuid4().hex
-    url = f"https://scan-business.quark.cn/api/ocr/handle?reqId={req_id}"
+    url = "https://scan-business.quark.cn/vision"
 
     headers = {
         "Content-Type": "application/json",
@@ -75,6 +79,12 @@ def quark(img_url):
     response = http_client.post(url, data=json.dumps(param), headers=headers)
     if response.status_code == 200:
         body = response.json()
+        image_info_list = body.get("data").get("ImageInfo")
+        if image_info_list:
+            for image_info in image_info_list:
+                image_base64 = image_info.get("ImageBase64")
+                if image_base64:    # 删除base64信息
+                    image_info.pop("ImageBase64")
         code = body.get("code")
         print(body)
         return body
@@ -83,4 +93,4 @@ def quark(img_url):
         return None
 
 
-# quark('https://res.debtop.com/col/live/paper/202411/05/202411051906433de1a4054bbf44a3.png')
+# quark('https://res.debtop.com/manage/live/paper/202501/13/20250113201704c27f52cd8d624f2d.png')
