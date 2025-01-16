@@ -79,7 +79,10 @@ def quark(img_url):
     response = http_client.post(url, data=json.dumps(param), headers=headers)
     if response.status_code == 200:
         body = response.json()
-        image_info_list = body.get("data").get("ImageInfo")
+        try:
+            image_info_list = body.get("data").get("ImageInfo")
+        except:
+            image_info_list = None
         if image_info_list:
             for image_info in image_info_list:
                 image_base64 = image_info.get("ImageBase64")

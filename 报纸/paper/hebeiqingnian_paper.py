@@ -61,7 +61,7 @@ def get_hebeiqingnian_paper(paper_time, queue_id, webpage_id):
                 host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
                 user="col2024",
                 password="Bm_a12a06",
-                database="col_test",
+                database="col",
             )
             cursor_test = conn_test.cursor()
             # print(bm_name, bm_pdf)

@@ -40,7 +40,7 @@ def get_lianhe_paper(paper_time, queue_id, webpage_id):
             'periodsName': f'{paper_time}',
         }
 
-        response = requests.post(url, headers=headers, data=data)
+        response = requests.post(url, headers=headers, data=data, verify=False)
         try:
             bm_data = response.json()
         except:
@@ -62,7 +62,7 @@ def get_lianhe_paper(paper_time, queue_id, webpage_id):
             create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             create_date = datetime.now().strftime('%Y-%m-%d')
             # 获取文章内容
-            article_response = requests.get(f'https://app.lhwww.com.cn/content/{article["contentId"]}', headers=headers)
+            article_response = requests.get(f'https://app.lhwww.com.cn/content/{article["contentId"]}', headers=headers, verify=False)
             time.sleep(1)
             article_content = article_response.json()
 

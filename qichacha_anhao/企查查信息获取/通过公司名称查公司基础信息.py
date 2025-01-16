@@ -1,7 +1,7 @@
 import json
 import random
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # from 验证码识别 import get_captcha
 import requests
@@ -51,7 +51,8 @@ cookie_dict = {}
 value_cookies = tab.cookies()
 for key in value_cookies:
     cookie_dict[key['name']] = key['value']
-# page.quit()
+page.quit()
+# input()
 
 params = {
     'key': target_company_name,
@@ -80,12 +81,22 @@ if res_json:
         email = company.get('Email')  # 邮箱
         official_web = company.get('GW')  # 官网
         short_status = company.get('ShortStatus')  # 状态
+        tag_list = []
         tag = company.get('Tag')  # 标签
+        if tag:
+            tag_list.append(tag)
+        tag_info_list = company.get('TagsInfoV2')  # 标签信息
+        if tag_info_list:
+            for tag_info in tag_info_list:
+                tag_name = tag_info.get('Name')  # 标签名称
+                tag_list.append(tag_name)
         scale = company.get('Scale')  # 规模
         hit_reasons = company.get('HitReasons')  # 命中原因
+        hit_reason_dict = {}
         for hit_reason in hit_reasons:
             hit_field = hit_reason.get('Field')   # 命中字段
             hit_value = hit_reason.get('Value')   # 命中值
+            hit_reason_dict[hit_field] = hit_value
             # print(f"命中字段：{hit_field}，命中值：{hit_value}")
             if hit_value.strip("<em>").strip('</em>') == target_company_name and hit_field in hit_field_list:
                 flag = True
@@ -93,7 +104,6 @@ if res_json:
         if start_date:    # 时间戳转为时间
             start_date = timenum_to_time(start_date)
         if flag:
-            print(f"公司名称：{company_name}，法定代表人：{legal_rep}，注册资本：{reg_capital}，成立时间：{start_date}，地址：{address}，统一社会信用代码：{uni_code}，电话：{phone_num_now}，邮箱：{email}，官网：{official_web}，状态：{short_status}，标签：{tag}，规模：{scale}")
             target_url = f'https://www.qcc.com/firm/{key_no}.html'
             response = requests.get(target_url, cookies=cookie_dict, headers=headers)
             time.sleep(random_num)
@@ -101,10 +111,10 @@ if res_json:
             company_data = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function', company_html)
             if company_data:
                 company_json = json.loads(company_data[0])
-                print(company_json)
+                # print(company_json)
                 company_detail = company_json["company"]["companyDetail"]  # ["company"]["companyDetail"]["TagsInfoV2"][2]["Name"]
                 company_name = company_detail.get('Name')   # 公司名称
-                company_old_name = ''
+                company_old_name = ''    # 公司曾用名
                 company_tag_info_list = company_detail.get('TagsInfoV2')
                 if company_tag_info_list:
                     for company_tag_info in company_tag_info_list:
@@ -119,9 +129,10 @@ if res_json:
                         if common_kd == '参保人数':
                             enrollment_num = common.get('Value')  # 参保人数
                 check_date = company_detail.get('CheckDate')    # 核准日期
-                check_date = datetime.utcfromtimestamp(check_date).strftime("%Y-%m-%d")
+                check_date = (datetime.utcfromtimestamp(check_date) + timedelta(days=1)).strftime("%Y-%m-%d")    # 核准日期格式化
                 no = company_detail.get('No')    # 工商注册号
                 start_date = company_detail.get('StartDate')  # 成立时间
+                start_date = (datetime.utcfromtimestamp(start_date) + timedelta(days=1)).strftime("%Y-%m-%d")    # 成立时间格式化
                 status = company_detail.get('Status')  # 登记状态
                 header_peo = company_detail.get('Oper').get('Name')  # 法定代表人
                 header_peo_type = company_detail.get('Oper').get('OperType')  # 法人类型
@@ -134,10 +145,10 @@ if res_json:
                 period_bus_start = company_detail.get('TermStart')  # 经营开始日期
                 period_bus_end = company_detail.get('TeamEnd')  # 经营结束日期
                 if period_bus_start:
-                    period_bus_start = datetime.utcfromtimestamp(period_bus_start).strftime("%Y-%m-%d")
+                    period_bus_start = (datetime.utcfromtimestamp(period_bus_start) + timedelta(days=1)).strftime("%Y-%m-%d")
                 if period_bus_end:
                     try:
-                        period_bus_end = datetime.utcfromtimestamp(period_bus_end).strftime("%Y-%m-%d")
+                        period_bus_end = (datetime.utcfromtimestamp(period_bus_end) + timedelta(days=1)).strftime("%Y-%m-%d")
                     except:
                         period_bus_end = '长期'
                 period_bus = str(period_bus_start) + ' 到 ' + str(period_bus_end)  # 经营期限
@@ -169,6 +180,63 @@ if res_json:
                 for his_email in his_email_list:
                     email_old_list.append(his_email.get('e'))
                 gw = company_detail.get('info').get('gw')  # 网址
-                print(f'公司名称：{company_detail.get("Name")}\n曾用名：{company_old_name}\n统一社会信用代码：{credit_code}\n参保人数：{enrollment_num}\n实缴资本：{rec_cap}\n组织机构代码：{org_no}\n核准日期：{check_date}\n纳税人识别号：{tax_no}\n企业类型：{econ_kind}\n经营期限：{period_bus}\n纳税人资质：{taxpayer_type}\n人员规模：{staff_scale}\n登记状态：{status}\n登记机关：{belong_org}\n行业：{national_standard_industry}\n英文名：{english_name}\n注册地址：{reg_address}\n通信地址：{com_address}\n经营范围：{scope}\n电话：{phone}\n历史电话：{phone_old_list}\n邮箱：{email}\n历史邮箱：{email_old_list}\n网址：{gw}\n')
+                # 将数据组织为字典
+                company_data = {
+                    "company_name": company_name,
+                    "company_old_name": company_old_name,
+                    "enrollment_num": enrollment_num,
+                    "check_date": check_date,
+                    "no": no,
+                    "start_date": start_date,
+                    "status": status,
+                    "header_peo": header_peo,
+                    "header_peo_type": header_peo_type,
+                    "regist_capi": regist_capi,
+                    "credit_code": credit_code,
+                    "rec_cap": rec_cap,
+                    "org_no": org_no,
+                    "tax_no": tax_no,
+                    "econ_kind": econ_kind,
+                    "period_bus": period_bus,
+                    "taxpayer_type": taxpayer_type,
+                    "staff_scale": staff_scale,
+                    "belong_org": belong_org,
+                    "national_standard_industry": national_standard_industry,
+                    "english_name": english_name,
+                    "reg_address": reg_address,
+                    "com_address": com_address,
+                    "scope": scope,
+                    "phone": phone,
+                    "phone_old_list": phone_old_list,
+                    "email": email,
+                    "email_old_list": email_old_list,
+                    "gw": gw
+                }
+                # 转换为 JSON 格式
+                company_json = json.dumps(company_data, ensure_ascii=False, indent=4)
+                print(company_json)
+                # print(f'公司名称：{company_detail.get("Name")}\n曾用名：{company_old_name}\n统一社会信用代码：{credit_code}\n成立日期：{start_date}\n参保人数：{enrollment_num}\n注册资本：{regist_capi}\n实缴资本：{rec_cap}\n组织机构代码：{org_no}\n核准日期：{check_date}\n纳税人识别号：{tax_no}\n企业类型：{econ_kind}\n经营期限：{period_bus}\n纳税人资质：{taxpayer_type}\n人员规模：{staff_scale}\n登记状态：{status}\n登记机关：{belong_org}\n行业：{national_standard_industry}\n英文名：{english_name}\n注册地址：{reg_address}\n通信地址：{com_address}\n经营范围：{scope}\n电话：{phone}\n历史电话：{phone_old_list}\n邮箱：{email}\n历史邮箱：{email_old_list}\n网址：{gw}\n')
+        else:
+            company_simple_dict = {
+                'company_name': company_name,
+                'hit_reason': hit_reason_dict,
+                'legal_rep': legal_rep,
+                'reg_capital': reg_capital,
+                'start_date': start_date,
+                'address': address,
+                'uni_code': uni_code,
+                'phone_num_now': phone_num_now,
+                'email': email,
+                'official_web': official_web,
+                'short_status': short_status,
+                'tag_list': tag_list,
+                'scale': scale
+            }
+            # 转换为 JSON 格式
+            company_simple_json = json.dumps(company_simple_dict, ensure_ascii=False, indent=4)
+            print(company_simple_json)
+            # print(f"公司名称：{company_name}，命中原因：{hit_reason_dict}，法定代表人：{legal_rep}，注册资本：{reg_capital}，成立时间：{start_date}，地址：{address}，统一社会信用代码：{uni_code}，电话：{phone_num_now}，邮箱：{email}，官网：{official_web}，状态：{short_status}，标签：{tag_list}，规模：{scale}")
+
+
 
 

@@ -7,74 +7,61 @@ import requests
 from lxml import etree
 
 
-paper = "中国贸易报"
+paper = "新华每日电讯"
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
-    # 'Cookie': 'Hm_lvt_a41904b47b605babfa11365b7bc6999b=1736768797,1736944757; Hm_lpvt_a41904b47b605babfa11365b7bc6999b=1736944757; HMACCOUNT=FDD970C8B3C27398',
     'Pragma': 'no-cache',
-    'Referer': 'https://www.chinatradenews.com.cn/epaper/',
-    'Sec-Fetch-Dest': 'document',
-    'Sec-Fetch-Mode': 'navigate',
-    'Sec-Fetch-Site': 'same-origin',
-    'Sec-Fetch-User': '?1',
     'Upgrade-Insecure-Requests': '1',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-    'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
 }
 
 
 
-def get_china_maoyi_paper(paper_time, queue_id, webpage_id):
+def get_chuxiong_paper(paper_time, queue_id, webpage_id):
     # 将today的格式进行改变
     day = paper_time
-    paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m/%d')
-    base_url = f'https://www.chinatradenews.com.cn/epaper/content/{paper_time}/'
-    url = base_url + 'node_2.htm'
-    response = requests.get(
-        url,
-        headers=headers,
-        verify=False
-    )
+    paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m/%d')
+    base_url = f'http://epaper.chuxiong.cn/{paper_time}/'
+    url = base_url + 'node_01.html'
+    response = requests.get(url, headers=headers)
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
         # 获取所有版面的的链接
-        all_bm = html_1.xpath("//a[@id='pageLink']")
+        all_bm = html_1.xpath("//div[@class='nav-list']/ul/li")
         for bm in all_bm:
             # 版面名称
-            bm_name = "".join(bm.xpath("./text()")).strip()
+            bm_name = "".join(bm.xpath("./a[@class='btn btn-block']/text()")).strip()
             # 版面链接
-            bm_url = base_url + ''.join(bm.xpath("./@href")).strip('./')
+            bm_url = base_url + ''.join(bm.xpath("./a[@class='btn btn-block']/@href"))
             # 获取版面详情
-            bm_response = requests.get(bm_url, headers=headers, verify=False)
+            bm_response = requests.get(bm_url, headers=headers)
             time.sleep(1)
             bm_content = bm_response.content.decode()
             bm_html = etree.HTML(bm_content)
             # 版面的pdf
-            bm_pdf = 'https://www.chinatradenews.com.cn/epaper/content/' + "".join(bm_html.xpath("//td[@class='sxb2']/a/@href")).strip('../..')
+            bm_pdf = 'http://epaper.chuxiong.cn/' + "".join(bm_html.xpath("//div[@class='nav-list']/ul/li/a[@class='pdf']/@href")).strip('../..')
 
             # 获取所有文章的链接
-            all_article = bm_html.xpath("//ul[@class='list01']/li/a")
+            all_article = bm_html.xpath("//ul/li[@class='resultList']/a")
             pdf_set = set()
             for article in all_article:
                 # 获取文章链接
-                article_url = base_url + ''.join(article.xpath("./@href")).strip('../..')
+                article_url = 'http://epaper.chuxiong.cn/' + ''.join(article.xpath("./@href")).strip('../..')
                 # 获取文章名称
-                article_name = ''.join(article.xpath(".//text()")).strip()
+                article_name = ''.join(article.xpath("./h4/text()")).strip()
                 create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 create_date = datetime.now().strftime('%Y-%m-%d')
                 # 获取文章内容
-                article_response = requests.get(article_url, headers=headers, verify=False)
+                article_response = requests.get(article_url, headers=headers)
                 time.sleep(1)
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
                 # 获取文章内容
-                content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p//text()")).strip()
+                content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content/p/text()")).strip()
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
@@ -124,4 +111,4 @@ def get_china_maoyi_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_china_maoyi_paper('2024-12-26', 111, 1111)
+# get_chuxiong_paper('2024-08-22', 111, 1111)

@@ -38,6 +38,8 @@ def get_shanxinongcun_paper(paper_time, queue_id, webpage_id):
     if response.status_code == 200:
         content = response.content.decode()
         html_1 = etree.HTML(content)
+        if html_1 is None:
+            raise Exception(f'该日期没有报纸')
         # 获取所有版面的的链接
         all_bm = html_1.xpath("//div[@class='bmml_con_div']/a[@class='bmml_con_div_name']")
         for bm in all_bm:
@@ -53,6 +55,8 @@ def get_shanxinongcun_paper(paper_time, queue_id, webpage_id):
             # 版面的pdf
             bm_pdf = None
             up_pdf = None
+            if bm_html is None:
+                continue
             # 获取所有文章的链接
             all_article = bm_html.xpath("//a[@class='bmdh_con_a']")
             pdf_set = set()
@@ -68,8 +72,11 @@ def get_shanxinongcun_paper(paper_time, queue_id, webpage_id):
                 time.sleep(1)
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
-                # 获取文章内容
-                content = ''.join(article_html.xpath("//div[@id='zoom']/text()")).strip()
+                if article_html is None:
+                    content = ''
+                else:
+                    # 获取文章内容
+                    content = ''.join(article_html.xpath("//div[@id='zoom']/text()")).strip()
                 # 上传到测试数据库
                 conn_test = mysql.connector.connect(
                     host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
@@ -111,4 +118,4 @@ def get_shanxinongcun_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-# get_shanxinongcun_paper('2024-10-11', 111, 1111)
+# get_shanxinongcun_paper('2015-11-25', 111, 1111)

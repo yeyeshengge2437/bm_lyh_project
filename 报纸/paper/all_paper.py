@@ -260,6 +260,7 @@ from china_zhengquan_paper import get_china_zhengquan_paper  # 中国证券报
 from shanghaizhengquan_paper import get_shanghaizhengquan_paper   # 上海证券报
 from jinrongtouzi_paper import get_jinrongtouzi_paper  # 金融投资报
 from leshan_paper import get_leshan_paper  # 乐山日报
+from china_maoyi_paper import get_china_maoyi_paper  # 中国贸易报
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url
 
 methods = {
@@ -522,6 +523,7 @@ methods = {
     '上海证券报': get_shanghaizhengquan_paper,
     '金融投资报': get_jinrongtouzi_paper,
     '乐山日报': get_leshan_paper,
+    '中国贸易报': get_china_maoyi_paper,
 
 }
 
@@ -785,6 +787,7 @@ webpage_url_list = [
     'https://paper.cnstock.com',
     'https://stocknews.scol.com.cn/shtml/jrtzb',
     'http://rb.lsrbs.net',
+    'https://www.chinatradenews.com.cn/epaper',
 
 ]
 
