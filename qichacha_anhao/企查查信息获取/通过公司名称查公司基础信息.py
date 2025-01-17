@@ -9,6 +9,7 @@ import time
 from lxml import etree
 from DrissionPage import ChromiumPage, ChromiumOptions
 
+
 def timenum_to_time(timenum):
     """
     时间戳转时间
@@ -16,6 +17,7 @@ def timenum_to_time(timenum):
     :return:
     """
     return time.strftime("%Y-%m-%d", time.localtime(timenum / 1000))
+
 
 headers = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -34,8 +36,8 @@ headers = {
     'upgrade-insecure-requests': '1',
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
 }
-target_company_name = "杭州法豆科技有限公司"
-hit_field_list = ['曾用名']    # 股东，曾用名
+search_company_name = "杭州法豆科技有限公司"
+hit_field_list = ['曾用名']  # 股东，曾用名
 random_num = random.randint(1, 6)
 
 co = ChromiumOptions()
@@ -51,11 +53,11 @@ cookie_dict = {}
 value_cookies = tab.cookies()
 for key in value_cookies:
     cookie_dict[key['name']] = key['value']
-page.quit()
+# page.quit()
 # input()
 
 params = {
-    'key': target_company_name,
+    'key': search_company_name,
 }
 response = requests.get('https://www.qcc.com/web/search', params=params, cookies=cookie_dict, headers=headers)
 time.sleep(random_num)
@@ -67,12 +69,12 @@ if res_json:
     all_company_list = res_json["search"]["searchRes"]["Result"]
     for company in all_company_list:
         flag = False
-        key_no = company.get("KeyNo")   # 公司id
-        company_name = company.get('Name')   # 公司名称
-        if company_name.strip("<em>").strip('</em>') == target_company_name:
+        key_no = company.get("KeyNo")  # 公司id
+        company_name = company.get('Name')  # 公司名称
+        if company_name.strip("<em>").strip('</em>') == search_company_name:
             flag = True
             print("名字重合")
-        legal_rep = company.get('OperName')   # 法定代表人
+        legal_rep = company.get('OperName')  # 法定代表人
         reg_capital = company.get('RegistCapi')  # 注册资本
         start_date = company.get('StartDate')  # 成立时间
         address = company.get('Address')  # 地址
@@ -94,14 +96,14 @@ if res_json:
         hit_reasons = company.get('HitReasons')  # 命中原因
         hit_reason_dict = {}
         for hit_reason in hit_reasons:
-            hit_field = hit_reason.get('Field')   # 命中字段
-            hit_value = hit_reason.get('Value')   # 命中值
+            hit_field = hit_reason.get('Field')  # 命中字段
+            hit_value = hit_reason.get('Value')  # 命中值
             hit_reason_dict[hit_field] = hit_value
             # print(f"命中字段：{hit_field}，命中值：{hit_value}")
-            if hit_value.strip("<em>").strip('</em>') == target_company_name and hit_field in hit_field_list:
+            if hit_value.strip("<em>").strip('</em>') == search_company_name and hit_field in hit_field_list:
                 flag = True
                 print(f"命中字段:{hit_field}")
-        if start_date:    # 时间戳转为时间
+        if start_date:  # 时间戳转为时间
             start_date = timenum_to_time(start_date)
         if flag:
             target_url = f'https://www.qcc.com/firm/{key_no}.html'
@@ -112,27 +114,28 @@ if res_json:
             if company_data:
                 company_json = json.loads(company_data[0])
                 # print(company_json)
-                company_detail = company_json["company"]["companyDetail"]  # ["company"]["companyDetail"]["TagsInfoV2"][2]["Name"]
-                company_name = company_detail.get('Name')   # 公司名称
-                company_old_name = ''    # 公司曾用名
+                company_detail = company_json["company"][
+                    "companyDetail"]  # ["company"]["companyDetail"]["TagsInfoV2"][2]["Name"]
+                company_name = company_detail.get('Name')  # 公司名称
+                company_old_name = []  # 公司曾用名
                 company_tag_info_list = company_detail.get('TagsInfoV2')
                 if company_tag_info_list:
                     for company_tag_info in company_tag_info_list:
                         company_tag = company_tag_info.get('Name')
-                        if company_tag == '曾用名':
-                            company_old_name = company_tag_info.get('DataExtend')
+                        if company_tag == '曾用名' and company_tag_info.get('DataExtend'):
+                            company_old_name.append(company_tag_info.get('DataExtend'))
                 enrollment_num = ''  # 参保人数
                 common_list = company_detail.get('CommonList')  # 通用消息
                 if common_list:
                     for common in common_list:
-                        common_kd = common.get('KeyDesc')    # 通用消息key
+                        common_kd = common.get('KeyDesc')  # 通用消息key
                         if common_kd == '参保人数':
                             enrollment_num = common.get('Value')  # 参保人数
-                check_date = company_detail.get('CheckDate')    # 核准日期
-                check_date = (datetime.utcfromtimestamp(check_date) + timedelta(days=1)).strftime("%Y-%m-%d")    # 核准日期格式化
-                no = company_detail.get('No')    # 工商注册号
+                check_date = company_detail.get('CheckDate')  # 核准日期
+                check_date = (datetime.utcfromtimestamp(check_date) + timedelta(days=1)).strftime("%Y-%m-%d")  # 核准日期格式化
+                no = company_detail.get('No')  # 工商注册号
                 start_date = company_detail.get('StartDate')  # 成立时间
-                start_date = (datetime.utcfromtimestamp(start_date) + timedelta(days=1)).strftime("%Y-%m-%d")    # 成立时间格式化
+                start_date = (datetime.utcfromtimestamp(start_date) + timedelta(days=1)).strftime("%Y-%m-%d")  # 成立时间格式化
                 status = company_detail.get('Status')  # 登记状态
                 header_peo = company_detail.get('Oper').get('Name')  # 法定代表人
                 header_peo_type = company_detail.get('Oper').get('OperType')  # 法人类型
@@ -145,17 +148,21 @@ if res_json:
                 period_bus_start = company_detail.get('TermStart')  # 经营开始日期
                 period_bus_end = company_detail.get('TeamEnd')  # 经营结束日期
                 if period_bus_start:
-                    period_bus_start = (datetime.utcfromtimestamp(period_bus_start) + timedelta(days=1)).strftime("%Y-%m-%d")
+                    period_bus_start = (datetime.utcfromtimestamp(period_bus_start) + timedelta(days=1)).strftime(
+                        "%Y-%m-%d")
                 if period_bus_end:
                     try:
-                        period_bus_end = (datetime.utcfromtimestamp(period_bus_end) + timedelta(days=1)).strftime("%Y-%m-%d")
+                        period_bus_end = (datetime.utcfromtimestamp(period_bus_end) + timedelta(days=1)).strftime(
+                            "%Y-%m-%d")
                     except:
                         period_bus_end = '长期'
                 period_bus = str(period_bus_start) + ' 到 ' + str(period_bus_end)  # 经营期限
                 taxpayer_type = company_detail.get('TaxpayerType')  # 纳税人资质
                 staff_scale = company_detail.get('StaffScale')  # 人员规模
                 belong_org = company_detail.get('BelongOrg')  # 登记机关
-                national_standard_industry = company_detail.get('IndustryV3').get("Industry") + '>' + company_detail.get('IndustryV3').get("SubIndustry") + '>' + company_detail.get('IndustryV3').get("MiddleCategory")  # 行业
+                national_standard_industry = company_detail.get('IndustryV3').get(
+                    "Industry") + '>' + company_detail.get('IndustryV3').get("SubIndustry") + '>' + company_detail.get(
+                    'IndustryV3').get("MiddleCategory")  # 行业
                 small_category = company_detail.get('IndustryV3').get("SmallCategory")
                 if small_category:
                     national_standard_industry += '>' + small_category
@@ -171,18 +178,20 @@ if res_json:
                 scope = company_detail.get('Scope')  # 经营范围
                 phone = company_detail.get('info').get('phone')  # 电话
                 his_tel_list = company_detail.get('HisTelList')  # 历史电话
-                phone_old_list = []    # 历史电话列表
+                phone_old_list = []  # 历史电话列表
                 for his_tel in his_tel_list:
                     phone_old_list.append(his_tel.get('Tel'))
                 email = company_detail.get('info').get('email')  # 邮箱
                 his_email_list = company_detail.get('MoreEmailList')  # 历史邮箱
-                email_old_list = []    # 历史邮箱列表
+                email_old_list = []  # 历史邮箱列表
                 for his_email in his_email_list:
                     email_old_list.append(his_email.get('e'))
                 gw = company_detail.get('info').get('gw')  # 网址
                 # 将数据组织为字典
                 company_data = {
                     "company_name": company_name,
+                    'search_company_name': search_company_name,
+                    'key_no': key_no,
                     "company_old_name": company_old_name,
                     "enrollment_num": enrollment_num,
                     "check_date": check_date,
@@ -219,6 +228,8 @@ if res_json:
         else:
             company_simple_dict = {
                 'company_name': company_name,
+                'key_no': key_no,
+                'search_company_name': search_company_name,
                 'hit_reason': hit_reason_dict,
                 'legal_rep': legal_rep,
                 'reg_capital': reg_capital,
@@ -236,7 +247,3 @@ if res_json:
             company_simple_json = json.dumps(company_simple_dict, ensure_ascii=False, indent=4)
             print(company_simple_json)
             # print(f"公司名称：{company_name}，命中原因：{hit_reason_dict}，法定代表人：{legal_rep}，注册资本：{reg_capital}，成立时间：{start_date}，地址：{address}，统一社会信用代码：{uni_code}，电话：{phone_num_now}，邮箱：{email}，官网：{official_web}，状态：{short_status}，标签：{tag_list}，规模：{scale}")
-
-
-
-

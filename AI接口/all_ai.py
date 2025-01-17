@@ -49,7 +49,7 @@ ai_list = {
         "quark_text",  # quark文字识别
         "doubao_pro_32k",  # doubao文字对话
         "quark_excel",    # quark图片转表格
-        "img_code_tell",
+        "img_code_tell",   # 二维码识别
     ]
 }
 ai_text_dict = {

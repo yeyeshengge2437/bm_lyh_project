@@ -94,7 +94,7 @@ def get_charater_data():
                     print(fail_data)
                     ai_parse_fail(data=fail_data)
             else:
-                time.sleep(5)
+                time.sleep(2)
         except Exception as e:
             print(e)
 
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     多进程5个
     """
     process_list = []
-    for i in range(2):
+    for i in range(10):
         process = Process(target=get_charater_data, args=())
         process_list.append(process)
 

@@ -290,6 +290,6 @@ while True:
             ai_parse_success(data=success_data)
 
         else:
-            time.sleep(30)
+            time.sleep(3)
     except Exception as e:
         print(e)
