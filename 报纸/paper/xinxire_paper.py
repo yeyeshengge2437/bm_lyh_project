@@ -1418,7 +1418,7 @@ def get_date(page):
     return date_dict
 
 
-def get_xinxire_paper(paper_time, queue_id, webpage_id):
+def get_xinxire_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     page = ChromiumPage(co)
     tab = page.new_tab()
     # 判断如果日期超过2024-10-12

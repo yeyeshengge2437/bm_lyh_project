@@ -27,7 +27,7 @@ headers = {
 }
 
 
-def get_minzushi_paper_new(paper_time, queue_id, webpage_id):
+def get_minzushi_paper_new(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m/%d')
@@ -121,7 +121,7 @@ def get_minzushi_paper_new(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-def get_minzushi_paper_old(paper_time, queue_id, webpage_id):
+def get_minzushi_paper_old(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m/%d')
@@ -182,7 +182,7 @@ def get_minzushi_paper_old(paper_time, queue_id, webpage_id):
 # get_chuncheng_lastpaper_old('2021-08-17', 111, 1111)
 # get_chuncheng_lastpaper('2024-08-22', 111, 1111)
 
-def get_minzushi_paper(paper_time, queue_id, webpage_id):
+def get_minzushi_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     paper_time1 = datetime.strptime(paper_time, '%Y-%m-%d').date()
     date_str = '2021-08-20'
 
@@ -192,9 +192,9 @@ def get_minzushi_paper(paper_time, queue_id, webpage_id):
     # 判断日期是否在范围内
     if paper_time1 <= date_str:
         # print('使用旧方法')
-        get_minzushi_paper_old(paper_time, queue_id, webpage_id)
+        get_minzushi_paper_old(paper_time, queue_id, webpage_id, bm_url_in)
     else:
         # print('使用新方法')
-        get_minzushi_paper_new(paper_time, queue_id, webpage_id)
+        get_minzushi_paper_new(paper_time, queue_id, webpage_id, bm_url_in)
 
 # get_minzushi_paper('2023-08-18', 111, 1111)

@@ -312,7 +312,7 @@ headers = {
 }
 
 
-def get_sichuankeji_paper(paper_time, queue_id, webpage_id):
+def get_sichuankeji_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     if date_data.get(paper_time):
         encrypt_data = date_data.get(paper_time)
     else:

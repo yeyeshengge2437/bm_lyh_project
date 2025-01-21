@@ -42,7 +42,7 @@ headers = {
 today = datetime.now().strftime('%Y-%m-%d')
 
 
-def get_chinajingji_paper(paper_time, queue_id, webpage_id):
+def get_chinajingji_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     page = ChromiumPage(co)
     page.set.load_mode.none()
     # 取消所有的弹出框

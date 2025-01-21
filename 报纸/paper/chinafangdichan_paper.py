@@ -53,7 +53,7 @@ def judge_date(paper_time):
         else:
             return False
 
-def get_chinafangdichan_paper(paper_time, queue_id, webpage_id):
+def get_chinafangdichan_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     day = paper_time
     if judge_date(paper_time):
         bz_url = judge_date(paper_time)

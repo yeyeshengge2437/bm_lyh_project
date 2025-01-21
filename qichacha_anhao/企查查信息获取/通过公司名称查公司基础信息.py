@@ -59,7 +59,7 @@ def qcc_search_company(search_company_name):
     value_cookies = tab.cookies()
     for key in value_cookies:
         cookie_dict[key['name']] = key['value']
-    page.quit()
+    # page.quit()
     # input()
 
     params = {
@@ -70,6 +70,7 @@ def qcc_search_company(search_company_name):
     res_html = response.text
     res_json = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function', res_html)
     if res_json:
+        page.quit()
         search_company_list = []
         res_json = res_json[0]
         res_json = json.loads(res_json)
@@ -284,6 +285,7 @@ def qcc_search_company(search_company_name):
 
     else:
         print("未找到该公司信息")
+        input('出现错误，请查看')
         return "失败", None
 
 
@@ -292,8 +294,8 @@ def qcc_search_keyno(key_no):
 
     co = ChromiumOptions()
     co = co.set_user_data_path(r"D:\chome_data\data_one")
-    co = co.set_argument('--no-sandbox')
-    co = co.headless()
+    # co = co.set_argument('--no-sandbox')
+    # co = co.headless()
     co.set_paths(local_port=9136)
     random_float = random.uniform(1, 5)
     # 连接浏览器
@@ -438,7 +440,9 @@ def qcc_search_keyno(key_no):
 #  data = {'search_type' : 'corp_qcc_list or corp_qcc_detail'}
 
 while True:
+    random_num = random.randint(3, 9)
     value = qcc_parse_next()
+    time.sleep(random_num)
     if value:
         try:
             id = value['value']['id']

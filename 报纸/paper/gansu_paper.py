@@ -29,7 +29,7 @@ headers = {
 
 
 
-def get_gansu_paper_new(paper_time, queue_id, webpage_id):
+def get_gansu_paper_new(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m/%d')
@@ -120,7 +120,7 @@ def get_gansu_paper_new(paper_time, queue_id, webpage_id):
     else:
         raise Exception(f'该日期没有报纸')
 
-def get_gansu_paper_old(paper_time, queue_id, webpage_id):
+def get_gansu_paper_old(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m/%d')
@@ -210,7 +210,7 @@ def get_gansu_paper_old(paper_time, queue_id, webpage_id):
     else:
         raise Exception(f'该日期没有报纸')
 
-def get_gansu_paper(paper_time, queue_id, webpage_id):
+def get_gansu_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     paper_time1 = datetime.strptime(paper_time, '%Y-%m-%d').date()
     date_str = '2022-05-09'
 
@@ -220,10 +220,10 @@ def get_gansu_paper(paper_time, queue_id, webpage_id):
     # 判断日期是否在范围内
     if paper_time1 <= date_str:
         # print('使用旧方法')
-        get_gansu_paper_old(paper_time, queue_id, webpage_id)
+        get_gansu_paper_old(paper_time, queue_id, webpage_id, bm_url_in)
     else:
         # print('使用新方法')
-        get_gansu_paper_new(paper_time, queue_id, webpage_id)
+        get_gansu_paper_new(paper_time, queue_id, webpage_id, bm_url_in)
 
 # get_gansu_paper('2022-12-31', 111, 1111)
 # get_gansu_paper_old('2022-05-09', 111, 1111)

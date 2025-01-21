@@ -30,7 +30,7 @@ pdf_domain = 'http://wfwb.wfnews.com.cn/'
 today = datetime.now().strftime('%Y-%m-%d')
 # today = '20231227'
 
-def get_weifang_lastpaper(paper_time, queue_id, webpage_id):
+def get_weifang_lastpaper(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m%d')

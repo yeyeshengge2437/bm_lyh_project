@@ -19,7 +19,7 @@ paper = "甘肃法治报"
 today = datetime.now().strftime('%Y-%m-%d')
 
 
-def get_gansufazhi_paper(paper_time, queue_id, webpage_id):
+def get_gansufazhi_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m/%d')
     general_url = 'https://szb.gansudaily.com.cn/gsfzb/pc/'

@@ -29,7 +29,7 @@ headers = {
 }
 
 
-def get_chinahezuo_paper(paper_time, queue_id, webpage_id):
+def get_chinahezuo_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     paper_time = str(datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m-%d'))

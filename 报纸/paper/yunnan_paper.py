@@ -26,7 +26,7 @@ headers = {
 }
 
 
-def get_yunnan1_paper(paper_time, queue_id, webpage_id):
+def get_yunnan1_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m/%d')
@@ -124,7 +124,7 @@ def get_yunnan1_paper(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-def get_yunnan2_paper(paper_time, queue_id, webpage_id):
+def get_yunnan2_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m/%d')
@@ -217,7 +217,7 @@ def get_yunnan2_paper(paper_time, queue_id, webpage_id):
 
 # get_yunnan2_paper('2021-05-01', 111, 1111)
 
-def get_yunnan_paper(paper_time, queue_id, webpage_id):
+def get_yunnan_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 判断paper_time是否大于日期为2021-05-15
     # 将字符串转换为日期对象
     given_date = datetime.strptime(paper_time, "%Y-%m-%d").date()
@@ -227,9 +227,9 @@ def get_yunnan_paper(paper_time, queue_id, webpage_id):
 
     # 比较
     if given_date > specific_date:
-        get_yunnan1_paper(paper_time, queue_id, webpage_id)
+        get_yunnan1_paper(paper_time, queue_id, webpage_id, bm_url_in)
     else:
-        get_yunnan2_paper(paper_time, queue_id, webpage_id)
+        get_yunnan2_paper(paper_time, queue_id, webpage_id, bm_url_in)
 
 
 # get_yunnan_paper('2022-10-03', 111, 1111)

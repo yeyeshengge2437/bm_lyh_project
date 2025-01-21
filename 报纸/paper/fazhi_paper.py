@@ -19,7 +19,7 @@ co.set_paths(local_port=9112)
 
 
 
-def get_fazhi_paper(paper_time, queue_id, webpage_id):
+def get_fazhi_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 构造实例
     page = ChromiumPage(co)
     day = paper_time

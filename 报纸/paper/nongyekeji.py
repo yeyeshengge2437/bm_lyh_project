@@ -34,7 +34,7 @@ headers = {
 today = datetime.now().strftime('%Y-%m-%d')
 
 
-def get_nongyekeji_paper(paper_time, queue_id, webpage_id):
+def get_nongyekeji_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m%d')
     base_url = f'http://eb.nkb.com.cn/nykjb/{paper_time}/mhtml/'

@@ -42,7 +42,7 @@ headers_old = {
 }
 
 
-def get_zhaotong_paper_new(paper_time, queue_id, webpage_id):
+def get_zhaotong_paper_new(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m/%d')
@@ -143,7 +143,7 @@ def get_zhaotong_paper_new(paper_time, queue_id, webpage_id):
 # get_zhaotong_paper_new('2024-10-14', '1', '1')
 
 
-def get_zhaotong_paper_old(paper_time, queue_id, webpage_id):
+def get_zhaotong_paper_old(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m/%d')
@@ -242,7 +242,7 @@ def get_zhaotong_paper_old(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-def get_zhaotong_paper_old_old(paper_time, queue_id, webpage_id):
+def get_zhaotong_paper_old_old(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m/%d')
@@ -349,7 +349,7 @@ def get_zhaotong_paper_old_old(paper_time, queue_id, webpage_id):
 # get_zhaotong_paper_old_old('2008-01-01', 111, 1111)
 
 
-def get_zhaotong_paper(paper_time, queue_id, webpage_id):
+def get_zhaotong_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     paper_time1 = datetime.strptime(paper_time, '%Y-%m-%d').date()
     date_str1 = '2022-09-25'
     date_str2 = '2021-08-18'
@@ -361,13 +361,13 @@ def get_zhaotong_paper(paper_time, queue_id, webpage_id):
     # 判断日期是否在范围内
     if date_str2 < paper_time1 <= date_str1:
         # print('使用旧方法')
-        get_zhaotong_paper_old(paper_time, queue_id, webpage_id)
+        get_zhaotong_paper_old(paper_time, queue_id, webpage_id, bm_url_in)
     elif paper_time1 < date_str2:
         # print('使用旧旧方法')
-        get_zhaotong_paper_old_old(paper_time, queue_id, webpage_id)
+        get_zhaotong_paper_old_old(paper_time, queue_id, webpage_id, bm_url_in)
     else:
         # print('使用新方法')
-        get_zhaotong_paper_new(paper_time, queue_id, webpage_id)
+        get_zhaotong_paper_new(paper_time, queue_id, webpage_id, bm_url_in)
 
 
 # get_zhaotong_paper('2022-05-31', 111, 1111)

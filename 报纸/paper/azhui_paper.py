@@ -26,7 +26,7 @@ headers = {
 }
 
 
-def get_anhui_paper(paper_time, queue_id, webpage_id):
+def get_anhui_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m/%d')
@@ -44,6 +44,7 @@ def get_anhui_paper(paper_time, queue_id, webpage_id):
             bm_name = "".join(bm.xpath("./a[1]/text()")).strip()
             # 版面链接
             bm_url = base_url + ''.join(bm.xpath("./a[1]/@href"))
+
             # 版面的pdf
             bm_pdf = 'https://szb.ahnews.com.cn/ahrb/' + "".join(
                 bm.xpath("./a[2]/@href")).strip('../../..')
@@ -88,6 +89,7 @@ def get_anhui_paper(paper_time, queue_id, webpage_id):
                 cursor_test = conn_test.cursor()
 
                 if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
+                # if bm_pdf not in pdf_set and judging_bm_criteria(article_name, bm_url, bm_url_in) and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
                     pdf_set.add(bm_pdf)

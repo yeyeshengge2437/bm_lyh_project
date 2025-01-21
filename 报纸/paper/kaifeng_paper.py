@@ -31,7 +31,7 @@ headers = {
 today = datetime.now().strftime('%Y-%m-%d')
 # today = '2022-05-19'
 
-def get_kaifeng_paper(paper_time, queue_id, webpage_id):
+def get_kaifeng_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     base_url = f'https://epaper.kf.cn/paper/kfrb/{paper_time}/'

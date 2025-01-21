@@ -44,7 +44,7 @@ def get_date(papaer_time):
     raise Exception(f'该日期没有报纸')
 
 
-def get_chinarenshizuzhi_paper(paper_time, queue_id, webpage_id):
+def get_chinarenshizuzhi_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     paper_id = get_date(paper_time)

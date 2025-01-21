@@ -100,9 +100,12 @@ def compress_image(input_path, output_path, max_size_mb=9):
 
     # 循环直到文件大小小于最大大小
     while True:
-        # 保存图片
-        img.save(f'{output_path}_{i}.jpg', 'JPEG', quality=quality, optimize=True)
-
+        try:
+            # 保存图片
+            img.save(f'{output_path}_{i}.jpg', 'JPEG', quality=quality, optimize=True)
+        except:
+            # 保存图片
+            img.save(f'{output_path}_{i}.jpg', 'RGBA', quality=quality, optimize=True)
         # 检查文件大小
         if os.path.getsize(f'{output_path}_{i}.jpg') <= max_size_mb * 1024 * 1024:
             return f'{output_path}_{i}.jpg'

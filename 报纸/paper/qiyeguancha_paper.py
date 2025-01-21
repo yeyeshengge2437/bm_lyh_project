@@ -40,7 +40,7 @@ def get_date():
 
 
 
-def get_qiyeguancha_paper(paper_time, queue_id, webpage_id):
+def get_qiyeguancha_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     get_date()
 

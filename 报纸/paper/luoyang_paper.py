@@ -58,7 +58,7 @@ def get_paper_url_cookies(url):
     return cookie_dict
 
 
-def get_luoyang_paper_new(paper_time, queue_id, webpage_id):
+def get_luoyang_paper_new(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m/%d')
@@ -159,7 +159,7 @@ def get_luoyang_paper_new(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-def get_luoyang_paper_old(paper_time, queue_id, webpage_id):
+def get_luoyang_paper_old(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y-%m/%d')
@@ -255,7 +255,7 @@ def get_luoyang_paper_old(paper_time, queue_id, webpage_id):
 
 # get_luoyang_paper_new('2024-08-22', 111, 1111)
 # get_luoyang_lastpaper_old('2014-08-22', 111, 1111)
-def get_luoyang_paper(paper_time, queue_id, webpage_id):
+def get_luoyang_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     paper_time1 = datetime.strptime(paper_time, '%Y-%m-%d').date()
     date_str = '2014-12-01'
 
@@ -265,10 +265,10 @@ def get_luoyang_paper(paper_time, queue_id, webpage_id):
     # 判断日期是否在范围内
     if paper_time1 <= date_str:
         # print('使用旧方法')
-        get_luoyang_paper_old(paper_time, queue_id, webpage_id)
+        get_luoyang_paper_old(paper_time, queue_id, webpage_id, bm_url_in)
     else:
         # print('使用新方法')
-        get_luoyang_paper_new(paper_time, queue_id, webpage_id)
+        get_luoyang_paper_new(paper_time, queue_id, webpage_id, bm_url_in)
 
 
 # get_luoyang_paper('2022-05-03', 111, 1111)

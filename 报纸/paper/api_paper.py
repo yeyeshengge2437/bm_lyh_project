@@ -201,12 +201,16 @@ def judging_criteria(title, article_content):
         return False
 
 
+# def judging_bm_criteria(title, bm_url, bm_url_in):
 def judging_bm_criteria(title):
     """
     判断是否为需要的版面
     :param title: 文章标题
     :return:
     """
+    # if bm_url_in:
+    #     if bm_url == bm_url_in:
+    #         return True
     explicit_claims = re.compile(
         r'(债权|转让|受让|处置|招商|营销|联合|催收|催讨)(信息)?的?(通知书|告知书|通知公告|登报公告|补登公告|补充公告|拍卖公告|公告|通知)')
 

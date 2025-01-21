@@ -49,7 +49,7 @@ headers = {
 }
 
 paper = "科技金融时报"
-def get_kejijinrong_paper(paper_time, queue_id, webpage_id):
+def get_kejijinrong_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     node_key = get_date_num(paper_time)
     if not node_key:
         raise Exception(f'该日期没有报纸')

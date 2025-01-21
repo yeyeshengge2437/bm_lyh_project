@@ -26,7 +26,7 @@ params = {
     'catalogId': '477181547507781',
     'siteId': '445057712832581',
 }
-def get_linzhi_paper(paper_time, queue_id, webpage_id):
+def get_linzhi_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     response = requests.get('http://116.172.193.36:8090/api/cms/content/list', params=params, headers=headers, verify=False)

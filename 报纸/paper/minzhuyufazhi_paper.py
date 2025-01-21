@@ -42,7 +42,7 @@ def get_date():
                     date_dict[date_time] = date_url
     return date_dict
 
-def get_minzhuyufazhi_paper(paper_time, queue_id, webpage_id):
+def get_minzhuyufazhi_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     get_date()

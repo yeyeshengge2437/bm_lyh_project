@@ -34,7 +34,7 @@ headers = {
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"Windows"',
 }
-def get_chinazhishi_paper(paper_time, queue_id, webpage_id):
+def get_chinazhishi_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
 
     data = {
         'date': paper_time,

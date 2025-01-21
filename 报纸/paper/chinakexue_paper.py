@@ -1704,7 +1704,7 @@ def get_date():
     return date_dict
 
 
-def get_chinakexue_paper(paper_time, queue_id, webpage_id):
+def get_chinakexue_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     if paper_time > "2024-10-14":
         get_date()
     if date_dict.get(paper_time) is None:

@@ -18,7 +18,7 @@ paper = "甘肃工人报"
 general_url = 'https://szb.gansudaily.com.cn/gsgrb/pc/'
 
 
-def get_gansugongren_paper_new(paper_time, queue_id, webpage_id):
+def get_gansugongren_paper_new(paper_time, queue_id, webpage_id, bm_url_in=None):
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m/%d')
     base_url = f'https://szb.gansudaily.com.cn/gsgrb/pc/layout/{paper_time}/'
@@ -108,7 +108,7 @@ def get_gansugongren_paper_new(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-def get_gansugongren_paper_old(paper_time, queue_id, webpage_id):
+def get_gansugongren_paper_old(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m/%d')
@@ -203,7 +203,7 @@ def get_gansugongren_paper_old(paper_time, queue_id, webpage_id):
         raise Exception(f'该日期没有报纸')
 
 
-def get_gansugongren_paper(paper_time, queue_id, webpage_id):
+def get_gansugongren_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     paper_time1 = datetime.strptime(paper_time, '%Y-%m-%d').date()
     date_str = '2022-08-31'
 
@@ -212,9 +212,9 @@ def get_gansugongren_paper(paper_time, queue_id, webpage_id):
 
     # 判断日期是否在范围内
     if paper_time1 <= date_str:
-        get_gansugongren_paper_old(paper_time, queue_id, webpage_id)
+        get_gansugongren_paper_old(paper_time, queue_id, webpage_id, bm_url_in)
     else:
-        get_gansugongren_paper_new(paper_time, queue_id, webpage_id)
+        get_gansugongren_paper_new(paper_time, queue_id, webpage_id, bm_url_in)
 
 
 # get_gansugongren_paper('2022-10-19', 1, 1)

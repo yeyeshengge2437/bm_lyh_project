@@ -51,7 +51,7 @@ def get_date(paper_time):
 # print(get_date('2022-10-01'))
 
 
-def get_anqing_paper(paper_time, queue_id, webpage_id):
+def get_anqing_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
     day = paper_time
     url = get_date(paper_time)

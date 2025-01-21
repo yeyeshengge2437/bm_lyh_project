@@ -219,7 +219,7 @@ def get_date_url(paper_time):
 # print(get_date_url('2016-06-02'))
 
 
-def get_chinaxianyujingji_paper(paper_time, queue_id, webpage_id):
+def get_chinaxianyujingji_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
 
     url = get_date_url(paper_time)
     tag = False
