@@ -246,49 +246,55 @@ while True:
             continue
         if value:
             queue_id = value['id']
-            input_text = value.get('input_text')
-            # 将input_text转换为字典
-            input_text = json.loads(input_text)
-            qu_id = input_text.get('id')
-            pdf_url = input_text.get('pdf_url')
-            sx = input_text.get('sx')
-            sy = input_text.get('sy')
-            ex = input_text.get('ex')
-            ey = input_text.get('ey')
-            title_sx = input_text.get('title_sx')
-            if not title_sx:
-                title_sx = 0
-            # if title_sx - 0.05 > 0:
-            #     title_sx = title_sx - 0.05
-            title_sy = input_text.get('title_sy')
-            if not title_sy:
-                title_sy = 0
-            # if title_sy - 0.05 > 0:
-            #     title_sy = title_sy - 0.05
-            title_ex = input_text.get('title_ex')
-            if not title_ex:
-                title_ex = 0
-            # if title_ex + 0.05 < 1:
-            #     title_ex = title_ex + 0.05
-            title_ey = input_text.get('title_ey')
-            if not title_ey:
-                title_ey = 0
-            # if title_ey + 0.05 < 1:
-            #     title_ey = title_ey + 0.05
-            get_info = single_pages(pdf_url, sx, sy, ex, ey, title_sx, title_sy, title_ex, title_ey)
-            tag_str, title_text = get_info
-            upload_data = {
-                'id': qu_id,
-                'pdf_title': title_text,
-                'content_except_table': tag_str
-            }
-            print(upload_data)
-            pdf_content_except_table_update(data=upload_data)
-            success_data = {
-                'id': f'{queue_id}',
-            }
-            ai_parse_success(data=success_data)
-
+            try:
+                input_text = value.get('input_text')
+                # 将input_text转换为字典
+                input_text = json.loads(input_text)
+                qu_id = input_text.get('id')
+                pdf_url = input_text.get('pdf_url')
+                sx = input_text.get('sx')
+                sy = input_text.get('sy')
+                ex = input_text.get('ex')
+                ey = input_text.get('ey')
+                title_sx = input_text.get('title_sx')
+                if not title_sx:
+                    title_sx = 0
+                # if title_sx - 0.05 > 0:
+                #     title_sx = title_sx - 0.05
+                title_sy = input_text.get('title_sy')
+                if not title_sy:
+                    title_sy = 0
+                # if title_sy - 0.05 > 0:
+                #     title_sy = title_sy - 0.05
+                title_ex = input_text.get('title_ex')
+                if not title_ex:
+                    title_ex = 0
+                # if title_ex + 0.05 < 1:
+                #     title_ex = title_ex + 0.05
+                title_ey = input_text.get('title_ey')
+                if not title_ey:
+                    title_ey = 0
+                # if title_ey + 0.05 < 1:
+                #     title_ey = title_ey + 0.05
+                get_info = single_pages(pdf_url, sx, sy, ex, ey, title_sx, title_sy, title_ex, title_ey)
+                tag_str, title_text = get_info
+                upload_data = {
+                    'id': qu_id,
+                    'pdf_title': title_text,
+                    'content_except_table': tag_str
+                }
+                print(upload_data)
+                pdf_content_except_table_update(data=upload_data)
+                success_data = {
+                    'id': f'{queue_id}',
+                }
+                ai_parse_success(data=success_data)
+            except Exception as e:
+                fail_data = {
+                    'id': f'{queue_id}',
+                    'remark': f'{e}'
+                }
+                ai_parse_fail(data=fail_data)
         else:
             time.sleep(3)
     except Exception as e:

@@ -19,7 +19,7 @@ methods = {
     'http://www.cqfygzfw.gov.cn/gggs/toListKtggNL.shtml?page=1': get_cqcourt_info,  # 重庆法院公众服务网
     'https://www.zjsfgkw.gov.cn/jkts/search/ktgglist.do': get_zjcourt_info,  # 浙江法院网
     'http://sxgaofa.cn/sxssfw/ktgg/toListKtggNL.shtml': get_sxcourt_1_info,  # 陕西法院诉讼服务网
-    'https://ssfw.jsfy.gov.cn/#/ywym?onetitle=4&title=ktgg': get_xzcourt_info,  # 江苏法院诉讼服务网
+    'https://ssfw.jsfy.gov.cn/#/ywym?onetitle=4&title=ktgg': get_jscourt_info,  # 江苏法院诉讼服务网
     'https://www.hshfy.sh.cn/shwfy/ssfww/ktgg.jsp': get_shcourt_info,  # 上海法院诉讼服务网
     "https://ssfw.xzfy.gov.cn/#/fyxx?label=0": get_xzcourt_info,  # 徐州法院诉讼服务网
     "https://ssfw.wxfy.gov.cn/lawsuit/case/#/sfgk": get_wxcourt_info,  # 无锡法院诉讼服务网
