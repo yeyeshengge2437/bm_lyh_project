@@ -12,32 +12,42 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 random_float = random.uniform(1, 5)
 
 
-
-def get_captcha(page):
+def get_captcha(page, iframe_url=None):
     # # 连接浏览器
     # page = ChromiumPage(co)
-    tab = page.new_tab()
-    # 访问网页
-    tab.get("111.html")
-    time.sleep(3)
-    # 验证码处理
-    captcha_ele = tab.get_frame(1)
-    captcha_url = captcha_ele.attr("src")
+    # html_qcc = page.html
+    # print(html_qcc)
+    iframe = page.get_frame(1)
+    tab = iframe
+    # if iframe_url:
+    #     tab.get(iframe_url)
+    # else:
+    #     tab.get("111.html")
+    # time.sleep(3)
+    # # 验证码处理
+    # captcha_ele = tab.get_frame(1)
+    # captcha_url = captcha_ele.attr("src")
     # new_tab = page.new_tab()
     # tab = new_tab
-    tab.get(captcha_url)
+    # tab.get(iframe_url)
     button = tab.ele("xpath=//div[@class='captcha-panel']/a")
     button.click(by_js=True)
     # tab.wait.ele_displayed("xpath=//div[contains(@class, 'geetest_box_wrap')]")
     time.sleep(2)
     # 获取验证码图片
     captcha_img = tab.ele(f"xpath=//div[contains(@class, 'geetest_box_wrap')]/div[contains(@class, 'geetest_box')]")
-    captcha_img_size = captcha_img.rect.size
+    screen_loc = captcha_img.rect.corners
+    print(screen_loc)
+    left_top = (screen_loc[0][0]-145, screen_loc[0][1]-55)
+    right_bottom = (screen_loc[2][0]-220, screen_loc[2][1]-145)
+    # captcha_img_size = captcha_img.rect.size
     # print(captcha_img_size)
     # captcha_img = tab.ele(f"xpath=//*")
-    base_str = captcha_img.get_screenshot(as_base64=True)
+    # base_str = captcha_img.get_screenshot(as_base64=True)
+    base_str = page.get_screenshot(as_base64=True, left_top=left_top, right_bottom=right_bottom)
     with open("../captcha.png", "wb") as f:
         f.write(base64.b64decode(base_str))
+    input()
 
     # # 测试
     # # 获取滑块元素
@@ -57,7 +67,7 @@ def get_captcha(page):
         # pass
         value = verify_slider(base_str)
         ident_data = value["data"]["data"]
-        move_num = (int(ident_data) / 2) + 35
+        move_num = (int(ident_data) / 2) + 70
         # print(move_num)
         slider = tab.ele(f"xpath=//div[contains(@class, 'geetest_track')]/div[contains(@class, 'geetest_btn')]")
         # 获取滑块位置
@@ -75,8 +85,10 @@ def get_captcha(page):
         data_list = ident_data.split("|")
         for coordinate in data_list:
             x, y = coordinate.split(",")
-            x = int(x) / 2
-            y = int(y) / 2
+            # x = (int(x) / 2) + 15
+            # y = (int(y) / 2)
+            x = int(x)
+            y = int(y)
 
             # print(f"点击位置:{x, y}")
             # 获取图片的元素
@@ -91,7 +103,4 @@ def get_captcha(page):
     # else:
     #     input("请重试：")
     #     get_captcha(page)
-    tab.close()
-
-
-
+    # tab.close()

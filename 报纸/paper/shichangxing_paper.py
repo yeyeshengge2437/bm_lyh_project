@@ -83,7 +83,7 @@ def get_shichangxing_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
                     database="col"
                 )
                 cursor_test = conn_test.cursor()
-                if pdf_url not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
+                if pdf_url not in pdf_set and judging_bm_criteria(article_name, bm_url, bm_url_in) and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(pdf_url, "市场星报", "pdf", "paper")
                     pdf_set.add(pdf_url)

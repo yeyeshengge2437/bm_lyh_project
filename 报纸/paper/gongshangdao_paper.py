@@ -128,7 +128,7 @@ def get_gongshangdao_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
                     cursor_test = conn_test.cursor()
                     # print(bm_name, article_name, article_url, bm_img, content)
                     if bm_img not in pdf_set and (
-                            "分类信息" in article_name or judging_bm_criteria(article_name)) and judge_bm_repeat(paper,
+                            "分类信息" in article_name or judging_bm_criteria(article_name, bm_url, bm_url_in)) and judge_bm_repeat(paper,
                                                                                                                  bm_url):
                         # 将报纸img上传
                         up_img = upload_file_by_url(bm_img, paper, "img", "paper")

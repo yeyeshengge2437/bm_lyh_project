@@ -73,7 +73,7 @@ def get_gansugongren_paper_new(paper_time, queue_id, webpage_id, bm_url_in=None)
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
                     # print(bm_name, article_name, article_url, original_pdf, article_content)
-                    if original_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
+                    if original_pdf not in pdf_set and judging_bm_criteria(article_name, bm_url, bm_url_in) and judge_bm_repeat(paper, bm_url):
                         pdf_set.add(original_pdf)
                         pdf_url = upload_file_by_url(original_pdf, paper, 'pdf')
                         insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue,create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
@@ -164,7 +164,7 @@ def get_gansugongren_paper_old(paper_time, queue_id, webpage_id, bm_url_in=None)
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
-                if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
+                if bm_pdf not in pdf_set and judging_bm_criteria(article_name, bm_url, bm_url_in) and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
                     pdf_set.add(bm_pdf)

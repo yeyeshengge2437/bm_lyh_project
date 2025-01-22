@@ -65,9 +65,9 @@ def img_url_identify_fail(data=None):
     data_str = json.dumps(data, ensure_ascii=False)
 
     res = s.post(url=url, headers=headers, data=data_str)
-    result = res.json()
-
-    return result
+    # result = res.json()
+    #
+    # return result
 
 
 # 实例

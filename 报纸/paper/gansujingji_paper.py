@@ -9,15 +9,16 @@ from lxml import etree
 import re
 import requests
 
-
 headers = {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-        'Accept-Language': 'zh-CN,zh;q=0.9',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
-    }
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept-Language': 'zh-CN,zh;q=0.9',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
+}
 paper = "甘肃经济日报"
 general_url = 'https://szb.gansudaily.com.cn/gsjjrb/pc/'
 today = datetime.now().strftime('%Y-%m-%d')
+
+
 def get_gansujingji_paper_new(paper_time, queue_id, webpage_id, bm_url_in=None):
     day = paper_time
     paper_time = datetime.strptime(paper_time, '%Y-%m-%d').strftime('%Y%m/%d')
@@ -42,9 +43,25 @@ def get_gansujingji_paper_new(paper_time, queue_id, webpage_id, bm_url_in=None):
                 # 获取该页的PDF
                 pdf_url1 = re.findall(r'<!-- <p id="pdfUrl" style="display:none">(.*?)</p> -->', html_2data)[0]
                 original_pdf = general_url + pdf_url1.strip('../../..')
-
+                conn_test = mysql.connector.connect(
+                    host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
+                    user="col2024",
+                    password="Bm_a12a06",
+                    database="col"
+                )
+                cursor_test = conn_test.cursor()
+                create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                create_date = datetime.now().strftime('%Y-%m-%d')
                 # 获取所有版面下的所有文章
                 articles = html_2.xpath("//div[@class='news-list']/ul/li[@class='resultList']/a")
+                flag = False
+                if not articles:
+                    article_name = ''
+                    if original_pdf not in pdf_set and judging_bm_criteria(article_name, bm_url,
+                                                                           bm_url_in) and judge_bm_repeat(paper,
+                                                                                                          bm_url):
+                        flag = True
+                        # print(original_pdf)
                 for article in articles:
                     art_base_url = 'https://szb.gansudaily.com.cn/gsjjrb/pc/'
                     # 获取文章名
@@ -61,42 +78,37 @@ def get_gansujingji_paper_new(paper_time, queue_id, webpage_id, bm_url_in=None):
                             html_3.xpath("//div[@class='detail-art']/div[@id='ozoom']/founder-content/p/text()"))
                     except:
                         article_content = ''
-                    conn_test = mysql.connector.connect(
-                        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
-                        user="col2024",
-                        password="Bm_a12a06",
-                        database="col"
-                    )
-                    cursor_test = conn_test.cursor()
+                    # print(bm_name, bm_url)
+                    if original_pdf not in pdf_set and judging_bm_criteria(article_name, bm_url,
+                                                                           bm_url_in) and judge_bm_repeat(paper,
+                                                                                                          bm_url):
+                        flag = True
+                        # print(original_pdf)
 
-                    create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                    create_date = datetime.now().strftime('%Y-%m-%d')
-                    # print(bm_name, article_name, article_url, article_content)
-                    if original_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
-                        pdf_set.add(original_pdf)
-                        pdf_url = upload_file_by_url(original_pdf, paper, 'pdf')
-                        insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue,create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
-
-                        cursor_test.execute(insert_sql,
-                                            (day, paper, bm_name, original_pdf, bm_url, pdf_url, create_time,
-                                             queue_id, create_date, webpage_id))
-                        conn_test.commit()
 
                     if judging_criteria(article_name, article_content):
+                        # pass
+                        insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time,from_queue, create_date, webpage_id) VALUES (%s,%s, %s,%s,%s, %s, %s, %s, %s, %s)"
 
+                        cursor_test.execute(insert_sql,
+                                            (
+                                                bm_url, day, paper, article_name, article_content, article_url,
+                                                create_time,
+                                                queue_id, create_date, webpage_id))
 
-                            insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time,from_queue, create_date, webpage_id) VALUES (%s,%s, %s,%s,%s, %s, %s, %s, %s, %s)"
+                        conn_test.commit()
+                if flag:
+                    # print(original_pdf)
+                    pdf_set.add(original_pdf)
+                    pdf_url = upload_file_by_url(original_pdf, paper, 'pdf')
+                    insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue,create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
 
-                            cursor_test.execute(insert_sql,
-                                                (
-                                                    bm_url, day, paper, article_name, article_content, article_url,
-                                                    create_time,
-                                                    queue_id, create_date, webpage_id))
-
-                            conn_test.commit()
-
-                    cursor_test.close()
-                    conn_test.close()
+                    cursor_test.execute(insert_sql,
+                                        (day, paper, bm_name, original_pdf, bm_url, pdf_url, create_time,
+                                         queue_id, create_date, webpage_id))
+                    conn_test.commit()
+                cursor_test.close()
+                conn_test.close()
 
         success_data = {
             'id': queue_id,
@@ -105,6 +117,7 @@ def get_gansujingji_paper_new(paper_time, queue_id, webpage_id, bm_url_in=None):
         paper_queue_success(success_data)
     else:
         raise Exception(f'该日期没有报纸')
+
 
 def get_gansujingji_paper_old(paper_time, queue_id, webpage_id, bm_url_in=None):
     # 将today的格式进行改变
@@ -153,9 +166,10 @@ def get_gansujingji_paper_old(paper_time, queue_id, webpage_id, bm_url_in=None):
                 article_content = article_response.content.decode()
                 article_html = etree.HTML(article_content)
                 if not article_html:
-                    continue
-                # 获取文章内容
-                content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content//text()")).strip()
+                    content = ''
+                else:
+                    # 获取文章内容
+                    content = ''.join(article_html.xpath("//div[@id='ozoom']/founder-content//text()")).strip()
                 # print(bm_name, article_name, article_url, bm_pdf, content)
 
                 # 上传到测试数据库
@@ -165,8 +179,11 @@ def get_gansujingji_paper_old(paper_time, queue_id, webpage_id, bm_url_in=None):
                     password="Bm_a12a06",
                     database="col",
                 )
+                # print(bm_pdf, '1111111111111111111111111')
                 cursor_test = conn_test.cursor()
-                if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and judge_bm_repeat(paper, bm_url):
+                if bm_pdf not in pdf_set and judging_bm_criteria(article_name, bm_url, bm_url_in) and judge_bm_repeat(
+                        paper, bm_url):
+                    # print(bm_pdf)
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
                     pdf_set.add(bm_pdf)
@@ -179,7 +196,8 @@ def get_gansujingji_paper_old(paper_time, queue_id, webpage_id, bm_url_in=None):
                     conn_test.commit()
 
                 if judging_criteria(article_name, content):
-                # if 1:
+                    # pass
+                    # if 1:
 
                     # print(content)
                     # return
@@ -195,7 +213,6 @@ def get_gansujingji_paper_old(paper_time, queue_id, webpage_id, bm_url_in=None):
                 cursor_test.close()
                 conn_test.close()
 
-
         success_data = {
             'id': queue_id,
             'description': '数据获取成功',
@@ -206,9 +223,7 @@ def get_gansujingji_paper_old(paper_time, queue_id, webpage_id, bm_url_in=None):
         raise Exception(f'该日期没有报纸')
 
 
-
 def get_gansujingji_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
-
     paper_time1 = datetime.strptime(paper_time, '%Y-%m-%d').date()
     date_str = '2022-08-31'
 
@@ -221,4 +236,6 @@ def get_gansujingji_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
     else:
         get_gansujingji_paper_new(paper_time, queue_id, webpage_id, bm_url_in)
 
-# get_gansujingji_paper('2018-11-13', 1, 1)
+
+# get_gansujingji_paper('2024-11-26', 111, 222,
+#                       bm_url_in='https://szb.gansudaily.com.cn/gsjjrb/pc/layout/202411/26/col07.html')

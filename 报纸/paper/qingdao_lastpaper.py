@@ -54,7 +54,7 @@ headers = {
 pdf_domain = 'https://epaper.guanhai.com.cn/conpaper/qdwb/'
 today = datetime.now().strftime('%Y-%m-%d')
 
-def get_qingdao_lastpaper(paper_time, queue_id, webpage_id):
+def get_qingdao_lastpaper(paper_time, queue_id, webpage_id, bm_url_in=None):
     md5_set = get_md5_set("col", "col_paper_notice")
     # 将today的格式进行改变
     day = paper_time
@@ -110,7 +110,7 @@ def get_qingdao_lastpaper(paper_time, queue_id, webpage_id):
                 )
                 cursor_test = conn_test.cursor()
                 # print(bm_name, article_name, content, bm_pdf)
-                if bm_pdf not in pdf_set and judging_bm_criteria(article_name) and hash_value not in md5_set:
+                if bm_pdf not in pdf_set and judging_bm_criteria(article_name, bm_url, bm_url_in) and hash_value not in md5_set:
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, "青岛晚报", "pdf", "paper")
                     pdf_set.add(bm_pdf)

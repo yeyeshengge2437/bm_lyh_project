@@ -2,7 +2,7 @@ import os
 import time
 from datetime import datetime
 from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, paper_queue_delay, upload_file_by_url, \
-    judge_bm_repeat
+    judge_bm_repeat, judging_bm_criteria
 import mysql.connector
 import requests
 from lxml import etree
@@ -88,6 +88,7 @@ def get_gansufazhi_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
                     if pdf_url1:
                         original_pdf = general_url + pdf_url1.strip('../../..')
                         if original_pdf not in pdf_set and judge_bm_repeat(paper, bm_url):
+                            # print(original_pdf)
                             pdf_set.add(original_pdf)
                             pdf_url = upload_file_by_url(original_pdf, paper, 'pdf')
                             insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_pdf, page_url, pdf_url, create_time, from_queue,create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
@@ -99,6 +100,7 @@ def get_gansufazhi_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
                             # print(original_pdf)
                     else:
                         if bm_img not in img_set and judge_bm_repeat(paper, bm_url):
+                            # print(bm_img)
                             img_set.add(bm_img)
                             img_url = upload_file_by_url(bm_img, paper, 'jpg')
                             insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue,create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
@@ -109,6 +111,7 @@ def get_gansufazhi_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
                             conn_test.commit()
                             # print(bm_img)
                     if judging_criteria(article_name, article_content):
+                        # pass
                         insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url,  create_time,from_queue, create_date, webpage_id) VALUES (%s,%s, %s,%s,%s, %s, %s, %s, %s, %s)"
 
                         cursor_test.execute(insert_sql,
@@ -132,4 +135,4 @@ def get_gansufazhi_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
         raise Exception(f'该日期没有报纸')
 
 
-# get_gansufazhi_paper('2022-09-16', 111, 222)
+# get_gansufazhi_paper('2024-11-26', 111, 222, bm_url_in='https://szb.gansudaily.com.cn/gsjjrb/pc/layout/202411/26/col07.html')

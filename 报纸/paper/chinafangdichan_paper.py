@@ -92,7 +92,7 @@ def get_chinafangdichan_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
                 )
                 cursor_test = conn_test.cursor()
                 # print(article_name, bm_img, content)
-                if bm_img not in img_set and judging_bm_criteria(article_name):
+                if bm_img not in img_set and judging_bm_criteria(article_name, bz_url, bm_url_in):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_img, paper, "img", "paper")
                     img_set.add(bm_img)

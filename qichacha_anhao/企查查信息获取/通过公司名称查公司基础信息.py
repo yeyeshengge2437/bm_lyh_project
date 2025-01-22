@@ -3,7 +3,7 @@ import random
 import re
 from datetime import datetime, timedelta
 
-# from 验证码识别 import get_captcha
+from 验证码识别 import get_captcha
 import requests
 import time
 from lxml import etree
@@ -74,7 +74,10 @@ def qcc_search_company(search_company_name):
         search_company_list = []
         res_json = res_json[0]
         res_json = json.loads(res_json)
-        all_company_list = res_json["search"]["searchRes"]["Result"]
+        try:
+            all_company_list = res_json["search"]["searchRes"]["Result"]
+        except:
+            all_company_list = []
         for company in all_company_list:
             flag = False
             key_no = company.get("KeyNo")  # 公司id
@@ -112,7 +115,10 @@ def qcc_search_company(search_company_name):
                     flag = True
                     print(f"命中字段:{hit_field}")
             if start_date:  # 时间戳转为时间
-                start_date = timenum_to_time(start_date)
+                try:
+                    start_date = timenum_to_time(start_date)
+                except:
+                    start_date = ''
             if flag:
                 target_url = f'https://www.qcc.com/firm/{key_no}.html'
                 response = requests.get(target_url, cookies=cookie_dict, headers=headers)
@@ -124,6 +130,89 @@ def qcc_search_company(search_company_name):
                     # print(company_json)
                     company_detail = company_json["company"][
                         "companyDetail"]  # ["company"]["companyDetail"]["TagsInfoV2"][2]["Name"]
+                    if company_detail.get('DJInfo'):
+                        company_detail_dj = company_detail.get('DJInfo')
+                        company_old_name_list = company_detail.get('OriginalName')  # ["company"]["companyDetail"]["OriginalName"][0]["Name"] # 企业曾用名
+                        company_old_name = []
+                        for old_name in company_old_name_list:
+                            company_old_name.append(old_name.get('Name'))
+                        enrollment_num = None
+                        check_date = None
+                        no = None
+                        status = company_detail_dj.get('status')  # 状态
+                        header_peo = company_detail_dj.get('Oper').get('Name')  # 法人
+                        header_peo_type = company_detail_dj.get('Oper').get('OperType')  # 法人类型
+                        regist_capi = company_detail_dj.get('registCapi')  # 注册资本
+                        credit_code = company_detail_dj.get('creditCode')  # 统一社会信用代码
+                        rec_cap = None  # 实缴资本
+                        org_no = None  # 组织机构代码
+                        tax_no = None  # 纳税人识别号
+                        econ_kind = company_detail_dj.get('econKind')  # 社会组织类型
+                        period_bus = company_detail_dj.get('certificatePeriod')  # 营业期限
+                        taxpayer_type = company_detail_dj.get('taxpayerType')  # 纳税人资质
+                        staff_scale = company_detail_dj.get('staffScale')  # 人员规模
+                        belong_org = company_detail_dj.get('belongOrg')  # 登记机关
+                        national_standard_industry = company_detail_dj.get('industry')  # 行业
+                        english_name = company_detail_dj.get('englishName')  # 英文名
+                        reg_address = company_detail_dj.get('address')  # 注册地址
+                        area_list = company_detail.get('Area')  # 所属地区
+                        area = ''
+                        province = area_list.get('Province')
+                        if province:
+                            area += province
+                        city = area_list.get('City')
+                        if city:
+                            area += city
+                        county = area_list.get('County')
+                        if county:
+                            area += county
+                        com_address = None
+                        scope = company_detail_dj.get('scope')  # 经营范围
+                        phone = company_detail.get('ContactInfo')
+                        if phone:
+                            phone = phone.get('PhoneNumber')
+                        phone_old_list = []
+                        email_old_list = []
+                        gw = None
+                        # 将数据组织为字典
+                        company_data = {
+                            "company_name": company_name,
+                            'search_company_name': search_company_name,
+                            'key_no': key_no,
+                            "company_old_name": company_old_name,
+                            "enrollment_num": enrollment_num,
+                            "check_date": check_date,
+                            "no": no,
+                            "start_date": start_date,
+                            "status": status,
+                            "header_peo": header_peo,
+                            "header_peo_type": header_peo_type,
+                            "regist_capi": regist_capi,
+                            "credit_code": credit_code,
+                            "rec_cap": rec_cap,
+                            "org_no": org_no,
+                            "tax_no": tax_no,
+                            "econ_kind": econ_kind,
+                            "period_bus": period_bus,
+                            "taxpayer_type": taxpayer_type,
+                            "staff_scale": staff_scale,
+                            "belong_org": belong_org,
+                            "national_standard_industry": national_standard_industry,
+                            "english_name": english_name,
+                            "reg_address": reg_address,
+                            "area": area,
+                            "com_address": com_address,
+                            "scope": scope,
+                            "phone": phone,
+                            "phone_old_list": phone_old_list,
+                            "email": email,
+                            "email_old_list": email_old_list,
+                            "gw": gw
+                        }
+                        # 转换为 JSON 格式
+                        company_json = json.dumps(company_data, ensure_ascii=False, indent=4)
+                        print(company_json)
+                        return True, company_json
                     company_name = company_detail.get('Name')  # 公司名称
                     company_old_name = []  # 公司曾用名
                     company_tag_info_list = company_detail.get('TagsInfoV2')
@@ -140,12 +229,21 @@ def qcc_search_company(search_company_name):
                             if common_kd == '参保人数':
                                 enrollment_num = common.get('Value')  # 参保人数
                     check_date = company_detail.get('CheckDate')  # 核准日期
-                    check_date = (datetime.utcfromtimestamp(check_date) + timedelta(days=1)).strftime(
-                        "%Y-%m-%d")  # 核准日期格式化
+                    if check_date:
+                        check_date = (datetime.utcfromtimestamp(check_date) + timedelta(days=1)).strftime(
+                            "%Y-%m-%d")  # 核准日期格式化
+                    else:
+                        check_date = ''
                     no = company_detail.get('No')  # 工商注册号
                     start_date = company_detail.get('StartDate')  # 成立时间
-                    start_date = (datetime.utcfromtimestamp(start_date) + timedelta(days=1)).strftime(
-                        "%Y-%m-%d")  # 成立时间格式化
+                    if start_date:
+                        try:
+                            start_date = (datetime.utcfromtimestamp(start_date) + timedelta(days=1)).strftime(
+                                "%Y-%m-%d")  # 成立时间格式化
+                        except:
+                            start_date = ''
+                    else:
+                        start_date = ''
                     status = company_detail.get('Status')  # 登记状态
                     header_peo = company_detail.get('Oper').get('Name')  # 法定代表人
                     header_peo_type = company_detail.get('Oper').get('OperType')  # 法人类型
@@ -158,8 +256,11 @@ def qcc_search_company(search_company_name):
                     period_bus_start = company_detail.get('TermStart')  # 经营开始日期
                     period_bus_end = company_detail.get('TeamEnd')  # 经营结束日期
                     if period_bus_start:
-                        period_bus_start = (datetime.utcfromtimestamp(period_bus_start) + timedelta(days=1)).strftime(
-                            "%Y-%m-%d")
+                        try:
+                            period_bus_start = (datetime.utcfromtimestamp(period_bus_start) + timedelta(days=1)).strftime(
+                                "%Y-%m-%d")
+                        except:
+                            period_bus_start = ''
                     if period_bus_end:
                         try:
                             period_bus_end = (datetime.utcfromtimestamp(period_bus_end) + timedelta(days=1)).strftime(
@@ -175,17 +276,19 @@ def qcc_search_company(search_company_name):
                     taxpayer_type = company_detail.get('TaxpayerType')  # 纳税人资质
                     staff_scale = company_detail.get('StaffScale')  # 人员规模
                     belong_org = company_detail.get('BelongOrg')  # 登记机关
-                    national_standard_industry = company_detail.get('IndustryV3').get(
-                        "Industry")
-                    sub_industry = company_detail.get('IndustryV3').get("SubIndustry")  # 行业
-                    if sub_industry:
-                        national_standard_industry += '>' + sub_industry
-                    middle_category = company_detail.get('IndustryV3').get("MiddleCategory")  # 行业
-                    if middle_category:
-                        national_standard_industry += '>' + middle_category
-                    small_category = company_detail.get('IndustryV3').get("SmallCategory")
-                    if small_category:
-                        national_standard_industry += '>' + small_category
+                    national_standard_industry = ''
+                    if company_detail.get('IndustryV3'):
+                        national_standard_industry = company_detail.get('IndustryV3').get(
+                            "Industry")
+                        sub_industry = company_detail.get('IndustryV3').get("SubIndustry")  # 行业
+                        if sub_industry:
+                            national_standard_industry += '>' + sub_industry
+                        middle_category = company_detail.get('IndustryV3').get("MiddleCategory")  # 行业
+                        if middle_category:
+                            national_standard_industry += '>' + middle_category
+                        small_category = company_detail.get('IndustryV3').get("SmallCategory")
+                        if small_category:
+                            national_standard_industry += '>' + small_category
                     english_name = company_detail.get('EnglishName')  # 英文名
                     address = company_detail.get('AddressList')  # 地址
                     reg_address = ''  # 注册地址
@@ -284,8 +387,19 @@ def qcc_search_company(search_company_name):
         return False, company_simple_json
 
     else:
-        print("未找到该公司信息")
-        input('出现错误，请查看')
+        print("网站限制")
+        # print(page.html)
+        # iframe_url = page.get_frame(1).attr('src')
+        # 判断是否为验证码
+        get_captcha(page)
+        time.sleep(10)
+        page.refresh()
+        time.sleep(5)
+        page.refresh()
+        # 判断是否为扫描二维码
+
+        page.quit()
+        # input('出现错误，请查看')
         return "失败", None
 
 
@@ -310,9 +424,12 @@ def qcc_search_keyno(key_no):
     page.quit()
     # input()
     key_no_url = f'https://www.qcc.com/firm/{key_no}.html'
+    print(key_no_url)
     response = requests.get(key_no_url, cookies=cookie_dict, headers=headers)
     time.sleep(random_num)
     company_html = response.text
+    # print(company_html)
+    # return
     company_data = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function', company_html)
     if company_data:
         company_json = json.loads(company_data[0])
@@ -335,12 +452,18 @@ def qcc_search_keyno(key_no):
                 if common_kd == '参保人数':
                     enrollment_num = common.get('Value')  # 参保人数
         check_date = company_detail.get('CheckDate')  # 核准日期
-        check_date = (datetime.utcfromtimestamp(check_date) + timedelta(days=1)).strftime(
-            "%Y-%m-%d")  # 核准日期格式化
+        if check_date:
+            check_date = (datetime.utcfromtimestamp(check_date) + timedelta(days=1)).strftime(
+                "%Y-%m-%d")  # 核准日期格式化
+        else:
+            check_date = ''
         no = company_detail.get('No')  # 工商注册号
         start_date = company_detail.get('StartDate')  # 成立时间
-        start_date = (datetime.utcfromtimestamp(start_date) + timedelta(days=1)).strftime(
-            "%Y-%m-%d")  # 成立时间格式化
+        if start_date:
+            start_date = (datetime.utcfromtimestamp(start_date) + timedelta(days=1)).strftime(
+                "%Y-%m-%d")  # 成立时间格式化
+        else:
+            start_date = ''
         status = company_detail.get('Status')  # 登记状态
         header_peo = company_detail.get('Oper').get('Name')  # 法定代表人
         header_peo_type = company_detail.get('Oper').get('OperType')  # 法人类型
@@ -434,18 +557,23 @@ def qcc_search_keyno(key_no):
         return None
 
 
-# qcc_search_company("南京创睿企业管理有限公司")
-# qcc_search_keyno('fec870c8eb9e8996453b39f183d56e5a')
+# qcc_search_company("西峰北辰实验中学")
+# qcc_search_keyno('279d87c8c9160da831e88e942549075f')
 
 #  data = {'search_type' : 'corp_qcc_list or corp_qcc_detail'}
-
+count = 0
 while True:
     random_num = random.randint(3, 9)
-    value = qcc_parse_next()
+    try:
+        value = qcc_parse_next()
+    except:
+        time.sleep(5)
+        continue
     time.sleep(random_num)
     if value:
         try:
             id = value['value']['id']
+            count += 1
         except:
             time.sleep(5)
             continue
@@ -481,8 +609,8 @@ while True:
             key_no = value.get('value')
             # # 字符串转json
             # key_no = json.loads(key_no)
-            key_no = key_no.get('outKey')
-            search_value = qcc_search_keyno('key_no')
+            key_no = key_no.get('out_key')
+            search_value = qcc_search_keyno(key_no)
             if search_value:
                 data = {'corpInfo': search_value}
                 qcc_upload_detail_info(data)
@@ -498,3 +626,4 @@ while True:
                 qcc_parse_fail(data)
     else:
         time.sleep(8)
+    print(count)

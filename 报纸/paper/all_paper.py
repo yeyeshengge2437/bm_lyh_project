@@ -808,7 +808,7 @@ def get_paper_data():
                 queue_day = paper_queue['day']
                 queue_id = paper_queue['id']
                 webpage_id = paper_queue["webpage_id"]
-                bm_url_in = paper_queue['name']
+                bm_url_in = paper_queue.get('name')
                 print(queue_day)
                 try:
                     methods[webpage_name](queue_day, queue_id, webpage_id, bm_url_in)
