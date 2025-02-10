@@ -81,7 +81,7 @@ def get_charater_data():
                     except Exception as e:
                         fail_data = {
                             'id': f'{queue_id}',
-                            'remark': f'调用失败,原因{e}'
+                            'remark': f'调用失败,原因:{e}'
                         }
                         print(fail_data)
                         ai_parse_fail(data=fail_data)
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     多进程5个
     """
     process_list = []
-    for i in range(15):
+    for i in range(4):
         process = Process(target=get_charater_data, args=())
         process_list.append(process)
 

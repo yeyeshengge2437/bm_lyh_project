@@ -9,6 +9,7 @@ s = requests.session()
 s.keep_alive = False
 
 produce_url = "http://118.31.45.18:29810"
+su_fa_url = "http://118.31.45.18:29805"
 # produce_url = "http://118.31.45.18:29707"
 # produce_url = "http://10.20.151.6:29707"
 
@@ -35,11 +36,13 @@ def qcc_parse_success(data=None):
     }
     if data is None:
         data = {}
-    url = produce_url + "/corp/queue/success"
+    url = su_fa_url + "/corp/queue/success"
     data_str = json.dumps(data, ensure_ascii=False)
-
+    # print(data_str)
     res = s.post(url=url, headers=headers, data=data_str)
     # result = res.json()
+    # print(result)
+    # input()
     #
     # return result
 
@@ -51,7 +54,7 @@ def qcc_parse_fail(data=None):
     }
     if data is None:
         data = {}
-    url = produce_url + "/corp/queue/fail"
+    url = su_fa_url + "/corp/queue/fail"
     data_str = json.dumps(data, ensure_ascii=False)
 
     res = s.post(url=url, headers=headers, data=data_str)

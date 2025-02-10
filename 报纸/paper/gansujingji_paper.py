@@ -29,7 +29,8 @@ def get_gansujingji_paper_new(paper_time, queue_id, webpage_id, bm_url_in=None):
     if response.status_code == 200:
         html_data = response.content.decode()
         html_1 = etree.HTML(html_data)
-
+        if html_1 is None:
+            raise Exception(f'该日期没有报纸')
         # 获取所有版面
         banmian = html_1.xpath("//div[@class='nav-list']/ul/li/a[@class='btn btn-block']")
         for bm in banmian:
@@ -237,5 +238,4 @@ def get_gansujingji_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
         get_gansujingji_paper_new(paper_time, queue_id, webpage_id, bm_url_in)
 
 
-# get_gansujingji_paper('2024-11-26', 111, 222,
-#                       bm_url_in='https://szb.gansudaily.com.cn/gsjjrb/pc/layout/202411/26/col07.html')
+# get_gansujingji_paper('2025-02-04', 111, 222)

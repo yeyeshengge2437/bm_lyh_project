@@ -5,7 +5,7 @@ from api_paper import judging_criteria, paper_queue_success, paper_queue_fail, p
 import mysql.connector
 import requests
 from lxml import etree
-from tool.mysql_connection_pool import get_connection
+from a_mysql_connection_pool import get_connection
 
 
 paper = "贵州政协报"

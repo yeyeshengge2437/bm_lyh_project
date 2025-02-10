@@ -838,7 +838,7 @@ if __name__ == '__main__':
     多进程5个
     """
     process_list = []
-    for i in range(5):
+    for i in range(8):
         process = Process(target=get_paper_data, args=())
         process_list.append(process)
 

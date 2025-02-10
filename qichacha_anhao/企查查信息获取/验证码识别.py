@@ -47,7 +47,7 @@ def get_captcha(page, iframe_url=None):
     base_str = page.get_screenshot(as_base64=True, left_top=left_top, right_bottom=right_bottom)
     with open("../captcha.png", "wb") as f:
         f.write(base64.b64decode(base_str))
-    input()
+    # input()
 
     # # 测试
     # # 获取滑块元素
@@ -67,7 +67,7 @@ def get_captcha(page, iframe_url=None):
         # pass
         value = verify_slider(base_str)
         ident_data = value["data"]["data"]
-        move_num = (int(ident_data) / 2) + 70
+        move_num = (int(ident_data) / 2) + 73
         # print(move_num)
         slider = tab.ele(f"xpath=//div[contains(@class, 'geetest_track')]/div[contains(@class, 'geetest_btn')]")
         # 获取滑块位置
@@ -85,10 +85,10 @@ def get_captcha(page, iframe_url=None):
         data_list = ident_data.split("|")
         for coordinate in data_list:
             x, y = coordinate.split(",")
-            # x = (int(x) / 2) + 15
-            # y = (int(y) / 2)
-            x = int(x)
-            y = int(y)
+            x = (int(x) / 2) + 20
+            y = (int(y) / 2) + 18
+            # x = int(x)
+            # y = int(y)
 
             # print(f"点击位置:{x, y}")
             # 获取图片的元素

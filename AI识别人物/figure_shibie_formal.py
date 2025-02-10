@@ -2,10 +2,9 @@ import json
 import re
 import time
 from datetime import datetime
-
+from multiprocessing import Process
 import mysql.connector
-from AI接口.deepseek import deepseek_chat
-from AI接口.chatgpt_4mini import gpt_freechat
+from deepseek import deepseek_chat
 from api_ai import ai_parse_next, ai_parse_success, ai_parse_fail
 
 
@@ -74,68 +73,74 @@ def deepseek_identify_people(chat_text):
     value = re.sub(r' ', '', value)
     print("个人信息识别：" + value)
     companies = []
+    success_num = 0
+    fail_num = 0
     for block in value.split(';'):
         print(block)
         if not block:
             continue
-        name = re.findall(r'姓名:(.*?),', block)[0]
-        former_name = re.findall(r'曾用名:(.*?),', block)[0]
-        gender = re.findall(r'性别:(.*?),', block)[0]
-        id_num = re.findall(r'身份证号:(.*?),', block)[0]
-        address = re.findall(r'住址:(.*?),', block)[0]
-        role = re.findall(r'角色:(.*?),', block)[0]
-        company_name = re.findall(r'关联公司:(.*?),', block)[0]
-        office = re.findall(r'职务:(.*?),', block)[0]
-        relationship = re.findall(r'人物关系:(.*?),', block)[0]
-        asset = re.findall(r'名下资产:(.*?),', block)[0]
-        is_dead = re.findall(r'是否去世:(.*?),', block)[0]
-        other = re.findall(r'其他:(.*)', block)[0]
-        if name == '无':
-            continue
-        if name == "潘静如":
-            continue
-        if len(name) > 4:
-            continue
-        if former_name == '无':
-            former_name = ''
-        if gender == '无':
-            gender = ''
-        if id_num == '无':
-            id_num = ''
-        if address == '无':
-            address = ''
-        if role == '无':
-            role = ''
-        if company_name == '无':
-            company_name = ''
-        if office == '无':
-            office = ''
-        if relationship == '无':
-            relationship = ''
-        if asset == '无':
-            asset = ''
-        if is_dead == '无':
-            is_dead = ''
-        if other == '无':
-            other = ''
+        try:
+            name = re.findall(r'姓名:(.*?),', block)[0]
+            former_name = re.findall(r'曾用名:(.*?),', block)[0]
+            gender = re.findall(r'性别:(.*?),', block)[0]
+            id_num = re.findall(r'身份证号:(.*?),', block)[0]
+            address = re.findall(r'住址:(.*?),', block)[0]
+            role = re.findall(r'角色:(.*?),', block)[0]
+            company_name = re.findall(r'关联公司:(.*?),', block)[0]
+            office = re.findall(r'职务:(.*?),', block)[0]
+            relationship = re.findall(r'人物关系:(.*?),', block)[0]
+            asset = re.findall(r'名下资产:(.*?),', block)[0]
+            is_dead = re.findall(r'是否去世:(.*?),', block)[0]
+            other = re.findall(r'其他:(.*)', block)[0]
+            if name == '无':
+                continue
+            if name == "潘静如":
+                continue
+            if len(name) > 4:
+                continue
+            if former_name == '无':
+                former_name = ''
+            if gender == '无':
+                gender = ''
+            if id_num == '无':
+                id_num = ''
+            if address == '无':
+                address = ''
+            if role == '无':
+                role = ''
+            if company_name == '无':
+                company_name = ''
+            if office == '无':
+                office = ''
+            if relationship == '无':
+                relationship = ''
+            if asset == '无':
+                asset = ''
+            if is_dead == '无':
+                is_dead = ''
+            if other == '无':
+                other = ''
 
-        company_info = {
-            '姓名': name,
-            '曾用名': former_name,
-            '性别': gender,
-            '身份证号': id_num,
-            '住址': address,
-            '角色': role,
-            '关联公司': company_name,
-            '职务': office,
-            '人物关系': relationship,
-            '名下资产': asset,
-            '是否去世': is_dead,
-            '其他': other,
-        }
-        companies.append(company_info)
+            company_info = {
+                '姓名': name,
+                '曾用名': former_name,
+                '性别': gender,
+                '身份证号': id_num,
+                '住址': address,
+                '角色': role,
+                '关联公司': company_name,
+                '职务': office,
+                '人物关系': relationship,
+                '名下资产': asset,
+                '是否去世': is_dead,
+                '其他': other,
+            }
+            companies.append(company_info)
+            success_num += 1
+        except:
+            fail_num += 1
 
-    return companies
+    return companies, value, success_num, fail_num
 
     # 打印结果
     # for company in companies:
@@ -152,89 +157,174 @@ def gpt_identify_company(chat_text):
     value = re.sub(r' ', '', value)
     print("公司名称识别：" + value)
     companies = []
+    success_num = 0
+    fail_num = 0
     for block in value.split(';'):
         print(block)
         if not block:
             continue
-        company_name = re.findall(r'公司名称：(.*?),', block)[0]
-        role = re.findall(r'角色：(.*?),', block)[0]
-        alias = re.findall(r'别称：(.*?),', block)[0]
-        former_name = re.findall(r'曾用名：(.*?),', block)[0]
-        asset = re.findall(r'公司名下资产：(.*?),', block)[0]
-        credit_code = re.findall(r'统一社会信用代码：(.*)', block)[0]
-        if company_name == '无':
-            continue
-        if role == '无':
-            role = ''
-        if alias == '无':
-            alias = ''
-        if former_name == '无':
-            former_name = ''
-        if credit_code == '无':
-            credit_code = ''
-        if asset == '无':
-            asset = ''
+        try:
+            company_name = re.findall(r'公司名称：(.*?),', block)[0]
+            role = re.findall(r'角色：(.*?),', block)[0]
+            alias = re.findall(r'别称：(.*?),', block)[0]
+            former_name = re.findall(r'曾用名：(.*?),', block)[0]
+            asset = re.findall(r'公司名下资产：(.*?),', block)[0]
+            credit_code = re.findall(r'统一社会信用代码：(.*)', block)[0]
+            if company_name == '无':
+                continue
+            if role == '无':
+                role = ''
+            if alias == '无':
+                alias = ''
+            if former_name == '无':
+                former_name = ''
+            if credit_code == '无':
+                credit_code = ''
+            if asset == '无':
+                asset = ''
 
-        company_info = {
-            '公司名称': company_name,
-            '角色': role,
-            '别称': alias,
-            '曾用名': former_name,
-            '公司名下资产': asset,
-            '统一社会信用代码': credit_code
-        }
-        companies.append(company_info)
-    return companies
+            company_info = {
+                '公司名称': company_name,
+                '角色': role,
+                '别称': alias,
+                '曾用名': former_name,
+                '公司名下资产': asset,
+                '统一社会信用代码': credit_code
+            }
+            companies.append(company_info)
+            success_num += 1
+        except:
+            fail_num += 1
+    return companies, value, success_num, fail_num
 
     # 打印结果
     # for company in companies:
     #     save_database_company(company, from_id, paper_id, input_key)
 
+# ai_list = {
+#         'tell_tool_list': [
+#             "paper_subject_tell",
+#         ]
+#     }
+# while True:
+#
+#     try:
+#         value = ai_parse_next(data=ai_list)
+#     except:
+#         time.sleep(30)
+#         continue
+#     if value is None:
+#         time.sleep(30)
+#         continue
+#     print(value)
+#     identify_text = value['input_text']
+#     # identify_text = re.sub(r"\n", "", identify_text)
+#     print(identify_text)
+#     queue_id = value['id']
+#     paper_id = value['paper_id']
+#     input_key = value['input_key']
+#     paper_item_id = value['paper_item_id']
+#     chat_text = identify_text
+#
+#     try:
+#         # 深度求索识别人的信息
+#         people_companies = deepseek_identify_people(chat_text)
+#         # 深度求索识别公司的信息
+#         company_companies = gpt_identify_company(chat_text)
+#     except Exception as e:
+#         fail_data = {
+#             'id': f'{queue_id}',
+#             'remark': f'{e}',
+#         }
+#         ai_parse_fail(data=fail_data)
+#         continue
+#
+#     for company in people_companies:
+#         save_database_people(company, queue_id, paper_id, input_key, paper_item_id)
+#     for company in company_companies:
+#         save_database_company(company, queue_id, paper_id, input_key, paper_item_id)
+#
+#     success_data = {
+#         'id': f'{queue_id}',
+#         'remark': '',
+#     }
+#     ai_parse_success(data=success_data)
 
-ai_list = {
-    'tell_tool_list': [
-        "paper_subject_tell",
-    ]
-}
-while True:
-    try:
-        value = ai_parse_next(data=ai_list)
-    except:
-        time.sleep(30)
-        continue
-    if value is None:
-        time.sleep(30)
-        continue
-    print(value)
-    identify_text = value['input_text']
-    # identify_text = re.sub(r"\n", "", identify_text)
-    print(identify_text)
-    queue_id = value['id']
-    paper_id = value['paper_id']
-    input_key = value['input_key']
-    paper_item_id = value['paper_item_id']
-    chat_text = identify_text
 
-    try:
-        # 深度求索识别人的信息
-        people_companies = deepseek_identify_people(chat_text)
-        # 深度求索识别公司的信息
-        company_companies = gpt_identify_company(chat_text)
-    except Exception as e:
-        fail_data = {
-            'id': f'{queue_id}',
-            'remark': f'{e}',
-        }
-        ai_parse_fail(data=fail_data)
-        continue
 
-    for company in people_companies:
-        save_database_people(company, queue_id, paper_id, input_key, paper_item_id)
-    for company in company_companies:
-        save_database_company(company, queue_id, paper_id, input_key, paper_item_id)
-
-    success_data = {
-        'id': f'{queue_id}',
-        'remark': '',
+def get_figure_shibie_formal():
+    ai_list = {
+        'tell_tool_list': [
+            "paper_subject_tell",
+        ]
     }
-    ai_parse_success(data=success_data)
+    while True:
+        try:
+            try:
+                value = ai_parse_next(data=ai_list)
+            except:
+                time.sleep(30)
+                continue
+            if value is None:
+                time.sleep(30)
+                continue
+            print(value)
+            identify_text = value['input_text']
+            # identify_text = re.sub(r"\n", "", identify_text)
+            print(identify_text)
+            queue_id = value['id']
+            paper_id = value['paper_id']
+            input_key = value['input_key']
+            paper_item_id = value['paper_item_id']
+            chat_text = identify_text
+
+            try:
+                # 深度求索识别人的信息
+                people_companies,  reply_info, success_people_num, fail_people_num = deepseek_identify_people(chat_text)
+                # 深度求索识别公司的信息
+                company_companies, reply_info, success_company_num, fail_company_num = gpt_identify_company(chat_text)
+            except Exception as e:
+                fail_data = {
+                    'id': f'{queue_id}',
+                    'remark': f'{e}',
+                }
+                ai_parse_fail(data=fail_data)
+                continue
+
+            for company in people_companies:
+                save_database_people(company, queue_id, paper_id, input_key, paper_item_id)
+            for company in company_companies:
+                save_database_company(company, queue_id, paper_id, input_key, paper_item_id)
+            if fail_company_num == 0 and fail_people_num == 0:
+                success_data = {
+                    'id': f'{queue_id}',
+                    # 'remark': f'成功',
+                    'output_text': reply_info,
+                }
+                ai_parse_success(data=success_data)
+            else:
+
+                success_data = {
+                    'id': f'{queue_id}',
+                    'remark': f'成功个人{success_people_num}个， 失败个人{fail_people_num}个；成功公司{success_company_num}个，失败公司{fail_company_num}个',
+                    'output_text': reply_info,
+                }
+                ai_parse_success(data=success_data)
+        except:
+            continue
+
+if __name__ == '__main__':
+    """
+    多进程5个
+    """
+    process_list = []
+    for i in range(2):
+        process = Process(target=get_figure_shibie_formal, args=())
+        process_list.append(process)
+
+    for process in process_list:
+        process.start()
+
+    for process in process_list:
+        process.join()
+

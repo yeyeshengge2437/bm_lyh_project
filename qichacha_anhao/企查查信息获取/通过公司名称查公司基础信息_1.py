@@ -48,7 +48,7 @@ def qcc_search_company(search_company_name):
     co = co.set_user_data_path(r"D:\chome_data\data_one")
     # co = co.set_argument('--no-sandbox')
     # co = co.headless()
-    co.set_paths(local_port=9136)
+    co.set_paths(local_port=9158)
     random_float = random.uniform(1, 5)
     # 连接浏览器
     page = ChromiumPage(co)
@@ -134,8 +134,9 @@ def qcc_search_company(search_company_name):
                         company_detail_dj = company_detail.get('DJInfo')
                         company_old_name_list = company_detail.get('OriginalName')  # ["company"]["companyDetail"]["OriginalName"][0]["Name"] # 企业曾用名
                         company_old_name = []
-                        for old_name in company_old_name_list:
-                            company_old_name.append(old_name.get('Name'))
+                        if company_old_name_list:
+                            for old_name in company_old_name_list:
+                                company_old_name.append(old_name.get('Name'))
                         enrollment_num = None
                         check_date = None
                         no = None
@@ -245,8 +246,14 @@ def qcc_search_company(search_company_name):
                     else:
                         start_date = ''
                     status = company_detail.get('Status')  # 登记状态
-                    header_peo = company_detail.get('Oper').get('Name')  # 法定代表人
-                    header_peo_type = company_detail.get('Oper').get('OperType')  # 法人类型
+                    try:
+                        header_peo = company_detail.get('Oper').get('Name')  # 法定代表人
+                    except:
+                        header_peo = ''
+                    try:
+                        header_peo_type = company_detail.get('Oper').get('OperType')  # 法人类型
+                    except:
+                        header_peo_type = ''
                     regist_capi = company_detail.get('RegistCapi')  # 注册资本
                     credit_code = company_detail.get('CreditCode')  # 统一社会信用代码
                     rec_cap = company_detail.get('RecCap')  # 实缴资本
@@ -293,11 +300,12 @@ def qcc_search_company(search_company_name):
                     address = company_detail.get('AddressList')  # 地址
                     reg_address = ''  # 注册地址
                     com_address = ''  # 通信地址
-                    for add in address:
-                        if add.get('TypeDesc') == '注册地址':
-                            reg_address = add.get('Address')
-                        if add.get('TypeDesc') == '通信地址':
-                            com_address = add.get('Address')
+                    if address:
+                        for add in address:
+                            if add.get('TypeDesc') == '注册地址':
+                                reg_address = add.get('Address')
+                            if add.get('TypeDesc') == '通信地址':
+                                com_address = add.get('Address')
                     scope = company_detail.get('Scope')  # 经营范围
                     phone = company_detail.get('info').get('phone')  # 电话
                     his_tel_list = company_detail.get('HisTelList')  # 历史电话
@@ -307,20 +315,22 @@ def qcc_search_company(search_company_name):
                     email = company_detail.get('info').get('email')  # 邮箱
                     his_email_list = company_detail.get('MoreEmailList')  # 历史邮箱
                     email_old_list = []  # 历史邮箱列表
-                    for his_email in his_email_list:
-                        email_old_list.append(his_email.get('e'))
+                    if his_email_list:
+                        for his_email in his_email_list:
+                            email_old_list.append(his_email.get('e'))
                     gw = company_detail.get('info').get('gw')  # 网址
                     area_list = company_detail.get('Area')  # 所属地区
                     area = ''
-                    province = area_list.get('Province')
-                    if province:
-                        area += province
-                    city = area_list.get('City')
-                    if city:
-                        area += city
-                    county = area_list.get('County')
-                    if county:
-                        area += county
+                    if area_list:
+                        province = area_list.get('Province')
+                        if province:
+                            area += province
+                        city = area_list.get('City')
+                        if city:
+                            area += city
+                        county = area_list.get('County')
+                        if county:
+                            area += county
                     # 将数据组织为字典
                     company_data = {
                         "company_name": company_name,
@@ -391,7 +401,10 @@ def qcc_search_company(search_company_name):
         # print(page.html)
         # iframe_url = page.get_frame(1).attr('src')
         # 判断是否为验证码
-        get_captcha(page)
+        try:
+            get_captcha(page)
+        except:
+            time.sleep(3600)
         time.sleep(10)
         page.refresh()
         time.sleep(5)
@@ -554,6 +567,22 @@ def qcc_search_keyno(key_no):
         print(company_json)
         return company_json
     else:
+        print("网站限制")
+        # print(page.html)
+        # iframe_url = page.get_frame(1).attr('src')
+        # 判断是否为验证码
+        try:
+            get_captcha(page)
+        except:
+            time.sleep(3600)
+        time.sleep(10)
+        page.refresh()
+        time.sleep(5)
+        page.refresh()
+        # 判断是否为扫描二维码
+
+        page.quit()
+        # input('出现错误，请查看')
         return None
 
 
@@ -566,7 +595,8 @@ while True:
     random_num = random.randint(3, 9)
     try:
         value = qcc_parse_next()
-    except:
+    except Exception as e:
+        # print(f"获取队列出错:{e}")
         time.sleep(5)
         continue
     time.sleep(random_num)
@@ -583,7 +613,15 @@ while True:
             # # 字符串转json
             # company_name = json.loads(company_name)
             company_name = company_name.get('name')
-            search_flag, search_value = qcc_search_company(company_name)
+            try:
+                search_flag, search_value = qcc_search_company(company_name)
+            except Exception as e:
+                data = {
+                    'id': id,
+                    'description': f'{e}',
+                }
+                qcc_parse_fail(data)
+                continue
             if search_flag == True:
                 # print('_______________________________________')
                 data = {'corp_info': search_value}
@@ -591,14 +629,14 @@ while True:
                 success_data = {
                     'id': id
                 }
-                qcc_parse_success(data)
+                qcc_parse_success(success_data)
             elif search_flag == False:
                 data = {'corp_summary_array': search_value}
                 qcc_upload_info_list(data)
                 success_data = {
                     'id': id
                 }
-                qcc_parse_success(data)
+                qcc_parse_success(success_data)
             elif search_flag == "失败":
                 data = {
                     'id': id,
@@ -617,7 +655,7 @@ while True:
                 success_data = {
                     'id': id
                 }
-                qcc_parse_success(data)
+                qcc_parse_success(success_data)
             else:
                 data = {
                     'id': id,
