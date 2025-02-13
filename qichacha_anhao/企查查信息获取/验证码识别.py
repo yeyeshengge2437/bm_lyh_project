@@ -11,6 +11,19 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 # co.set_paths(local_port=9136)
 random_float = random.uniform(1, 5)
 
+def get_image_size(image_path):
+    # 打开图片
+    with Image.open(image_path) as img:
+        # 获取图片尺寸 (宽度, 高度)
+        width, height = img.size
+        return width, height
+
+
+def point_to_percentage(width, height, x, y):
+    # 计算水平方向和垂直方向的百分比
+    x_percent = (x / width) * 100
+    y_percent = (y / height) * 100
+    return x_percent, y_percent
 
 def get_captcha(page, iframe_url=None):
     # # 连接浏览器
@@ -37,27 +50,22 @@ def get_captcha(page, iframe_url=None):
     # 获取验证码图片
     captcha_img = tab.ele(f"xpath=//div[contains(@class, 'geetest_box_wrap')]/div[contains(@class, 'geetest_box')]")
     screen_loc = captcha_img.rect.corners
-    print(screen_loc)
-    left_top = (screen_loc[0][0]-145, screen_loc[0][1]-55)
-    right_bottom = (screen_loc[2][0]-220, screen_loc[2][1]-145)
-    # captcha_img_size = captcha_img.rect.size
-    # print(captcha_img_size)
-    # captcha_img = tab.ele(f"xpath=//*")
-    # base_str = captcha_img.get_screenshot(as_base64=True)
+    left_top = screen_loc[0]
+    right_bottom = screen_loc[2]
     base_str = page.get_screenshot(as_base64=True, left_top=left_top, right_bottom=right_bottom)
     with open("../captcha.png", "wb") as f:
         f.write(base64.b64decode(base_str))
     # input()
 
-    # # 测试
-    # # 获取滑块元素
-    # slider = tab.ele(f"xpath=//div[contains(@class, 'geetest_track')]/div[contains(@class, 'geetest_btn')]")
-    # # 获取滑块位置
-    # slider_loc = slider.rect.location
-    # print(slider_loc)
-    # # (209.1015625, 459.08203125)
-    # tab.actions.move_to(slider.rect.location)
-    # tab.actions.hold(slider).move_to((210, 600), duration=2).release()
+    captcha_img_loc = captcha_img.rect.viewport_location  # 元素在屏幕中左上角的坐标
+    raw_x, raw_y = captcha_img_loc
+    captcha_img_size = captcha_img.rect.size
+
+    # 右下角坐标
+    right_x = raw_x + captcha_img_size[0]
+    right_y = raw_y + captcha_img_size[1]
+
+    width, height = get_image_size("../captcha.png")
 
     # 返回图片的坐标
     captcha_img_loc = captcha_img.rect.location
@@ -67,11 +75,11 @@ def get_captcha(page, iframe_url=None):
         # pass
         value = verify_slider(base_str)
         ident_data = value["data"]["data"]
-        move_num = (int(ident_data) / 2) + 73
+        move_num = (int(ident_data) / 2)
         # print(move_num)
         slider = tab.ele(f"xpath=//div[contains(@class, 'geetest_track')]/div[contains(@class, 'geetest_btn')]")
         # 获取滑块位置
-        slider_loc = slider.rect.location
+        slider_loc = slider.rect.midpoint
         tab.actions.move_to(slider_loc)
         tab.actions.hold(slider).move_to((slider_loc[0] + move_num, slider_loc[1]), duration=0.45).release()
         # print(f"使用滑块验证码")
@@ -85,16 +93,19 @@ def get_captcha(page, iframe_url=None):
         data_list = ident_data.split("|")
         for coordinate in data_list:
             x, y = coordinate.split(",")
-            x = (int(x) / 2) + 20
-            y = (int(y) / 2) + 18
-            # x = int(x)
-            # y = int(y)
+            x = int(x)
+            y = int(y)
 
-            # print(f"点击位置:{x, y}")
-            # 获取图片的元素
-            # img_ele = tab.ele(f"xpath=//div[contains(@class, 'geetest_click')]/div[contains(@class, 'geetest_window')]/div[contains(@class, 'geetest_bg')]")
-            tab.actions.move(x + raw_x, y + raw_y).click()
-            tab.actions.move_to((0, 0))
+            x_percent, y_percent = point_to_percentage(width, height, x, y)
+            # print(x_percent, y_percent)
+            page.actions.move_to((raw_x, raw_y))
+            x_last = (right_x - raw_x) * (x_percent / 100) + raw_x
+            y_last = (right_y - raw_y) * (y_percent / 100) + raw_y
+            # print(x_last, y_last)
+            page.actions.move_to((x_last, y_last)).click()
+            # print(f'左上角位置为：{(raw_x, raw_y)}, 右下角的位置为：{(right_x, right_y)}')
+            # print(f"点击位置:{(x_last, y_last)}")
+            # page.actions.move_to((raw_x, raw_y))
             time.sleep(0.5)
         # 点击确定按钮
         tab.ele("确定").click(by_js=True)

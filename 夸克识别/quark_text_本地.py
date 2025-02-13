@@ -73,12 +73,12 @@ def quark_text(path_img):
     if response.status_code == 200:
         body = response.json()
         code = body.get("code")
-        # print(body)
+        print(body)
         return body
     else:
         print("HTTP 请求错误")
         return None
 
 
-# if __name__ == "__main__":
-#     quark_text("img.png")
+if __name__ == "__main__":
+    quark_text("test.jpg")
