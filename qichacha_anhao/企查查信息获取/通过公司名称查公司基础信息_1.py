@@ -47,7 +47,7 @@ def qcc_search_company(search_company_name):
     tunnel ="http://" + "q350.kdltps.com:15818"
     co = ChromiumOptions()
     co = co.set_user_data_path(r"D:\chome_data\data_one")
-    co = co.set_proxy(tunnel)
+    # co = co.set_proxy(tunnel)
     # co = co.set_argument('--no-sandbox')
     # co = co.headless()
     co.set_paths(local_port=9158)

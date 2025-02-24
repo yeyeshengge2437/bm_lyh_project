@@ -37,7 +37,9 @@ from GZH_zhongxinjinrongguangdong import zhongxinjinrongguangdong_gzh  # 中国�
 from GZH_zhongxinjinrongzhejiang import zhongxinjinrongzhejiang_gzh  # 中国中信金融资产浙江分公司(公众号)
 from yindeng_zhuanranggonggao import get_yindengzhongxin_zhuanranggonggao   # 银登中心转让公告
 from shanghaichanjiaosuo_zhaiquanxiangmu import get_shanghaichanjiangsuo_zhaiquanxiangmu   # 上海联合产权交易所——债权项目
-# from beijingchanquanjiaoyisuo_zhaiquanzichan import get_beijingchanquanjiaoyi_zhaiquanzichan  # 北京产权交易所——债权资产
+from beijingchanquanjiaoyisuo_zhaiquanzichan import get_beijingchanquanjiaoyi_zhaiquanzichan  # 北京产权交易所——债权资产
+from quanguochanquanhangye import get_quanguochanquanhangye_zhaiquan   # 全国产权交易行业——债权
+from xinjiangchanquanjiaoyisuo import get_xinjiangchanquanjiaoyisuo_zhaiquan   # 新疆产权交易所——债权
 
 methods = {
     'https://www.zsamc.com/index.php/infor/index/20.html#tabNav': get_zhejiangzheshang_chuzhigonggao,  # 浙江省浙商资产管理有限公司
@@ -78,7 +80,9 @@ methods = {
     'https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkyNjY4NDEwNg==&action=getalbum&album_id=3465789407292817408#wechat_redirect': zhongxinjinrongzhejiang_gzh,  # 中国资产管理有限公司浙江分公司
     'https://www.yindeng.com.cn/ywzq/ywzq_bldkzr/bldkzr_xxpl/bldkzr_xxpl_zrgg': get_yindengzhongxin_zhuanranggonggao,  # 银登中心转让公告
     'https://www.suaee.com/suaeeHome/#/projectCenter?pageCode=zhaiquan': get_shanghaichanjiangsuo_zhaiquanxiangmu,  # 上海市产权交易中心-债权项目
-    # 'https://www.cbex.com.cn/xm/zqzc': get_beijingchanquanjiaoyi_zhaiquanzichan,  # 北京市产权交易所-债权资产
+    'https://www.cbex.com.cn/xm/zqzc': get_beijingchanquanjiaoyi_zhaiquanzichan,  # 北京市产权交易所-债权资产
+    'https://www.cspea.com.cn/list?c=C05&s=A02,A03': get_quanguochanquanhangye_zhaiquan,   # 全国产权行业信息化综合服务平台
+    'https://xjcqjy.ejy365.com/EJY/Project?projectType=001001001&HeadId=1': get_xinjiangchanquanjiaoyisuo_zhaiquan,   # 新疆产权交易所——债权
 
 }
 
@@ -119,7 +123,9 @@ web_list = [
     'https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkyNjY4NDEwNg==&action=getalbum&album_id=3465789407292817408#wechat_redirect',
     'https://www.yindeng.com.cn/ywzq/ywzq_bldkzr/bldkzr_xxpl/bldkzr_xxpl_zrgg',
     'https://www.suaee.com/suaeeHome/#/projectCenter?pageCode=zhaiquan',
-    # 'https://www.cbex.com.cn/xm/zqzc',
+    'https://www.cbex.com.cn/xm/zqzc',  # 北京产权交易所的需要更换cookies
+    'https://www.cspea.com.cn/list?c=C05&s=A02,A03',
+    'https://xjcqjy.ejy365.com/EJY/Project?projectType=001001001&HeadId=1',
 ]
 
 

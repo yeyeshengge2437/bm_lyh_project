@@ -14,14 +14,7 @@ from lxml import etree
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9166)
-
-cookies = {
-    '__jsluid_s': '7f71097b1651f22cd58bcb96c8ee8893',
-    'csrftoken': 'c987c5f9-d9c1-4eab-88d6-50b05e35083d',
-    'JSESSIONID': '7C845A44F2B9B6362D51EC848E97947D',
-    '__jsl_clearance_s': '1740394949.507|0|mh%2BnZQbOS2Fr0GDpXRlXdQx6qxE%3D',
-}
+co.set_paths(local_port=9170)
 
 
 headers = {
@@ -30,90 +23,82 @@ headers = {
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
     'Pragma': 'no-cache',
-    'Referer': 'https://www.cbex.com.cn/xm/zqzc/ypl/',
-    'Sec-Fetch-Dest': 'script',
-    'Sec-Fetch-Mode': 'no-cors',
+    'Referer': 'https://xjcqjy.ejy365.com/EJY/Project?projectType=001001001&HeadId=1',
+    'Sec-Fetch-Dest': 'empty',
+    'Sec-Fetch-Mode': 'cors',
     'Sec-Fetch-Site': 'same-origin',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
+    'X-Requested-With': 'XMLHttpRequest',
     'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"Windows"',
-    # 'Cookie': '__jsluid_s=7f71097b1651f22cd58bcb96c8ee8893; csrftoken=c987c5f9-d9c1-4eab-88d6-50b05e35083d; __jsl_clearance_s=1740378841.215|0|Sij6vAJORmHSzXpl8MAXl5vMDXc%3D',
+    # 'Cookie': 'cart=; Hm_lvt_575182d134dee4d26e03124da592d030=1740029607; HMACCOUNT=FDD970C8B3C27398; _ga=GA1.1.1606555070.1740029608; ASP.NET_SessionId=lonhiiavhb4f3lfvyisrtkso; Hm_lvt_6c6f927bbff1cfe5d356339000013a45=1740051217; sessionId=a69b8e4c-eed5-497b-a61d-e23829f04ec5; Hm_lpvt_575182d134dee4d26e03124da592d030=1740052057; _ga_ERPNN1LEDY=GS1.1.1740051977.2.1.1740052220.0.0.0; Hm_lpvt_6c6f927bbff1cfe5d356339000013a45=1740385679',
 }
 
 
-def get_beijingchanquanjiaoyi_zhaiquanzichan(queue_id, webpage_id):
+def get_xinjiangchanquanjiaoyisuo_zhaiquan(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
-    cookie_dict = {}
-    # page.get("https://www.cbex.com.cn/onss-api/jsonp/project/search")
-    # time.sleep(3)
-    # value_cookies = page.cookies()
-    # for key in value_cookies:
-    #     cookie_dict[key['name']] = key['value']
-    # print(cookie_dict)
     try:
         # for zq_type in ['G3', 'PG3']:
         for zq_type in ['PG3']:
             params = {
-                # 'callback': 'jQuery01495191642176319_1740378992052',
-                'fromPage': '1',
-                'pageSize': '2000',
-                'businessType': 'ZQ',
-                'disclosureType': f'{zq_type}',
-                'sortProperty': 'disclosuretime',
-                'sortDirection': '1',
-                'mark': 'xm',
-                # 'csrftoken': '-799914037',
-                # '_': '1740378992053',
+                'projectType': '001001013',
+                'cqywType': '',
+                'district': '',
+                'projectStatus': '',
+                'maxPrice': '',
+                'minPrice': '',
+                'searchKids': '',
+                'isImportant': '',
+                'orderKey': 'FromDate',
+                'order': 'desc',
+                'pageIndex': '1',
+                'pageSize': '50',
             }
 
             img_set = set()
-            name = '北京产权交易所_债权资产'
+            name = '新疆产权交易所有限责任公司'
             title_set = judge_title_repeat(name)
 
-            res = requests.get('https://www.cbex.com.cn/onss-api/jsonp/project/search',
-                               headers=headers, cookies=cookies, params=params)
+            res = requests.get('https://xjcqjy.ejy365.com/EJY/ProjectList/', params=params, headers=headers)
             # print(res.text)
-            res_json = res.json()
-            data_list = res_json["data"]["data"]
-
+            res_json = res.text
+            html = etree.HTML(res_json)
+            data_list = html.xpath("//tbody[@id='newHallList']/tr")
             for data in data_list:
                 time.sleep(1)
-                page_url = data['url']
+                page_url = data.xpath("./td[2]//a/@href")[0]
+                # print(page_url)
                 if 'http' not in page_url:
-                    page_url = 'https://www.cbex.com.cn' + page_url
-                title_name = data['name']
-                title_date = data['disclosuretime']
+                    page_url = 'https://xjcqjy.ejy365.com/' + page_url
+                title_name = ''.join(data.xpath("./td[2]//a/text()"))
+                title_date = ''.join(data.xpath("./td[4]/span//text()")).strip()
                 # print(page_url, title_name, title_date)
-
-                page.get(page_url)
+                info_code = page_url.split('=')[-1]
+                info_url = f'https://www.ejy365.com/info/{info_code}'
+                page_url = info_url
+                res = requests.get(info_url, headers=headers)
                 time.sleep(1)
-                res = page.html
-                res_html = etree.HTML(res)
+                res_html = etree.HTML(res.text)
                 # title_list = res_html.xpath("//div[@class='rightListContent list-item']")
-                # 使用re模块提取日期
-                title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
-                if title_date:
-                    title_date = title_date[0]
-                else:
-                    title_date = ''
                 title_url = page_url
                 if title_url not in title_set:
-                    title_content = "".join(res_html.xpath("//div[@id='project-table-box']//text() | //div[@class='main']//text()"))
+                    title_content = "".join(res_html.xpath("//div[@class='product-intro']//text()"))
+                    title_content = title_content.join(res_html.xpath("//div[@class='detail-con-left']//text()"))
 
-                    annex = res_html.xpath("//li[@class='infoShow']//a/@href")
+                    annex = res_html.xpath("//table[@class='base-sw ke-zeroborder']//a//@href")
                     if annex:
                         # print(page_url, annex)
                         files = []
                         original_url = []
                         for ann in annex:
                             if "http" not in ann:
-                                ann = 'https://otc.cbex.com/' + ann
+                                ann = 'https://cqjy.ejy365.com/' + ann
                             file_type = ann.split('.')[-1]
                             if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
-                                             'png', 'jpg', 'jpeg'] and 'editorUpload' in ann:
-                                file_url = upload_file_by_url(ann, "beijingchanquan", file_type)
+                                             'png', 'jpg', 'jpeg'] and 'upload' in ann:
+                                file_url = upload_file_by_url(ann, "xinjiang", file_type)
                                 # file_url = 111
                                 files.append(file_url)
                                 original_url.append(ann)
@@ -125,16 +110,16 @@ def get_beijingchanquanjiaoyi_zhaiquanzichan(queue_id, webpage_id):
                         original_url = ''
                     files = str(files).replace("'", '"')
                     original_url = str(original_url).replace("'", '"')
-                    # title_html_info = res_title_html.xpath("//div[@class='news_info_box']")
-                    content_1 = res_html.xpath("//div[@id='project-table-box'] | //div[@class='main']")
+                    title_html_info = res_html.xpath("//div[@class='product-intro']")
+                    content_1 = res_html.xpath("//div[@class='detail-con-left']")
                     content_html = ''
-                    # for con in title_html_info:
-                    #     content_html += etree.tostring(con, encoding='utf-8').decode()
+                    for con in title_html_info:
+                        content_html += etree.tostring(con, encoding='utf-8').decode()
                     for con in content_1:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
                     try:
                         image = get_image(page, title_url,
-                                          "xpath=//div[@id='project-table-box'] | //div[@class='main']")
+                                          "xpath=//div[@class='base-container clearfix']")
                     except:
                         print('截取当前显示区域')
                         image = get_now_image(page, title_url)
@@ -186,4 +171,4 @@ def get_beijingchanquanjiaoyi_zhaiquanzichan(queue_id, webpage_id):
         raise Exception(e)
 
 
-# get_beijingchanquanjiaoyi_zhaiquanzichan(111, 222)
+# get_xinjiangchanquanjiaoyisuo_zhaiquan(111, 222)
