@@ -30,6 +30,7 @@ def point_to_percentage(width, height, x, y):
 def auto_login(page, account, password):
     page.wait(2)
     page.ele("xpath=//div[@class='qcc-login-type-change']").click()
+    time.sleep(2)
     page.ele("xpath=//div[@class='qcc-login-phone-tabs-item'][2]/a[@class='active']").click()
     time.sleep(2)
     page.ele(

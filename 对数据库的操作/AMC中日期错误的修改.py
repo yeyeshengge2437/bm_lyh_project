@@ -4,7 +4,7 @@ import re
 import mysql.connector
 import requests
 from lxml import etree
-
+from datetime import datetime
 from AMC.api_paper import upload_file_by_url
 
 # 连接到测试库
@@ -17,18 +17,21 @@ conn_test = mysql.connector.connect(
 
 cursor_test = conn_test.cursor()
 cursor_test.execute(
-    "select id, page_url, content_html, day from col_paper_notice where paper = '浙江省浙商资产管理有限公司'")
+    "select id, page_url, content_html, day from col_paper_notice where paper = '广州资产管理有限公司'")
 rows = cursor_test.fetchall()
 for id, page_url, content_html, day in rows:
     print(day)
+    # title_date = datetime.strptime(day, "%Y-%m-%d")
+    # title_date = title_date.strftime("%Y-%m-%d")
+    # print(title_date)
     # 使用re匹配日期
     # if day[0] == '0':
     #     print(day)
     #     new_date = '0000-00-00'
     #
-    #     insert_sql = "UPDATE col_paper_notice SET day= %s WHERE id = %s"
-    #     cursor_test.execute(insert_sql, (new_date, id))
-    #     conn_test.commit()
+    # insert_sql = "UPDATE col_paper_notice SET day= %s WHERE id = %s"
+    # cursor_test.execute(insert_sql, (title_date, id))
+    # conn_test.commit()
 
 
 

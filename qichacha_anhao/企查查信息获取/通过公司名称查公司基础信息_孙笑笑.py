@@ -40,17 +40,16 @@ headers = {
 }
 
 
-def qcc_search_company(search_company_name):
+def qcc_search_company_sunxiaoxiao(search_company_name):
     search_company_name = search_company_name
     hit_field_list = ['曾用名']  # 股东，曾用名
     random_num = random.randint(1, 6)
-    tunnel ="http://" + "q350.kdltps.com:15818"
+
     co = ChromiumOptions()
-    co = co.set_user_data_path(r"D:\chome_data\data_one")
-    co = co.set_proxy(tunnel)
+    co = co.set_user_data_path(r"C:\chome_data\data_sunxiaoxiao")
     # co = co.set_argument('--no-sandbox')
     # co = co.headless()
-    co.set_paths(local_port=9158)
+    co.set_paths(local_port=9162)
     random_float = random.uniform(1, 5)
     # 连接浏览器
     page = ChromiumPage(co)
@@ -64,7 +63,7 @@ def qcc_search_company(search_company_name):
     try:
         tab.ele("xpath=//div[@class='qccd-modal-body']/div[@class='qcc-login']", timeout=3)
         # 登录账号
-        login_outcome = auto_login(tab, '15938554242', "liyongheng10")
+        login_outcome = auto_login(tab, '18858289307', "jyls8891")
         if login_outcome:
             print('登录成功')
         else:
@@ -149,7 +148,8 @@ def qcc_search_company(search_company_name):
                         "companyDetail"]  # ["company"]["companyDetail"]["TagsInfoV2"][2]["Name"]
                     if company_detail.get('DJInfo'):
                         company_detail_dj = company_detail.get('DJInfo')
-                        company_old_name_list = company_detail.get('OriginalName')  # ["company"]["companyDetail"]["OriginalName"][0]["Name"] # 企业曾用名
+                        company_old_name_list = company_detail.get(
+                            'OriginalName')  # ["company"]["companyDetail"]["OriginalName"][0]["Name"] # 企业曾用名
                         company_old_name = []
                         if company_old_name_list:
                             for old_name in company_old_name_list:
@@ -281,7 +281,8 @@ def qcc_search_company(search_company_name):
                     period_bus_end = company_detail.get('TeamEnd')  # 经营结束日期
                     if period_bus_start:
                         try:
-                            period_bus_start = (datetime.utcfromtimestamp(period_bus_start) + timedelta(days=1)).strftime(
+                            period_bus_start = (
+                                        datetime.utcfromtimestamp(period_bus_start) + timedelta(days=1)).strftime(
                                 "%Y-%m-%d")
                         except:
                             period_bus_start = ''
@@ -433,14 +434,14 @@ def qcc_search_company(search_company_name):
         return "失败", None
 
 
-def qcc_search_keyno(key_no):
+def qcc_search_keyno_sunxiaoxiao(key_no):
     random_num = random.randint(1, 6)
 
     co = ChromiumOptions()
-    co = co.set_user_data_path(r"D:\chome_data\data_one")
+    co = co.set_user_data_path(r"C:\chome_data\data_sunxiaoxiao")
     # co = co.set_argument('--no-sandbox')
     # co = co.headless()
-    co.set_paths(local_port=9136)
+    co.set_paths(local_port=9162)
     random_float = random.uniform(1, 5)
     # 连接浏览器
     page = ChromiumPage(co)
@@ -603,82 +604,80 @@ def qcc_search_keyno(key_no):
         return None
 
 
-# qcc_search_company("西峰北辰实验中学")
-# qcc_search_keyno('279d87c8c9160da831e88e942549075f')
+# qcc_search_company_sunxiaoxiao('北京智谱华章科技有限公司')
 
-#  data = {'search_type' : 'corp_qcc_list or corp_qcc_detail'}
-count = 0
-while True:
-    random_num = random.randint(3, 9)
-    try:
-        value = qcc_parse_next()
-    except Exception as e:
-        # print(f"获取队列出错:{e}")
-        time.sleep(5)
-        continue
-    time.sleep(random_num)
-    if value:
-        try:
-            id = value['value']['id']
-            count += 1
-        except:
-            time.sleep(5)
-            continue
-        search_type = value["value"]["search_type"]
-        if search_type == 'corp_qcc_list':  # 根据企业名称查询列表
-            company_name = value.get('value')
-            # # 字符串转json
-            # company_name = json.loads(company_name)
-            company_name = company_name.get('name')
-            try:
-                search_flag, search_value = qcc_search_company(company_name)
-            except Exception as e:
-                data = {
-                    'id': id,
-                    'description': f'{e}',
-                }
-                qcc_parse_fail(data)
-                continue
-            if search_flag == True:
-                # print('_______________________________________')
-                data = {'corp_info': search_value}
-                qcc_upload_detail_info(data=data)
-                success_data = {
-                    'id': id
-                }
-                qcc_parse_success(success_data)
-            elif search_flag == False:
-                data = {'corp_summary_array': search_value}
-                qcc_upload_info_list(data)
-                success_data = {
-                    'id': id
-                }
-                qcc_parse_success(success_data)
-            elif search_flag == "失败":
-                data = {
-                    'id': id,
-                    'description': '没有json数据',
-                }
-                qcc_parse_fail(data)
-        elif search_type == 'corp_qcc_detail':  # 根据keyno查询列表
-            key_no = value.get('value')
-            # # 字符串转json
-            # key_no = json.loads(key_no)
-            key_no = key_no.get('out_key')
-            search_value = qcc_search_keyno(key_no)
-            if search_value:
-                data = {'corpInfo': search_value}
-                qcc_upload_detail_info(data)
-                success_data = {
-                    'id': id
-                }
-                qcc_parse_success(success_data)
-            else:
-                data = {
-                    'id': id,
-                    'description': '没有json数据',
-                }
-                qcc_parse_fail(data)
-    else:
-        time.sleep(8)
-    print(count)
+# count = 0
+# while True:
+#     random_num = random.randint(3, 9)
+#     try:
+#         value = qcc_parse_next()
+#     except Exception as e:
+#         # print(f"获取队列出错:{e}")
+#         time.sleep(5)
+#         continue
+#     time.sleep(random_num)
+#     if value:
+#         try:
+#             id = value['value']['id']
+#             count += 1
+#         except:
+#             time.sleep(5)
+#             continue
+#         search_type = value["value"]["search_type"]
+#         if search_type == 'corp_qcc_list':  # 根据企业名称查询列表
+#             company_name = value.get('value')
+#             # # 字符串转json
+#             # company_name = json.loads(company_name)
+#             company_name = company_name.get('name')
+#             try:
+#                 search_flag, search_value = qcc_search_company(company_name)
+#             except Exception as e:
+#                 data = {
+#                     'id': id,
+#                     'description': f'{e}',
+#                 }
+#                 qcc_parse_fail(data)
+#                 continue
+#             if search_flag == True:
+#                 # print('_______________________________________')
+#                 data = {'corp_info': search_value}
+#                 qcc_upload_detail_info(data=data)
+#                 success_data = {
+#                     'id': id
+#                 }
+#                 qcc_parse_success(success_data)
+#             elif search_flag == False:
+#                 data = {'corp_summary_array': search_value}
+#                 qcc_upload_info_list(data)
+#                 success_data = {
+#                     'id': id
+#                 }
+#                 qcc_parse_success(success_data)
+#             elif search_flag == "失败":
+#                 data = {
+#                     'id': id,
+#                     'description': '没有json数据',
+#                 }
+#                 qcc_parse_fail(data)
+#         elif search_type == 'corp_qcc_detail':  # 根据keyno查询列表
+#             key_no = value.get('value')
+#             # # 字符串转json
+#             # key_no = json.loads(key_no)
+#             key_no = key_no.get('out_key')
+#             search_value = qcc_search_keyno(key_no)
+#             if search_value:
+#                 data = {'corpInfo': search_value}
+#                 qcc_upload_detail_info(data)
+#                 success_data = {
+#                     'id': id
+#                 }
+#                 qcc_parse_success(success_data)
+#             else:
+#                 data = {
+#                     'id': id,
+#                     'description': '没有json数据',
+#                 }
+#                 qcc_parse_fail(data)
+#     else:
+#         time.sleep(8)
+#     print(count)

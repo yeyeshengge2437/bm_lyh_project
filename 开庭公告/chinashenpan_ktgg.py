@@ -5,7 +5,7 @@ import mysql.connector
 from DrissionPage import ChromiumPage, ChromiumOptions
 from lxml import etree
 from a_ktgg_api import judge_repeat_invest
-from tool.mysql_connection_pool import get_connection
+from a_mysql_connection_pool import get_connection
 co = ChromiumOptions()
 # co = co.set_argument('--no-sandbox')
 # co = co.headless()

@@ -40,17 +40,16 @@ headers = {
 }
 
 
-def qcc_search_company(search_company_name):
+def qcc_search_company_zhangyong(search_company_name):
     search_company_name = search_company_name
     hit_field_list = ['曾用名']  # 股东，曾用名
     random_num = random.randint(1, 6)
-    tunnel ="http://" + "q350.kdltps.com:15818"
+
     co = ChromiumOptions()
-    co = co.set_user_data_path(r"D:\chome_data\data_one")
-    co = co.set_proxy(tunnel)
+    co = co.set_user_data_path(r"C:\chome_data\data_zhangyong")
     # co = co.set_argument('--no-sandbox')
     # co = co.headless()
-    co.set_paths(local_port=9158)
+    co.set_paths(local_port=9168)
     random_float = random.uniform(1, 5)
     # 连接浏览器
     page = ChromiumPage(co)
@@ -64,7 +63,10 @@ def qcc_search_company(search_company_name):
     try:
         tab.ele("xpath=//div[@class='qccd-modal-body']/div[@class='qcc-login']", timeout=3)
         # 登录账号
-        login_outcome = auto_login(tab, '15938554242', "liyongheng10")
+        """
+        这里输入账号密码许昂
+        """
+        login_outcome = auto_login(tab, '18858289307', "jyls8891")
         if login_outcome:
             print('登录成功')
         else:
@@ -433,14 +435,14 @@ def qcc_search_company(search_company_name):
         return "失败", None
 
 
-def qcc_search_keyno(key_no):
+def qcc_search_keyno_zhangyong(key_no):
     random_num = random.randint(1, 6)
 
     co = ChromiumOptions()
-    co = co.set_user_data_path(r"D:\chome_data\data_one")
+    co = co.set_user_data_path(r"C:\chome_data\data_xuang")
     # co = co.set_argument('--no-sandbox')
     # co = co.headless()
-    co.set_paths(local_port=9136)
+    co.set_paths(local_port=9160)
     random_float = random.uniform(1, 5)
     # 连接浏览器
     page = ChromiumPage(co)
@@ -603,10 +605,6 @@ def qcc_search_keyno(key_no):
         return None
 
 
-# qcc_search_company("西峰北辰实验中学")
-# qcc_search_keyno('279d87c8c9160da831e88e942549075f')
-
-#  data = {'search_type' : 'corp_qcc_list or corp_qcc_detail'}
 count = 0
 while True:
     random_num = random.randint(3, 9)
@@ -631,7 +629,7 @@ while True:
             # company_name = json.loads(company_name)
             company_name = company_name.get('name')
             try:
-                search_flag, search_value = qcc_search_company(company_name)
+                search_flag, search_value = qcc_search_company_zhangyong(company_name)
             except Exception as e:
                 data = {
                     'id': id,
@@ -665,7 +663,7 @@ while True:
             # # 字符串转json
             # key_no = json.loads(key_no)
             key_no = key_no.get('out_key')
-            search_value = qcc_search_keyno(key_no)
+            search_value = qcc_search_keyno_zhangyong(key_no)
             if search_value:
                 data = {'corpInfo': search_value}
                 qcc_upload_detail_info(data)

@@ -5,7 +5,7 @@ from a_ktgg_api import judge_repeat_invest
 import requests
 from lxml import etree
 import mysql.connector
-from tool.mysql_connection_pool import get_connection
+from a_mysql_connection_pool import get_connection
 
 cookies = {
     'thguid-r': '1711809233818742784',

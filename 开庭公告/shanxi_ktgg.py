@@ -4,7 +4,7 @@ import time
 import mysql.connector
 import requests
 from a_ktgg_api import judge_repeat_case
-from tool.mysql_connection_pool import get_connection
+from a_mysql_connection_pool import get_connection
 
 chinese_num_map = {
     '二十日': "20日", '二十一日': "21日", '二十二日': "22日", '二十三日': "23日", '二十四日': "24日",

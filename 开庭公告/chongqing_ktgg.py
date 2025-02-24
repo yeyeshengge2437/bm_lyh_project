@@ -4,7 +4,7 @@ import time
 import mysql.connector
 import requests
 from a_ktgg_api import judge_repeat_case
-from tool.mysql_connection_pool import get_connection
+from a_mysql_connection_pool import get_connection
 
 courts = {
     "M00": "重庆市高级人民法院",

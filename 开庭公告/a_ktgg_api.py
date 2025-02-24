@@ -1,17 +1,17 @@
-import base64
-import json
-import time
-from datetime import datetime
-from tool.mysql_connection_pool import get_connection
-from DrissionPage import ChromiumPage, ChromiumOptions
-import os
+# import base64
+# import json
+# import time
+# from datetime import datetime
+from a_mysql_connection_pool import get_connection
+# from DrissionPage import ChromiumPage, ChromiumOptions
+# import os
 import json
 import requests
-import pymongo
-import ddddocr
-import mysql.connector
-import hashlib
-import redis
+# import pymongo
+# import ddddocr
+# import mysql.connector
+# import hashlib
+# import redis
 
 produce_url = "http://118.31.45.18:29875"  # 生产环境
 # produce_url = "http://121.43.164.84:29775"    # 测试环境

@@ -30,6 +30,7 @@ def get_captcha(page, iframe_url=None):
     # page = ChromiumPage(co)
     # html_qcc = page.html
     # print(html_qcc)
+    time.sleep(3)
     iframe = page.get_frame(1)
     tab = iframe
     # if iframe_url:

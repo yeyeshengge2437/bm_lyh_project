@@ -4,7 +4,7 @@ import mysql.connector
 from lxml import etree
 import requests
 from a_ktgg_api import judge_repeat_case
-from tool.mysql_connection_pool import get_connection
+from a_mysql_connection_pool import get_connection
 
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',

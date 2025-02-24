@@ -5,7 +5,7 @@ import requests
 import mysql.connector
 from lxml import etree
 from deepseek import deepseek_chat
-from tool.mysql_connection_pool import get_connection
+from a_mysql_connection_pool import get_connection
 
 cookies = {
     'security_session_verify': 'fae70c76ad45c6e3b506bc9ca936f3cb',

@@ -318,7 +318,7 @@ if __name__ == '__main__':
     多进程5个
     """
     process_list = []
-    for i in range(2):
+    for i in range(1):
         process = Process(target=get_figure_shibie_formal, args=())
         process_list.append(process)
 

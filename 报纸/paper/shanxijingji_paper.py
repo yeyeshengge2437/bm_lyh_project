@@ -23,7 +23,7 @@ headers = {
 }
 from DrissionPage import ChromiumPage, ChromiumOptions
 co = ChromiumOptions()
-co = co.set_paths(local_port=9242)
+co = co.set_paths(local_port=9244)
 co = co.set_argument('--no-sandbox')  # 关闭沙箱模式, 解决`$DISPLAY`报错
 co = co.headless(True)  # 开启无头模式, 解决`浏览器无法连接`报错
 def get_paper_url_cookies(url):
@@ -101,7 +101,7 @@ def get_shanxijingji_paper(paper_time, queue_id, webpage_id, bm_url_in=None):
                     database="col",
                 )
                 cursor_test = conn_test.cursor()
-                # print(bm_name, article_name, article_url, bm_pdf, content)
+                print(bm_name, article_name, article_url, bm_pdf, content)
                 if bm_pdf not in pdf_set and judging_bm_criteria(article_name, bm_url, bm_url_in) and judge_bm_repeat(paper, bm_url):
                     # 将报纸url上传
                     up_pdf = upload_file_by_url(bm_pdf, paper, "pdf", "paper")
