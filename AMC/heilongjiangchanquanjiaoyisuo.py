@@ -1,3 +1,4 @@
+import json
 import re
 import time
 import os
@@ -12,20 +13,17 @@ import requests
 from lxml import etree
 
 co = ChromiumOptions()
-# co = co.set_argument('--no-sandbox')
-# co = co.headless()
-# co.set_paths(local_port=9169)
-
+co = co.set_argument('--no-sandbox')
+co = co.headless()
+co.set_paths(local_port=9174)
 
 headers = {
-    'Accept': 'application/json, text/plain, */*',
+    'Accept': '*/*',
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
-    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    'Origin': 'https://www.cspea.com.cn',
     'Pragma': 'no-cache',
-    'Referer': 'https://www.cspea.com.cn/list?c=C05&s=A02,A03',
+    'Referer': 'https://hljcqjy.ejy365.com/EJY/Project?searchKids=%E5%80%BA%E6%9D%83',
     'Sec-Fetch-Dest': 'empty',
     'Sec-Fetch-Mode': 'cors',
     'Sec-Fetch-Site': 'same-origin',
@@ -34,86 +32,82 @@ headers = {
     'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"Windows"',
-    # 'Cookie': 'Hm_lvt_8f877769194d47e9189ceb9767485623=1740043699; HMACCOUNT=FDD970C8B3C27398; Hm_lpvt_8f877769194d47e9189ceb9767485623=1740381634; JSESSIONID=PqYd3oT-n4GBAIiMvBol3VPebHahtMp0uH15seT8; UMKEY=PqYd3oT-n4GBAIiMvBol3VPebHahtMp0uH15seT8; CSPEA_AUTHKEY=15938554242; CSPEA_USER=%7B%22insCode%22:null,%22org%22:null,%22wechatCount%22:0,%22memberLevel%22:null,%22mobile%22:%2215938554242%22,%22industry%22:null,%22qqNumber%22:null,%22userName%22:%2215938554242%22,%22experience%22:null,%22userId%22:%2236fa538716354f289fbba42e31dd56b4%22,%22groupNumber%22:%220%22,%22memberExpiryDate%22:null,%22realName%22:null,%22userState%22:%220%22,%22phone%22:null,%22position%22:null,%22department%22:null,%22email%22:null%7D; ray_leech_token=1740380897',
+    # 'Cookie': 'cart=; Hm_lvt_575182d134dee4d26e03124da592d030=1740029607; HMACCOUNT=FDD970C8B3C27398; _ga=GA1.1.1606555070.1740029608; ASP.NET_SessionId=tmhm0jp4c2u35clg1rafvvr2; Hm_lvt_6c6f927bbff1cfe5d356339000013a45=1740036324; sessionId=a17790ec-f35e-4393-af1e-265133453e8f; Hm_lpvt_575182d134dee4d26e03124da592d030=1740446476; _ga_ERPNN1LEDY=GS1.1.1740445177.7.1.1740446860.0.0.0; Hm_lpvt_6c6f927bbff1cfe5d356339000013a45=1740467825',
 }
 
 
-def get_quanguochanquanhangye_zhaiquan(queue_id, webpage_id):
+
+def get_heilongjiangchanquanjiaoyisuo(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
-    cookie_dict = {}
-    page.get("https://www.cspea.com.cn")
-    time.sleep(3)
-    page.refresh()
-    value_cookies = page.cookies()
-    for key in value_cookies:
-        cookie_dict[key['name']] = key['value']
-
     try:
         # for zq_type in ['C05', 'C06']:
         for zq_type in ['C06']:
             params = {
-                'projectClassifyCode': f'{zq_type}',
-                'businessStatus': 'A02,A03',
-                'sortVal': 'publishDate',
-                'sortRule': 'desc',
-                'pageNum': '1',
-                'pageSize': '200',
+                'projectType': '',
+                'maxPrice': '',
+                'minPrice': '',
+                'searchKids': '债权',
+                'orderKey': 'FromDate',
+                'order': 'desc',
+                'pageIndex': '1',
+                'pageSize': '125',
             }
 
             img_set = set()
-            name = '全国产权行业信息化综合服务平台'
+            name = '黑龙江产权交易中心'
             title_set = judge_title_repeat(name)
 
-            res = requests.post('https://www.cspea.com.cn/esApi/searchIndex', cookies=cookie_dict, headers=headers, data=params)
-            # print(res.text)
-            res_json = res.json()
+            res = requests.get('https://hljcqjy.ejy365.com/EJY/ProjectList/', params=params, headers=headers)
+            res_json = res.text
+            html = etree.HTML(res_json)
             # print(res_json)
-            data_list = res_json["entity"]["datas"]
-
+            data_list = html.xpath("//div[@class='box']")
             for data in data_list:
                 time.sleep(1)
-                # print(data)
-                try:
-                    page_url = data["projectCode"]
-                except:
-                    continue
-                # https://www.cspea.com.cn/list/c02/G32024CQ1000223
-                page_url = 'https://www.cspea.com.cn/list/c02/' + page_url
-                title_name = data["projectText"]
+                page_url = "https://hljcqjy.ejy365.com" + ''.join(data.xpath("./div[@class='title']/a/@href"))
+                title_name = ''.join(data.xpath("./div[@class='title']/a/text()"))
                 # import datetime; print(datetime.datetime.utcfromtimestamp(1740326400000 // 1000).strftime('%Y-%m-%d'))
-                title_date = int(data['publishDate'])
-                title_date = datetime.utcfromtimestamp(title_date // 1000).strftime('%Y-%m-%d')
+                title_date = ''.join(data.xpath("./div[@class='item time']//text()"))
+                # 使用re模块提取日期
+                title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
+                if title_date:
+                    title_date = title_date[0]
+                else:
+                    title_date = ''
                 print(page_url, title_name, title_date)
-
-                page.get(page_url)
-                time.sleep(4)
-                page.refresh()
-                res = page.html
-                res_html = etree.HTML(res)
+                # https://hljcqjy.ejy365.com/ejy/detail?infoId=N0129GQ240059&bmStatus=%E6%8A%A5%E5%90%8D%E6%88%AA%E6%AD%A2&ggType=JYGG
+                info_id = re.findall(r'infoId=(.*?)&', page_url)[0]
+                bm_status = re.findall(r'bmStatus=(.*?)&', page_url)[0]
+                gg_type = re.findall(r'ggType=(.*)', page_url)[0]
+                params = {
+                    'infoId': f'{info_id}',
+                    'bmStatus': f'{bm_status}',
+                    'ggType': f'{gg_type}',
+                }
+                res = requests.get('https://hljcqjy.ejy365.com/ejy/detail', params=params,  headers=headers)
+                res_html = etree.HTML(res.text)
+                time.sleep(2)
                 # title_list = res_html.xpath("//div[@class='rightListContent list-item']")
-                # # 使用re模块提取日期
-                # title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
-                # if title_date:
-                #     title_date = title_date[0]
-                # else:
-                #     title_date = ''
                 title_url = page_url
                 if title_url not in title_set:
-                    title_content = "".join(res_html.xpath("//div[@class='project-detail-left']//text()"))
+                    title_content = "".join(res_html.xpath("//div[@class='channel-box']//text()"))
 
-                    annex = res_html.xpath("//div[@class='table-detail-info']/div[2]/table[5]/tbody/tr//a//@href")
+                    annex = res_html.xpath("//div[@class='channel-box']//@href")
                     if annex:
                         # print(page_url, annex)
                         files = []
                         original_url = []
                         for ann in annex:
-                            if "http" not in ann:
-                                ann = 'https://files.cquae.com/' + ann
+                            if not ann:
+                                continue
+                            if "http" not in ann or "HTTP" not in ann:
+                                ann = 'http://www.e-jy.com.cn/' + ann
                             file_type = ann.split('.')[-1]
+                            file_type = file_type.strip()
                             if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
-                                             'png', 'jpg', 'jpeg'] and 'editorUpload' in ann:
-                                file_url = upload_file_by_url(ann, "Upload", file_type)
+                                             'png', 'jpg', 'jpeg'] and 'upload' in ann:
+                                file_url = upload_file_by_url(ann, "heilongjiang", file_type)
                                 # file_url = 111
                                 files.append(file_url)
                                 original_url.append(ann)
@@ -125,16 +119,16 @@ def get_quanguochanquanhangye_zhaiquan(queue_id, webpage_id):
                         original_url = ''
                     files = str(files).replace("'", '"')
                     original_url = str(original_url).replace("'", '"')
+                    print(files, original_url)
                     # title_html_info = res_title_html.xpath("//div[@class='news_info_box']")
-                    content_1 = res_html.xpath("//div[@class='project-detail-left']")
+                    content_1 = res_html.xpath("//div[@class='channel-box']")
                     content_html = ''
                     # for con in title_html_info:
                     #     content_html += etree.tostring(con, encoding='utf-8').decode()
                     for con in content_1:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
                     try:
-                        image = get_image(page, title_url,
-                                          "xpath=//div[@class='project-detail-left']")
+                        image = get_image(page, title_url, "xpath=//div[@class='channel-box']")
                     except:
                         print('截取当前显示区域')
                         image = get_now_image(page, title_url)
@@ -186,4 +180,4 @@ def get_quanguochanquanhangye_zhaiquan(queue_id, webpage_id):
         raise Exception(e)
 
 
-# get_quanguochanquanhangye_zhaiquan(111, 222)
+# get_heilongjiangchanquanjiaoyisuo(111, 222)

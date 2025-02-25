@@ -40,6 +40,11 @@ from shanghaichanjiaosuo_zhaiquanxiangmu import get_shanghaichanjiangsuo_zhaiqua
 from beijingchanquanjiaoyisuo_zhaiquanzichan import get_beijingchanquanjiaoyi_zhaiquanzichan  # 北京产权交易所——债权资产
 from quanguochanquanhangye import get_quanguochanquanhangye_zhaiquan   # 全国产权交易行业——债权
 from xinjiangchanquanjiaoyisuo import get_xinjiangchanquanjiaoyisuo_zhaiquan   # 新疆产权交易所——债权
+from xiamenchanquanjiaoyizhongxin import get_xiamenchanquanjiaoyizhongxin    # 厦门产权交易所
+from yantailianhechanquanjiaoyizhongxin import get_yantailianhechanquanjiaoyizhongxin   # 烟台联合产权交易中心
+from henanshengchanquanjiaoyizhongxin import get_henanshengchanquanjiaoyizhongxin   # 河南省产权交易中心
+from heilongjiangchanquanjiaoyisuo import get_heilongjiangchanquanjiaoyisuo   # 黑龙江产权交易所
+from foshannanfangchanquanjiaoyi import get_fuoshannanfangchanquanjiaoyi   # 佛山市南方产权交易所
 
 methods = {
     'https://www.zsamc.com/index.php/infor/index/20.html#tabNav': get_zhejiangzheshang_chuzhigonggao,  # 浙江省浙商资产管理有限公司
@@ -83,6 +88,12 @@ methods = {
     'https://www.cbex.com.cn/xm/zqzc': get_beijingchanquanjiaoyi_zhaiquanzichan,  # 北京市产权交易所-债权资产
     'https://www.cspea.com.cn/list?c=C05&s=A02,A03': get_quanguochanquanhangye_zhaiquan,   # 全国产权行业信息化综合服务平台
     'https://xjcqjy.ejy365.com/EJY/Project?projectType=001001001&HeadId=1': get_xinjiangchanquanjiaoyisuo_zhaiquan,   # 新疆产权交易所——债权
+    'https://www.xemas.com.cn/project-announcement.html?parent-uid=&self-uid=&type=total&sub-uid=': get_xiamenchanquanjiaoyizhongxin,   # 厦门产权交易中心
+    'http://www.ytcq.com/tzgg/about.html': get_yantailianhechanquanjiaoyizhongxin,  # 烟台联合产权交易中心
+    'https://sta.hnprec.com/client/#/buyerweb/?BusinessTypeId=HouseLand': get_henanshengchanquanjiaoyizhongxin,  # 河南省产权交易中心
+    'https://hljcqjy.ejy365.com/EJY/Project?searchKids=%E5%80%BA%E6%9D%83': get_heilongjiangchanquanjiaoyisuo,    # 黑龙江产权交易所
+    'https://www.fsaee.com/?cid-288_lbid-7_qycq.html': get_fuoshannanfangchanquanjiaoyi  # 佛山南方产权交易市场
+
 
 }
 
@@ -123,9 +134,14 @@ web_list = [
     'https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkyNjY4NDEwNg==&action=getalbum&album_id=3465789407292817408#wechat_redirect',
     'https://www.yindeng.com.cn/ywzq/ywzq_bldkzr/bldkzr_xxpl/bldkzr_xxpl_zrgg',
     'https://www.suaee.com/suaeeHome/#/projectCenter?pageCode=zhaiquan',
-    'https://www.cbex.com.cn/xm/zqzc',  # 北京产权交易所的需要更换cookies
+    # 'https://www.cbex.com.cn/xm/zqzc',  # 北京产权交易所的需要更换cookies
     'https://www.cspea.com.cn/list?c=C05&s=A02,A03',
     'https://xjcqjy.ejy365.com/EJY/Project?projectType=001001001&HeadId=1',
+    'https://www.xemas.com.cn/project-announcement.html?parent-uid=&self-uid=&type=total&sub-uid=',
+    'http://www.ytcq.com/tzgg/about.html',
+    'https://sta.hnprec.com/client/#/buyerweb/?BusinessTypeId=HouseLand',
+    'https://hljcqjy.ejy365.com/EJY/Project?searchKids=%E5%80%BA%E6%9D%83',
+    'https://www.fsaee.com/?cid-288_lbid-7_qycq.html',
 ]
 
 
