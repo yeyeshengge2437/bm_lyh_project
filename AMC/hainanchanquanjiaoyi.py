@@ -15,83 +15,82 @@ from lxml import etree
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9176)
+co.set_paths(local_port=9178)
 
 headers = {
-    'Accept': '*/*',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
-    'Content-Type': 'application/x-www-form-urlencoded',
-    'Origin': 'http://www.sdcqjy.com',
     'Pragma': 'no-cache',
     'Proxy-Connection': 'keep-alive',
+    'Referer': 'http://www.hncq.cn/index.php?m=content&c=index&a=lists&catid=17&proType=&areaid=&keyword=',
+    'Upgrade-Insecure-Requests': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
-    'X-Requested-With': 'XMLHttpRequest',
+    # 'Cookie': 'Hm_lvt_21dab80a5c6f7c16dd1586cc80eedc60=1740030524; HMACCOUNT=FDD970C8B3C27398; Hm_lpvt_21dab80a5c6f7c16dd1586cc80eedc60=1740539051',
 }
 
 
-def get_shandongchanquanjiaoyizhongxin(queue_id, webpage_id):
+def get_hainanchanquanjiaoyi(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
     try:
         # for zq_type in ['C05', 'C06']:
-        for page_num in range(35):
+        for page_num in range(1, 4):
             time.sleep(2)
-            data = {
+            params = {
+                'm': 'content',
+                'c': 'index',
+                'a': 'lists',
+                'catid': '17',
+                'proType': '',
+                'areaid': '',
+                'keyword': '',
                 'page': f'{page_num}',
-                'type': 'all',
-                'keyword': '债权',
             }
             img_set = set()
-            name = '山东产权交易所'
+            name = '海南产权交易所'
             title_set = judge_title_repeat(name)
 
-            res = requests.post('http://www.sdcqjy.com/search/getdata', headers=headers, data=data, verify=False)
+            res = requests.get('http://www.hncq.cn/index.php', params=params, headers=headers, verify=False)
             res_json = res.text
             html = etree.HTML(res_json)
             # print(res_json)
-            data_list = html.xpath("//table[@class='table-all']/tbody/tr")
+            data_list = html.xpath("//div[@id='result']//li")
             for data in data_list:
                 time.sleep(1)
-                link_info = ''.join(data.xpath(".//a[@class='name']/@onclick"))
-                link_json = re.findall(r'linkToDetail\((.*?)\)', link_info)
-                if not link_json:
-                    continue
-                link_json = json.loads(link_json[0])
-                data_status = link_json['dataStatus']
-                link_id = link_json['id']
-                if data_status == '已发布':
-                    page_url = f"http://www.sdcqjy.com/zccz/article/cjgg/{link_id}"
-                elif data_status == '挂牌公告':
-                    continue
-                elif data_status == '--':
-                    page_url = f"http://www.sdcqjy.com/bidding/bidprice/{link_id}"
-                elif data_status == '招商':
-                    page_url = f"http://www.sdcqjy.com/proj/yqcl/{link_id}"
-                else:
-                    page_url = f"http://www.sdcqjy.com/proj/tc/{link_id}"
-                title_name = link_json['name']
+                # print(data)
+
+                page_url = ''.join(data.xpath(".//div[@class='title']/a/@href"))
+                title_name = ''.join(data.xpath(".//div[@class='title']/a/text()"))
                 # import datetime; print(datetime.datetime.utcfromtimestamp(1740326400000 // 1000).strftime('%Y-%m-%d'))
-                title_date = link_json['publishTime']
+                title_date = ''.join(data.xpath(".//div[@class='item ellipsis']/text()"))
                 # 使用re模块提取日期
                 title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
                 if title_date:
                     title_date = title_date[0]
                 else:
                     title_date = ''
-                # print(page_url, title_name, title_date, data_status)
-                # https://hljcqjy.ejy365.com/ejy/detail?infoId=N0129GQ240059&bmStatus=%E6%8A%A5%E5%90%8D%E6%88%AA%E6%AD%A2&ggType=JYGG
-
-                res = requests.get(page_url, headers=headers)
+                # print(page_url, title_name, title_date)
+                # http://www.hncq.cn/index.php?m=content&c=index&a=show&catid=17&id=4562
+                id_ = re.findall(r'&id=(\d+)', page_url)[0]
+                params = {
+                    'm': 'content',
+                    'c': 'index',
+                    'a': 'show',
+                    'catid': '17',
+                    'id': f'{id_}',
+                }
+                res = requests.get('http://www.hncq.cn/index.php', params=params, headers=headers, verify=False)
                 res_html = etree.HTML(res.text)
                 time.sleep(2)
+                # print(res.text)
+                # return
                 # title_list = res_html.xpath("//div[@class='rightListContent list-item']")
                 title_url = page_url
                 if title_url not in title_set:
-                    title_content = "".join(res_html.xpath("//div[@class='pro_title_main']//text()"))
-                    title_content = title_content.join(res_html.xpath("//div[@class='module-item']//text()"))
-                    title_content = title_content.join(res_html.xpath("//div[@class='art_cont']//text()"))
-                    annex = res_html.xpath("//div[@id='biddingPageCont']//@href | //div[@class='module-item']//@href")
+                    title_content = "".join(res_html.xpath("//div[@class='product fl']//text()"))
+                    title_content = title_content.join(res_html.xpath("//div[@id='Comment']/div[@class='detail-con-left']//text()"))
+                    annex = res_html.xpath("//div[@id='tab1_content']//@src | //div[@id='tab1_content']//@href")
                     if annex:
                         # print(page_url, annex)
                         files = []
@@ -100,12 +99,12 @@ def get_shandongchanquanjiaoyizhongxin(queue_id, webpage_id):
                             if not ann:
                                 continue
                             if "http" not in ann:
-                                ann = 'http://www.e-jy.com.cn/' + ann
+                                ann = 'http://www.hncq.cn' + ann
                             file_type = ann.split('.')[-1]
                             file_type = file_type.strip()
                             if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
-                                             'png', 'jpg', 'jpeg'] and 'noauthorizefiles' in ann:
-                                file_url = upload_file_by_url(ann, "shandong", file_type)
+                                             'png', 'jpg', 'jpeg'] and 'uploadfile' in ann:
+                                file_url = upload_file_by_url(ann, "hainan", file_type)
                                 # file_url = 111
                                 files.append(file_url)
                                 original_url.append(ann)
@@ -117,20 +116,22 @@ def get_shandongchanquanjiaoyizhongxin(queue_id, webpage_id):
                         original_url = ''
                     files = str(files).replace("'", '"')
                     original_url = str(original_url).replace("'", '"')
-                    title_html_info = res_html.xpath("//div[@class='pro_title_main'] | //div[@class='art_cont'] | //div[@class='module-item']")
-                    content_1 = res_html.xpath("//div[@id='biddingPageCont']")
+                    print(files, original_url)
+                    title_html_info = res_html.xpath("//div[@class='product fl']")
+                    # content_1 = res_html.xpath("//div[@id='Comment']")
                     content_html = ''
                     for con in title_html_info:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
-                    for con in content_1:
-                        content_html += etree.tostring(con, encoding='utf-8').decode()
+                    # for con in content_1:
+                    #     content_html += etree.tostring(con, encoding='utf-8').decode()
                     if not title_content:
                         cont_ = etree.HTML(content_html)
-                        if cont_:
-                            title_content = ''.join(cont_.xpath("//text()"))
+                        title_content = ''.join(cont_.xpath("//text()"))
+                    # print(content_html, 123433)
+                    # return
                     # print(title_content)
                     try:
-                        image = get_image(page, title_url, "xpath=//div[@class='main_container'] | //div[@class='art_cont']")
+                        image = get_image(page, title_url, "xpath=//div[@class='wrapper auto clearfix']")
                     except:
                         print('截取当前显示区域')
                         image = get_now_image(page, title_url)
@@ -182,4 +183,4 @@ def get_shandongchanquanjiaoyizhongxin(queue_id, webpage_id):
         raise Exception(e)
 
 
-# get_shandongchanquanjiaoyizhongxin(111, 222)
+# get_hainanchanquanjiaoyi(111, 222)

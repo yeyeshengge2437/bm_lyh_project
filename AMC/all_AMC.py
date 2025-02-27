@@ -45,6 +45,14 @@ from yantailianhechanquanjiaoyizhongxin import get_yantailianhechanquanjiaoyizho
 from henanshengchanquanjiaoyizhongxin import get_henanshengchanquanjiaoyizhongxin   # 河南省产权交易中心
 from heilongjiangchanquanjiaoyisuo import get_heilongjiangchanquanjiaoyisuo   # 黑龙江产权交易所
 from foshannanfangchanquanjiaoyi import get_fuoshannanfangchanquanjiaoyi   # 佛山市南方产权交易所
+from shandongchanquanjiaoyizhongxin import get_shandongchanquanjiaoyizhongxin   # 山东省产权交易中心
+from ningxiachanquanjiaoyisuo import get_ningxiachanquanjiaoyi    # 宁夏产权交易
+from hainanchanquanjiaoyi import get_hainanchanquanjiaoyi    # 海南产权交易
+# from changzhoujiaoyishichang import get_changzhoujiaoyishichang    # 常州交易市场
+from chongqingchanquanjiaoyi import get_chongqingchanquanjiaoyi    # 重庆产权交易所
+from neimengguchanjiao import get_neimengguchanquanjiaoyi_zichanchaoshizhaiquan    # 内蒙古产权交易所_资产超市债权
+from neimengguchanjiao import get_neimengguchanquanjiaoyi_guapaixiangmuzhaiquan     # 内蒙古产权交易所_挂牌项目债权
+from hunanshenglianhechanquanjiaoyi import get_hunanchanquanlianhejiaoyi    # 湖南产权联合交易
 
 methods = {
     'https://www.zsamc.com/index.php/infor/index/20.html#tabNav': get_zhejiangzheshang_chuzhigonggao,  # 浙江省浙商资产管理有限公司
@@ -92,8 +100,15 @@ methods = {
     'http://www.ytcq.com/tzgg/about.html': get_yantailianhechanquanjiaoyizhongxin,  # 烟台联合产权交易中心
     'https://sta.hnprec.com/client/#/buyerweb/?BusinessTypeId=HouseLand': get_henanshengchanquanjiaoyizhongxin,  # 河南省产权交易中心
     'https://hljcqjy.ejy365.com/EJY/Project?searchKids=%E5%80%BA%E6%9D%83': get_heilongjiangchanquanjiaoyisuo,    # 黑龙江产权交易所
-    'https://www.fsaee.com/?cid-288_lbid-7_qycq.html': get_fuoshannanfangchanquanjiaoyi  # 佛山南方产权交易市场
-
+    'https://www.fsaee.com/?cid-288_lbid-7_qycq.html': get_fuoshannanfangchanquanjiaoyi,  # 佛山南方产权交易市场
+    'http://www.sdcqjy.com/zccz/articlelist/cjgg': get_shandongchanquanjiaoyizhongxin,    # 山东省产权交易中心
+    'http://www.naee.com.cn/newsLists.do?classId=185': get_ningxiachanquanjiaoyi,    # 宁夏产权交易中心
+    'http://www.hncq.cn/index.php?m=content&c=index&a=lists&catid=17&proType=&areaid=&keyword=': get_hainanchanquanjiaoyi,   # 海南产权交易
+    # 'http://www.czcq.com.cn/czcq/property': get_changzhoujiaoyishichang,    # 常州市产权交易市场
+    'https://www.cquae.com/Project?q=s&projectID=5&#name1': get_chongqingchanquanjiaoyi,   # 重庆产权交易市场
+    'https://nmgcqjy.ejy365.com/FinanceReform/NewsIndex?firTypeName=%E8%B5%84%E4%BA%A7%E8%B6%85%E5%B8%82&secTypeName=%E5%80%BA%E6%9D%83&secID=10653&firID=10636&HeadId=4': get_neimengguchanquanjiaoyi_zichanchaoshizhaiquan,   # 内蒙古产权交易所-资产超市债权
+    'https://nmgcqjy.ejy365.com/FinanceReform/ProjectIndex?projectType=%E5%80%BA%E6%9D%83&HeadId=2' : get_neimengguchanquanjiaoyi_guapaixiangmuzhaiquan,   # 内蒙古产权交易所-挂牌项目债权
+    'https://www.hnaee.com/hnaee/xmzx.jsp': get_hunanchanquanlianhejiaoyi,    # 湖南产权联合交易
 
 }
 
@@ -142,6 +157,14 @@ web_list = [
     'https://sta.hnprec.com/client/#/buyerweb/?BusinessTypeId=HouseLand',
     'https://hljcqjy.ejy365.com/EJY/Project?searchKids=%E5%80%BA%E6%9D%83',
     'https://www.fsaee.com/?cid-288_lbid-7_qycq.html',
+    'http://www.sdcqjy.com/zccz/articlelist/cjgg',
+    'http://www.naee.com.cn/newsLists.do?classId=185',
+    'http://www.hncq.cn/index.php?m=content&c=index&a=lists&catid=17&proType=&areaid=&keyword=',
+    # 'http://www.czcq.com.cn/czcq/property',
+    'https://www.cquae.com/Project?q=s&projectID=5&#name1',
+    'https://nmgcqjy.ejy365.com/FinanceReform/NewsIndex?firTypeName=%E8%B5%84%E4%BA%A7%E8%B6%85%E5%B8%82&secTypeName=%E5%80%BA%E6%9D%83&secID=10653&firID=10636&HeadId=4',
+    'https://nmgcqjy.ejy365.com/FinanceReform/ProjectIndex?projectType=%E5%80%BA%E6%9D%83&HeadId=2',
+    'https://www.hnaee.com/hnaee/xmzx.jsp',
 ]
 
 

@@ -1,4 +1,3 @@
-import json
 import re
 import time
 import os
@@ -11,101 +10,124 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 from AMC.api_paper import get_image, judge_bm_repeat, upload_file, judge_title_repeat, upload_file_by_url, get_now_image
 import requests
 from lxml import etree
+from bs4 import BeautifulSoup
 
 co = ChromiumOptions()
-co = co.set_argument('--no-sandbox')
-co = co.headless()
-co.set_paths(local_port=9176)
+# co = co.set_argument('--no-sandbox')
+# co = co.headless()
+# co.set_paths(local_port=9180)
 
-headers = {
-    'Accept': '*/*',
-    'Accept-Language': 'zh-CN,zh;q=0.9',
-    'Cache-Control': 'no-cache',
-    'Content-Type': 'application/x-www-form-urlencoded',
-    'Origin': 'http://www.sdcqjy.com',
-    'Pragma': 'no-cache',
-    'Proxy-Connection': 'keep-alive',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
-    'X-Requested-With': 'XMLHttpRequest',
+cookies = {
+    '__jsluid_s': '35256ae16524f8aa98f136b6204311f6',
+    'Hm_lvt_626131e5d1fe8ad7532ecced20a716b5': '1740042017',
+    'HMACCOUNT': 'FDD970C8B3C27398',
+    'Hm_lvt_a5cf993912d876d06d4efa4e14364ecc': '1740042017',
+    'ASP.NET_SessionId': '11asgc0bdygjr0hjjlo1ntws',
+    '__jsl_clearance_s': '1740559754.967|0|wWBg2ap7ntypEsGELmBhbMR1y%2FY%3D',
+    'Hm_lpvt_626131e5d1fe8ad7532ecced20a716b5': '1740559758',
+    'Hm_lpvt_a5cf993912d876d06d4efa4e14364ecc': '1740559758',
 }
 
 
-def get_shandongchanquanjiaoyizhongxin(queue_id, webpage_id):
+
+headers = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept-Language': 'zh-CN,zh;q=0.9',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+    'Pragma': 'no-cache',
+    'Referer': 'https://www.cquae.com/Project?q=s&projectID=5&',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'same-origin',
+    'Sec-Fetch-User': '?1',
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
+    'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    # 'Cookie': '__jsluid_s=35256ae16524f8aa98f136b6204311f6; Hm_lvt_626131e5d1fe8ad7532ecced20a716b5=1740042017; HMACCOUNT=FDD970C8B3C27398; Hm_lvt_a5cf993912d876d06d4efa4e14364ecc=1740042017; ASP.NET_SessionId=11asgc0bdygjr0hjjlo1ntws; __jsl_clearance_s=1740559754.967|0|wWBg2ap7ntypEsGELmBhbMR1y%2FY%3D; Hm_lpvt_626131e5d1fe8ad7532ecced20a716b5=1740559758; Hm_lpvt_a5cf993912d876d06d4efa4e14364ecc=1740559758',
+}
+
+def remove_script_tags_safe(html):
+    soup = BeautifulSoup(html, 'html.parser')
+    for script in soup.find_all('script'):
+        script.decompose()
+    return str(soup)
+
+def get_chongqingchanquanjiaoyi(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
+    cookie_dict = {}
+    page.get("https://www.cquae.com/Project?q=s&projectID=5&page=")
+    time.sleep(3)
+    value_cookies = page.cookies()
+    for key in value_cookies:
+        cookie_dict[key['name']] = key['value']
+    # print(cookie_dict)
     try:
-        # for zq_type in ['C05', 'C06']:
-        for page_num in range(35):
-            time.sleep(2)
-            data = {
+        # for zq_type in ['G3', 'PG3']:
+        for page_num in range(1, 4):
+            params = {
+                'q': 's',
+                'projectID': '5',
                 'page': f'{page_num}',
-                'type': 'all',
-                'keyword': '债权',
             }
+
             img_set = set()
-            name = '山东产权交易所'
+            name = '重庆产权交易所'
             title_set = judge_title_repeat(name)
 
-            res = requests.post('http://www.sdcqjy.com/search/getdata', headers=headers, data=data, verify=False)
+            res = requests.get('https://www.cquae.com/Project', params=params, cookies=cookie_dict, headers=headers)
+            # print(res.text)
             res_json = res.text
             html = etree.HTML(res_json)
             # print(res_json)
-            data_list = html.xpath("//table[@class='table-all']/tbody/tr")
+            data_list = html.xpath("//div[@class='n2_List itcon']")
             for data in data_list:
                 time.sleep(1)
-                link_info = ''.join(data.xpath(".//a[@class='name']/@onclick"))
-                link_json = re.findall(r'linkToDetail\((.*?)\)', link_info)
-                if not link_json:
+                page_url = ''.join(data.xpath(".//a//@href"))
+                id_ = re.findall(r'\?id=(\d+)', page_url)[0]
+                # https://www.cquae.com/Project/Object/Obj_Show?id=1277804
+                page_url = f'https://www.cquae.com/Project/Object/Obj_Show?id={id_}'
+                title_name = ''.join(data.xpath(".//a/text()"))
+                if '债权' not in title_name and '不良' not in  title_name:
                     continue
-                link_json = json.loads(link_json[0])
-                data_status = link_json['dataStatus']
-                link_id = link_json['id']
-                if data_status == '已发布':
-                    page_url = f"http://www.sdcqjy.com/zccz/article/cjgg/{link_id}"
-                elif data_status == '挂牌公告':
-                    continue
-                elif data_status == '--':
-                    page_url = f"http://www.sdcqjy.com/bidding/bidprice/{link_id}"
-                elif data_status == '招商':
-                    page_url = f"http://www.sdcqjy.com/proj/yqcl/{link_id}"
-                else:
-                    page_url = f"http://www.sdcqjy.com/proj/tc/{link_id}"
-                title_name = link_json['name']
-                # import datetime; print(datetime.datetime.utcfromtimestamp(1740326400000 // 1000).strftime('%Y-%m-%d'))
-                title_date = link_json['publishTime']
-                # 使用re模块提取日期
-                title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
+                title_date = ''.join(data.xpath(".//td[@class='n2_wsbm']/div[1]/span//text()"))
+                title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', str(title_date))
                 if title_date:
                     title_date = title_date[0]
                 else:
                     title_date = ''
-                # print(page_url, title_name, title_date, data_status)
-                # https://hljcqjy.ejy365.com/ejy/detail?infoId=N0129GQ240059&bmStatus=%E6%8A%A5%E5%90%8D%E6%88%AA%E6%AD%A2&ggType=JYGG
+                print(page_url, title_name, title_date)
 
-                res = requests.get(page_url, headers=headers)
-                res_html = etree.HTML(res.text)
-                time.sleep(2)
+                page.get(page_url)
+                time.sleep(1)
+                res = page.html
+                res_html = etree.HTML(res)
                 # title_list = res_html.xpath("//div[@class='rightListContent list-item']")
+                # 使用re模块提取日期
+
                 title_url = page_url
                 if title_url not in title_set:
-                    title_content = "".join(res_html.xpath("//div[@class='pro_title_main']//text()"))
-                    title_content = title_content.join(res_html.xpath("//div[@class='module-item']//text()"))
-                    title_content = title_content.join(res_html.xpath("//div[@class='art_cont']//text()"))
-                    annex = res_html.xpath("//div[@id='biddingPageCont']//@href | //div[@class='module-item']//@href")
+                    title_content = "".join(res_html.xpath("//div[@class='contont_div']//text()"))
+                    title_content = title_content.join(res_html.xpath("//div[@id='xmggs']//text()"))
+                    title_content = title_content.join(res_html.xpath("//div[@id='bdxxs']//text()"))
+                    title_content = title_content.join(res_html.xpath("//div[@id='fjxzs']//text()"))
+
+
+                    annex = res_html.xpath("//div[@id='fjxzs']//a//@href")
                     if annex:
                         # print(page_url, annex)
                         files = []
                         original_url = []
                         for ann in annex:
-                            if not ann:
-                                continue
                             if "http" not in ann:
-                                ann = 'http://www.e-jy.com.cn/' + ann
+                                ann = 'https://files.cquae.com' + ann
                             file_type = ann.split('.')[-1]
-                            file_type = file_type.strip()
                             if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
-                                             'png', 'jpg', 'jpeg'] and 'noauthorizefiles' in ann:
-                                file_url = upload_file_by_url(ann, "shandong", file_type)
+                                             'png', 'jpg', 'jpeg'] and 'Upload' in ann:
+                                file_url = upload_file_by_url(ann, "chongqing", file_type)
                                 # file_url = 111
                                 files.append(file_url)
                                 original_url.append(ann)
@@ -117,20 +139,24 @@ def get_shandongchanquanjiaoyizhongxin(queue_id, webpage_id):
                         original_url = ''
                     files = str(files).replace("'", '"')
                     original_url = str(original_url).replace("'", '"')
-                    title_html_info = res_html.xpath("//div[@class='pro_title_main'] | //div[@class='art_cont'] | //div[@class='module-item']")
-                    content_1 = res_html.xpath("//div[@id='biddingPageCont']")
+                    print(files, original_url)
+                    title_html_info = res_html.xpath("//td[@class='td_contont']/div[@class='contont_div']")
+                    content_1 = res_html.xpath("//div[@id='xmggs']")
+                    content_2 = res_html.xpath("//div[@id='bdxxs']")
+                    content_3 = res_html.xpath("//div[@id='fjxzs']")
                     content_html = ''
                     for con in title_html_info:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
                     for con in content_1:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
-                    if not title_content:
-                        cont_ = etree.HTML(content_html)
-                        if cont_:
-                            title_content = ''.join(cont_.xpath("//text()"))
-                    # print(title_content)
+                    for con in content_2:
+                        content_html += etree.tostring(con, encoding='utf-8').decode()
+                    for con in content_3:
+                        content_html += etree.tostring(con, encoding='utf-8').decode()
+                    content_html = remove_script_tags_safe(content_html)
                     try:
-                        image = get_image(page, title_url, "xpath=//div[@class='main_container'] | //div[@class='art_cont']")
+                        image = get_image(page, title_url,
+                                          "xpath=//div[@class='div1']")
                     except:
                         print('截取当前显示区域')
                         image = get_now_image(page, title_url)
@@ -182,4 +208,4 @@ def get_shandongchanquanjiaoyizhongxin(queue_id, webpage_id):
         raise Exception(e)
 
 
-# get_shandongchanquanjiaoyizhongxin(111, 222)
+# get_chongqingchanquanjiaoyi(111, 222)
