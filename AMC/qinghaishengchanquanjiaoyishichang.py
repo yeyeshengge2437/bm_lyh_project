@@ -14,113 +14,95 @@ from lxml import etree
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9183)
+co.set_paths(local_port=9184)
 
 headers = {
-    'Accept': 'application/json, text/javascript, */*; q=0.01',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive',
-    'Content-Type': 'application/json;charset=UTF-8',
-    'Origin': 'https://www.csuaee.com.cn',
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Origin': 'http://www.qhcqjy.com',
     'Pragma': 'no-cache',
-    'Referer': 'https://www.csuaee.com.cn/searchItem.html?keyword=%E5%80%BA%E6%9D%83',
-    'Sec-Fetch-Dest': 'empty',
-    'Sec-Fetch-Mode': 'cors',
-    'Sec-Fetch-Site': 'same-origin',
+    'Proxy-Connection': 'keep-alive',
+    'Referer': 'http://www.qhcqjy.com/.do',
+    'Upgrade-Insecure-Requests': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
-    'X-Requested-With': 'XMLHttpRequest',
-    'language': 'zh-cn',
-    'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
-    # 'Cookie': 'Hm_lvt_1aac8492a1c45f4949e13dc855f617ee=1740019778; HMACCOUNT=FDD970C8B3C27398; Hm_lvt_c4f40a0013c2cb0ccb4ad6cf20361123=1740019817; Hm_lpvt_c4f40a0013c2cb0ccb4ad6cf20361123=1740638630; Hm_lpvt_1aac8492a1c45f4949e13dc855f617ee=1740638630',
+    # 'Cookie': '__51vcke__3IzgAZJGzpMWGYLN=1a02177c-3072-5fdb-ab89-7e6c4dc7f8f9; __51vuft__3IzgAZJGzpMWGYLN=1740016677201; JSESSIONID=5B9377AA9C65B02970BD412768E9D1B2; __51uvsct__3IzgAZJGzpMWGYLN=3; __vtins__3IzgAZJGzpMWGYLN=%7B%22sid%22%3A%20%220de45209-9374-54ea-ba78-f50822de294e%22%2C%20%22vd%22%3A%202%2C%20%22stt%22%3A%2012345%2C%20%22dr%22%3A%2012345%2C%20%22expires%22%3A%201740644375595%2C%20%22ct%22%3A%201740642575595%7D',
 }
 
 
-def get_nanfanglianhechanquanjiaoyi(queue_id, webpage_id):
+def get_qinghaishengchanquanjiaoyishichang(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
-    cookie_dict = {}
-    page.get("https://www.cspea.com.cn")
-    time.sleep(3)
-    page.refresh()
-    value_cookies = page.cookies()
-    for key in value_cookies:
-        cookie_dict[key['name']] = key['value']
+    # cookie_dict = {}
+    # page.get("https://www.cspea.com.cn")
+    # time.sleep(3)
+    # page.refresh()
+    # value_cookies = page.cookies()
+    # for key in value_cookies:
+    #     cookie_dict[key['name']] = key['value']
 
     try:
         # for zq_type in ['C05', 'C06']:
         for zq_type in ['C06']:
-            json_data = {
-                'pageIndex': 1,
-                'pageSize': 450,
-                'categoryId': '',
-                'price': '',
-                'area': '',
-                'status': '',
-                'handType': '',
-                'keyword': '',
-                'keyword1': '债权',
-                'isOrg': '',
+            data = {
+                'checkType': '',
+                'para': 'search',
+                'id': '',
+                'classCode': '',
+                'type': '',
+                'searchType': 'item',
+                'searchKeys': 'ծȨ',
             }
 
             img_set = set()
-            name = '南方联合产权交易所'
+            name = '青海省产权交易市场'
             title_set = judge_title_repeat(name)
 
-            res = requests.post(
-                'https://www.csuaee.com.cn/api/article/web/getItemsList',
-                headers=headers,
-                json=json_data,
-            )
+            res = requests.post('http://www.qhcqjy.com/info.do', headers=headers, data=data, verify=False)
             # print(res.text)
-            res_json = res.json()
+            res_json = res.text
+            res_json = etree.HTML(res_json)
             # print(res_json)
-            data_list = res_json["Content"]
+            data_list = res_json.xpath("//td[@class='tab_xw2']/a")
 
             for data in data_list:
                 time.sleep(1)
                 # print(data)
-                try:
-                    page_url = data["linkUrl"]
-                    page_url = 'https://www.csuaee.com.cn' + page_url
-                except:
-                    continue
-                title_name = data["name"]
+                page_url = 'http://www.qhcqjy.com' + ''.join(data.xpath("./@href"))
+                # title_name = ''.join(data.xpath("./text()"))
                 # import datetime; print(datetime.datetime.utcfromtimestamp(1740326400000 // 1000).strftime('%Y-%m-%d'))
-                title_date = data["handBeginDate"]
+                # title_date = data["handBeginDate"]
 
-                print(page_url, title_name, title_date)
 
                 res_1 = requests.get(page_url, headers=headers)
                 time.sleep(2)
                 res_1 = res_1.text
                 res_html = etree.HTML(res_1)
-                iframes = res_html.xpath("//iframe/@src")
-                if not iframes:
-                    continue
-                tag_url = 'https://www.csuaee.com.cn/' + iframes[0]
-                page.get(tag_url)
-                time.sleep(3)
-                html_1 = page.html
-                res_html = etree.HTML(html_1)
                 title_url = page_url
                 if title_url not in title_set:
-                    title_content = "".join(res_html.xpath("//text()"))
-
-                    annex = res_html.xpath("//@href")
+                    title_name = ''.join(res_html.xpath("//div[@class='news_ct_l']/h1/text()"))
+                    title_date = ''.join(res_html.xpath("//div[@class='news_ct_l']/div[@class='dp']/text()"))
+                    # 使用re模块提取日期
+                    title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
+                    if title_date:
+                        title_date = title_date[0]
+                    else:
+                        title_date = ''
+                    title_content = "".join(res_html.xpath("//div[@class='news_ct_l']//text()"))
+                    print(title_name, title_url, title_date)
+                    annex = res_html.xpath("//div[@class='news_ct_l']//@href | //div[@class='news_ct_l']//@src")
                     if annex:
                         # print(page_url, annex)
                         files = []
                         original_url = []
                         for ann in annex:
                             if "http" not in ann:
-                                ann = 'https://www.csuaee.com.cn' + ann
+                                ann = 'http://www.qhcqjy.com.cn' + ann
                             file_type = ann.split('.')[-1]
                             if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
-                                             'png', 'jpg', 'jpeg'] and 'UserFiles' in ann:
-                                file_url = upload_file_by_url(ann, "nanfang", file_type)
+                                             'png', 'jpg', 'jpeg'] and 'upload' in ann:
+                                file_url = upload_file_by_url(ann, "qinghai", file_type)
                                 # file_url = 111
                                 files.append(file_url)
                                 original_url.append(ann)
@@ -133,17 +115,17 @@ def get_nanfanglianhechanquanjiaoyi(queue_id, webpage_id):
                     files = str(files).replace("'", '"')
                     original_url = str(original_url).replace("'", '"')
                     # title_html_info = res_title_html.xpath("//div[@class='news_info_box']")
-                    content_1 = res_html.xpath("//div[@class='project-detail-left']")
-                    content_html = html_1
+                    content_1 = res_html.xpath("//div[@class='news_ct_l']")
+                    content_html = ''
                     # for con in title_html_info:
                     #     content_html += etree.tostring(con, encoding='utf-8').decode()
-                    # for con in content_1:
-                    #     content_html += etree.tostring(con, encoding='utf-8').decode()
+                    for con in content_1:
+                        content_html += etree.tostring(con, encoding='utf-8').decode()
                     # print(content_html)
                     # return
                     try:
                         image = get_image(page, title_url,
-                                          "xpath=//div[@class='provision-detail']")
+                                          "xpath=//div[@class='news_ct_l']")
                     except:
                         print('截取当前显示区域')
                         image = get_now_image(page, title_url)
@@ -194,4 +176,4 @@ def get_nanfanglianhechanquanjiaoyi(queue_id, webpage_id):
         page.close()
         raise Exception(e)
 
-# get_nanfanglianhechanquanjiaoyi(111, 222)
+# get_qinghaishengchanquanjiaoyishichang(111, 222)

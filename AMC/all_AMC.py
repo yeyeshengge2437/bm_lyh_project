@@ -53,6 +53,10 @@ from chongqingchanquanjiaoyi import get_chongqingchanquanjiaoyi    # 重庆产�
 from neimengguchanjiao import get_neimengguchanquanjiaoyi_zichanchaoshizhaiquan    # 内蒙古产权交易所_资产超市债权
 from neimengguchanjiao import get_neimengguchanquanjiaoyi_guapaixiangmuzhaiquan     # 内蒙古产权交易所_挂牌项目债权
 from hunanshenglianhechanquanjiaoyi import get_hunanchanquanlianhejiaoyi    # 湖南产权联合交易
+from nanfanglianhechanquanjiaoyi import get_nanfanglianhechanquanjiaoyi    # 南方联合产权交易所
+from qinghaishengchanquanjiaoyishichang import get_qinghaishengchanquanjiaoyishichang   # 青海省产权交易市场
+from gansushengchanquanjiaoyisuoxinzhi import get_gansushengchanquanjiaoyisuoxinzhi    # 甘肃省产权交易所新址
+from gansushengchanquanjiaoyijiuzhi import get_gansushengchanquanjiaoyijiuzhi    # 甘肃省产权交易所旧址
 
 methods = {
     'https://www.zsamc.com/index.php/infor/index/20.html#tabNav': get_zhejiangzheshang_chuzhigonggao,  # 浙江省浙商资产管理有限公司
@@ -109,6 +113,11 @@ methods = {
     'https://nmgcqjy.ejy365.com/FinanceReform/NewsIndex?firTypeName=%E8%B5%84%E4%BA%A7%E8%B6%85%E5%B8%82&secTypeName=%E5%80%BA%E6%9D%83&secID=10653&firID=10636&HeadId=4': get_neimengguchanquanjiaoyi_zichanchaoshizhaiquan,   # 内蒙古产权交易所-资产超市债权
     'https://nmgcqjy.ejy365.com/FinanceReform/ProjectIndex?projectType=%E5%80%BA%E6%9D%83&HeadId=2' : get_neimengguchanquanjiaoyi_guapaixiangmuzhaiquan,   # 内蒙古产权交易所-挂牌项目债权
     'https://www.hnaee.com/hnaee/xmzx.jsp': get_hunanchanquanlianhejiaoyi,    # 湖南产权联合交易
+    'https://www.csuaee.com.cn/searchItem.html?keyword=%E5%80%BA%E6%9D%83' : get_nanfanglianhechanquanjiaoyi,    # 南方联合产权交易中心
+    'http://www.qhcqjy.com/info.do' : get_qinghaishengchanquanjiaoyishichang,    # 青海省产权交易市场
+    'http://jrzc.gscq.com.cn:9116/#/example/project?a=2290&b=%E6%8E%A8%E4%BB%8B%E6%9C%9F' : get_gansushengchanquanjiaoyisuoxinzhi,    # 甘肃省产权交易所新址
+    'https://old.gscq.com.cn/index.php?s=xm&c=category&id=4' : get_gansushengchanquanjiaoyijiuzhi,    # 甘肃省产权交易所旧址
+
 
 }
 
@@ -165,6 +174,10 @@ web_list = [
     'https://nmgcqjy.ejy365.com/FinanceReform/NewsIndex?firTypeName=%E8%B5%84%E4%BA%A7%E8%B6%85%E5%B8%82&secTypeName=%E5%80%BA%E6%9D%83&secID=10653&firID=10636&HeadId=4',
     'https://nmgcqjy.ejy365.com/FinanceReform/ProjectIndex?projectType=%E5%80%BA%E6%9D%83&HeadId=2',
     'https://www.hnaee.com/hnaee/xmzx.jsp',
+    'https://www.csuaee.com.cn/searchItem.html?keyword=%E5%80%BA%E6%9D%83',
+    'http://www.qhcqjy.com/info.do',
+    'http://jrzc.gscq.com.cn:9116/#/example/project?a=2290&b=%E6%8E%A8%E4%BB%8B%E6%9C%9F',
+    'https://old.gscq.com.cn/index.php?s=xm&c=category&id=4',
 ]
 
 

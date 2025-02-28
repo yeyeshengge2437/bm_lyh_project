@@ -86,7 +86,8 @@ def get_chongqingchanquanjiaoyi(queue_id, webpage_id):
             data_list = html.xpath("//div[@class='n2_List itcon']")
             for data in data_list:
                 time.sleep(1)
-                page_url = ''.join(data.xpath(".//a//@href"))
+                # page_url = ''.join(data.xpath(".//a//@href"))
+                page_url = 'https://www.cquae.com/Project/Object/Obj_Show?id=1279932'
                 id_ = re.findall(r'\?id=(\d+)', page_url)[0]
                 # https://www.cquae.com/Project/Object/Obj_Show?id=1277804
                 page_url = f'https://www.cquae.com/Project/Object/Obj_Show?id={id_}'
@@ -111,9 +112,12 @@ def get_chongqingchanquanjiaoyi(queue_id, webpage_id):
                 title_url = page_url
                 if title_url not in title_set:
                     title_content = "".join(res_html.xpath("//div[@class='contont_div']//text()"))
-                    title_content = title_content.join(res_html.xpath("//div[@id='xmggs']//text()"))
-                    title_content = title_content.join(res_html.xpath("//div[@id='bdxxs']//text()"))
-                    title_content = title_content.join(res_html.xpath("//div[@id='fjxzs']//text()"))
+                    title_content = title_content.join(res_html.xpath("//div[@id='xmggs']/table[@class='gridtable']//text()")[0])
+                    # title_content = title_content.join(res_html.xpath("//div[@id='bdxxs']//text()"))
+                    # title_content = title_content.join(res_html.xpath("//div[@id='fjxzs']//text()"))
+                    title_content = title_content.replace('\n', '').replace('\r', '').replace('\t', '')
+                    # print(title_content)
+                    # return
 
 
                     annex = res_html.xpath("//div[@id='fjxzs']//a//@href")
