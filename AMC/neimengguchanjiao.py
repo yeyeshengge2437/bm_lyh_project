@@ -173,7 +173,7 @@ def get_neimengguchanquanjiaoyi_guapaixiangmuzhaiquan(queue_id, webpage_id):
     page.set.load_mode.none()
     try:
         # for zq_type in ['C05', 'C06']:
-        for page_num in range(1, 72):
+        for page_num in range(1):
             params = {
                 'projectType': '债权',
                 'orderKey': 'StartDate',

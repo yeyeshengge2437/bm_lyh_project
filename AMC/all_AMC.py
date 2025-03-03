@@ -57,6 +57,8 @@ from nanfanglianhechanquanjiaoyi import get_nanfanglianhechanquanjiaoyi    # 南
 from qinghaishengchanquanjiaoyishichang import get_qinghaishengchanquanjiaoyishichang   # 青海省产权交易市场
 from gansushengchanquanjiaoyisuoxinzhi import get_gansushengchanquanjiaoyisuoxinzhi    # 甘肃省产权交易所新址
 from gansushengchanquanjiaoyijiuzhi import get_gansushengchanquanjiaoyijiuzhi    # 甘肃省产权交易所旧址
+from guizhouyangguangchanquanjiaoyisuo import get_guizhouyangguangchanquanjiaoyisuo    # 贵州阳光产权交易所
+from shenzhenlianhechanquanjiaoyisuo import get_shenzhenlianhechanquanjiaoyisuo    # 深圳联合产权交易所
 
 methods = {
     'https://www.zsamc.com/index.php/infor/index/20.html#tabNav': get_zhejiangzheshang_chuzhigonggao,  # 浙江省浙商资产管理有限公司
@@ -117,6 +119,8 @@ methods = {
     'http://www.qhcqjy.com/info.do' : get_qinghaishengchanquanjiaoyishichang,    # 青海省产权交易市场
     'http://jrzc.gscq.com.cn:9116/#/example/project?a=2290&b=%E6%8E%A8%E4%BB%8B%E6%9C%9F' : get_gansushengchanquanjiaoyisuoxinzhi,    # 甘肃省产权交易所新址
     'https://old.gscq.com.cn/index.php?s=xm&c=category&id=4' : get_gansushengchanquanjiaoyijiuzhi,    # 甘肃省产权交易所旧址
+    'https://www.prechina.net/project/project.php?class3=52' : get_guizhouyangguangchanquanjiaoyisuo,    # 贵州阳光产权交易所
+    'https://www.sotcbb.com/xmgg?id=xmggjrzczrzspl': get_shenzhenlianhechanquanjiaoyisuo,    # 深圳联合产权交易所
 
 
 }
@@ -178,6 +182,8 @@ web_list = [
     'http://www.qhcqjy.com/info.do',
     'http://jrzc.gscq.com.cn:9116/#/example/project?a=2290&b=%E6%8E%A8%E4%BB%8B%E6%9C%9F',
     'https://old.gscq.com.cn/index.php?s=xm&c=category&id=4',
+    'https://www.prechina.net/project/project.php?class3=52',
+    'https://www.sotcbb.com/xmgg?id=xmggjrzczrzspl',
 ]
 
 

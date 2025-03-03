@@ -1,4 +1,3 @@
-import json
 import re
 import time
 import os
@@ -15,64 +14,86 @@ from lxml import etree
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9185)
+co.set_paths(local_port=9188)
 
 headers = {
-    'Accept': 'application/json, text/plain, */*',
-    'Accept-Language': 'zh-CN,zh;q=0.9',
-    'Cache-Control': 'no-cache',
-    'Origin': 'http://jrzc.gscq.com.cn:9116',
-    'Pragma': 'no-cache',
-    'Proxy-Connection': 'keep-alive',
-    'Referer': 'http://jrzc.gscq.com.cn:9116/',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
+    'accept': 'application/json, text/javascript, */*; q=0.01',
+    'accept-language': 'zh-CN,zh;q=0.9',
+    'cache-control': 'no-cache',
+    'content-type': 'application/json',
+    'origin': 'https://www.sotcbb.com',
+    'pragma': 'no-cache',
+    'priority': 'u=1, i',
+    'referer': 'https://www.sotcbb.com/xmgg?id=xmggjrzczrzspl',
+    'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-origin',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
+    'x-requested-with': 'XMLHttpRequest',
+    # 'cookie': 'Hm_lvt_f77f76774e4072f82fa9bd84dc8788fd=1739963567,1740035618; HMACCOUNT=FDD970C8B3C27398; Hm_lvt_014a81f17d0f563e80b3dc58463ea8dc=1739963567,1740035618; Hm_lpvt_014a81f17d0f563e80b3dc58463ea8dc=1740711017; Hm_lpvt_f77f76774e4072f82fa9bd84dc8788fd=1740711017; SECKEY_ABVK=pVCx4qgwZHqZqA0X8E2YeGMsal3cCRwn0mn2rKepECI%3D; BMAP_SECKEY=s8FlxG58qP9ZKAlckQkBoeqpuHQH4nwfz-W3zEz20Ptlbel6s60VbGqua4PCYoTsL3NoX-ggILlUTocQCC4yShm40xdNnmFP66LBGwKiWy4o0QmRjQovPhr-Ep8dNmcUzkhEkUbcfs0Wm8iYPKfhaxRsL3Hfbr7aRkScXf7q-PwU23kZWGN1qy92edDJ6rDD',
 }
 
 
-def get_gansushengchanquanjiaoyisuoxinzhi(queue_id, webpage_id):
+def get_shenzhenlianhechanquanjiaoyisuo(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
+    # cookie_dict = {}
+    # page.get("https://www.cspea.com.cn")
+    # time.sleep(3)
+    # page.refresh()
+    # value_cookies = page.cookies()
+    # for key in value_cookies:
+    #     cookie_dict[key['name']] = key['value']
+
     try:
         # for zq_type in ['C05', 'C06']:
-        for zq_type in ['C06']:
+        for page_num in range(1, 6):
             json_data = {
-                'CityCode': None,
-                'BusinessTypeParentId': None,
-                'PublishTime': None,
-                'PublishDeadline': None,
-                'BusinessTypeId': 'CreditorsRights',
-                'AnncCategory': None,
-                'State': None,
-                'keyword': '',
-                'SortKey': None,
-                'SortType': None,
-                'PageSize': 20,
-                'PageIndex': 1,
+                'channelIds': [
+                    '3230',
+                ],
+                'projectMoneyRanges': [],
+                'projectSubjections': [],
+                'projectSources': [],
+                'projectStatus': None,
+                'releaseTimeBegin': None,
+                'releaseTimeEnd': None,
+                'title': None,
+                'pageNum': page_num,
+                'pageSize': 100,
+                'dataType': 1,
+                'targetColumnIds': [
+                    '3965',
+                ],
             }
 
             img_set = set()
-            name = '甘肃省产权交易所（新址）'
+            name = '深圳联合产权交易所'
             title_set = judge_title_repeat(name)
 
-            res = requests.get(
-                'http://125.74.28.115:9101/api/server/projectCenter/index/list?listedEndTimeSort=desc&locationId=2281,2290&pageNum=1&pageSize=60',
+            res = requests.post(
+                'https://www.sotcbb.com/api/v1/sotcbb/local/project/list',
                 headers=headers,
-                verify=False,
+                json=json_data,
             )
             # print(res.text)
             res_json = res.json()
             # print(res_json)
-            data_list = res_json["rows"]
+            data_list = res_json["data"]["content"]
+
             for data in data_list:
                 time.sleep(1)
                 # print(data)
-
-                page_url = data["projectUrl"]
-                if not page_url:
-                    page_url = f'http://jrzc.gscq.com.cn:9116/#/example/projectInfo?id={data["id"]}'
-                title_name = data["projectTitle"]
+                try:
+                    page_url = f'https://www.sotcbb.com/bdDetail.htm?contentId={data["objectId"]}&channelId=3230&id={data["contentId"]}'
+                except:
+                    continue
+                title_name = data["title"]
                 # import datetime; print(datetime.datetime.utcfromtimestamp(1740326400000 // 1000).strftime('%Y-%m-%d'))
-                title_date = str(data["createTime"])
+                title_date = data["registerFrom"]
                 # 使用re模块提取日期
                 title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
                 if title_date:
@@ -80,30 +101,35 @@ def get_gansushengchanquanjiaoyisuoxinzhi(queue_id, webpage_id):
                 else:
                     title_date = ''
                 print(page_url, title_name, title_date)
-
-                res = data["projectContent"]
-                res_html = etree.HTML(res)
-                # title_list = res_html.xpath("//div[@class='rightListContent list-item']")
-
+                params = {
+                    'projectId': f'{data["projectNo"]}',
+                    'contentId': f'{data["contentId"]}',
+                }
+                res_1 = requests.get(
+                    'https://www.sotcbb.com/api/v1/sotcbb/local/project/projectNo/detail',
+                    params=params,
+                    headers=headers,
+                )
+                time.sleep(2)
+                res_1 = res_1.json()
+                res_html_1 = res_1["data"]["content"]
+                res_html = etree.HTML(res_html_1)
                 title_url = page_url
                 if title_url not in title_set:
-                    title_content = "".join(res_html.xpath("//body//text()"))
+                    title_content = "".join(res_html.xpath("//text()"))
 
-                    annex = res_html.xpath("//@href | //@src")
+                    annex = res_html.xpath("//@href")
                     if annex:
                         # print(page_url, annex)
                         files = []
                         original_url = []
                         for ann in annex:
-                            if not ann:
-                                continue
                             if "http" not in ann:
-                                ann = 'https://biz.hnprec.com/' + ann
+                                ann = 'https://file.szggzy.com' + ann
                             file_type = ann.split('.')[-1]
-                            file_type = file_type.strip()
                             if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
-                                             'png', 'jpg', 'jpeg'] and 'up' in ann:
-                                file_url = upload_file_by_url(ann, "gansu", file_type)
+                                             'png', 'jpg', 'jpeg'] and 'unified_download' in ann:
+                                file_url = upload_file_by_url(ann, "shenzhen", file_type)
                                 # file_url = 111
                                 files.append(file_url)
                                 original_url.append(ann)
@@ -115,19 +141,18 @@ def get_gansushengchanquanjiaoyisuoxinzhi(queue_id, webpage_id):
                         original_url = ''
                     files = str(files).replace("'", '"')
                     original_url = str(original_url).replace("'", '"')
-                    # print(files, original_url)
                     # title_html_info = res_title_html.xpath("//div[@class='news_info_box']")
-                    content_1 = res_html.xpath("//div[@id='appContent']")
-                    content_html = res
-                    # print(content_html)
+                    content_1 = res_html.xpath("//div[@class='project-detail-left']")
+                    content_html = res_html_1
                     # for con in title_html_info:
                     #     content_html += etree.tostring(con, encoding='utf-8').decode()
                     # for con in content_1:
                     #     content_html += etree.tostring(con, encoding='utf-8').decode()
+                    # print(content_html)
+                    # return
                     try:
-                        # //div[@id='text-container']
                         image = get_image(page, title_url,
-                                          "xpath=//div[@id='appContent'] | //div[@id='layuiItem_ZBGG'] | //div[@class='a-bottom'][2]/div[@class='container']/div[@class='card-body']/div[@class='box'] | //div[@id='tab1_content']/div[@class='pd15']")
+                                          "xpath=//div[@class='vab-main_content']")
                     except:
                         print('截取当前显示区域')
                         image = get_now_image(page, title_url)
@@ -139,7 +164,7 @@ def get_gansushengchanquanjiaoyisuoxinzhi(queue_id, webpage_id):
                         host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
                         user="col2024",
                         password="Bm_a12a06",
-                        database="col",
+                        database="col_test",
                     )
                     cursor_test = conn_test.cursor()
                     # print(bm_name, article_name, article_url, bm_pdf, content)
@@ -179,4 +204,4 @@ def get_gansushengchanquanjiaoyisuoxinzhi(queue_id, webpage_id):
         raise Exception(e)
 
 
-# get_gansushengchanquanjiaoyisuoxinzhi(111, 222)
+# get_shenzhenlianhechanquanjiaoyisuo(111, 222)

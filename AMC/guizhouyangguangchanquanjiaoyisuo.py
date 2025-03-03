@@ -15,64 +15,54 @@ from lxml import etree
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9185)
+co.set_paths(local_port=9187)
 
 headers = {
-    'Accept': 'application/json, text/plain, */*',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
-    'Origin': 'http://jrzc.gscq.com.cn:9116',
+    'Connection': 'keep-alive',
     'Pragma': 'no-cache',
-    'Proxy-Connection': 'keep-alive',
-    'Referer': 'http://jrzc.gscq.com.cn:9116/',
+    'Referer': 'https://www.prechina.net/project/project.php?class3=52',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'same-origin',
+    'Sec-Fetch-User': '?1',
+    'Upgrade-Insecure-Requests': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
+    'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    # 'Cookie': 'recordurl=%2Chttps%253A%252F%252Fwww.prechina.net%252Fproject%252Fproject.php%253Fclass3%253D52%2Chttps%253A%252F%252Fwww.prechina.net%252Fproject%252Fproject.php%253Fclass3%253D52%2Chttps%253A%252F%252Fwww.prechina.net%252Fproject%252Fproject26427.html%2Chttps%253A%252F%252Fwww.prechina.net%252Fproject%252Fproject.php%253Fclass3%253D52%2Chttps%253A%252F%252Fwww.prechina.net%252Fproject%252Findex.php%253Fclass3%253D52%2526page%253D100%2Chttps%253A%252F%252Fwww.prechina.net%252Fproject%252Fproject.php%253Fclass3%253D52',
 }
 
 
-def get_gansushengchanquanjiaoyisuoxinzhi(queue_id, webpage_id):
+def get_guizhouyangguangchanquanjiaoyisuo(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
     try:
         # for zq_type in ['C05', 'C06']:
-        for zq_type in ['C06']:
-            json_data = {
-                'CityCode': None,
-                'BusinessTypeParentId': None,
-                'PublishTime': None,
-                'PublishDeadline': None,
-                'BusinessTypeId': 'CreditorsRights',
-                'AnncCategory': None,
-                'State': None,
-                'keyword': '',
-                'SortKey': None,
-                'SortType': None,
-                'PageSize': 20,
-                'PageIndex': 1,
+        for page_num in range(1, 101):
+            params = {
+                'class3': '52',
+                'page': f'{page_num}',
             }
-
             img_set = set()
-            name = '甘肃省产权交易所（新址）'
+            name = '贵州阳光产权交易所'
             title_set = judge_title_repeat(name)
 
-            res = requests.get(
-                'http://125.74.28.115:9101/api/server/projectCenter/index/list?listedEndTimeSort=desc&locationId=2281,2290&pageNum=1&pageSize=60',
-                headers=headers,
-                verify=False,
-            )
-            # print(res.text)
-            res_json = res.json()
-            # print(res_json)
-            data_list = res_json["rows"]
+            res = requests.get('https://www.prechina.net/project/index.php', params=params, headers=headers)
+            res_json = res.text
+            res_json = etree.HTML(res_json)
+            data_list = res_json.xpath("//li[@class='media media-lg border-bottom1']")
             for data in data_list:
                 time.sleep(1)
-                # print(data)
-
-                page_url = data["projectUrl"]
-                if not page_url:
-                    page_url = f'http://jrzc.gscq.com.cn:9116/#/example/projectInfo?id={data["id"]}'
-                title_name = data["projectTitle"]
+                page_url = 'https://www.prechina.net/' + ''.join(data.xpath(".//h4/a/@href")).strip('..')
+                # page_url = 'https://nmgcqjy.ejy365.com' + page_url
+                title_name = "".join(data.xpath(".//h4/a/span/text()"))
                 # import datetime; print(datetime.datetime.utcfromtimestamp(1740326400000 // 1000).strftime('%Y-%m-%d'))
-                title_date = str(data["createTime"])
+                title_date = "".join(
+                    data.xpath("//div[@class='media-body']//span[3]/text()"))
                 # 使用re模块提取日期
                 title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
                 if title_date:
@@ -81,15 +71,18 @@ def get_gansushengchanquanjiaoyisuoxinzhi(queue_id, webpage_id):
                     title_date = ''
                 print(page_url, title_name, title_date)
 
-                res = data["projectContent"]
-                res_html = etree.HTML(res)
-                # title_list = res_html.xpath("//div[@class='rightListContent list-item']")
+                res = requests.get(page_url, headers=headers)
+                html = res.text
+                res_html = etree.HTML(html)
+                time.sleep(2)
 
                 title_url = page_url
                 if title_url not in title_set:
-                    title_content = "".join(res_html.xpath("//body//text()"))
+                    title_content = "".join(res_html.xpath("//section[@class='met-editor clearfix']//text()"))
 
-                    annex = res_html.xpath("//@href | //@src")
+
+                    annex = res_html.xpath(
+                        "//section[@class='met-editor clearfix']//@href | //section[@class='met-editor clearfix']//@src")
                     if annex:
                         # print(page_url, annex)
                         files = []
@@ -98,12 +91,12 @@ def get_gansushengchanquanjiaoyisuoxinzhi(queue_id, webpage_id):
                             if not ann:
                                 continue
                             if "http" not in ann:
-                                ann = 'https://biz.hnprec.com/' + ann
+                                ann = 'http://www.prechina.net' + ann
                             file_type = ann.split('.')[-1]
                             file_type = file_type.strip()
                             if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
-                                             'png', 'jpg', 'jpeg'] and 'up' in ann:
-                                file_url = upload_file_by_url(ann, "gansu", file_type)
+                                             'png', 'jpg', 'jpeg'] and 'upload' in ann:
+                                file_url = upload_file_by_url(ann, "guizhou", file_type)
                                 # file_url = 111
                                 files.append(file_url)
                                 original_url.append(ann)
@@ -116,18 +109,15 @@ def get_gansushengchanquanjiaoyisuoxinzhi(queue_id, webpage_id):
                     files = str(files).replace("'", '"')
                     original_url = str(original_url).replace("'", '"')
                     # print(files, original_url)
-                    # title_html_info = res_title_html.xpath("//div[@class='news_info_box']")
-                    content_1 = res_html.xpath("//div[@id='appContent']")
-                    content_html = res
-                    # print(content_html)
+                    # title_html_info = res_html.xpath("//div[@class='product fl']")
+                    content_1 = res_html.xpath("//section[@class='met-editor clearfix']")
+                    content_html = ''
                     # for con in title_html_info:
                     #     content_html += etree.tostring(con, encoding='utf-8').decode()
-                    # for con in content_1:
-                    #     content_html += etree.tostring(con, encoding='utf-8').decode()
+                    for con in content_1:
+                        content_html += etree.tostring(con, encoding='utf-8').decode()
                     try:
-                        # //div[@id='text-container']
-                        image = get_image(page, title_url,
-                                          "xpath=//div[@id='appContent'] | //div[@id='layuiItem_ZBGG'] | //div[@class='a-bottom'][2]/div[@class='container']/div[@class='card-body']/div[@class='box'] | //div[@id='tab1_content']/div[@class='pd15']")
+                        image = get_image(page, title_url, "xpath=//section[@class='met-editor clearfix']")
                     except:
                         print('截取当前显示区域')
                         image = get_now_image(page, title_url)
@@ -179,4 +169,4 @@ def get_gansushengchanquanjiaoyisuoxinzhi(queue_id, webpage_id):
         raise Exception(e)
 
 
-# get_gansushengchanquanjiaoyisuoxinzhi(111, 222)
+# get_guizhouyangguangchanquanjiaoyisuo(111, 2222)

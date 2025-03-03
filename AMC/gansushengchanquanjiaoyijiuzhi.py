@@ -70,8 +70,6 @@ def get_gansushengchanquanjiaoyijiuzhi(queue_id, webpage_id):
                 title_name = ''.join(data.xpath("./text()"))
                 # import datetime; print(datetime.datetime.utcfromtimestamp(1740326400000 // 1000).strftime('%Y-%m-%d'))
 
-
-
                 response = requests.get(page_url, headers=headers)
                 res = response.text
                 res_html = etree.HTML(res)
@@ -179,5 +177,6 @@ def get_gansushengchanquanjiaoyijiuzhi(queue_id, webpage_id):
     except Exception as e:
         page.close()
         raise Exception(e)
+
 
 # get_gansushengchanquanjiaoyijiuzhi(111, 222)
