@@ -1,7 +1,8 @@
 import requests
 
 cookies = {
-    'recordurl': '%2Chttps%253A%252F%252Fwww.prechina.net%252Fproject%252Fproject.php%253Fclass3%253D52%2Chttps%253A%252F%252Fwww.prechina.net%252Fproject%252Fproject.php%253Fclass3%253D52%2Chttps%253A%252F%252Fwww.prechina.net%252Fproject%252Fproject26427.html%2Chttps%253A%252F%252Fwww.prechina.net%252Fproject%252Fproject.php%253Fclass3%253D52%2Chttps%253A%252F%252Fwww.prechina.net%252Fproject%252Findex.php%253Fclass3%253D52%2526page%253D100%2Chttps%253A%252F%252Fwww.prechina.net%252Fproject%252Fproject.php%253Fclass3%253D52',
+    'acw_tc': '2760820417410906427174471ed88d7993f3ca6efcf66df4121f94765e5de9',
+    'BIGipServerszee.com.cn_New': '187934912.36895.0000',
 }
 
 headers = {
@@ -10,23 +11,17 @@ headers = {
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
     'Pragma': 'no-cache',
-    'Referer': 'https://www.prechina.net/project/project.php?class3=52',
     'Sec-Fetch-Dest': 'document',
     'Sec-Fetch-Mode': 'navigate',
-    'Sec-Fetch-Site': 'same-origin',
+    'Sec-Fetch-Site': 'none',
     'Sec-Fetch-User': '?1',
     'Upgrade-Insecure-Requests': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
     'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"Windows"',
-    # 'Cookie': 'recordurl=%2Chttps%253A%252F%252Fwww.prechina.net%252Fproject%252Fproject.php%253Fclass3%253D52%2Chttps%253A%252F%252Fwww.prechina.net%252Fproject%252Fproject.php%253Fclass3%253D52%2Chttps%253A%252F%252Fwww.prechina.net%252Fproject%252Fproject26427.html%2Chttps%253A%252F%252Fwww.prechina.net%252Fproject%252Fproject.php%253Fclass3%253D52%2Chttps%253A%252F%252Fwww.prechina.net%252Fproject%252Findex.php%253Fclass3%253D52%2526page%253D100%2Chttps%253A%252F%252Fwww.prechina.net%252Fproject%252Fproject.php%253Fclass3%253D52',
+    # 'Cookie': 'acw_tc=2760820417410906427174471ed88d7993f3ca6efcf66df4121f94765e5de9; BIGipServerszee.com.cn_New=187934912.36895.0000',
 }
 
-params = {
-    'class3': '52',
-    'page': '2',
-}
-
-response = requests.get('https://www.prechina.net/project/index.php', params=params, cookies=cookies, headers=headers)
-print(response.text)
+response = requests.get('https://www.szee.com.cn/jrzc/', headers=headers)
+print(response.content.decode())

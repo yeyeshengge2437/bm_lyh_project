@@ -59,6 +59,16 @@ from gansushengchanquanjiaoyisuoxinzhi import get_gansushengchanquanjiaoyisuoxin
 from gansushengchanquanjiaoyijiuzhi import get_gansushengchanquanjiaoyijiuzhi    # 甘肃省产权交易所旧址
 from guizhouyangguangchanquanjiaoyisuo import get_guizhouyangguangchanquanjiaoyisuo    # 贵州阳光产权交易所
 from shenzhenlianhechanquanjiaoyisuo import get_shenzhenlianhechanquanjiaoyisuo    # 深圳联合产权交易所
+from guandonglianhechanquanjiaoyizhongxin import get_guandonglianhechanquanjiaoyizhongxin    # 广东省联合产权交易中心
+from changshalianhechanquanjiaoyisuo import get_changshalianhechanquanjiaoyisuo    # 长沙联合产权交易所
+from wuhanguanggulianhejiaoyisuo import get_wuhanguanggulianhejiaoyisuo    # 武汉光谷联合交易所
+from qingdaochanquanjiaoyisuo import get_qingdaochanquanjiaoyisuo    # 青岛产权交易所
+from jiangxishengchanquanjiaoyisuo import get_jiangxishengchanquanjiaoyisuo    # 江西省产权交易所
+from fujianchanquanjiaoyiwang import get_fujianchanquanjiaoyiwang    # 福建产权交易网
+from anhuichanquanjiaoyizhongxin import get_anhuichanquanjiaoyizhongxin    # 安徽省产权交易中心
+from taizhoushichanquanjiaoyisuo import get_taizhoushichanquanjiaoyisuo    # 台州市产权交易市场
+from zhejiangchanquanjiaoyisuo import get_zhejiangchanquanjiaoyisuo    # 浙江产权交易所
+from suzhouchanquanjiaoyizhongxin import get_suzhouchanquanjiaoyizhongxin    # 苏州市产权交易中心
 
 methods = {
     'https://www.zsamc.com/index.php/infor/index/20.html#tabNav': get_zhejiangzheshang_chuzhigonggao,  # 浙江省浙商资产管理有限公司
@@ -121,6 +131,16 @@ methods = {
     'https://old.gscq.com.cn/index.php?s=xm&c=category&id=4' : get_gansushengchanquanjiaoyijiuzhi,    # 甘肃省产权交易所旧址
     'https://www.prechina.net/project/project.php?class3=52' : get_guizhouyangguangchanquanjiaoyisuo,    # 贵州阳光产权交易所
     'https://www.sotcbb.com/xmgg?id=xmggjrzczrzspl': get_shenzhenlianhechanquanjiaoyisuo,    # 深圳联合产权交易所
+    'https://www.gduaee.com/www/article/tzgg/xxgg' :get_guandonglianhechanquanjiaoyizhongxin,    # 广东联合产权交易中心
+    'https://www.cscqjy.com.cn/xiangmuzhongxin/teshuzichan' : get_changshalianhechanquanjiaoyisuo,    # 长沙联合产权交易所
+    'https://www.ovupre.com/list/19.html?type=new' : get_wuhanguanggulianhejiaoyisuo,  # 武汉光谷联合交易所
+    'https://cqjy.qdcq.net/pro/?UTRM&proType=bondproc&status=all': get_qingdaochanquanjiaoyisuo,   # 青岛产权交易所
+    'https://jxcq.jxggzyjy.cn/cqjy/004/004005/project_center.html': get_jiangxishengchanquanjiaoyisuo,    # 江西省产权交易所
+    'https://www.fjcqjy.com/html/list-content-4n3y18347bt227rw7soh.html': get_fujianchanquanjiaoyiwang,    # 福建产权交易网
+    'https://aaee.com.cn/xmzx.html#/financial_assets': get_anhuichanquanjiaoyizhongxin,    # 安徽省产权交易中心
+    'http://www.tzpre.com/index.php/cms/item-search?keyword=%E5%80%BA%E6%9D%83&submit=%E6%90%9C%E7%B4%A2': get_taizhoushichanquanjiaoyisuo,    # 台州市产权交易市场
+    'https://www.zjpse.com/page/s/prjs/zhjy/index': get_zhejiangchanquanjiaoyisuo,    # 浙江产权交易所
+    'https://www.szee.com.cn/jrzc': get_suzhouchanquanjiaoyizhongxin,    # 苏州市产权交易中心
 
 
 }
@@ -184,6 +204,16 @@ web_list = [
     'https://old.gscq.com.cn/index.php?s=xm&c=category&id=4',
     'https://www.prechina.net/project/project.php?class3=52',
     'https://www.sotcbb.com/xmgg?id=xmggjrzczrzspl',
+    'https://www.gduaee.com/www/article/tzgg/xxgg',
+    'https://www.cscqjy.com.cn/xiangmuzhongxin/teshuzichan',
+    'https://www.ovupre.com/list/19.html?type=new',
+    'https://cqjy.qdcq.net/pro/?UTRM&proType=bondproc&status=all',
+    'https://jxcq.jxggzyjy.cn/cqjy/004/004005/project_center.html',
+    'https://www.fjcqjy.com/html/list-content-4n3y18347bt227rw7soh.html',
+    'https://aaee.com.cn/xmzx.html#/financial_assets',
+    'http://www.tzpre.com/index.php/cms/item-search?keyword=%E5%80%BA%E6%9D%83&submit=%E6%90%9C%E7%B4%A2',
+    'https://www.zjpse.com/page/s/prjs/zhjy/index',
+    'https://www.szee.com.cn/jrzc',
 ]
 
 

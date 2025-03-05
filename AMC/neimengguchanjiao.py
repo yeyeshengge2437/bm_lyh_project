@@ -180,7 +180,7 @@ def get_neimengguchanquanjiaoyi_guapaixiangmuzhaiquan(queue_id, webpage_id):
                 'order': 'desc',
                 'pageIndex': '1',
                 'searchKids': '',
-                'pageSize': '704',
+                'pageSize': '50',
             }
             img_set = set()
             name = '内蒙古产权交易中心_挂牌项目债权'

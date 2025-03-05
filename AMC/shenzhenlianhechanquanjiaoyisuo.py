@@ -112,7 +112,10 @@ def get_shenzhenlianhechanquanjiaoyisuo(queue_id, webpage_id):
                 )
                 time.sleep(2)
                 res_1 = res_1.json()
-                res_html_1 = res_1["data"]["content"]
+                try:
+                    res_html_1 = res_1["data"]["content"]
+                except:
+                    continue
                 res_html = etree.HTML(res_html_1)
                 title_url = page_url
                 if title_url not in title_set:
@@ -126,7 +129,15 @@ def get_shenzhenlianhechanquanjiaoyisuo(queue_id, webpage_id):
                         for ann in annex:
                             if "http" not in ann:
                                 ann = 'https://file.szggzy.com' + ann
-                            file_type = ann.split('.')[-1]
+                            try:
+                                # https://file.szggzy.com/tradeapi/file/gd-file/unified_download?fileId=ff8080819112f5860191b22cd9f37c8a&attname=%E6%A0%87%E7%9A%84%E8%B5%84%E4%BA%A7%E6%B8%85%E5%8D%95.pdf&isOutNet=true
+                                file_type = ann.split('.')[-1]
+                                try:
+                                    file_type = file_type.split('&')[0]
+                                except:
+                                    continue
+                            except:
+                                continue
                             if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
                                              'png', 'jpg', 'jpeg'] and 'unified_download' in ann:
                                 file_url = upload_file_by_url(ann, "shenzhen", file_type)
@@ -151,11 +162,14 @@ def get_shenzhenlianhechanquanjiaoyisuo(queue_id, webpage_id):
                     # print(content_html)
                     # return
                     try:
-                        image = get_image(page, title_url,
-                                          "xpath=//div[@class='vab-main_content']")
+                        try:
+                            image = get_image(page, title_url,
+                                              "xpath=//div[@class='vab-main_content']")
+                        except:
+                            print('截取当前显示区域')
+                            image = get_now_image(page, title_url)
                     except:
-                        print('截取当前显示区域')
-                        image = get_now_image(page, title_url)
+                        continue
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
                     # print(title_name, title_date, title_url, title_content, files, original_url)
@@ -164,38 +178,40 @@ def get_shenzhenlianhechanquanjiaoyisuo(queue_id, webpage_id):
                         host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
                         user="col2024",
                         password="Bm_a12a06",
-                        database="col_test",
+                        database="col",
                     )
                     cursor_test = conn_test.cursor()
-                    # print(bm_name, article_name, article_url, bm_pdf, content)
-                    if image not in img_set and judge_bm_repeat(name, title_url):
-                        # 将报纸url上传
-                        up_img = upload_file(image, "png", "paper")
-                        img_set.add(image)
-                        # 上传到报纸的图片或PDF
-                        insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
+                    try:
+                        # print(bm_name, article_name, article_url, bm_pdf, content)
+                        if image not in img_set and judge_bm_repeat(name, title_url):
+                            # 将报纸url上传
+                            up_img = upload_file(image, "png", "paper")
+                            img_set.add(image)
+                            # 上传到报纸的图片或PDF
+                            insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
 
-                        cursor_test.execute(insert_sql,
-                                            (title_date, name, title_name, up_img, title_url, up_img, create_time,
-                                             queue_id,
-                                             create_date, webpage_id))
-                        conn_test.commit()
-                    else:
-                        if os.path.exists(f'{image}.png'):
-                            os.remove(f'{image}.png')
+                            cursor_test.execute(insert_sql,
+                                                (title_date, name, title_name, up_img, title_url, up_img, create_time,
+                                                 queue_id,
+                                                 create_date, webpage_id))
+                            conn_test.commit()
+                        else:
+                            if os.path.exists(f'{image}.png'):
+                                os.remove(f'{image}.png')
 
-                    if title_url not in title_set:
-                        # 上传到报纸的内容
-                        insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time,original_files, files, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
+                        if title_url not in title_set:
+                            # 上传到报纸的内容
+                            insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time,original_files, files, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
 
-                        cursor_test.execute(insert_sql,
-                                            (title_url, title_date, name, title_name, title_content, title_url,
-                                             content_html,
-                                             create_time, original_url, files, queue_id,
-                                             create_date, webpage_id))
-                        conn_test.commit()
-                        title_set.add(title_url)
-
+                            cursor_test.execute(insert_sql,
+                                                (title_url, title_date, name, title_name, title_content, title_url,
+                                                 content_html,
+                                                 create_time, original_url, files, queue_id,
+                                                 create_date, webpage_id))
+                            conn_test.commit()
+                            title_set.add(title_url)
+                    except Exception as e:
+                        continue
                     cursor_test.close()
                     conn_test.close()
             page.close()
