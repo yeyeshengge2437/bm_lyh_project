@@ -116,11 +116,15 @@ def get_guizhouyangguangchanquanjiaoyisuo(queue_id, webpage_id):
                     #     content_html += etree.tostring(con, encoding='utf-8').decode()
                     for con in content_1:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
+                    print(content_html)
                     try:
-                        image = get_image(page, title_url, "xpath=//section[@class='met-editor clearfix']")
+                        try:
+                            image = get_image(page, title_url, "xpath=//section[@class='met-editor clearfix']")
+                        except:
+                            print('截取当前显示区域')
+                            image = get_now_image(page, title_url)
                     except:
-                        print('截取当前显示区域')
-                        image = get_now_image(page, title_url)
+                        image = ''
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
                     # print(title_name, title_date, title_url, title_content, files, original_url)
@@ -163,7 +167,10 @@ def get_guizhouyangguangchanquanjiaoyisuo(queue_id, webpage_id):
 
                     cursor_test.close()
                     conn_test.close()
-            page.close()
+            try:
+                page.close()
+            except:
+                pass
     except Exception as e:
         page.close()
         raise Exception(e)

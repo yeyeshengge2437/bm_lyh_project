@@ -15,91 +15,80 @@ from lxml import etree
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9197)
+co.set_paths(local_port=9200)
 
 headers = {
-    'Accept': 'text/html, */*; q=0.01',
+    'Accept': 'application/json, text/plain, */*',
     'Accept-Language': 'zh-CN,zh;q=0.9',
+    # 'Access-Token': 'dGVtcC01MzJCREM1RkVCNDA4QzIwN0NBMUY1QUUzNkVEQUM5Ql8yMDI1MDMwNTEwNDEzOV9hNTg3OGZkMzQ4MjE0MmM1ODM0ZjY2ZDA2ZDViMjg2NA==',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
-    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    'Origin': 'https://www.zjpse.com',
+    'Content-Type': 'application/json',
+    'Origin': 'https://sxcqsc.sxcqjy.cn',
     'Pragma': 'no-cache',
-    'Referer': 'https://www.zjpse.com/page/s/prjs/zhjy/index',
     'Sec-Fetch-Dest': 'empty',
     'Sec-Fetch-Mode': 'cors',
     'Sec-Fetch-Site': 'same-origin',
-    'Token': 'B1af691aM4ecU3BqfsR11qWCf0qQ8FnlGVjOppRWcZPFyOLeCv/xu8DOXJt2e6j8zYo3ymvrzX6Tm/IHbOKJpQ==',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
-    'X-Requested-With': 'XMLHttpRequest',
     'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"Windows"',
-    # 'Cookie': 'JSESSIONID=A89F7F5782FBD74A1D05EF0E85D64FE2; Hm_lvt_628522b6b63b6de4f51f8648857e4422=1739950116,1740041491,1741088278; HMACCOUNT=FDD970C8B3C27398; Hm_lpvt_628522b6b63b6de4f51f8648857e4422=1741088614',
+    # 'Cookie': 'JSESSIONID=532BDC5FEB408C207CA1F5AE36EDAC9B; uid=526b4b514b0b37f9f2675c88ccc2275e; navStat=xmzx; atoken=dGVtcC01MzJCREM1RkVCNDA4QzIwN0NBMUY1QUUzNkVEQUM5Ql8yMDI1MDMwNTEwNDEzOV9hNTg3OGZkMzQ4MjE0MmM1ODM0ZjY2ZDA2ZDViMjg2NA==',
 }
 
 
-def get_zhejiangchanquanjiaoyisuo(queue_id, webpage_id):
+def get_shanxishengchanquanjiaoyizhongxin(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
     try:
         # for zq_type in ['C05', 'C06']:
         for zq_type in ['C06']:
-            data = {
-                'pageSize': '5',
-                'pageNo': '1',
-                'pllx': '',
-                'ssjg': '',
-                'jypl': '2D',
-                'gpjg': '',
-                'pljzsj': '',
-                'sshy': '',
-                'sortTag': '0',
+            json_data = {
+                'pageNo': 1,
+                'pageSize': 16,
+                'SORT': '',
+                'SSJG': '2',
             }
+
             img_set = set()
-            name = '浙江产权交易所'
+            name = '山西省产权交易市场'
             title_set = judge_title_repeat(name)
 
-            res = requests.post('https://www.zjpse.com/page/s/prjs/zhjy/list', headers=headers, data=data)
+            res = requests.post('https://sxcqsc.sxcqjy.cn/si/prjs/dept/list', headers=headers, json=json_data)
             # print(res.text)
-            res_json = res.text
+            res_json = res.json()
             # print(res_json)
-            res_html = etree.HTML(res_json)
-            data_list = res_html.xpath("//div[@class='project_list']/ul/li")
-            print(len(data_list))
+            data_list = res_json["data"]
 
-            for data in data_list[1:]:
+            for data in data_list:
                 time.sleep(1)
-                # print(data)
-                page_value = ''.join(data.xpath("./div[@class='title']/a[1]/@href"))
-                if not page_value:
-                    continue
-                page_url = 'https://www.zjpse.com/' + page_value
-                title_name = ''.join(data.xpath("./div[@class='title']/a[1]//text()"))
+                page_url = f'https://sxcqsc.sxcqjy.cn/xmzx.html#/deptDetail?XMID={data["XMID"]}'
+                title_name = data["XMMC"]
                 # import datetime; print(datetime.datetime.utcfromtimestamp(1740326400000 // 1000).strftime('%Y-%m-%d'))
-                title_date = ''.join(data.xpath("./div[@class='cont']//text()"))
-                # 使用re模块提取日期
-                title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
-                if title_date:
-                    title_date = title_date[0]
-                else:
-                    title_date = ''
-                # print(page_url, title_name, title_date)
+                title_date = str(data["KSRQ"])
+                # 20250212
+                title_date = f"{title_date[:4]}-{title_date[4:6]}-{title_date[6:]}"
+                # # 使用re模块提取日期
+                # title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
+                # if title_date:
+                #     title_date = title_date[0]
+                # else:
+                #     title_date = ''
+                print(page_url, title_name, title_date)
 
-                response = requests.get(
-                    page_url,
-                    headers=headers,
-                )
-                transfer_info = response.text
-                # transfer_html = etree.HTML(transfer_info)
-                res_html = etree.HTML(transfer_info)
+                page.get(page_url)
+                page.scroll.to_bottom()
+                time.sleep(3)
+                # print(page.html)
+                # return
+                res_html = etree.HTML(page.html)
                 # title_list = res_html.xpath("//div[@class='rightListContent list-item']")
 
                 title_url = page_url
                 if title_url not in title_set:
-                    title_content = "".join(res_html.xpath("//ul[@class='monitor_tab_cont']//text()"))
+                    title_content = "".join(res_html.xpath("//div[@class='default-detail-box']/ul[@class='monitor-tab-cont']//text()"))
 
-                    annex = res_html.xpath("//ul[@class='monitor_tab_cont']//@href | //ul[@class='monitor_tab_cont']//@src")
+                    annex = res_html.xpath("//div[@class='default-detail-box']/ul[@class='monitor-tab-cont']//@href | //div[@class='default-detail-box']/ul[@class='monitor-tab-cont']//@src")
                     if annex:
                         # print(page_url, annex)
                         files = []
@@ -108,13 +97,13 @@ def get_zhejiangchanquanjiaoyisuo(queue_id, webpage_id):
                             if not ann:
                                 continue
                             if "http" not in ann:
-                                ann = 'https://www.zjpse.com/' + ann
+                                ann = 'https://sxcqsc.sxcqjy.cn/' + ann
                             file_type = ann.split('.')[-1]
                             file_type = file_type.split('&')[0]
                             file_type = file_type.strip()
                             if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
                                              'png', 'jpg', 'jpeg'] and 'LbFiles' in ann:
-                                file_url = upload_file_by_url(ann, "zhejiang", file_type)
+                                file_url = upload_file_by_url(ann, "shanxi", file_type)
                                 # file_url = 111
                                 files.append(file_url)
                                 original_url.append(ann)
@@ -126,9 +115,9 @@ def get_zhejiangchanquanjiaoyisuo(queue_id, webpage_id):
                         original_url = ''
                     files = str(files).replace("'", '"')
                     original_url = str(original_url).replace("'", '"')
-                    # print(files, original_url)
+                    print(files, original_url)
                     # title_html_info = res_title_html.xpath("//div[@class='news_info_box']")
-                    content_1 = res_html.xpath("//ul[@class='monitor_tab_cont']")
+                    content_1 = res_html.xpath("//div[@class='default-detail-box']/ul[@class='monitor-tab-cont']")
                     content_html = ""
                     # print(content_html)
                     # for con in title_html_info:
@@ -136,10 +125,12 @@ def get_zhejiangchanquanjiaoyisuo(queue_id, webpage_id):
                     for con in content_1:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
                     # content_html += transfer_info
+                    # print(content_html)
+                    # return
                     try:
                         # //div[@id='text-container']
                         image = get_image(page, title_url,
-                                          "xpath=//ul[@class='monitor_tab_cont']")
+                                          "xpath=//ul[@class='monitor-tab-cont']")
                     except:
                         print('截取当前显示区域')
                         image = get_now_image(page, title_url)
@@ -190,4 +181,4 @@ def get_zhejiangchanquanjiaoyisuo(queue_id, webpage_id):
         page.close()
         raise Exception(e)
 
-# get_zhejiangchanquanjiaoyisuo(111, 222)
+# get_shanxishengchanquanjiaoyizhongxin(111, 222)

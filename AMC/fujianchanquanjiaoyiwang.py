@@ -42,7 +42,7 @@ def get_fujianchanquanjiaoyiwang(queue_id, webpage_id):
     page.set.load_mode.none()
     try:
         # for zq_type in ['C05', 'C06']:
-        for page_num in range(1, 6 + 1):
+        for page_num in range(1, 2 + 1):
             if page_num == 1:
                 url = 'https://www.fjcqjy.com/html/list-content-4n3y18347bt227rw7soh.html'
             else:
@@ -174,9 +174,15 @@ def get_fujianchanquanjiaoyiwang(queue_id, webpage_id):
 
                     cursor_test.close()
                     conn_test.close()
-            page.close()
+            try:
+                page.close()
+            except:
+                pass
     except Exception as e:
-        page.close()
+        try:
+            page.close()
+        except:
+            pass
         raise Exception(e)
 
 # get_fujianchanquanjiaoyiwang(111, 222)

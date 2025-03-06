@@ -162,14 +162,11 @@ def get_shenzhenlianhechanquanjiaoyisuo(queue_id, webpage_id):
                     # print(content_html)
                     # return
                     try:
-                        try:
-                            image = get_image(page, title_url,
-                                              "xpath=//div[@class='vab-main_content']")
-                        except:
-                            print('截取当前显示区域')
-                            image = get_now_image(page, title_url)
+                        image = get_image(page, title_url,
+                                          "xpath=//div[@class='vab-main_content']")
                     except:
-                        continue
+                        print('截取当前显示区域')
+                        image = get_now_image(page, title_url)
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
                     # print(title_name, title_date, title_url, title_content, files, original_url)
