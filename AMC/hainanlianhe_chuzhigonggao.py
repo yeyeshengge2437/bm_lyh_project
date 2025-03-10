@@ -46,8 +46,8 @@ def get_hainanzichan_chuzhigonggao(queue_id, webpage_id):
                     title.xpath("./text()")).strip()
 
                 title_url = "".join(title.xpath("./@href")).strip()
-                if title_url not in title_set:
-                    # print(title_name,title_url)
+                # if title_url not in title_set:
+                if 1:
                     # return
                     res_title = requests.get(title_url, headers=headers)
                     res_title_html1 = res_title.content.decode()
@@ -96,7 +96,12 @@ def get_hainanzichan_chuzhigonggao(queue_id, webpage_id):
                     #                       left_offset=10, right_offset=20)
                     # except:
                     #     print('截取当前显示区域')
-                    image = get_now_image(page, title_url)
+                    try:
+                        image = get_image(page, title_url, "xpath=//td[3]/table[2]/tbody/tr/td/table[3]//@src", is_to_bottom=True, is_time=4)
+                    except:
+                        print('截取当前显示区域')
+                        image = get_now_image(page, title_url)
+                    # return
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
                     # 上传到测试数据库

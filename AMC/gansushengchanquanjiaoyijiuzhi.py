@@ -173,7 +173,7 @@ def get_gansushengchanquanjiaoyijiuzhi(queue_id, webpage_id):
 
                     cursor_test.close()
                     conn_test.close()
-            page.close()
+        page.close()
     except Exception as e:
         page.close()
         raise Exception(e)

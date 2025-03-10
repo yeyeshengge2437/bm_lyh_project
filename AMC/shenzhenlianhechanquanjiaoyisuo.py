@@ -162,11 +162,14 @@ def get_shenzhenlianhechanquanjiaoyisuo(queue_id, webpage_id):
                     # print(content_html)
                     # return
                     try:
-                        image = get_image(page, title_url,
-                                          "xpath=//div[@class='vab-main_content']")
+                        try:
+                            image = get_image(page, title_url,
+                                              "xpath=//div[@class='vab-main_content']")
+                        except:
+                            print('截取当前显示区域')
+                            image = get_now_image(page, title_url)
                     except:
-                        print('截取当前显示区域')
-                        image = get_now_image(page, title_url)
+                        image = ''
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
                     # print(title_name, title_date, title_url, title_content, files, original_url)
@@ -180,7 +183,7 @@ def get_shenzhenlianhechanquanjiaoyisuo(queue_id, webpage_id):
                     cursor_test = conn_test.cursor()
                     try:
                         # print(bm_name, article_name, article_url, bm_pdf, content)
-                        if image not in img_set and judge_bm_repeat(name, title_url):
+                        if image not in img_set and judge_bm_repeat(name, title_url) and image:
                             # 将报纸url上传
                             up_img = upload_file(image, "png", "paper")
                             img_set.add(image)

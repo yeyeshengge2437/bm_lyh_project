@@ -51,7 +51,7 @@ def get_heilongjiangchanquanjiaoyisuo(queue_id, webpage_id):
                 'orderKey': 'FromDate',
                 'order': 'desc',
                 'pageIndex': '1',
-                'pageSize': '125',
+                'pageSize': '20',
             }
 
             img_set = set()

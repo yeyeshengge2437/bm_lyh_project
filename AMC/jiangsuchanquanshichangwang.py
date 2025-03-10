@@ -15,18 +15,7 @@ from bs4 import BeautifulSoup
 co = ChromiumOptions()
 # co = co.set_argument('--no-sandbox')
 # co = co.headless()
-# co.set_paths(local_port=9180)
-
-cookies = {
-    '__jsluid_s': '35256ae16524f8aa98f136b6204311f6',
-    'Hm_lvt_626131e5d1fe8ad7532ecced20a716b5': '1740042017',
-    'HMACCOUNT': 'FDD970C8B3C27398',
-    'Hm_lvt_a5cf993912d876d06d4efa4e14364ecc': '1740042017',
-    'ASP.NET_SessionId': '11asgc0bdygjr0hjjlo1ntws',
-    '__jsl_clearance_s': '1740559754.967|0|wWBg2ap7ntypEsGELmBhbMR1y%2FY%3D',
-    'Hm_lpvt_626131e5d1fe8ad7532ecced20a716b5': '1740559758',
-    'Hm_lpvt_a5cf993912d876d06d4efa4e14364ecc': '1740559758',
-}
+# co.set_paths(local_port=9209)
 
 
 
@@ -55,56 +44,47 @@ def remove_script_tags_safe(html):
         script.decompose()
     return str(soup)
 
-def get_chongqingchanquanjiaoyi(queue_id, webpage_id):
+def get_jiangsuchanquanshichangwang(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
-    cookie_dict = {}
-    page.get("https://www.cquae.com/Project?q=s&projectID=5&page=")
+    page.get('https://www.jscq.com.cn/jscq/cqjy/zypt/blzcjypt/index.shtml')
+    page.scroll.to_bottom()
     time.sleep(3)
-    value_cookies = page.cookies()
-    for key in value_cookies:
-        cookie_dict[key['name']] = key['value']
-
     try:
         # for zq_type in ['G3', 'PG3']:
-        for page_num in range(1, 4):
-            params = {
-                'q': 's',
-                'projectID': '5',
-                'page': f'{page_num}',
-            }
+        for page_num in range(0, 133):
+            if page_num != 0:
+                page.ele("xpath=//a[@class='layui-laypage-next']").click(by_js=True)
+                time.sleep(3)
 
             img_set = set()
-            name = '重庆产权交易所'
+            name = '江苏产权市场网'
             title_set = judge_title_repeat(name)
 
-            res = requests.get('https://www.cquae.com/Project', params=params, cookies=cookie_dict, headers=headers)
-            # print(res.text)
-            res_json = res.text
+            # print(page.html)
+            # return
+            res_json = page.html
             html = etree.HTML(res_json)
             # print(res_json)
-            data_list = html.xpath("//div[@class='n2_List itcon']")
+            data_list = html.xpath("//li[@class='pxitem']")
             for data in data_list:
                 time.sleep(1)
                 # page_url = ''.join(data.xpath(".//a//@href"))
-                page_url = 'https://www.cquae.com/Project/Object/Obj_Show?id=1279932'
-                id_ = re.findall(r'\?id=(\d+)', page_url)[0]
-                # https://www.cquae.com/Project/Object/Obj_Show?id=1277804
-                page_url = f'https://www.cquae.com/Project/Object/Obj_Show?id={id_}'
-                title_name = ''.join(data.xpath(".//a/text()"))
-                if '债权' not in title_name and '不良' not in  title_name:
-                    continue
-                title_date = ''.join(data.xpath(".//td[@class='n2_wsbm']/div[1]/span//text()"))
-                title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', str(title_date))
+                page_url = 'https://www.jscq.com.cn/' + ''.join(data.xpath(".//a[@class='cairong1']/@href"))
+                title_name = ''.join(data.xpath(".//a[@class='cairong1']/text()"))
+                # title_date = ''.join(data.xpath(".//td[@class='n2_wsbm']/div[1]/span//text()"))
+                title_date = re.findall(r'\d{4}-\d{1,2}/\d{2}', str(page_url))
                 if title_date:
                     title_date = title_date[0]
+                    title_date = title_date.replace('/', '-')
                 else:
                     title_date = ''
-                print(page_url, title_name, title_date)
+                # print(page_url, title_name, title_date)
 
-                # print(cookie_dict)
-                page.get(page_url)
-                time.sleep(1)
+                tab_detail = page.get_tab()
+                tab_detail.get(page_url)
+                tab_detail.scroll.to_bottom()
+                time.sleep(3)
                 res = page.html
                 res_html = etree.HTML(res)
                 # title_list = res_html.xpath("//div[@class='rightListContent list-item']")
@@ -112,16 +92,12 @@ def get_chongqingchanquanjiaoyi(queue_id, webpage_id):
 
                 title_url = page_url
                 if title_url not in title_set:
-                    title_content = "".join(res_html.xpath("//div[@class='contont_div']//text()"))
-                    title_content = title_content.join(res_html.xpath("//div[@id='xmggs']/table[@class='gridtable']//text()")[0])
-                    # title_content = title_content.join(res_html.xpath("//div[@id='bdxxs']//text()"))
-                    # title_content = title_content.join(res_html.xpath("//div[@id='fjxzs']//text()"))
-                    title_content = title_content.replace('\n', '').replace('\r', '').replace('\t', '')
+                    title_content = "".join(res_html.xpath("//div[@class='detail_bottom']/div[@class='tab_bottom tab_bottom1']//text()"))
                     # print(title_content)
                     # return
 
 
-                    annex = res_html.xpath("//div[@id='fjxzs']//a//@href")
+                    annex = res_html.xpath("//div[@class='detail_bottom']/div[@class='tab_bottom tab_bottom1']//@href")
                     if annex:
                         # print(page_url, annex)
                         files = []
@@ -131,8 +107,8 @@ def get_chongqingchanquanjiaoyi(queue_id, webpage_id):
                                 ann = 'https://files.cquae.com' + ann
                             file_type = ann.split('.')[-1]
                             if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
-                                             'png', 'jpg', 'jpeg'] and 'Upload' in ann:
-                                file_url = upload_file_by_url(ann, "chongqing", file_type)
+                                             'png', 'jpg', 'jpeg'] and 'upload' in ann:
+                                file_url = upload_file_by_url(ann, "jiangsu", file_type)
                                 # file_url = 111
                                 files.append(file_url)
                                 original_url.append(ann)
@@ -144,24 +120,17 @@ def get_chongqingchanquanjiaoyi(queue_id, webpage_id):
                         original_url = ''
                     files = str(files).replace("'", '"')
                     original_url = str(original_url).replace("'", '"')
-                    print(files, original_url)
-                    title_html_info = res_html.xpath("//td[@class='td_contont']/div[@class='contont_div']")
-                    content_1 = res_html.xpath("//div[@id='xmggs']")
-                    content_2 = res_html.xpath("//div[@id='bdxxs']")
-                    content_3 = res_html.xpath("//div[@id='fjxzs']")
+                    # print(files, original_url)
+                    # title_html_info = res_html.xpath("//td[@class='td_contont']/div[@class='contont_div']")
+                    content_1 = res_html.xpath("//div[@class='detail_bottom']/div[@class='tab_bottom tab_bottom1']")
                     content_html = ''
-                    for con in title_html_info:
-                        content_html += etree.tostring(con, encoding='utf-8').decode()
                     for con in content_1:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
-                    for con in content_2:
-                        content_html += etree.tostring(con, encoding='utf-8').decode()
-                    for con in content_3:
-                        content_html += etree.tostring(con, encoding='utf-8').decode()
-                    content_html = remove_script_tags_safe(content_html)
+                    # print(content_html)
+                    # return
                     try:
                         image = get_image(page, title_url,
-                                          "xpath=//div[@class='div1']")
+                                          "xpath=//div[@class='detail_bottom']/div[@class='tab_bottom tab_bottom1']")
                     except:
                         print('截取当前显示区域')
                         image = get_now_image(page, title_url)
@@ -207,10 +176,17 @@ def get_chongqingchanquanjiaoyi(queue_id, webpage_id):
 
                     cursor_test.close()
                     conn_test.close()
-        page.close()
+
     except Exception as e:
-        page.close()
+        try:
+            page.quit()
+        except:
+            pass
         raise Exception(e)
+    try:
+        page.quit()
+    except:
+        pass
 
 
-# get_chongqingchanquanjiaoyi(111, 222)
+# get_jiangsuchanquanshichangwang(111, 222)

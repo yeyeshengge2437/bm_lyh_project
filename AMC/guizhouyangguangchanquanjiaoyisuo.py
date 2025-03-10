@@ -94,9 +94,14 @@ def get_guizhouyangguangchanquanjiaoyisuo(queue_id, webpage_id):
                                 ann = 'http://www.prechina.net' + ann
                             file_type = ann.split('.')[-1]
                             file_type = file_type.strip()
+                            ann = re.sub(r'\.\.', '', ann)
                             if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
                                              'png', 'jpg', 'jpeg'] and 'upload' in ann:
-                                file_url = upload_file_by_url(ann, "guizhou", file_type)
+                                try:
+                                    file_url = upload_file_by_url(ann, "guizhou", file_type)
+                                except:
+                                    print(ann)
+                                    continue
                                 # file_url = 111
                                 files.append(file_url)
                                 original_url.append(ann)
@@ -116,7 +121,7 @@ def get_guizhouyangguangchanquanjiaoyisuo(queue_id, webpage_id):
                     #     content_html += etree.tostring(con, encoding='utf-8').decode()
                     for con in content_1:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
-                    print(content_html)
+                    # print(content_html)
                     try:
                         try:
                             image = get_image(page, title_url, "xpath=//section[@class='met-editor clearfix']")
@@ -167,10 +172,10 @@ def get_guizhouyangguangchanquanjiaoyisuo(queue_id, webpage_id):
 
                     cursor_test.close()
                     conn_test.close()
-            try:
-                page.close()
-            except:
-                pass
+        try:
+            page.close()
+        except:
+            pass
     except Exception as e:
         page.close()
         raise Exception(e)

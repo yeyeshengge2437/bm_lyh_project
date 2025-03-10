@@ -42,17 +42,19 @@ def get_dalianchanquanjiaoyisuo(queue_id, webpage_id):
     page.set.load_mode.none()
     try:
         # for zq_type in ['C05', 'C06']:
-        for zq_type in ['C06']:
+        for page_num in range(5):
             img_set = set()
             name = '吉林长春产权交易中心'
             title_set = judge_title_repeat(name)
 
             page.get('https://www.ccprec.com/projectSecPage/#/zhengShiPiLu')
+            if page_num:
+                page.ele("xpath=//button[@class='btn-next']/span").click(by_js=True)
             time.sleep(4)
             # print(res.text)
             res_json = page.html
             res_html = etree.HTML(res_json)
-            data_list = res_html.xpath("//ul[@class='proList']/li")
+            data_list = res_html.xpath("//table[@class='el-table__body']/tbody/tr")
 
             for data in data_list:
                 time.sleep(1)

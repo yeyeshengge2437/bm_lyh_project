@@ -79,7 +79,7 @@ def get_shandongchanquanjiaoyizhongxin(queue_id, webpage_id):
                     title_date = title_date[0]
                 else:
                     title_date = ''
-                # print(page_url, title_name, title_date, data_status)
+                print(page_url, title_name, title_date, data_status)
                 # https://hljcqjy.ejy365.com/ejy/detail?infoId=N0129GQ240059&bmStatus=%E6%8A%A5%E5%90%8D%E6%88%AA%E6%AD%A2&ggType=JYGG
 
                 res = requests.get(page_url, headers=headers)
@@ -176,7 +176,7 @@ def get_shandongchanquanjiaoyizhongxin(queue_id, webpage_id):
 
                     cursor_test.close()
                     conn_test.close()
-            page.close()
+        page.close()
     except Exception as e:
         page.close()
         raise Exception(e)

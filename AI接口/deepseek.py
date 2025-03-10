@@ -5,8 +5,8 @@ import requests
 from openai import OpenAI
 
 # api_key_ren = "sk-e659618a2ea54a09a289ac9861bb61b8"  # 任梁
-# api_key_liu = "sk-8d54fe4e5cc843978361174a8c0d02c8"  # 刘可恒
-api_key_liu = "sk-5txhQpnJIehGimox0787D5D7246e471688772cB61897Ed17"  # 科大
+api_key_liu = "sk-8d54fe4e5cc843978361174a8c0d02c8"  # 刘可恒
+# api_key_liu = "sk-5txhQpnJIehGimox0787D5D7246e471688772cB61897Ed17"  # 科大
 
 
 def deepseek_chat(chat_text, system_content="您是个乐于助人的助手", temperature=1.0, beta=False):
@@ -30,10 +30,11 @@ def deepseek_chat(chat_text, system_content="您是个乐于助人的助手", te
         output_text = response.choices[0].message.content
         return input_token_num, output_token_num, output_text
     else:
-        # client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
-        client = OpenAI(api_key=api_key, base_url="http://maas-api.cn-huabei-1.xf-yun.com/v1")
+        client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
+        # client = OpenAI(api_key=api_key, base_url="http://maas-api.cn-huabei-1.xf-yun.com/v1")  # 科大deepseek访问链接
         response = client.chat.completions.create(
-            model="xdeepseekv3",
+            model="deepseek-chat",
+            # model="xdeepseekv3",    # 科大deepseek访问模型名称
             messages=[
                 {"role": "system", "content": system_content},
                 {"role": "user", "content": f"{chat_text}"},

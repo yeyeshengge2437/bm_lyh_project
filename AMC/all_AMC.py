@@ -76,6 +76,11 @@ from guangxijiaoyisuojituan import get_guangxijiaoyisuojituan    # 广西交易�
 from yiwuchanquanjiaoyisuo import get_yiwuchanquanjiaoyisuo    # 义乌产权交易所
 from tianjingchanquanjiaoyipingtai import get_tianjingchanquanjiaoyipingtai    # 天津产权交易中心
 from guangzhouchanquanjiaoyisuo import get_guangzhouchanquanjiaoyisuo    # 广州产权交易所
+from beibuwanchanquanjiaoyisuo import get_beibuwanchanquanjiaoyisuo    # 北部湾产权交易所
+from xinanlianhechanquanjiaoyisuo import get_xinanlianhechanquanjiaoyisuo    # 西南联合产权交易所
+from jiangsuchanquanshichangwang import get_jiangsuchanquanshichangwang    # 江苏产权市场网
+from quanguochanquanjiaoyizhongxin import get_quanguochanquanjiaoyizhongxin    # 全国产权交易中心
+from shanxishengchanquanjiaoyishichang import get_shanxishengchanquanjiaoyizhongxin    # 山西省产权交易中心
 
 methods = {
     'https://www.zsamc.com/index.php/infor/index/20.html#tabNav': get_zhejiangzheshang_chuzhigonggao,  # 浙江省浙商资产管理有限公司
@@ -149,12 +154,16 @@ methods = {
     'https://www.zjpse.com/page/s/prjs/zhjy/index': get_zhejiangchanquanjiaoyisuo,    # 浙江产权交易所
     'https://www.szee.com.cn/jrzc': get_suzhouchanquanjiaoyizhongxin,    # 苏州市产权交易中心
     'https://www.daee.cn/article/xmdt/jrzq': get_dalianchanquanjiaoyisuo,    # 大连产权交易所
-    'https://sxcqsc.sxcqjy.cn/xmzx.html#/dept': get_shandongchanquanjiaoyizhongxin,    # 山东省产权交易中心
+    'https://sxcqsc.sxcqjy.cn/xmzx.html#/dept': get_shanxishengchanquanjiaoyizhongxin,    # 山东省产权交易中心
     'https://www.wzcqpt.com/WZPT/page/s/announcement/equity/index': get_wenzhoulianhechanquanjiaoyizhongxin,   # 温州联合产权交易中心
     'http://www.gxcq.com.cn/list-154.html#assetsTypeParent=ZQ': get_guangxijiaoyisuojituan,   # 广西产权交易所集团
     'https://www.ywcq.com/article/xmgg/zczr': get_yiwuchanquanjiaoyisuo,    # 义乌产权交易所
     'https://trade.tpre.cn/finance-view/project-info/special-assets': get_tianjingchanquanjiaoyipingtai,    # 天津产权交易平台
     'http://gz.gemas.com.cn/portal/page?to=cmsUtrSearchAll&pageIndex=1&sysEname=MGZL&queryKey=%E5%80%BA%E6%9D%83': get_guangzhouchanquanjiaoyisuo,    # 广州产权交易所
+    'https://bbwcq.com/projects?pageNumber=1&pageSize=12&proTypeSearch=3&bidTypeSearch=6&areaCtyCode=%E5%85%A8%E9%83%A8&keyWord=&priceLow=0&priceHigh=0&status=0&orderType=0&orderBy=desc': get_beibuwanchanquanjiaoyisuo,    # 北部湾产权交易所
+    'https://www.swuee.com/#/project?parentId=&operationId=1408017492266409986': get_xinanlianhechanquanjiaoyisuo,    # 西南联合产权交易所
+    'https://www.jscq.com.cn/jscq/cqjy/zypt/blzcjypt/index.shtml': get_jiangsuchanquanshichangwang,    # 江苏产权市场网
+    'https://www.ejy365.com/jygg_more?project_type=ZQ': get_quanguochanquanjiaoyizhongxin,    # 全国产权交易中心
 
 }
 
@@ -234,6 +243,10 @@ web_list = [
     'https://www.ywcq.com/article/xmgg/zczr',
     'https://trade.tpre.cn/finance-view/project-info/special-assets',
     'http://gz.gemas.com.cn/portal/page?to=cmsUtrSearchAll&pageIndex=1&sysEname=MGZL&queryKey=%E5%80%BA%E6%9D%83',
+    'https://bbwcq.com/projects?pageNumber=1&pageSize=12&proTypeSearch=3&bidTypeSearch=6&areaCtyCode=%E5%85%A8%E9%83%A8&keyWord=&priceLow=0&priceHigh=0&status=0&orderType=0&orderBy=desc',
+    'https://www.swuee.com/#/project?parentId=&operationId=1408017492266409986',
+    'https://www.jscq.com.cn/jscq/cqjy/zypt/blzcjypt/index.shtml',
+    'https://www.ejy365.com/jygg_more?project_type=ZQ',
 ]
 
 

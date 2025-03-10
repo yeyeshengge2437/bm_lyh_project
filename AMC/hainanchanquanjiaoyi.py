@@ -87,7 +87,9 @@ def get_hainanchanquanjiaoyi(queue_id, webpage_id):
                 # return
                 # title_list = res_html.xpath("//div[@class='rightListContent list-item']")
                 title_url = page_url
+                # print(title_url, title_name)
                 if title_url not in title_set:
+                # if 1:
                     title_content = "".join(res_html.xpath("//div[@class='product fl']//text()"))
                     title_content = title_content.join(res_html.xpath("//div[@id='Comment']/div[@class='detail-con-left']//text()"))
                     annex = res_html.xpath("//div[@id='tab1_content']//@src | //div[@id='tab1_content']//@href")
@@ -131,10 +133,11 @@ def get_hainanchanquanjiaoyi(queue_id, webpage_id):
                     # return
                     # print(title_content)
                     try:
-                        image = get_image(page, title_url, "xpath=//div[@class='wrapper auto clearfix']")
+                        image = get_image(page, title_url, "xpath=//div[@id='tab1_content']")
                     except:
                         print('截取当前显示区域')
                         image = get_now_image(page, title_url)
+                    # return
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
                     # print(title_name, title_date, title_url, title_content, files, original_url)
@@ -177,9 +180,15 @@ def get_hainanchanquanjiaoyi(queue_id, webpage_id):
 
                     cursor_test.close()
                     conn_test.close()
+        try:
             page.close()
+        except:
+            pass
     except Exception as e:
-        page.close()
+        try:
+            page.close()
+        except:
+            pass
         raise Exception(e)
 
 
