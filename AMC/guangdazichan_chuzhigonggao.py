@@ -8,7 +8,7 @@ from lxml import etree
 import requests
 from DrissionPage import ChromiumPage, ChromiumOptions
 
-from AMC.api_paper import judge_bm_repeat, upload_file, judge_title_repeat, get_image, upload_file_by_url
+from api_paper import judge_bm_repeat, upload_file, judge_title_repeat, get_image, upload_file_by_url
 
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')

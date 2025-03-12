@@ -8,7 +8,7 @@ import mysql.connector
 import requests
 from lxml import etree
 from DrissionPage import ChromiumPage, ChromiumOptions
-from AMC.api_paper import get_image, judge_bm_repeat, upload_file, judge_title_repeat, upload_file_by_url, get_now_image
+from api_paper import get_image, judge_bm_repeat, upload_file, judge_title_repeat, upload_file_by_url, get_now_image
 
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
@@ -82,7 +82,7 @@ def get_guangzhouzichan_chuzhigonggao(queue_id, webpage_id):
                                 ann = "https://www.guangzhouamc.com" + ann
                             file_type = ann.split('.')[-1]
                             if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z', ]:
-                                file_url = upload_file_by_url(ann, "ningbofujian", file_type)
+                                file_url = upload_file_by_url(ann, "guangzhou", file_type)
                                 files.append(file_url)
                                 original_url.append(ann)
                     else:

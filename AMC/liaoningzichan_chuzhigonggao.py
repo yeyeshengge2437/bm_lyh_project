@@ -8,7 +8,7 @@ import mysql.connector
 import requests
 from lxml import etree
 from DrissionPage import ChromiumPage, ChromiumOptions
-from AMC.api_paper import get_image, judge_bm_repeat, upload_file, judge_title_repeat, upload_file_by_url, get_now_image
+from api_paper import get_image, judge_bm_repeat, upload_file, judge_title_repeat, upload_file_by_url, get_now_image
 
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')

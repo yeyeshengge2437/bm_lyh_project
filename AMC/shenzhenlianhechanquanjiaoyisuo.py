@@ -7,7 +7,7 @@ import time
 from datetime import datetime
 import mysql.connector
 from DrissionPage import ChromiumPage, ChromiumOptions
-from AMC.api_paper import get_image, judge_bm_repeat, upload_file, judge_title_repeat, upload_file_by_url, get_now_image
+from api_paper import get_image, judge_bm_repeat, upload_file, judge_title_repeat, upload_file_by_url, get_now_image
 import requests
 from lxml import etree
 
@@ -50,7 +50,7 @@ def get_shenzhenlianhechanquanjiaoyisuo(queue_id, webpage_id):
 
     try:
         # for zq_type in ['C05', 'C06']:
-        for page_num in range(1, 6):
+        for page_num in range(1, 3):
             json_data = {
                 'channelIds': [
                     '3230',

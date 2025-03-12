@@ -10,7 +10,7 @@ from datetime import datetime
 import mysql.connector
 import requests
 from lxml import etree
-from AMC.api_paper import judging_bm_criteria, judge_bm_repeat, upload_file_by_url, judge_title_repeat, upload_file
+from api_paper import judging_bm_criteria, judge_bm_repeat, upload_file_by_url, judge_title_repeat, upload_file
 
 from DrissionPage import ChromiumPage, ChromiumOptions
 co = ChromiumOptions()

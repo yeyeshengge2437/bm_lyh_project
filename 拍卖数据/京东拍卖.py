@@ -37,37 +37,14 @@ headers = {
 params = {
     "appid": "paimai",
     "functionId": "paimai_searchMerchantsProduct",
-    "body": {
-        "investmentType": "",
-        "apiType": 12,  # api类型
-        "page": 1,  # 页码
-        "pageSize": 200,  # 每页数量
-        "keyword": "",
-        "provinceId": "",
-        "cityId": "",
-        "countyId": "",
-        "multiPaimaiStatus": "",
-        "multiDisplayStatus": "",
-        "multiPaimaiTimes": "",
-        "childrenCateId": "",
-        "currentPriceRangeStart": "",
-        "currentPriceRangeEnd": "",
-        "timeRangeTime": "endTime",
-        "timeRangeStart": "",
-        "timeRangeEnd": "",
-        "loan": "",
-        "purchaseRestriction": "",  # 购买限制
-        "orgId": "",
-        "orgType": "",
-        "sortField": 9,  # 排序字段
-        "projectType": 2,  # 项目类型
-        "reqSource": 0,  # 请求来源
-        "labelSet": "1033",  # 标签集
-        "publishSource": "",  # 发布源
-        "defaultLabelSet": ""  # 默认标签集
-    }
+    # "functionId": "paimai_unifiedSearch",
+    "body": {"investmentType": "", "apiType": 12, "page": 1, "pageSize": 40, "keyword": "", "provinceId": "",
+             "cityId": "", "countyId": "", "multiPaimaiStatus": "", "multiDisplayStatus": "", "multiPaimaiTimes": "",
+             "childrenCateId": "109", "currentPriceRangeStart": "", "currentPriceRangeEnd": "",
+             "timeRangeTime": "endTime", "timeRangeStart": "", "timeRangeEnd": "", "loan": "",
+             "purchaseRestriction": "", "orgId": "", "orgType": "", "sortField": 8, "projectType": 1, "reqSource": 0,
+             "labelSet": "1033", "publishSource": "", "publishSourceStr": ["0", "9"], "defaultLabelSet": ""}
 }
-
 # 将 body 转换为 JSON 字符串
 params["body"] = json.dumps(params["body"])
 
@@ -80,6 +57,7 @@ response = requests.get(
     headers=headers,
 )
 res_datas = json.loads(response.text)
+print(res_datas)
 res_datas = res_datas["datas"]
 
 for res_data in res_datas:
@@ -127,5 +105,5 @@ for res_data in res_datas:
     publish_time = res_data.get("publishTime")  # 发布时间
     vendor_id = res_data.get("vendorId")  # 拍卖方id
     vendor_name = res_data.get("vendorName")  # 拍卖方名称
-    print(f"住址：{address}, 发布时间：{standard_time}, 资产类型：{asset_type}, 资产处置方：{asset_disposal}, 附件：{assetssell_attachment_list}, 保障措施：{assetssell_guarantees_list}, 拍卖类型：{auction_type}, 基准日期：{base_date}, 分类id：{category_id}, 分类名称：{category_name}, 咨询电话：{consult_tel}, 资本金：{credit_capital}, 资本金及利息：{credit_capital_and_terest}, 利息：{credit_terest}, 费用总额：{credit_total_charges}, 保障措施类型：{guaranty_style_type}, 拍卖id：{id}, 拍卖人数：{intended_person_num}, 投资类型：{investment_type}, 标签类型：{label_type}, 状态：{merchants_status}, 拍卖名称：{name}, 查看人数：{onlookers_num}, 拍卖分类名称：{pawn_category_name}, 拍卖地点：{pawn_location}, 拍卖方id：{vendor_id}, 拍卖方名称：{vendor_name}")
-
+    print(
+        f"住址：{address}, 发布时间：{standard_time}, 资产类型：{asset_type}, 资产处置方：{asset_disposal}, 附件：{assetssell_attachment_list}, 保障措施：{assetssell_guarantees_list}, 拍卖类型：{auction_type}, 基准日期：{base_date}, 分类id：{category_id}, 分类名称：{category_name}, 咨询电话：{consult_tel}, 资本金：{credit_capital}, 资本金及利息：{credit_capital_and_terest}, 利息：{credit_terest}, 费用总额：{credit_total_charges}, 保障措施类型：{guaranty_style_type}, 拍卖id：{id}, 拍卖人数：{intended_person_num}, 投资类型：{investment_type}, 标签类型：{label_type}, 状态：{merchants_status}, 拍卖名称：{name}, 查看人数：{onlookers_num}, 拍卖分类名称：{pawn_category_name}, 拍卖地点：{pawn_location}, 拍卖方id：{vendor_id}, 拍卖方名称：{vendor_name}")

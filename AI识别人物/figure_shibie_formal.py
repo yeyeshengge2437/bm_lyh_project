@@ -80,7 +80,12 @@ def deepseek_identify_people(chat_text):
         if not block:
             continue
         try:
-            name = re.findall(r'姓名:(.*?),', block)[0]
+            try:
+                name = re.findall(r'姓名:(.*?),', block)[0]
+            except:
+                name = re.findall(r'(.*?):(.*?),', block)
+                if name[0][0] == name[0][1]:
+                    name = name[0][0]
             former_name = re.findall(r'曾用名:(.*?),', block)[0]
             gender = re.findall(r'性别:(.*?),', block)[0]
             id_num = re.findall(r'身份证号:(.*?),', block)[0]
@@ -135,6 +140,7 @@ def deepseek_identify_people(chat_text):
                 '是否去世': is_dead,
                 '其他': other,
             }
+            print(company_info)
             companies.append(company_info)
             success_num += 1
         except:
@@ -318,7 +324,7 @@ if __name__ == '__main__':
     多进程5个
     """
     process_list = []
-    for i in range(1):
+    for i in range(5):
         process = Process(target=get_figure_shibie_formal, args=())
         process_list.append(process)
 
