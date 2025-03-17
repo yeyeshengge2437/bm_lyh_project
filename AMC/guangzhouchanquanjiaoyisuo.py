@@ -228,9 +228,12 @@ def get_guangzhouchanquanjiaoyisuo(queue_id, webpage_id):
 
                     cursor_test.close()
                     conn_test.close()
-            page.close()
-    except Exception as e:
         page.close()
+    except Exception as e:
+        try:
+            page.quit()
+        except:
+            pass
         raise Exception(e)
 
 

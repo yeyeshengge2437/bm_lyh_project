@@ -7,12 +7,20 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 from lxml import etree
 from urllib.parse import urlencode, urljoin
 import redis
+from DrissionPage.common import Settings
+import tempfile
 
 co = ChromiumOptions()
+# 禁用全局自动化特征
+Settings.smart_launch = False
+Settings.ignore_certificate_errors = True
+# options.set_argument('--disable-blink-features=AutomationControlled')
+co.set_argument('--incognito')
+co.set_argument(f'--user-data-dir={tempfile.mkdtemp()}')
 co = co.set_user_data_path(r"D:\chome_data\ali_two")
 # co = co.set_argument('--no-sandbox')
 # co = co.headless()
-co.set_paths(local_port=9153)
+# co.set_paths(local_port=9153)
 
 r = redis.Redis(host='localhost', port=6379, db=0)
 zip_code = ["321100", "320200", "320600", "320700", "320800", "320900", "321000", "320300",

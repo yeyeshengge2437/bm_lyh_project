@@ -68,6 +68,8 @@ def get_beibuwanchanquanjiaoyisuo(queue_id, webpage_id):
             for data in data_list:
                 time.sleep(1)
                 page_url = data["ejyProjectUrl"]
+                if not page_url:
+                    continue
                 title_name = data["proName"]
                 title_date = data["pubStartTime"]
                 # 使用re模块提取日期
@@ -166,9 +168,12 @@ def get_beibuwanchanquanjiaoyisuo(queue_id, webpage_id):
 
                     cursor_test.close()
                     conn_test.close()
-            page.close()
-    except Exception as e:
         page.close()
+    except Exception as e:
+        try:
+            page.quit()
+        except:
+            pass
         raise Exception(e)
 
 

@@ -81,17 +81,20 @@ def get_jiangsuchanquanshichangwang(queue_id, webpage_id):
                     title_date = ''
                 # print(page_url, title_name, title_date)
 
-                tab_detail = page.get_tab()
+                tab_detail = page.new_tab()
                 tab_detail.get(page_url)
                 tab_detail.scroll.to_bottom()
                 time.sleep(3)
-                res = page.html
+                res = tab_detail.html
+                tab_detail.close()
+                # print(res)
                 res_html = etree.HTML(res)
                 # title_list = res_html.xpath("//div[@class='rightListContent list-item']")
                 # 使用re模块提取日期
 
                 title_url = page_url
                 if title_url not in title_set:
+                # if 1:
                     title_content = "".join(res_html.xpath("//div[@class='detail_bottom']/div[@class='tab_bottom tab_bottom1']//text()"))
                     # print(title_content)
                     # return
@@ -126,6 +129,7 @@ def get_jiangsuchanquanshichangwang(queue_id, webpage_id):
                     content_html = ''
                     for con in content_1:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
+                    content_html = re.sub(r'<div class="tab_bottom tab_bottom2 none">.*</html>', '', content_html,  flags=re.DOTALL )
                     # print(content_html)
                     # return
                     try:
@@ -136,7 +140,8 @@ def get_jiangsuchanquanshichangwang(queue_id, webpage_id):
                         image = get_now_image(page, title_url)
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
-                    # print(title_name, title_date, title_url, title_content, files, original_url)
+                    # print(title_name, title_date, title_url, title_content, content_html)
+                    # return
                     # 上传到测试数据库
                     conn_test = mysql.connector.connect(
                         host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
@@ -176,10 +181,11 @@ def get_jiangsuchanquanshichangwang(queue_id, webpage_id):
 
                     cursor_test.close()
                     conn_test.close()
+        page.close()
 
     except Exception as e:
         try:
-            page.quit()
+            page.close()
         except:
             pass
         raise Exception(e)

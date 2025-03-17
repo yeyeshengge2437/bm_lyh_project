@@ -50,7 +50,7 @@ def get_shenzhenlianhechanquanjiaoyisuo(queue_id, webpage_id):
 
     try:
         # for zq_type in ['C05', 'C06']:
-        for page_num in range(1, 3):
+        for page_num in range(1, 2 + 1):
             json_data = {
                 'channelIds': [
                     '3230',
@@ -63,7 +63,7 @@ def get_shenzhenlianhechanquanjiaoyisuo(queue_id, webpage_id):
                 'releaseTimeEnd': None,
                 'title': None,
                 'pageNum': page_num,
-                'pageSize': 100,
+                'pageSize': 20,
                 'dataType': 1,
                 'targetColumnIds': [
                     '3965',
@@ -105,11 +105,14 @@ def get_shenzhenlianhechanquanjiaoyisuo(queue_id, webpage_id):
                     'projectId': f'{data["projectNo"]}',
                     'contentId': f'{data["contentId"]}',
                 }
-                res_1 = requests.get(
-                    'https://www.sotcbb.com/api/v1/sotcbb/local/project/projectNo/detail',
-                    params=params,
-                    headers=headers,
-                )
+                try:
+                    res_1 = requests.get(
+                        'https://www.sotcbb.com/api/v1/sotcbb/local/project/projectNo/detail',
+                        params=params,
+                        headers=headers,
+                    )
+                except:
+                    continue
                 time.sleep(2)
                 res_1 = res_1.json()
                 try:
@@ -214,9 +217,12 @@ def get_shenzhenlianhechanquanjiaoyisuo(queue_id, webpage_id):
                         continue
                     cursor_test.close()
                     conn_test.close()
-            page.close()
-    except Exception as e:
         page.close()
+    except Exception as e:
+        try:
+            page.quit()
+        except:
+            pass
         raise Exception(e)
 
 

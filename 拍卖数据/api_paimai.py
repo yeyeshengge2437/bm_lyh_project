@@ -271,3 +271,60 @@ def judge_bm_repeat(origin, bm_url):
         return False
     else:
         return True
+
+
+def judge_repeat(url_href):
+    """
+    判断链接是否重复
+    :return:
+    """
+    # 创建版面链接集合
+    bm_url_set = set()
+    # 连接数据库
+    conn_test = mysql.connector.connect(
+        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
+        user="col2024",
+        password="Bm_a12a06",
+        database="col",
+    )
+    cursor_test = conn_test.cursor()
+    # 获取版面来源的版面链接
+    # cursor_test.execute(f"SELECT id, url, state FROM col_judicial_auctions")
+    cursor_test.execute(f"SELECT id, state FROM col_judicial_auctions WHERE url = '{url_href}' LIMIT 1;")
+    rows = cursor_test.fetchall()
+    cursor_test.close()
+    conn_test.close()
+    if rows:
+        id = rows[0][0]
+        state = rows[0][1]
+        return state, id
+    else:
+        return False, 0
+
+
+def judge_repeat_attracting(url_href):
+    """
+    判断链接是否在拍卖招商表中存在
+    :return:
+    """
+    # 创建版面链接集合
+    bm_url_set = set()
+    # 连接数据库
+    conn_test = mysql.connector.connect(
+        host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
+        user="col2024",
+        password="Bm_a12a06",
+        database="col",
+    )
+    cursor_test = conn_test.cursor()
+    # 获取版面来源的版面链接
+    # cursor_test.execute(f"SELECT id, url, state FROM col_judicial_auctions")
+    cursor_test.execute(f"SELECT id FROM col_judicial_auctions_investing WHERE url = '{url_href}' LIMIT 1;")
+    rows = cursor_test.fetchall()
+    cursor_test.close()
+    conn_test.close()
+    if rows:
+        id = rows[0][0]
+        return id
+    else:
+        return 0

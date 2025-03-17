@@ -172,10 +172,15 @@ def get_yiwuchanquanjiaoyisuo(queue_id, webpage_id):
 
                     cursor_test.close()
                     conn_test.close()
-            page.close()
-    except Exception as e:
         page.close()
+    except Exception as e:
+        try:
+            page.close()
+        except:
+            pass
+        print(e)
         raise Exception(e)
+
 
 
 # get_yiwuchanquanjiaoyisuo(111, 222)

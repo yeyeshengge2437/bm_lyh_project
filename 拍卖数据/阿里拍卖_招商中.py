@@ -145,7 +145,7 @@ for info in info_list:
             host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
             user="col2024",
             password="Bm_a12a06",
-            database="col_test",
+            database="col",
         )
         cursor_test = conn_test.cursor()
         # 上传文件
