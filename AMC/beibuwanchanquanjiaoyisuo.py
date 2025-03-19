@@ -44,7 +44,7 @@ def get_beibuwanchanquanjiaoyisuo(queue_id, webpage_id):
         for page_num in range(1, 6 + 1):
             params = {
                 'pageNumber': f'{page_num}',
-                'pageSize': '100',
+                'pageSize': '50',
                 'proTypeSearch': '3',
                 'bidTypeSearch': '6',
                 'areaCtyCode': '全部',

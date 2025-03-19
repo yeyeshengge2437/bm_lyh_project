@@ -12,8 +12,6 @@ from urllib.parse import urlencode, urljoin
 import redis
 
 
-
-
 def save_to_json(data: Dict, filename: str = "data.json") -> None:
     """
     将数据追加到 JSON 文件，每次保存完整数据
@@ -51,6 +49,7 @@ class JingDongPaiMai:
     # co = co.set_argument('--no-sandbox')
     # co = co.headless()
     co.set_paths(local_port=9211)
+
     def __init__(self):
         self.page = ChromiumPage(self.co)
 
@@ -65,7 +64,7 @@ class JingDongPaiMai:
             self.page.scroll.to_bottom()
             time.sleep(2)
         time.sleep(4)
-        for page_num in range(50):
+        for page_num in range(200):
             print(page_num)
             if page_num != 0:
                 self.page.ele("xpath=//a[@class='ui-pager-next']").click(by_js=True)
@@ -103,7 +102,6 @@ class JingDongPaiMai:
                 data_dict = {"url": url, "url_name": url_name, "state": state}
                 save_to_json(data_dict, 'jingdongpaimai.json')
         self.page.quit()
-
 
 
 # jd = JingDongPaiMai()

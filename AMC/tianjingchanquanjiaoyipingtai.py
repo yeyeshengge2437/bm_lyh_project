@@ -35,6 +35,7 @@ headers = {
     'uniflowSystemCode': 'INFORMATIONIZE',
 }
 
+
 def get_tianjingchanquanjiaoyipingtai(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
@@ -58,7 +59,8 @@ def get_tianjingchanquanjiaoyipingtai(queue_id, webpage_id):
             name = '天津产权交易平台'
             title_set = judge_title_repeat(name)
 
-            res = requests.get('https://trade.tpre.cn/finance/biz/finance/project/anonymity/page', params=params, headers=headers)
+            res = requests.get('https://trade.tpre.cn/finance/biz/finance/project/anonymity/page', params=params,
+                               headers=headers)
             # print(res.text)
             res_json = res.json()
             # print(res_json)
@@ -193,5 +195,6 @@ def get_tianjingchanquanjiaoyipingtai(queue_id, webpage_id):
     except Exception as e:
         page.close()
         raise Exception(e)
+
 
 # get_tianjingchanquanjiaoyipingtai(111, 222)

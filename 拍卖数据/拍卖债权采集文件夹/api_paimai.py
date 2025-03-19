@@ -270,7 +270,7 @@ def judge_bm_repeat(origin, bm_url):
 
 def judge_repeat(url_href):
     """
-    判断链接是否重复
+    判断链接是否存在，并且判断是否已获取详细数据
     :return:
     """
     # 创建版面链接集合
@@ -280,21 +280,25 @@ def judge_repeat(url_href):
     cursor_test = conn_test.cursor()
     # 获取版面来源的版面链接
     # cursor_test.execute(f"SELECT id, url, state FROM col_judicial_auctions")
-    cursor_test.execute(f"SELECT id, state FROM col_judicial_auctions WHERE url = '{url_href}' LIMIT 1;")
+    cursor_test.execute(f"SELECT id, state, from_queue FROM col_judicial_auctions WHERE url = '{url_href}' LIMIT 1;")
     rows = cursor_test.fetchall()
     cursor_test.close()
     conn_test.close()
     if rows:
         id = rows[0][0]
         state = rows[0][1]
-        return state, id
+        from_queue = rows[0][2]
+        if from_queue:
+            return state, id
+        else:
+            return False, 0
     else:
         return False, 0
 
 
 def judge_repeat_attracting(url_href):
     """
-    判断链接是否在拍卖招商表中存在
+    判断链接是否在拍卖招商表中存在，并且判断是否已获取详细数据
     :return:
     """
     # 创建版面链接集合
@@ -304,12 +308,13 @@ def judge_repeat_attracting(url_href):
     cursor_test = conn_test.cursor()
     # 获取版面来源的版面链接
     # cursor_test.execute(f"SELECT id, url, state FROM col_judicial_auctions")
-    cursor_test.execute(f"SELECT id FROM col_judicial_auctions_investing WHERE url = '{url_href}' LIMIT 1;")
+    cursor_test.execute(f"SELECT id, from_queue FROM col_judicial_auctions_investing WHERE url = '{url_href}' LIMIT 1;")
     rows = cursor_test.fetchall()
     cursor_test.close()
     conn_test.close()
     if rows:
         id = rows[0][0]
-        return id
+        from_queue = rows[0][1]
+        return id, from_queue
     else:
-        return 0
+        return 0, 0

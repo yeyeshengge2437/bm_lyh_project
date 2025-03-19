@@ -333,7 +333,10 @@ for data in data_list:
     url_name = data['url_name']
     state = data['state']
     print(url, url_name, state)
-    get_jd_attracting_data(url, url_name, state, "4567")
+    try:
+        get_jd_attracting_data(url, url_name, state, "4567")
+    except:
+        pass
 
 # 处理京东已结束的数据入库
 # jd = JingDongPaiMai()
