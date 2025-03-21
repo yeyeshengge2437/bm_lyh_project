@@ -313,3 +313,83 @@ def judge_repeat_attracting(url_href):
         return id
     else:
         return 0
+
+
+def sub_queues_add(data=None):
+    """
+    添加子队列
+    data = {
+        "name": "详细链接"
+        "web_queue_id": 1, # 采集队列id
+        "webpage_id": 2, # 数据项id
+        "webpage_url": "http://www.baidu.com", # 数据项链接
+        "sub_type": "类型", # 类型
+    }
+    :return:
+    """
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    url = test_url + "/website/sub-queue/add"
+    if data is None:
+        data = {}
+
+    data_str = json.dumps(data)
+
+    res = s.post(url=url, headers=headers, data=data_str)
+    result = res.json()
+
+    return result
+
+
+def sub_queues_next(webpage_url_list=None):
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    if webpage_url_list is None:
+        webpage_url_list = []
+
+    url = test_url + "/website/sub-queue/next"
+    data = {
+        "webpage_url_list": webpage_url_list
+    }
+
+    data_str = json.dumps(data)
+
+    res = s.post(url=url, headers=headers, data=data_str)
+    result = res.json()
+    print(result)
+    return result.get("value")
+
+
+def sub_queues_success(data=None):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
+        'Content-Type': 'application/json'
+    }
+    if data is None:
+        data = {}
+    url = test_url + "/website/sub-queue/success"
+    data_str = json.dumps(data)
+
+    res = s.post(url=url, headers=headers, data=data_str)
+    result = res.json()
+
+    return result.get("value")
+
+def sub_queues_fail(data=None):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
+        'Content-Type': 'application/json'
+    }
+    try:
+        if data is None:
+            data = {}
+        url = test_url + "/website/sub-queue/fail"
+        data_str = json.dumps(data)
+        res = s.post(url=url, headers=headers, data=data_str)
+        result = res.json()
+        return result.get("value")
+    except Exception as err:
+        print(err)
+        return None

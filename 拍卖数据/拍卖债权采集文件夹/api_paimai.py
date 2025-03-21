@@ -281,6 +281,7 @@ def judge_repeat(url_href):
     # 获取版面来源的版面链接
     # cursor_test.execute(f"SELECT id, url, state FROM col_judicial_auctions")
     cursor_test.execute(f"SELECT id, state, from_queue FROM col_judicial_auctions WHERE url = '{url_href}' LIMIT 1;")
+    # cursor_test.execute(f"SELECT * FROM col_judicial_auctions WHERE url = '{url_href}' LIMIT 1;")
     rows = cursor_test.fetchall()
     cursor_test.close()
     conn_test.close()
@@ -292,6 +293,29 @@ def judge_repeat(url_href):
             return state, id
         else:
             return False, 0
+    else:
+        return False, 0
+
+def judge_repeat_link(url_href):
+    """
+    判断链接是否存在，并且判断是否已获取详细数据
+    :return:
+    """
+    # 创建版面链接集合
+    bm_url_set = set()
+    # 连接数据库
+    conn_test = get_connection()
+    cursor_test = conn_test.cursor()
+    # 获取版面来源的版面链接
+    # cursor_test.execute(f"SELECT id, url, state FROM col_judicial_auctions")
+    cursor_test.execute(f"SELECT id, state, from_queue FROM col_judicial_auctions WHERE url = '{url_href}' LIMIT 1;")
+    rows = cursor_test.fetchall()
+    cursor_test.close()
+    conn_test.close()
+    if rows:
+        id = rows[0][0]
+        state = rows[0][1]
+        return state, id
     else:
         return False, 0
 

@@ -6,7 +6,7 @@ db_config = {
     "host": "rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
     "user": "col2024",
     "password": "Bm_a12a06",
-    "database": "col",
+    "database": "col_test",
     "port": 3306,
 }
 

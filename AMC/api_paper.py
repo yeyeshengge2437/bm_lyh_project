@@ -112,7 +112,10 @@ def upload_file_by_url(file_url, file_name, file_type, type="paper", verify=None
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'
     }
     res = requests.post(url=url, headers=headers1, files=file_data)
-    result = res.json()
+    try:
+        result = res.json()
+    except:
+        return None
     fr.close()
     os.remove(pdf_path)
     return result.get("value")["file_url"]

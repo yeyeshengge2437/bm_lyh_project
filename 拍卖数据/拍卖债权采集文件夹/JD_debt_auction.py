@@ -13,9 +13,7 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 from lxml import etree
 from DrissionPage.common import Settings
 import tempfile
-from urllib.parse import urlencode, urljoin
-import redis
-from api_paimai import judge_repeat, judge_repeat_attracting
+from api_paimai import judge_repeat, judge_repeat_attracting, judge_repeat_link
 
 
 # 处理时间
@@ -126,7 +124,7 @@ def update_jd_auction_link():
         page.scroll.to_bottom()
         time.sleep(2)
     time.sleep(4)
-    for page_num in range(50):
+    for page_num in range(80):
         print(page_num)
         if page_num != 0:
             page.ele("xpath=//a[@class='ui-pager-next']").click(by_js=True)
@@ -154,7 +152,7 @@ def update_jd_auction_link():
             except Exception as e:
                 print('解析url和url名字时出错', e)
                 continue
-            state_sql, id_sql = judge_repeat(url)
+            state_sql, id_sql = judge_repeat_link(url)
             if state_sql == state:
                 continue
             elif state_sql != state and state_sql:
@@ -258,7 +256,7 @@ def get_jd_auction_null_url():
     cursor = conn.cursor()
 
     # 参数化查询（防止 SQL 注入）
-    query = "SELECT * FROM col_judicial_auctions WHERE url LIKE %s AND (from_queue IS NULL OR from_queue = '') LIMIT 1"
+    query = "SELECT * FROM col_judicial_auctions WHERE url LIKE %s AND (from_queue IS NULL OR from_queue = '') and state != '预告中' LIMIT 1"
     search_pattern = "%jd%"  # 匹配任意位置包含 "jd" 的 URL
     cursor.execute(query, (search_pattern,))
     # 获取结果
@@ -570,4 +568,5 @@ def investment(from_queue):
             break
 
 auction("5678")
-investment('5678')
+# investment('5678')
+# get_jd_auction_null_url()
