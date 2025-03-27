@@ -15,7 +15,6 @@ co = co.set_argument('--no-sandbox')
 co = co.headless()
 co.set_paths(local_port=9129)
 
-
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'zh-CN,zh;q=0.9',
@@ -98,7 +97,8 @@ def hubeizichan_chuzhigonggao(queue_id, webpage_id):
                         insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
 
                         cursor_test.execute(insert_sql,
-                                            (title_date, name, title_name, up_img, title_url, up_img, create_time, queue_id,
+                                            (title_date, name, title_name, up_img, title_url, up_img, create_time,
+                                             queue_id,
                                              create_date, webpage_id))
                         conn_test.commit()
                     else:
@@ -110,7 +110,8 @@ def hubeizichan_chuzhigonggao(queue_id, webpage_id):
                         insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
 
                         cursor_test.execute(insert_sql,
-                                            (title_url, title_date, name, title_name, title_content, title_url, content_html,
+                                            (title_url, title_date, name, title_name, title_content, title_url,
+                                             content_html,
                                              create_time, queue_id,
                                              create_date, webpage_id))
                         conn_test.commit()
@@ -122,5 +123,6 @@ def hubeizichan_chuzhigonggao(queue_id, webpage_id):
     except Exception as e:
         page.close()
         raise Exception(e)
+
 
 # hubeizichan_chuzhigonggao(111, 222)

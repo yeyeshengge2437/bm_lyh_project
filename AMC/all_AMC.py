@@ -35,6 +35,13 @@ from azhuiguohou_chuzhigonggao import get_azhuiguohou_chuzhigonggao  # 安徽国
 from GZH_zhongxinjinrongjiangsu import zhongxinjinrongjiangsu_gzh  # 中国中信金融资产江苏分公司(公众号)
 from GZH_zhongxinjinrongguangdong import zhongxinjinrongguangdong_gzh  # 中国中信金融资产广东分公司(公众号)
 from GZH_zhongxinjinrongzhejiang import zhongxinjinrongzhejiang_gzh  # 中国中信金融资产浙江分公司(公众号)
+from jiangsuzichan_zichantuijie import get_jiangsuzichan_zichantuijie    # 江苏资产管理有限公司_资产推介
+from zhongguochangchengzichan_zichanyingxiao import get_zhongguochangchengzichan_zichanyingxiao   # 中国长城资产管理股份有限公司_资产营销
+from zhejiangzheshang_zichantuijie import get_zhejiangzheshang_zichantuijie  # 浙江省浙商资产管理有限公司_资产推介
+from changshaxiangjiang_zichantuijie import get_changshaxiangjiang_zichantuijie  # 长沙湘江资产管理有限公司_资产推介
+from fujiantouzi_tuijiexinxi import fujiantouzi_tuijiexinxi  # 福建闽投资产管理有限公司_资产推介
+from hunancaixin_zichantuijie import get_hunancaixin_zichantuijie  # 湖南省财信资产管理有限公司_资产推介
+from zhongxinqingdao_zichantuijie import get_zhongxinqingdao_zichantuijie  # 中信青岛资产管理有限公司_资产推介
 
 
 methods = {
@@ -74,6 +81,13 @@ methods = {
     'https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI5ODk2MTY1Mg==&action=getalbum&album_id=3421134606546747396#wechat_redirect': zhongxinjinrongjiangsu_gzh,  # 中国资产管理有限公司浙江分公司
     'https://mp.weixin.qq.com/mp/homepage?__biz=MzkyOTgxMzc2Mg==&hid=2&sn=5aa8306d099d37332ff2120bf985a6c8&scene=18#wechat_redirect': zhongxinjinrongguangdong_gzh,  # 中国资产管理有限公司广东分公司
     'https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkyNjY4NDEwNg==&action=getalbum&album_id=3465789407292817408#wechat_redirect': zhongxinjinrongzhejiang_gzh,  # 中国资产管理有限公司浙江分公司
+    'https://www.jsamc.com.cn/assets-promote/promote-information' : get_jiangsuzichan_zichantuijie, # 江苏资产管理有限公司_资产推介
+    'https://www.gwamcc.com/MCInfo.aspx?liName=101': get_zhongguochangchengzichan_zichanyingxiao,  # 中国长城资产管理股份有限公司_资产营销
+    'https://www.zsamc.com/index.php/infor/index/21/0/1.html': get_zhejiangzheshang_zichantuijie,  # 浙江省浙商资产管理有限公司_资产推介
+    'http://www.xiangjiang-amc.com/assetlist/31614': get_changshaxiangjiang_zichantuijie,  # 长沙湘江资产管理有限公司_资产推介
+    'http://www.mtamc.com.cn/zcxx/tjxx/index_1.htm': fujiantouzi_tuijiexinxi,  # 福建闽投资产管理有限公司_资产推介
+    'https://amc.hnchasing.com/cxamc/zcxx53/zctj1/index.html': get_hunancaixin_zichantuijie,  # 湖南省财信资产管理有限公司_资产推介
+    'http://www.qdamc.citic/announcement-6-1.html': get_zhongxinqingdao_zichantuijie,  # 中信青岛资产管理有限公司_资产推介
 
 }
 
@@ -112,6 +126,13 @@ web_list = [
     'https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzI5ODk2MTY1Mg==&action=getalbum&album_id=3421134606546747396#wechat_redirect',
     'https://mp.weixin.qq.com/mp/homepage?__biz=MzkyOTgxMzc2Mg==&hid=2&sn=5aa8306d099d37332ff2120bf985a6c8&scene=18#wechat_redirect',
     'https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkyNjY4NDEwNg==&action=getalbum&album_id=3465789407292817408#wechat_redirect',
+    'https://www.jsamc.com.cn/assets-promote/promote-information',
+    'https://www.gwamcc.com/MCInfo.aspx?liName=101',
+    'https://www.zsamc.com/index.php/infor/index/21/0/1.html',
+    'http://www.xiangjiang-amc.com/assetlist/31614',
+    'http://www.mtamc.com.cn/zcxx/tjxx/index_1.htm',
+    'https://amc.hnchasing.com/cxamc/zcxx53/zctj1/index.html',
+    'http://www.qdamc.citic/announcement-6-1.html',
 ]
 
 

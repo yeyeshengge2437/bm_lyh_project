@@ -13,7 +13,7 @@ from api_paper import judge_bm_repeat, upload_file, judge_title_repeat, get_imag
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9133)
+co.set_paths(local_port=9213)
 
 
 headers = {
@@ -41,7 +41,7 @@ def get_jiangsuzichan_chuzhigonggao(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
     try:
-        for count in range(20, 36 + 1):
+        for count in range(1, 6 + 1):
             json_data = {
                 'body': {
                     'showStatus': 2,

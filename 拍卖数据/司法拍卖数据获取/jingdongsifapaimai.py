@@ -263,7 +263,7 @@ def get_detail_info(value_id, url, from_queue):
                          create_time,
                          create_date, from_queue, start_time))
     id_value = cursor_test.lastrowid
-    # 这里放成功的方法
+    # 成功的方法
     data_success = {
         'id': value_id,  # 子队列id
         'data_list': [{
@@ -276,5 +276,7 @@ def get_detail_info(value_id, url, from_queue):
     cursor_test.close()
     conn_test.close()
     print(value)
+    return value_id, id_value    # 子队列的id和插入数据库的id
 
+# 测试数据
 # get_detail_info('https://paimai.jd.com/308213221', 1234)
