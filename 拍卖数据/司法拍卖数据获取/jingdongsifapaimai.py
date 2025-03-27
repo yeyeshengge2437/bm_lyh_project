@@ -143,10 +143,10 @@ def get_detail_info(value_id, url, from_queue):
     # co = co.headless()
     co.set_paths(local_port=9212)
 
-    state_sql, id = judge_repeat(url)
+    state_sql, id_sql = judge_repeat(url)
+    flag = True
     if state_sql:
-        # page.quit()
-        return
+        flag = False
     # 启动浏览器
     page = ChromiumPage(co)
     page.get(url)
@@ -251,28 +251,52 @@ def get_detail_info(value_id, url, from_queue):
     # 上传到数据库
     conn_test = get_connection()
     cursor_test = conn_test.cursor()
-    # 上传文件
-    insert_sql = "INSERT INTO col_judicial_auctions (url, title, state, stage, address, start_bid, sold_price, outcome, end_time, procedure_str, auction_html, subject_annex_up, subject_info, disposal_unit, auction_history, people_num, subject_annex, create_time, create_date, from_queue, start_time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+    if flag:
+        insert_sql = "INSERT INTO col_judicial_auctions (url, title, state, stage, address, start_bid, sold_price, outcome, end_time, procedure_str, auction_html, subject_annex_up, subject_info, disposal_unit, auction_history, people_num, subject_annex, create_time, create_date, from_queue, start_time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
 
-    cursor_test.execute(insert_sql,
-                        (url, title, state, stage, address, start_bid, sold_price,
-                         outcome,
-                         end_time, procedure_str, auction_html, subject_annex_up,
-                         subject_info,
-                         disposal_unit, auction_history, people_num, subject_annex_up,
-                         create_time,
-                         create_date, from_queue, start_time))
-    id_value = cursor_test.lastrowid
-    # 成功的方法
-    data_success = {
-        'id': value_id,  # 子队列id
-        'data_list': [{
-            'data_id': id_value,
-            'data_table': 'col_judicial_auctions',
-        }]
-    }
-    sub_queues_success(data_success)
-    conn_test.commit()
+        cursor_test.execute(insert_sql,
+                            (url, title, state, stage, address, start_bid, sold_price,
+                             outcome,
+                             end_time, procedure_str, auction_html, subject_annex_up,
+                             subject_info,
+                             disposal_unit, auction_history, people_num, subject_annex_up,
+                             create_time,
+                             create_date, from_queue, start_time))
+        id_value = cursor_test.lastrowid
+        # 成功的方法
+        data_success = {
+            'id': value_id,  # 子队列id
+            'data_list': [{
+                'data_id': id_value,
+                'data_table': 'col_judicial_auctions',
+            }]
+        }
+        sub_queues_success(data_success)
+        conn_test.commit()
+    else:
+        update_sql = "UPDATE col_judicial_auctions SET url = %s, title = %s, state = %s, stage = %s, address = %s, start_bid = %s, sold_price = %s, outcome = %s, end_time = %s, procedure_str = %s, auction_html = %s, subject_annex_up = %s, subject_info = %s, disposal_unit = %s, auction_history = %s, people_num = %s, subject_annex = %s, update_time = %s, create_date = %s, from_queue = %s, start_time = %s WHERE id = %s;"
+
+        # 执行更新操作，注意参数最后添加id
+        cursor_test.execute(
+            update_sql,
+            (
+                url, title, state, stage, address, start_bid, sold_price,
+                outcome, end_time, procedure_str, auction_html, subject_annex_up,
+                subject_info, disposal_unit, auction_history, people_num, subject_annex_up,
+                update_time, create_date, from_queue, start_time, id_sql  # 确保此处有id变量
+            )
+        )
+        id_value = id_sql
+        # 成功的方法
+        data_success = {
+            'id': value_id,  # 子队列id
+            'data_list': [{
+                'data_id': id_value,
+                'data_table': 'col_judicial_auctions',
+            }]
+        }
+        sub_queues_success(data_success)
+        conn_test.commit()
     cursor_test.close()
     conn_test.close()
     print(value)

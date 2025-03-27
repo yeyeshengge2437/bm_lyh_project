@@ -24,7 +24,7 @@ if value:
         success_data = {
             'id': id_value,
         }
-    # print(success_data)
+    print(success_data)
     paper_queue_success(success_data)
 
 while True:
@@ -33,8 +33,9 @@ while True:
         sub_id_value = sub_value['id']
         name_value = sub_value['name']
         sub_web_queue_id_value = sub_value['web_queue_id']
+        print(sub_id_value, name_value, sub_web_queue_id_value)
         get_detail_info(sub_id_value, name_value, sub_web_queue_id_value)
     else:
-        time.sleep(30)
+        time.sleep(3)
         break
 
