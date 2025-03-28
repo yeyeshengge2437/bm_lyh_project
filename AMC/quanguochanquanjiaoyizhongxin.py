@@ -49,7 +49,7 @@ def get_quanguochanquanjiaoyizhongxin(queue_id, webpage_id):
             else:
                 params = {
                     'project_type': 'ZQ',
-                    'page': '2',
+                    'page': f'{page_num}',
                 }
 
             img_set = set()
@@ -65,7 +65,7 @@ def get_quanguochanquanjiaoyizhongxin(queue_id, webpage_id):
                 time.sleep(1)
                 page_url = ''.join(data.xpath("./div[@class='title']/a/@href"))
                 title_name = ''.join(data.xpath("./div[@class='title']/a/text()")).strip()
-                title_date = ''.join(data.xpath("./td[4]/span//text()")).strip()
+                # title_date = ''.join(data.xpath("./td[4]/span//text()")).strip()
                 print(page_url, title_name)
 
                 res = requests.get(page_url, headers=headers)
@@ -74,6 +74,13 @@ def get_quanguochanquanjiaoyizhongxin(queue_id, webpage_id):
                 # title_list = res_html.xpath("//div[@class='rightListContent list-item']")
                 title_url = page_url
                 if title_url not in title_set:
+                    title_date = ''.join(res_html.xpath("//div[@class='detail-info-notice']//text()")).strip()
+                    # 使用re模块提取日期
+                    title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
+                    if title_date:
+                        title_date = title_date[0]
+                    else:
+                        title_date = ''
                     title_content = "".join(res_html.xpath("//div[@class='product-intro']//text()"))
                     title_content = title_content.join(res_html.xpath("//div[@class='detail-con-left']//text()"))
 

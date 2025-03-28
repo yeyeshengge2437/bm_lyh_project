@@ -36,7 +36,7 @@ def get_henanzichan_chuzhigonggao(queue_id, webpage_id):
         response = requests.get(page_url, headers=headers, verify=False)
         res = response.content.decode()
         res_html = etree.HTML(res)
-        title_list = res_html.xpath("//li[@class='cl']/div[@class='news_title fl']/a")
+        title_list = res_html.xpath("//div[@class='list-box']/div[@class='list']/ul[@id='ul']/li/a")
         img_set = set()
         name = '河南资产管理有限公司'
         title_set = judge_title_repeat(name)

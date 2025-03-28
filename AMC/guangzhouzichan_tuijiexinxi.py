@@ -13,67 +13,76 @@ from api_paper import get_image, judge_bm_repeat, upload_file, judge_title_repea
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9219)
-
+co.set_paths(local_port=9221)
 
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
-    # 'Cookie': '__jsluid_h=d6a50128c73a34b4b3070e20f222621c',
     'Pragma': 'no-cache',
-    'Referer': 'http://www.qdamc.citic/announcement-54-1-5.html',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'none',
+    'Sec-Fetch-User': '?1',
     'Upgrade-Insecure-Requests': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+    'sec-ch-ua': '"Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
 }
 
 
-def get_zhongxinqingdao_zichantuijie(queue_id, webpage_id):
+def get_guangzhouzichan_zichantuijie(queue_id, webpage_id):
     page = ChromiumPage(co)
-    # page.set.headers(headers=headers)
     page.set.load_mode.none()
     try:
-        for count in range(1, 1 + 1):
-            page_url = f'http://www.qdamc.citic/announcement-6-1.html'
+        for count in range(1, 4 + 1):
+            if count == 1:
+                page_url = f'https://www.guangzhouamc.com/asset/tuijiexinxi.html'
+            else:
+                page_url = f'https://www.guangzhouamc.com/asset/tuijiexinxi-{count}.html'
             response = requests.get(page_url, headers=headers)
             res = response.content.decode()
             res_html = etree.HTML(res)
-            title_list = res_html.xpath("//div[@class='main gonggaobox fix']/ul/li/a")
+            title_list = res_html.xpath("//ul[@class='column_list']/li[@class='slide-top']/a")
             img_set = set()
-            name = '中信青岛资产管理有限公司_资产推介'
+            name = '广州资产管理有限公司_推介信息'
             title_set = judge_title_repeat(name)
             for title in title_list:
                 title_name = "".join(
-                    title.xpath(".//div[@class='t1 ellipsis-2']//text()"))
-
-                title_url = "http://www.qdamc.citic/" + "".join(title.xpath("./@href"))
+                    title.xpath(".//h2/text()"))
+                title_date = "".join(title.xpath(".//p/text()"))
+                # 使用re模块提取日期
+                title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
+                if title_date:
+                    title_date = title_date[0]
+                else:
+                    title_date = ''
+                title_date = datetime.strptime(title_date, "%Y-%m-%d")
+                title_date = title_date.strftime("%Y-%m-%d")
+                title_url = "https://www.guangzhouamc.com" + "".join(title.xpath("./@href"))
                 if title_url not in title_set:
                     # print(title_name,title_url)
                     # return
                     res_title = requests.get(title_url, headers=headers)
                     res_title_html1 = res_title.content.decode()
                     res_title_html = etree.HTML(res_title_html1)
-                    title_date = "".join(res_title_html.xpath("//div[@class='main2']/div[@class='info']//text()"))
-                    # 使用re模块提取日期
-                    title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
-                    if title_date:
-                        title_date = title_date[0]
-                    else:
-                        title_date = ''
-                    title_content = "".join(res_title_html.xpath(
-                        "//div[@class='main2']/div[@class='newshow']//text()"))
 
-                    annex = res_title_html.xpath("//div[@class='main2']/div[@class='newshow']//a/@href | //div[@class='main2']/div[@class='newshow']//@src")
+                    title_content = "".join(res_title_html.xpath(
+                        "//div[@class='wrapper']//text()"))
+
+                    annex = res_title_html.xpath("//div[@class='wrapper']//a/@src | //div[@class='wrapper']//a/@href")
                     if annex:
                         files = []
                         original_url = []
                         for ann in annex:
                             if "http" not in ann:
-                                ann = "http://www.qdamc.citic/" + ann
+                                ann = "https://www.guangzhouamc.com" + ann
                             file_type = ann.split('.')[-1]
-                            if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z', 'jpg'] and 'uploads' in ann:
-                                file_url = upload_file_by_url(ann, "ningbofujian", file_type)
+                            if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar',
+                                             '7z', ] and 'upload' in ann:
+                                file_url = upload_file_by_url(ann, "guangzhou_tuijie", file_type)
                                 files.append(file_url)
                                 original_url.append(ann)
                     else:
@@ -86,24 +95,24 @@ def get_zhongxinqingdao_zichantuijie(queue_id, webpage_id):
                     original_url = str(original_url).replace("'", '"')
 
                     title_html_info = res_title_html.xpath(
-                        "//div[@class='intit']")
-                    content_1 = res_title_html.xpath("//div[@class='main2']/div[@class='newshow']")
+                        "//div[@class='wrapper']")
+                    # content_1 = res_title_html.xpath("//div[@class='Introduce_details_nr wow fadeInUp animation']")
                     content_html = ''
                     for con in title_html_info:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
-                    for con in content_1:
-                        content_html += etree.tostring(con, encoding='utf-8').decode()
-                    tab = page.new_tab()
-                    tab.get('http://www.qdamc.citic/')
-                    tab.close()
+                    # for con in content_1:
+                    #     content_html += etree.tostring(con, encoding='utf-8').decode()
                     try:
                         image = get_image(page, title_url,
-                                          "xpath=//div[@class='news_sec article-block articleShow']", left_offset=10)
+                                          "xpath=//div[@class='wrapper']",
+                                          left_offset=10, right_offset=20)
                     except:
                         print('截取当前显示区域')
                         image = get_now_image(page, title_url)
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
+                    # print(files, original_url)
+                    # return
                     # 上传到测试数据库
                     conn_test = mysql.connector.connect(
                         host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
@@ -121,7 +130,8 @@ def get_zhongxinqingdao_zichantuijie(queue_id, webpage_id):
                         insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
 
                         cursor_test.execute(insert_sql,
-                                            (title_date, name, title_name, up_img, title_url, up_img, create_time, queue_id,
+                                            (title_date, name, title_name, up_img, title_url, up_img, create_time,
+                                             queue_id,
                                              create_date, webpage_id))
                         conn_test.commit()
                     else:
@@ -133,7 +143,8 @@ def get_zhongxinqingdao_zichantuijie(queue_id, webpage_id):
                         insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time,original_files, files, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
 
                         cursor_test.execute(insert_sql,
-                                            (title_url, title_date, name, title_name, title_content, title_url, content_html,
+                                            (title_url, title_date, name, title_name, title_content, title_url,
+                                             content_html,
                                              create_time, original_url, files, queue_id,
                                              create_date, webpage_id))
                         conn_test.commit()
@@ -146,4 +157,5 @@ def get_zhongxinqingdao_zichantuijie(queue_id, webpage_id):
         page.close()
         raise Exception(e)
 
-# get_zhongxinqingdao_zichantuijie(111, 222)
+
+# get_guangzhouzichan_zichantuijie(111, 222)

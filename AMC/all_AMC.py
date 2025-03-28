@@ -42,6 +42,10 @@ from changshaxiangjiang_zichantuijie import get_changshaxiangjiang_zichantuijie 
 from fujiantouzi_tuijiexinxi import fujiantouzi_tuijiexinxi  # 福建闽投资产管理有限公司_资产推介
 from hunancaixin_zichantuijie import get_hunancaixin_zichantuijie  # 湖南省财信资产管理有限公司_资产推介
 from zhongxinqingdao_zichantuijie import get_zhongxinqingdao_zichantuijie  # 中信青岛资产管理有限公司_资产推介
+from guangzhouzichan_tuijiexinxi import get_guangzhouzichan_zichantuijie   # 广州资产管理有限公司_资产推介
+from henanzichan_zichantuijie import get_henanzichan_zichantuijie  # 河南资产管理有限公司_资产推介
+from sichuanfazhan_zichantuijie import sichuanfazhan_zichantuijie   # 四川发展资产管理有限公司_资产推介
+from zhongyuanzichan_zichantuijie import get_zhongyuanzichan_zichantuijie  # 中原资产管理有限公司_资产推介
 
 
 methods = {
@@ -88,6 +92,11 @@ methods = {
     'http://www.mtamc.com.cn/zcxx/tjxx/index_1.htm': fujiantouzi_tuijiexinxi,  # 福建闽投资产管理有限公司_资产推介
     'https://amc.hnchasing.com/cxamc/zcxx53/zctj1/index.html': get_hunancaixin_zichantuijie,  # 湖南省财信资产管理有限公司_资产推介
     'http://www.qdamc.citic/announcement-6-1.html': get_zhongxinqingdao_zichantuijie,  # 中信青岛资产管理有限公司_资产推介
+    'https://www.guangzhouamc.com/asset/tuijiexinxi.html': get_guangzhouzichan_zichantuijie,    # 广州资产管理有限公司_资产推介
+    'http://www.henanamc.com.cn/zctj145': get_henanzichan_zichantuijie,    # 河南资产管理有限公司_资产推介
+    'http://www.scdamc.com/zhichantuijian': sichuanfazhan_zichantuijie,    # 四川省发展资产管理有限公司_资产推介
+    'https://www.zyamc.net/#/asset-zone/1': get_zhongyuanzichan_zichantuijie,    # 中原资产管理有限公司_资产推介
+
 
 }
 
@@ -133,6 +142,10 @@ web_list = [
     'http://www.mtamc.com.cn/zcxx/tjxx/index_1.htm',
     'https://amc.hnchasing.com/cxamc/zcxx53/zctj1/index.html',
     'http://www.qdamc.citic/announcement-6-1.html',
+    'https://www.guangzhouamc.com/asset/tuijiexinxi.html',
+    'http://www.henanamc.com.cn/zctj145',
+    'http://www.scdamc.com/zhichantuijian',
+    'https://www.zyamc.net/#/asset-zone/1',
 ]
 
 
