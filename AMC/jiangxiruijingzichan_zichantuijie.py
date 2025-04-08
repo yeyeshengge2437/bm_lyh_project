@@ -9,69 +9,50 @@ import requests
 from DrissionPage import ChromiumPage, ChromiumOptions
 
 from api_paper import judge_bm_repeat, upload_file, judge_title_repeat, get_image
-from bs4 import BeautifulSoup
-import re
-
-
 
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
 co = co.headless()
-co.set_paths(local_port=9229)
-
-
+co.set_paths(local_port=9230)
 
 headers = {
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept': 'application/json, text/plain, */*',
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive',
     'Pragma': 'no-cache',
-    'Referer': 'https://www.amcsd.cn/promotion.html',
-    'Sec-Fetch-Dest': 'document',
-    'Sec-Fetch-Mode': 'navigate',
-    'Sec-Fetch-Site': 'same-origin',
-    'Sec-Fetch-User': '?1',
-    'Upgrade-Insecure-Requests': '1',
+    'Proxy-Connection': 'keep-alive',
+    'Referer': 'http://www.ruijingamc.com/',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
-    'sec-ch-ua': '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
-    # 'Cookie': 'ASP.NET_SessionId=nxlxwudelyqjptoke1aefqvb',
 }
 
 
-
-def get_shandongziguan_zichanruijie(queue_id, webpage_id):
+def get_jiangxiruijin_zichantuijie(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
     try:
-        for page_num in range(1, 21 + 1):
-            url = f'https://www.amcsd.cn/promotion-342-{page_num}.html'
-            response = requests.get(url, headers=headers)
-            res = response.content.decode()
-            res_html = etree.HTML(res)
-            title_list = res_html.xpath("//a[@class='right-i flex']")
+        for page_num in range(1, 4 + 1):
+            response = requests.get(f'http://www.ruijingamc.com/asset/page/2/{page_num}', headers=headers, verify=False)
+            res_json = response.json()
+            title_list = res_json["data"]["list"]
             img_set = set()
-            page_url = url
-            name = "山东省金融资产管理股份有限公司_资产推介"
+            name = "江西瑞京金融资产管理有限公司_资产推介"
             title_set = judge_title_repeat(name)
             for title in title_list:
-                title_name = ''.join(title.xpath("./text()"))
-                title_date = ''
-                title_url = 'https://www.amcsd.cn' + ''.join(title.xpath("./@href"))
+                title_name = title["assetName"]
+                title_date = title["startTime"]
+                title_url = f"http://www.ruijingamc.com/#/available/{title['id']}"
                 if title_url not in title_set:
-                    title_res = requests.get(title_url, headers=headers)
-                    res_title_json = title_res.text
-                    content_tree = etree.HTML(res_title_json)
-                    title_content = ''.join(content_tree.xpath("//div[@class='product-detail-con ov']//text()"))
-                    content_1 = content_tree.xpath("//div[@class='product-detail-con ov']")
+                    page.get(title_url)
+                    time.sleep(5)
+                    res_detail_html_ = page.html
+                    res_detail_html = etree.HTML(res_detail_html_)
+                    content_1 = res_detail_html.xpath("//div[@class='container']")
                     content_html = ''
                     for con in content_1:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
-                    # print(title_content)
+                    title_content = ''.join(res_detail_html.xpath("//div[@class='container']//text()"))
 
-                    image = get_image(page, title_url, "xpath=//div[@class='product-box']/div[@class='product-b product-detail public-tobody']")
+                    image = get_image(page, title_url, "xpath=//div[@class='container']")
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
                     # 上传到测试数据库
@@ -103,9 +84,10 @@ def get_shandongziguan_zichanruijie(queue_id, webpage_id):
                         insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
 
                         cursor_test.execute(insert_sql,
-                                            (title_url, title_date, name, title_name, title_content, title_url, content_html,
-                                             create_time, queue_id,
-                                             create_date, webpage_id))
+                                            (
+                                            title_url, title_date, name, title_name, title_content, title_url, content_html,
+                                            create_time, queue_id,
+                                            create_date, webpage_id))
                         conn_test.commit()
                         title_set.add(title_url)
 
@@ -116,4 +98,5 @@ def get_shandongziguan_zichanruijie(queue_id, webpage_id):
         page.close()
         raise Exception(e)
 
-# get_shandongziguan_zichanruijie(111, 222)
+
+# get_jiangxiruijin_zichantuijie(111, 222)

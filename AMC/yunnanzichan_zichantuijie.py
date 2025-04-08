@@ -27,51 +27,60 @@ headers = {
     'Cookie': 'Secure; AYKJDATA=1742977650396; security_session_verify=6de2150939ed14504c133833f19e258c; srcurl=687474703a2f2f7777772e796e64616d632e636f6d2f6c6973742f636e50432f312f31382f6175746f2f31322f302e68746d6c; Secure; security_session_mid_verify=df85379301937610d00d188893eb3d23; JSESSIONID=DDAF46D69FE80AF288C2AE66FB343276'
 }
 
-def get_yunnanzichan_chuzhigonggao(queue_id, webpage_id):
+
+cookies = {
+    'Secure': '',
+    'AYKJDATA': '1743141933997',
+    'srcurl': '687474703a2f2f7777772e796e64616d632e636f6d2f6c6973742f636e50432f312f31382f6175746f2f31322f302e68746d6c',
+    'security_session_verify': 'b0df7e620f4c9660f193c789b74dd9e3',
+    'security_session_mid_verify': 'e405274e8825d13203dc7980952f04b6',
+    'JSESSIONID': '1D48DD28CF3F954C844FFDD2C9FE3F23'
+}
+
+def get_yunnanzichan_zichantuijie(queue_id, webpage_id):
     page = ChromiumPage(co)
     page.set.load_mode.none()
     try:
         for count in range(1, 1 + 1):
-            page_url = f'http://www.yndamc.com/list/cnPC/1/18/auto/12/0.html'
-            response = requests.get(page_url, headers=headers)
-            res = response.content.decode()
-            print(res)
+            page.get('http://www.yndamc.com/list/cnPC/1/18/auto/12/0.html')
+            res = page.html
             res_html = etree.HTML(res)
             title_list = res_html.xpath("//div[@class='assetsCList ajaxBox']/dl/dd")
-            # print(len(title_list))
             img_set = set()
             name = '云南省资产管理有限公司_资产推介'
             title_set = judge_title_repeat(name)
             for title in title_list:
                 title_name = "".join(
-                    title.xpath("./div/div//text()"))
-                # 此处没有日期，需在详情中获取
-                title_date = "".join(title.xpath("./span/text()"))
-                # 使用re模块提取日期
-                title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
-                if title_date:
-                    title_date = title_date[0]
-                else:
-                    title_date = ''
+                    title.xpath(".//div/div//text()"))
+
+
                 title_url = "http://www.yndamc.com/" + "".join(title.xpath("./a/@href"))
                 if title_url not in title_set:
                     # print(title_name,title_url)
                     # return
-                    res_title = requests.get(title_url, headers=headers)
-                    res_title_html1 = res_title.content.decode()
+                    page.get(title_url)
+                    time.sleep(3)
+                    res_title_html1 = page.html
                     res_title_html = etree.HTML(res_title_html1)
-
+                    # 此处没有日期，需在详情中获取
+                    title_date = "".join(res_title_html.xpath(".//div[@class='upTime']/text()"))
+                    # 使用re模块提取日期
+                    title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
+                    if title_date:
+                        title_date = title_date[0]
+                    else:
+                        title_date = ''
                     title_content = "".join(res_title_html.xpath(
                         "//div[@class='assetsArticle']//text()"))
                     # title_content = re.sub(r'\.[bsp][^{]*\{.*?\}', '', title_content, flags=re.MULTILINE).strip()
-                    annex = res_title_html.xpath("//a[@class='xlsx']/@href | //@src")
+                    annex = res_title_html.xpath("//@href | //@src")
                     if annex:
                         # print(page_url, annex)
                         files = []
                         original_url = []
                         for ann in annex:
                             if "http" not in ann:
-                                ann = 'http://www.yndamc.com' + ann
+                                ann = 'http://www.yndamc.com/' + ann
                             if 'download' in ann:
                                 file_url = upload_file_by_url(ann, "yunnan", 'xlsx')
                                 # file_url = 111
@@ -79,7 +88,7 @@ def get_yunnanzichan_chuzhigonggao(queue_id, webpage_id):
                                 original_url.append(ann)
                             file_type = ann.split('.')[-1]
                             if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
-                                             'png', 'jpg', 'jpeg'] and 'uploadDir' in ann:
+                                             'png', 'jpg', 'jpeg'] and 'temp' in ann:
                                 file_url = upload_file_by_url(ann, "yunnan", file_type)
                                 # file_url = 111
                                 files.append(file_url)
@@ -92,7 +101,6 @@ def get_yunnanzichan_chuzhigonggao(queue_id, webpage_id):
                         original_url = ''
                     files = str(files).replace("'", '"')
                     original_url = str(original_url).replace("'", '"')
-
                     title_html_info = res_title_html.xpath(
                         "//div[@class='assetsArticle']")
                     # content_1 = res_title_html.xpath("//div[@id='articleContent']")
@@ -102,14 +110,13 @@ def get_yunnanzichan_chuzhigonggao(queue_id, webpage_id):
                     # for con in content_1:
                     #     content_html += etree.tostring(con, encoding='utf-8').decode()
                     content_html = re.sub(r'<div class="pageUp">.*?</html> &#13;', '', content_html, flags=re.DOTALL).strip()
+                    content_html = re.sub(r'<script>.*?</body></html>', '', content_html, flags=re.DOTALL).strip()
                     try:
                         image = get_image(page, title_url,
                                           "xpath=//div[@class='assetsArticle']", is_to_bottom=True)
                     except:
                         print('截取当前显示区域')
                         image = get_now_image(page, title_url)
-                    print(files, original_url, content_html)
-                    return
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
                     # 上传到测试数据库
@@ -154,4 +161,4 @@ def get_yunnanzichan_chuzhigonggao(queue_id, webpage_id):
         page.close()
         raise Exception(e)
 
-# get_yunnanzichan_chuzhigonggao(111, 222)
+# get_yunnanzichan_zichantuijie(111, 222)

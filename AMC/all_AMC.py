@@ -46,6 +46,13 @@ from guangzhouzichan_tuijiexinxi import get_guangzhouzichan_zichantuijie   # 广
 from henanzichan_zichantuijie import get_henanzichan_zichantuijie  # 河南资产管理有限公司_资产推介
 from sichuanfazhan_zichantuijie import sichuanfazhan_zichantuijie   # 四川发展资产管理有限公司_资产推介
 from zhongyuanzichan_zichantuijie import get_zhongyuanzichan_zichantuijie  # 中原资产管理有限公司_资产推介
+from xingyezichan_zichantuijie import get_xinyezichan_zichantuijie  # 兴业资产管理有限公司_资产推介
+from azhuiguohou_zichantuijie import get_azhuiguohou_zichantuijie  # 安徽国厚金融资产管理有限公司_资产推介
+from suzhouzichan_zichantuijie import get_suzhouzichan_zichantuijie    # 苏州资产管理有限公司_资产推介
+from jiangxizichan_zichanzhanshi import get_jiangxizichan_zichanzhanshi    # 江西省金融资产管理股份有限公司_资产展示
+from jiangxiruijingzichan_zichantuijie import get_jiangxiruijin_zichantuijie   # 江西瑞京资产管理有限公司_资产推介
+from heilongjiangguoruizichan_xiangmutuijie import get_heilongjiangguoruizichan_xiangmutuijie    # 黑龙江国瑞资产管理有限公司_项目推介
+from yunnanzichan_zichantuijie import get_yunnanzichan_zichantuijie  # 云南省资产管理有限公司_资产推介
 
 
 methods = {
@@ -96,6 +103,14 @@ methods = {
     'http://www.henanamc.com.cn/zctj145': get_henanzichan_zichantuijie,    # 河南资产管理有限公司_资产推介
     'http://www.scdamc.com/zhichantuijian': sichuanfazhan_zichantuijie,    # 四川省发展资产管理有限公司_资产推介
     'https://www.zyamc.net/#/asset-zone/1': get_zhongyuanzichan_zichantuijie,    # 中原资产管理有限公司_资产推介
+    'http://www.ciamc.com.cn/ciamc/insetInfo/Refelral-Info.html': get_xinyezichan_zichantuijie,    # 兴业资产管理有限公司_资产推介
+    'http://www.gohoamc.com/recommend.php?class_id=107': get_azhuiguohou_zichantuijie,  # 安徽国厚金融资产管理有限公司_资产推介
+    'https://www.sz-amc.com/business/recommend': get_suzhouzichan_zichantuijie,   # 苏州资产管理有限公司_资产推介
+    'https://www.jxfamc.com/jxjrzc/zichanzhanshi/zczs.shtml': get_jiangxizichan_zichanzhanshi,   # 江西省资产管理公司_资产展示
+    'http://www.ruijingamc.com/#/available': get_jiangxiruijin_zichantuijie,   # 江西瑞京资产管理公司_资产推介
+    'https://www.gramc.com.cn/case': get_heilongjiangguoruizichan_xiangmutuijie,    # 黑龙江国瑞资产管理有限公司_项目推介
+    'http://www.yndamc.com/list/cnPC/1/18/auto/12/0.html': get_yunnanzichan_zichantuijie,   # 云南省资产管理有限公司_资产推介
+
 
 
 }
@@ -146,6 +161,13 @@ web_list = [
     'http://www.henanamc.com.cn/zctj145',
     'http://www.scdamc.com/zhichantuijian',
     'https://www.zyamc.net/#/asset-zone/1',
+    'http://www.ciamc.com.cn/ciamc/insetInfo/Refelral-Info.html',
+    'http://www.gohoamc.com/recommend.php?class_id=107',
+    'https://www.sz-amc.com/business/recommend',
+    'https://www.jxfamc.com/jxjrzc/zichanzhanshi/zczs.shtml',
+    'http://www.ruijingamc.com/#/available',
+    'https://www.gramc.com.cn/case',
+    'http://www.yndamc.com/list/cnPC/1/18/auto/12/0.html',
 ]
 
 

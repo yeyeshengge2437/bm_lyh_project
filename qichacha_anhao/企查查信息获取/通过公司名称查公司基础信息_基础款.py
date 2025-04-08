@@ -6,9 +6,7 @@ from datetime import datetime, timedelta
 from 验证码识别 import get_captcha
 import requests
 import time
-from lxml import etree
 from DrissionPage import ChromiumPage, ChromiumOptions
-from api_qcc import qcc_parse_success, qcc_parse_fail, qcc_parse_next, qcc_upload_detail_info, qcc_upload_info_list
 from qcc_auto_login import auto_login
 
 
@@ -66,7 +64,7 @@ def qcc_search_company_nibo(search_company_name):
         """
         这里输入账号密码许昂
         """
-        login_outcome = auto_login(tab, '18858289307', "jyls8891")
+        login_outcome = auto_login(tab, '15938554242', "liyongheng10")
         if login_outcome:
             print('登录成功')
         else:
@@ -149,6 +147,7 @@ def qcc_search_company_nibo(search_company_name):
                     # print(company_json)
                     company_detail = company_json["company"][
                         "companyDetail"]  # ["company"]["companyDetail"]["TagsInfoV2"][2]["Name"]
+                    print(company_detail)
                     if company_detail.get('DJInfo'):
                         company_detail_dj = company_detail.get('DJInfo')
                         company_old_name_list = company_detail.get(
@@ -249,6 +248,21 @@ def qcc_search_company_nibo(search_company_name):
                             common_kd = common.get('KeyDesc')  # 通用消息key
                             if common_kd == '参保人数':
                                 enrollment_num = common.get('Value')  # 参保人数
+                    enrollment_year_ = ''  # 参保年份
+                    annual_report_info = company_detail.get('StaffHisCntPopUpInfo')  # 获取年报信息
+                    if annual_report_info:
+                        for annual_report in annual_report_info:
+                            if annual_report.get('TypeDesc'):
+                                if annual_report.get('TypeDesc') == '工商年报':
+                                    enrollment_year_list = annual_report.get('YearList')  # 参保年份
+                                    if enrollment_year_list:
+                                        for enrollment_year in enrollment_year_list:
+                                            if enrollment_year.get('SourceDesc'):
+                                                if enrollment_year.get('SourceDesc') == '参保人数':
+                                                    enrollment_year_ += str(enrollment_year.get('Year'))
+                                                    break
+                    if enrollment_year_:
+                        enrollment_num += f'({enrollment_year_})年报'
                     check_date = company_detail.get('CheckDate')  # 核准日期
                     if check_date:
                         check_date = (datetime.utcfromtimestamp(check_date) + timedelta(days=1)).strftime(
@@ -285,7 +299,7 @@ def qcc_search_company_nibo(search_company_name):
                     if period_bus_start:
                         try:
                             period_bus_start = (
-                                        datetime.utcfromtimestamp(period_bus_start) + timedelta(days=1)).strftime(
+                                    datetime.utcfromtimestamp(period_bus_start) + timedelta(days=1)).strftime(
                                 "%Y-%m-%d")
                         except:
                             period_bus_start = ''

@@ -72,7 +72,8 @@ def get_henanzichan_zichantuijie(queue_id, webpage_id):
                         title_date = ''
 
                     title_content_html = res_title_html1["obj"]["detail"]
-                    title_content = etree.HTML(title_content_html).xpath("//text()")
+                    title_content = etree.HTML(title_content_html)
+                    title_content = ''.join(title_content.xpath("//text()"))
 
                     annex = ''
                     if annex:
@@ -110,6 +111,7 @@ def get_henanzichan_zichantuijie(queue_id, webpage_id):
                         image = get_now_image(page, title_url)
                     create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     create_date = datetime.now().strftime('%Y-%m-%d')
+                    # print(title_name, title_url, title_date, original_url, files)
                     # 上传到测试数据库
                     conn_test = mysql.connector.connect(
                         host="rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
