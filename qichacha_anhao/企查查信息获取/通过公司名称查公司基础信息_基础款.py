@@ -62,7 +62,7 @@ def qcc_search_company_nibo(search_company_name):
         tab.ele("xpath=//div[@class='qccd-modal-body']/div[@class='qcc-login']", timeout=3)
         # 登录账号
         """
-        这里输入账号密码许昂
+        这里输入账号密码
         """
         login_outcome = auto_login(tab, '15938554242', "liyongheng10")
         if login_outcome:

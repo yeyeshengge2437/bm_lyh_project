@@ -83,39 +83,45 @@ def get_api(url, key_no, pid, tid, cookies, json_data=None):
 def get_response(url, key_no, pid, tid, cookies, params=None):
     main_member = get_api(url, key_no, pid, tid, cookies).json()
     print(main_member)
+    return main_member
 
-url = 'https://www.qcc.com/api/datalist/mainmember?isNewAgg=true&keyNo=e01ade065389b3428b6ede6dc941cd3a&nodeName=Employees&pageIndex=2'
-key_no = 'e01ade065389b3428b6ede6dc941cd3a'
-pid = 'd286822c69c92897df86b6eb1767a5fa'
-tid = '202c66ff69f1b03090b9e46d5ee4cb98'
-cookies = {
-    'QCCSESSID': 'c8fd4cec040da168dbf740bd7c',
-    'qcc_did': 'c92dff49-b4b9-430f-b2d3-55f2f7114522',
-    'UM_distinctid': '196140bf3052b11-0e7e33fa5ab18f-26011d51-13c680-196140bf3061661',
-    'tfstk': 'gcXnKhZa_6RQ4uQxJNJQiBAdvPVTAD9WoaHJyLLz_F8sJ2Hd4L8lzFBpJMpEzYbk5XHLAQQMqNSXwLpLO3mCIZD-pyNC4YvJUrUYH-IBvL9zkcad56iB23hrU4drbFJJqNlC4djCALi6xZSfPMgomUD18L7yQC-JVL-rUYribnYZL3ke4VrMVFJrzeJr_F-D4HJyUaSaj3TwzA3EbeQPROz6U9AuBHDhGHAHuM8FvMBZlChC4FqabOfpKEykSYkPIHjtax1qn7LVGedvlNytKLjwqNAAtrDhrgSfaCXo8kQV4w6MdKV8AIfN6sdhsykkW9KkgLRi4YSMIF_cBKyqSh1Nv_WC-0DyA9BvZEOg4YOJQtdVgwm7cGJe4aOferMB8gSfhsp0Kqth_ivG4LGZghjsFhrRQbGWThtMknhlAvrp6eD4jlcVGB-6Y-EgjbGWThtMklqigrOefHyA.',
-    'acw_tc': '0a47308617441890120471609e01619f37142320e0de3cb5108326bafc624d',
-    'CNZZDATA1254842228': '51069784-1744093050-%7C1744190044',
-}
-get_response(url, key_no, pid, tid, cookies)
+# url = 'https://www.qcc.com/api/datalist/mainmember?isNewAgg=true&keyNo=e01ade065389b3428b6ede6dc941cd3a&nodeName=Employees&pageIndex=2'
+# key_no = 'e01ade065389b3428b6ede6dc941cd3a'
+# pid = 'd286822c69c92897df86b6eb1767a5fa'
+# tid = '202c66ff69f1b03090b9e46d5ee4cb98'
+# cookies = {
+#     'QCCSESSID': 'c8fd4cec040da168dbf740bd7c',
+#     'qcc_did': 'c92dff49-b4b9-430f-b2d3-55f2f7114522',
+#     'UM_distinctid': '196140bf3052b11-0e7e33fa5ab18f-26011d51-13c680-196140bf3061661',
+#     'tfstk': 'gcXnKhZa_6RQ4uQxJNJQiBAdvPVTAD9WoaHJyLLz_F8sJ2Hd4L8lzFBpJMpEzYbk5XHLAQQMqNSXwLpLO3mCIZD-pyNC4YvJUrUYH-IBvL9zkcad56iB23hrU4drbFJJqNlC4djCALi6xZSfPMgomUD18L7yQC-JVL-rUYribnYZL3ke4VrMVFJrzeJr_F-D4HJyUaSaj3TwzA3EbeQPROz6U9AuBHDhGHAHuM8FvMBZlChC4FqabOfpKEykSYkPIHjtax1qn7LVGedvlNytKLjwqNAAtrDhrgSfaCXo8kQV4w6MdKV8AIfN6sdhsykkW9KkgLRi4YSMIF_cBKyqSh1Nv_WC-0DyA9BvZEOg4YOJQtdVgwm7cGJe4aOferMB8gSfhsp0Kqth_ivG4LGZghjsFhrRQbGWThtMknhlAvrp6eD4jlcVGB-6Y-EgjbGWThtMklqigrOefHyA.',
+#     'acw_tc': '0a47308617441890120471609e01619f37142320e0de3cb5108326bafc624d',
+#     'CNZZDATA1254842228': '51069784-1744093050-%7C1744190044',
+# }
+# get_response(url, key_no, pid, tid, cookies)
 
-# if __name__ == '__main__':
-#     # 以某企业为例
-#     key_no = 'aee58eada8653b42219d5a49a0579668'
-#     pid = 'cdf1ed52eb66ae9a3604ca5de50dd168'
-#     tid = '1337360c2151ab8820984ba1bc4e9645'
-#
-#     # 请求可能需要会员，如果没有会员可以访问其他不需要会员的接口
-#     get_url = f'https://www.qcc.com/api/datalist/noticelist?isNewAgg=true&keyNo=aee58eada8653b42219d5a49a0579668&KeyNo=aee58eada8653b42219d5a49a0579668&pageIndex=1'
-#     main_member = get_api(get_url, key_no, pid, tid).json()
-#     print(main_member)
-#
-#     # # post请求
-#     # post_url = 'https://www.qcc.com/api/datalist/noticelist'
-#     # json_data = {
-#     #     'isNewAgg': 'true',
-#     #     'keyNo': 'aee58eada8653b42219d5a49a0579668',
-#     #     'KeyNo': 'aee58eada8653b42219d5a49a0579668',
-#     #     'pageIndex': '1',
-#     # }
-#     # financial = post_api(post_url, key_no, pid, tid, json_data=json_data).json()
-#     # print(financial)
+
+def post_response(url, key_no, pid, tid, cookies, json_data=None):
+    financial = post_api(url, key_no, pid, tid, cookies, json_data=json_data).json()
+    print(financial)
+    return financial
+
+# url = f'https://www.qcc.com/api/datalist/changelist'
+# key_no = '9cce0780ab7644008b73bc2120479d31'
+# pid = '708896223eaab213e0b8126b57e77375'
+# tid = '202c66ff69f1b03090b9e46d5ee4cb98'
+# cookies = {
+#     'QCCSESSID': 'c8fd4cec040da168dbf740bd7c',
+#     'qcc_did': 'c92dff49-b4b9-430f-b2d3-55f2f7114522',
+#     'UM_distinctid': '196140bf3052b11-0e7e33fa5ab18f-26011d51-13c680-196140bf3061661',
+#     'tfstk': 'gcXnKhZa_6RQ4uQxJNJQiBAdvPVTAD9WoaHJyLLz_F8sJ2Hd4L8lzFBpJMpEzYbk5XHLAQQMqNSXwLpLO3mCIZD-pyNC4YvJUrUYH-IBvL9zkcad56iB23hrU4drbFJJqNlC4djCALi6xZSfPMgomUD18L7yQC-JVL-rUYribnYZL3ke4VrMVFJrzeJr_F-D4HJyUaSaj3TwzA3EbeQPROz6U9AuBHDhGHAHuM8FvMBZlChC4FqabOfpKEykSYkPIHjtax1qn7LVGedvlNytKLjwqNAAtrDhrgSfaCXo8kQV4w6MdKV8AIfN6sdhsykkW9KkgLRi4YSMIF_cBKyqSh1Nv_WC-0DyA9BvZEOg4YOJQtdVgwm7cGJe4aOferMB8gSfhsp0Kqth_ivG4LGZghjsFhrRQbGWThtMknhlAvrp6eD4jlcVGB-6Y-EgjbGWThtMklqigrOefHyA.',
+#     'acw_tc': '0a47308817441951581953909e003f9ca72aa9e11dee85309b304ce6d8c6e1',
+#     'CNZZDATA1254842228': '51069784-1744093050-%7C1744195242',
+# }
+# json_data = {
+#     'keyNo': '9cce0780ab7644008b73bc2120479d31',
+#     'pageIndex': 2,
+#     'isNewAgg': True,
+#     'isAggs': True,
+# }
+# post_response(url, key_no, pid, tid, cookies, json_data)
+

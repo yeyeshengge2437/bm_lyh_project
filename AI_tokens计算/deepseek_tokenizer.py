@@ -8,5 +8,5 @@ tokenizer = transformers.AutoTokenizer.from_pretrained(
         chat_tokenizer_dir, trust_remote_code=True
         )
 
-result = tokenizer.encode("Hello!")
-print(result)
+result = tokenizer.encode("hello!")
+print(len(result), result)
