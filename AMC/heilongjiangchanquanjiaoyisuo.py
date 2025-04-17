@@ -174,9 +174,12 @@ def get_heilongjiangchanquanjiaoyisuo(queue_id, webpage_id):
 
                     cursor_test.close()
                     conn_test.close()
-            page.close()
-    except Exception as e:
         page.close()
+    except Exception as e:
+        try:
+            page.close()
+        except:
+            pass
         raise Exception(e)
 
 

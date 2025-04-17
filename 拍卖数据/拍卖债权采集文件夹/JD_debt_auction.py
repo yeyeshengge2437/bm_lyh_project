@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import json
 import os
 from typing import Dict
-
+from api_paimai import upload_file_by_url
 import requests
 
 from a_mysql_connection_pool import get_connection
@@ -299,10 +299,9 @@ def get_jd_attracting_null_url():
 def get_jd_attracting_data(id_, url, url_name, from_queue):
     """
     获取京东债权拍卖数据
-    :param id: 数据库id
+    :param id_: 数据库id
     :param url: 链接
     :param url_name: 链接名称
-    :param state: 状态
     :param from_queue: 来源队列
     :return:
     """
@@ -462,13 +461,18 @@ def get_jd_auction_detail(id_, url, url_name, state, from_queue, state_now=''):
         "//li[2]/div[@class='index_label__Nie1n ']/div[@id='right-content']//span[contains(@class, 'index_value__YfM3M ')]/text()"))
     sold_price = ''.join(tree.xpath("//div[@class='priceInfoItemPriceWrap']//text()"))
     sold_price = ''.join(re.findall(r'¥(.*)', sold_price))
+    sold_price = re.sub(r'保证金.*', '', sold_price)
+    sold_price = re.sub(r'变卖.*', '', sold_price)
     outcome = ''.join(tree.xpath("//div[@class='index_auctionstatusbanner__statustext__RxEYN']/span//text()"))
     end_time = ''
     start_time = ''
     if state_now == '已结束' or state_now == '进行中':
-        end_time = ''.join(tree.xpath("//div[@class='index_auctionstatusbanner__endtime__7-dda']/text()"))
-        end_time = ''.join(re.findall(r'(\d{4}年\d{2}月\d{2}日 \d{2}:\d{2}:\d{2})', end_time))  # 结束时间
+        end_time_str = ''.join(tree.xpath(
+            "//div[@class='index_auctionstatusbanner__endtime__7-dda']/text() | //div[@class='main-block-content']/div[1]//text()"))
+        end_time = ''.join(re.findall(r'(\d{4}年\d{2}月\d{2}日 \d{2}:\d{2}:\d{2})', end_time_str))  # 结束时间
         end_time = end_time.replace('年', '-').replace('月', '-').replace('日', '')
+        if not end_time:
+            end_time = ''.join(re.findall(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})', end_time_str))  # 结束时间
     elif state_now == '预告中':
         distance_end = ''.join(tree.xpath("//div[@class='index_countdown__remainTime__O7MNa']/div//text()"))
         if not distance_end:
@@ -487,18 +491,28 @@ def get_jd_auction_detail(id_, url, url_name, state, from_queue, state_now=''):
     people_num = ''.join(re.findall(r'(\d+)人报名', people_num))
     # subject_info_etree = tree.xpath("//div[@class='paimaiDetailContainer']/div[@class='pm-content']/ul[@class='floors']/li[3]")  # 标的物信息_html
     subject_info_etree = tree.xpath(
-        "//div[@class='paimaiDetailContainer']/div[@class='pm-content']/ul[@class='floors']/li[3]")  # 标的物信息_html
+        "//div[@class='paimaiDetailContainer']/div[@class='pm-content']/ul[@class='floors']/li | //div[@id='pmMainFloor']/ul[@class='floors']/li")  # 标的物信息_html
     subject_info = ''
-    for con in subject_info_etree:
-        subject_info += etree.tostring(con, encoding='utf-8').decode()
+    for subject_con in subject_info_etree:
+        subject_con_str = subject_con.xpath(".//text()")
+        if '标的物详情描述' in subject_con_str:
+            subject_info += etree.tostring(subject_con, encoding='utf-8').decode()
+
     subject_annex_up_list = tree.xpath("//ul[@class='floors']//@href")  # 标的物信息附件上传
+    subject_annex = ''
     subject_annex_up = ''
     for annex in subject_annex_up_list:
         if annex == 'http://zichan.jd.com/':
             continue
         else:
-            subject_annex_up += annex + ','
-    subject_annex_up = subject_annex_up[:-1]
+            file_name = random.randint(100000, 999999)
+            url_type = annex.split('.')[-1]
+            if url_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
+                            'png', 'jpg', 'jpeg', "PDF"]:
+                file_url = upload_file_by_url(annex, f"{file_name}", url_type)
+                subject_annex += annex + ','
+                subject_annex_up += file_url + ','
+    subject_annex = str(subject_annex[:-1])
     auction_html_etree = tree.xpath("//div[@class='pm-content']//li[@class='floor index_floor__1u9-C'][1]")  # 拍卖公告_html
     auction_html = ''
     for con in auction_html_etree:
@@ -536,7 +550,7 @@ def get_jd_auction_detail(id_, url, url_name, state, from_queue, state_now=''):
                          outcome,
                          end_time, procedure_str, auction_html, subject_annex_up,
                          subject_info,
-                         disposal_unit, auction_history, people_num, subject_annex_up,
+                         disposal_unit, auction_history, people_num, subject_annex,
                          create_time,
                          create_date, from_queue, id_))
     conn_test.commit()
@@ -567,6 +581,9 @@ def investment(from_queue):
         else:
             break
 
-auction("5678")
-# investment('5678')
+
+while True:
+    time.sleep(1)
+    auction("5678")
+    investment('5678')
 # get_jd_auction_null_url()

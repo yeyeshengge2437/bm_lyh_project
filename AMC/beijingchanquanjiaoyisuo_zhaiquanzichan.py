@@ -18,9 +18,9 @@ co.set_paths(local_port=9166)
 
 cookies = {
     '__jsluid_s': '7f71097b1651f22cd58bcb96c8ee8893',
+    '__jsl_clearance_s': '1744769305.757|0|Eg5%2BKeEQ98UF0WTMbRxo3zOCz4c%3D',
     'csrftoken': 'c987c5f9-d9c1-4eab-88d6-50b05e35083d',
-    'JSESSIONID': '7C845A44F2B9B6362D51EC848E97947D',
-    '__jsl_clearance_s': '1740394949.507|0|mh%2BnZQbOS2Fr0GDpXRlXdQx6qxE%3D',
+    'JSESSIONID': '9B6C85611337FB44ADD1E99B9641C42B',
 }
 
 
@@ -53,20 +53,33 @@ def get_beijingchanquanjiaoyi_zhaiquanzichan(queue_id, webpage_id):
     #     cookie_dict[key['name']] = key['value']
     # print(cookie_dict)
     try:
-        # for zq_type in ['G3', 'PG3']:
-        for zq_type in ['PG3']:
-            params = {
-                # 'callback': 'jQuery01495191642176319_1740378992052',
-                'fromPage': '1',
-                'pageSize': '2000',
-                'businessType': 'ZQ',
-                'disclosureType': f'{zq_type}',
-                'sortProperty': 'disclosuretime',
-                'sortDirection': '1',
-                'mark': 'xm',
-                # 'csrftoken': '-799914037',
-                # '_': '1740378992053',
-            }
+        for zq_type in ['G3', 'PG3', 'TJ3']:
+        # for zq_type in ['PG3']:
+            if zq_type == 'G3' or zq_type == 'PG3':
+                params = {
+                    # 'callback': 'jQuery01495191642176319_1740378992052',
+                    'fromPage': '1',
+                    'pageSize': '2000',
+                    'businessType': 'ZQ',
+                    'disclosureType': f'{zq_type}',
+                    'sortProperty': 'disclosuretime',
+                    'sortDirection': '1',
+                    'mark': 'xm',
+                    # 'csrftoken': '-799914037',
+                    # '_': '1740378992053',
+                }
+            else:
+                params = {
+                    # 'callback': 'jQuery02000546915719298_1744769826749',
+                    'fromPage': '1',
+                    'pageSize': '2000',
+                    'businessType': 'TJ',
+                    'disclosureType': 'TJ3',
+                    'assetType': 'tj_jrzq',
+                    'sortProperty': 'disclosuretime',
+                    'sortDirection': '1',
+                    # '_': '1744769826751',
+                }
 
             img_set = set()
             name = '北京产权交易所_债权资产'
@@ -75,6 +88,7 @@ def get_beijingchanquanjiaoyi_zhaiquanzichan(queue_id, webpage_id):
             res = requests.get('https://www.cbex.com.cn/onss-api/jsonp/project/search',
                                headers=headers, cookies=cookies, params=params)
             # print(res.text)
+            # return
             res_json = res.json()
             data_list = res_json["data"]["data"]
 
@@ -102,7 +116,7 @@ def get_beijingchanquanjiaoyi_zhaiquanzichan(queue_id, webpage_id):
                 if title_url not in title_set:
                     title_content = "".join(res_html.xpath("//div[@id='project-table-box']//text() | //div[@class='main']//text()"))
 
-                    annex = res_html.xpath("//li[@class='infoShow']//a/@href")
+                    annex = res_html.xpath("//li[@class='infoShow']//a/@href | //div[@id='project-table-box']//a/@href")
                     if annex:
                         # print(page_url, annex)
                         files = []
@@ -180,9 +194,12 @@ def get_beijingchanquanjiaoyi_zhaiquanzichan(queue_id, webpage_id):
 
                     cursor_test.close()
                     conn_test.close()
-            page.close()
-    except Exception as e:
         page.close()
+    except Exception as e:
+        try:
+            page.close()
+        except:
+            pass
         raise Exception(e)
 
 

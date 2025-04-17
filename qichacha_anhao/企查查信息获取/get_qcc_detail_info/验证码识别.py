@@ -81,3 +81,5 @@ def get_captcha(page, iframe_url=None):
             time.sleep(0.5)
         # 点击确定按钮
         tab.ele("确定").click(by_js=True)
+    else:
+        return False

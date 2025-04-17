@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 import mysql.connector
 from DrissionPage import ChromiumPage, ChromiumOptions
 from DrissionPage.common import Settings
-from fake_useragent import UserAgent
 import tempfile
 from a_mysql_connection_pool import get_connection
 import random
@@ -78,7 +77,9 @@ def remove_styles(tree):
 
 def by_keyword_search(web_queue_id, webpage_id, webpage_url, keyword):
     co = ChromiumOptions()
-    co = co.set_user_data_path(r"D:\chome_data\jingdong")
+    co.set_argument('--incognito')
+    co.set_argument(f'--user-data-dir={tempfile.mkdtemp()}')
+    # co = co.set_user_data_path(r"D:\chome_data\jingdong")
     Settings.smart_launch = False
     Settings.ignore_certificate_errors = True
     # co.set_argument('--disable-blink-features=AutomationControlled')
@@ -89,17 +90,15 @@ def by_keyword_search(web_queue_id, webpage_id, webpage_url, keyword):
     co.set_paths(local_port=9212)
 
     page = ChromiumPage(co)
-    page.get('https://auction.jd.com/sifa.html')
+    page.get(f'https://pmsearch.jd.com/?publishSource=&projectType=&searchParam={keyword}&enc=utf-8')
     page.wait.doc_loaded()
     time.sleep(4)
-    page.ele("xpath=//input[@id='searchText']").input(keyword)
-    time.sleep(random.randint(1, 7))
-    page.ele("xpath=//button[@id='searchButton']").click(by_js=True)
     search_tab = page.latest_tab
     search_tab.wait.doc_loaded()
     time.sleep(4)
-    search_tab.ele("xpath=//div[@class='s-line assets-type ']//li[1]//i").click(by_js=True)
-    time.sleep(4)
+    # input()
+    # search_tab.ele("xpath=//div[@class='s-line assets-type ']//li[1]//i").click(by_js=True)
+    # time.sleep(4)
     info_list = search_tab.eles("xpath=//div[@id='root']//div[@class='goods-list-container']/ul/li")
     data_list = []
     for info in info_list:

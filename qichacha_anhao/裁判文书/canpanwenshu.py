@@ -1,12 +1,14 @@
 """
 裁判文书下载, https://wenshu.court.gov.cn/website/wenshu/181029CR4M5A62CH/index.html
 """
+import base64
 import re
 import time
+import ddddocr
 from lxml import etree
 from DrissionPage import ChromiumPage, ChromiumOptions
 
-
+ocr = ddddocr.DdddOcr(show_ad=False)
 co = ChromiumOptions()
 co = co.set_user_data_path(r'D:\chome_data\data_one')
 co.set_paths(local_port=9136)
@@ -16,8 +18,9 @@ anhao_set = {'（2023）甘01民终7998号', '（2019）辽01执异461号', '（
 # 连接浏览器
 page = ChromiumPage()
 tab = page.get_tab()
+taget_url = 'https://account.court.gov.cn/app?back_url=https%3A%2F%2Faccount.court.gov.cn%2Foauth%2Fauthorize%3Fresponse_type%3Dcode%26client_id%3Dzgcpwsw%26redirect_uri%3Dhttps%253A%252F%252Fwenshu.court.gov.cn%252FCallBackController%252FauthorizeCallBack%26state%3D421fc4a4-5cc2-4ecd-bb44-257b1a17ee98%26timestamp%3D1732779592364%26signature%3DA4C212AFA550EFA5E27D9A3E094A741A7A14BCE6873A632A4CF587CF76474838%26scope%3Duserinfo#/login'
 # 访问网页
-tab.get('https://account.court.gov.cn/app?back_url=https%3A%2F%2Faccount.court.gov.cn%2Foauth%2Fauthorize%3Fresponse_type%3Dcode%26client_id%3Dzgcpwsw%26redirect_uri%3Dhttps%253A%252F%252Fwenshu.court.gov.cn%252FCallBackController%252FauthorizeCallBack%26state%3D421fc4a4-5cc2-4ecd-bb44-257b1a17ee98%26timestamp%3D1732779592364%26signature%3DA4C212AFA550EFA5E27D9A3E094A741A7A14BCE6873A632A4CF587CF76474838%26scope%3Duserinfo#/login')
+tab.get(taget_url)
 # print(tab.html)
 time.sleep(3)
 
@@ -27,11 +30,40 @@ time.sleep(2)
 # login
 password = tab.ele("@class=password",).input('Liyongheng10!', by_js=True)
 time.sleep(2)
-# password.click(by_js=True)
-# password
+tab.ele("@class=captcha-img").click(by_js=True)
+time.sleep(5)
+image_captcha = tab.ele("xpath=//img[@class='captcha-img']")
+image_value = image_captcha.get_screenshot(as_base64=True)
+value_captcha = base64.b64decode(image_value)
+captcha = ocr.classification(value_captcha)
+captcha = captcha.lower()
+# print(f'验证码是{captcha}')
+tab.ele("@class=answer").input(captcha)
+time.sleep(4)
 tab.ele("@class=button button-primary").click(by_js=True)
 time.sleep(8)
 tab.refresh()
+if tab.url == taget_url:
+    time.sleep(3)
+
+    login = tab.ele("@class=phone-number-input", ).input('15938554242', by_js=True)
+    time.sleep(2)
+    # login.click(by_js=True)
+    # login
+    password = tab.ele("@class=password", ).input('Liyongheng10!', by_js=True)
+    time.sleep(2)
+    tab.ele("@class=captcha-img").click(by_js=True)
+    time.sleep(5)
+    image_captcha = tab.ele("xpath=//img[@class='captcha-img']")
+    image_value = image_captcha.get_screenshot(as_base64=True)
+    value_captcha = base64.b64decode(image_value)
+    captcha = ocr.classification(value_captcha)
+    captcha = captcha.lower()
+    # print(f'验证码是{captcha}')
+    tab.ele("@class=answer").input(captcha)
+    time.sleep(4)
+    tab.ele("@class=button button-primary").click(by_js=True)
+    time.sleep(8)
 # print(tab.html)
 # tab.ele("@id=loginLi").click(by_js=True)
 tab.ele("@class=searchKey search-inp").input("开始123", by_js=True)

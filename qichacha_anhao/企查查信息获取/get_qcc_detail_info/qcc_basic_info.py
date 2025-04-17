@@ -7,13 +7,37 @@ import math
 import random
 import re
 from datetime import datetime, timedelta
-
+import hashlib
 from 验证码识别 import get_captcha
 import requests
 import time
 from DrissionPage import ChromiumPage, ChromiumOptions
 from qcc_auto_login import auto_login
 from qcc_api_res import get_response, post_response
+from a_mysql_connection_pool import up_qcc_data, up_qcc_res_data, get_ban_data, del_ban_data
+
+
+def generate_md5(data):
+    """
+    生成输入数据的 MD5 哈希值
+
+    参数:
+        data: 可以是字符串、字典、列表等
+
+    返回:
+        返回数据的 MD5 哈希值（32位十六进制字符串）
+    """
+    # 如果是字典或列表，先转成 JSON 字符串
+    if isinstance(data, (dict, list)):
+        data = json.dumps(data, sort_keys=True, ensure_ascii=False)
+
+    # 如果是字符串，编码成字节
+    if isinstance(data, str):
+        data = data.encode('utf-8')
+
+    # 计算 MD5
+    md5_hash = hashlib.md5(data)
+    return md5_hash.hexdigest()
 
 
 def timenum_to_time(timenum):
@@ -43,12 +67,32 @@ headers = {
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
 }
 
-def encounter_captcha(value_json):
+
+def encounter_captcha(value_json, page):
     if value_json.get('message'):
         if value_json.get('message') == '未满足前提条件':
-            input('遇到验证码')
+            print("网站限制")
+            page.refresh()
+            time.sleep(8)
+            try:
+                get_captcha(page)
+                page.refresh()
+                time.sleep(5)
+                if page.ele("xpath=//input[@id='searchKey']"):
+                    return "验证码识别成功"
+                else:
+                    return False
+            except:
+                print("不是验证码")
+                time.sleep(3600)
+                return False
+    else:
+        return "没有遇到验证码"
+
 
 def qcc_search_company(search_company_name):
+    from_queue = 1234
+    webpage_id = 1234
     search_company_name = search_company_name
     hit_field_list = ['曾用名']  # 股东，曾用名
     random_num = random.randint(1, 6)
@@ -222,15 +266,19 @@ def qcc_search_company(search_company_name):
                     if 0 < partner_num <= 50:
                         company_partners = company_json["datalist"]["partner"]
                     # 多于50个的情况下
-                    elif partner_num > 50:    # 股东信息可以显示超过十个
+                    elif partner_num > 50:  # 股东信息可以显示超过十个
                         company_partners = []
                         partner_page = math.ceil(partner_num / 50)
-                        for page in range(1, partner_page + 1):
-                            partner_url = f'https://www.qcc.com/api/datalist/partner?keyNo={key_no}&pageIndex={page}&pageSize=50&type=IpoPartners'
+                        for page_ in range(1, partner_page + 1):
+                            partner_url = f'https://www.qcc.com/api/datalist/partner?keyNo={key_no}&pageIndex={page_}&pageSize=50&type=IpoPartners'
                             partner_value = get_response(partner_url, key_no, pid, tid, cookie_dict)
-                            encounter_captcha(partner_value)
-                            company_partners.append(partner_value)
-                            time.sleep(7)
+                            captcha_value = encounter_captcha(partner_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                company_partners.append(partner_value)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                up_qcc_res_data(partner_url, 'shareholder', 'get', '', key_no, webpage_id)
                     else:
                         company_partners = []
                     # 主要人员
@@ -242,31 +290,41 @@ def qcc_search_company(search_company_name):
                     elif employees_num > 10:
                         company_employees = []
                         employees_page = math.ceil(employees_num / 10)
-                        for page in range(1, employees_page + 1):
-                            employees_url = f'https://www.qcc.com/api/datalist/mainmember?isNewAgg=true&keyNo={key_no}&nodeName=Employees&pageIndex={page}'
+                        for page_ in range(1, employees_page + 1):
+                            employees_url = f'https://www.qcc.com/api/datalist/mainmember?isNewAgg=true&keyNo={key_no}&nodeName=Employees&pageIndex={page_}'
                             employees_value = get_response(employees_url, key_no, pid, tid, cookie_dict)
-                            encounter_captcha(employees_value)
-                            company_employees.append(employees_value)
-                            time.sleep(7)
+                            captcha_value = encounter_captcha(employees_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                company_partners.append(employees_value)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                up_qcc_res_data(employees_url, 'shareholder', 'get', '', key_no, webpage_id)
+
                     else:
                         company_employees = []
                     # 对外投资
                     touzilist_num = inquire_dict.get('对外投资')
                     # 少于10个的情况下
                     if 0 < touzilist_num <= 10:
-                        company_touzilist = company_json["datalist"]["touzilist"]["data"]
+                        company_touzilist = company_json["datalist"]["touzilist"][0]["data"]
                     # 多于10个的情况下
                     elif touzilist_num > 10:
                         company_touzilist = []
                         touzilist_page = math.ceil(touzilist_num / 10)
-                        for page in range(1, touzilist_page + 1):
-                            touzilist_url = f'https://www.qcc.com/api/datalist/touzilist?isNewAgg=true&keyNo={key_no}&pageIndex={page}'
+                        for page_ in range(1, touzilist_page + 1):
+                            touzilist_url = f'https://www.qcc.com/api/datalist/touzilist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}'
                             touzilist_value = get_response(touzilist_url, key_no, pid, tid, cookie_dict)
-                            encounter_captcha(touzilist_value)
-                            touzilist_value_data = touzilist_value["data"]
-                            for touzilist_data in touzilist_value_data:
-                                company_touzilist.append(touzilist_data)
-                            time.sleep(7)
+                            captcha_value = encounter_captcha(touzilist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                touzilist_value_data = touzilist_value["data"]
+                                for touzilist_data in touzilist_value_data:
+                                    company_touzilist.append(touzilist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                up_qcc_res_data(touzilist_url, 'invest', 'get', '', key_no, webpage_id)
+
                     else:
                         company_touzilist = []
                     # # 间接对外投资
@@ -277,10 +335,10 @@ def qcc_search_company(search_company_name):
                     # elif touzilist_num > 10:
                     #     company_holdcolist = []
                     #     holdcolist_page = math.ceil(touzilist_num / 10)
-                    #     for page in range(1, holdcolist_page + 1):
-                    #         holdcolist_url = f'https://www.qcc.com/api/datalist/indirecttouzilist?isNewAgg=true&keyNo={key_no}&pageIndex={page}'
+                    #     for page_ in range(1, holdcolist_page + 1):
+                    #         holdcolist_url = f'https://www.qcc.com/api/datalist/indirecttouzilist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}'
                     #         holdcolist_value = get_response(holdcolist_url, key_no, pid, tid, cookie_dict)
-                    #         encounter_captcha(holdcolist_value)
+                    #         encounter_captcha(holdcolist_value, page)
                     #
                     #         company_holdcolist.append(holdcolist_value)
                     #         time.sleep(7)
@@ -295,14 +353,19 @@ def qcc_search_company(search_company_name):
                     elif histouzilist_num > 10:
                         chistory_histouzilist = []
                         histouzilist_page = math.ceil(histouzilist_num / 10)
-                        for page in range(1, histouzilist_page + 1):
-                            histouzilist_url = f'https://www.qcc.com/api/datalist/touzilist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page}'
+                        for page_ in range(1, histouzilist_page + 1):
+                            histouzilist_url = f'https://www.qcc.com/api/datalist/touzilist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page_}'
                             histouzilist_value = get_response(histouzilist_url, key_no, pid, tid, cookie_dict)
-                            encounter_captcha(histouzilist_value)
-                            histouzilist_value_data = histouzilist_value['data']
-                            for histouzilist_data in histouzilist_value_data:
-                                chistory_histouzilist.append(histouzilist_data)
-                            time.sleep(7)
+                            captcha_value = encounter_captcha(histouzilist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                histouzilist_value_data = histouzilist_value['data']
+                                for histouzilist_data in histouzilist_value_data:
+                                    chistory_histouzilist.append(histouzilist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                up_qcc_res_data(histouzilist_url, 'his_invest', 'get', '', key_no, webpage_id)
+
                     else:
                         chistory_histouzilist = []
                     # 变更记录
@@ -314,20 +377,26 @@ def qcc_search_company(search_company_name):
                     elif changelist_num > 10:
                         company_changelist = []
                         changelist_page = math.ceil(changelist_num / 10)
-                        for page in range(1, changelist_page + 1):
+                        for page_ in range(1, changelist_page + 1):
                             changelist_url = f'https://www.qcc.com/api/datalist/changelist'
                             json_data = {
                                 'keyNo': f'{key_no}',
-                                'pageIndex': page,
+                                'pageIndex': page_,
                                 'isNewAgg': True,
                                 'isAggs': True,
                             }
                             changelist_value = post_response(changelist_url, key_no, pid, tid, cookie_dict, json_data)
-                            encounter_captcha(changelist_value)
-                            changelist_value_data = changelist_value['data']
-                            for changelist_data in changelist_value_data:
-                                company_changelist.append(changelist_data)
-                            time.sleep(7)
+                            captcha_value = encounter_captcha(changelist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                changelist_value_data = changelist_value['data']
+                                for changelist_data in changelist_value_data:
+                                    company_changelist.append(changelist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(changelist_url, 'business_change', 'post', json_data, key_no, webpage_id)
+
                     else:
                         company_changelist = []
                     # 企业年报
@@ -346,19 +415,25 @@ def qcc_search_company(search_company_name):
                     elif suspectlist_num > 10:
                         company_suspectlist = []
                         suspectlist_page = math.ceil(suspectlist_num / 10)
-                        for page in range(1, suspectlist_page + 1):
+                        for page_ in range(1, suspectlist_page + 1):
                             suspectlist_url = f'https://www.qcc.com/api/datalist/suspectlist'
                             json_data = {
                                 'keyNo': f'{key_no}',
-                                'pageIndex': page,
+                                'pageIndex': page_,
                                 'isNewAgg': True,
                             }
                             suspectlist_value = post_response(suspectlist_url, key_no, pid, tid, cookie_dict, json_data)
-                            encounter_captcha(suspectlist_value)
-                            suspectlist_value_data = suspectlist_value['data']
-                            for suspectlist_data in suspectlist_value_data:
-                                company_suspectlist.append(suspectlist_data)
-                            time.sleep(7)
+                            captcha_value = encounter_captcha(suspectlist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                suspectlist_value_data = suspectlist_value['data']
+                                for suspectlist_data in suspectlist_value_data:
+                                    company_suspectlist.append(suspectlist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(suspectlist_url, 'suspect', 'post', json_data, key_no, webpage_id)
+
                     else:
                         company_suspectlist = []
 
@@ -374,14 +449,18 @@ def qcc_search_company(search_company_name):
                     elif susong_caselist_num > 10:
                         susong_caselist = []
                         caselist_page = math.ceil(susong_caselist_num / 10)
-                        for page in range(1, caselist_page + 1):
-                            caselist_url = f"https://www.qcc.com/api/datalist/caselist?isCombine=true&isNewAgg=true&keyNo={key_no}&pageIndex={page}&province=&round=&tag=&videoFlag=&year="
+                        for page_ in range(1, caselist_page + 1):
+                            caselist_url = f"https://www.qcc.com/api/datalist/caselist?isCombine=true&isNewAgg=true&keyNo={key_no}&pageIndex={page_}&province=&round=&tag=&videoFlag=&year="
                             caselist_value = get_response(caselist_url, key_no, pid, tid, cookie_dict)
-                            encounter_captcha(caselist_value)
-                            caselist_value_data = caselist_value["data"]
-                            for caselist_data in caselist_value_data:
-                                susong_caselist.append(caselist_data)
-                            time.sleep(7)
+                            captcha_value = encounter_captcha(caselist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                caselist_value_data = caselist_value["data"]
+                                for caselist_data in caselist_value_data:
+                                    susong_caselist.append(caselist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                up_qcc_res_data(caselist_url, 'judicial_case', 'get', '', key_no, webpage_id)
                     else:
                         susong_caselist = []
                     # 裁判文书
@@ -393,14 +472,19 @@ def qcc_search_company(search_company_name):
                     elif susong_wenshulist_num > 10:
                         susong_wenshulist = []
                         wenshulist_page = math.ceil(susong_wenshulist_num / 10)
-                        for page in range(1, wenshulist_page + 1):
-                            wenshulist_url = f"https://www.qcc.com/api/datalist/wenshulist?isNewAgg=true&keyNo={key_no}&pageIndex={page}&searchKey={key_no}"
+                        for page_ in range(1, wenshulist_page + 1):
+                            wenshulist_url = f"https://www.qcc.com/api/datalist/wenshulist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}&searchKey={key_no}"
                             wenshulist_value = get_response(wenshulist_url, key_no, pid, tid, cookie_dict)
-                            encounter_captcha(wenshulist_value)
-                            wenshulist_value_data = wenshulist_value["data"]
-                            for wenshulist_data in wenshulist_value_data:
-                                susong_wenshulist.append(wenshulist_data)
-                            time.sleep(7)
+                            captcha_value = encounter_captcha(wenshulist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                wenshulist_value_data = wenshulist_value["data"]
+                                for wenshulist_data in wenshulist_value_data:
+                                    susong_wenshulist.append(wenshulist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                up_qcc_res_data(wenshulist_url, 'case_doc', 'get', '', key_no, webpage_id)
+
                     else:
                         susong_wenshulist = []
                     # 立案信息
@@ -412,14 +496,19 @@ def qcc_search_company(search_company_name):
                     elif susong_lawcaselist_num > 10:
                         susong_lianliast = []
                         lianlist_page = math.ceil(susong_lawcaselist_num / 10)
-                        for page in range(1, lianlist_page + 1):
-                            lianlist_url = f"https://www.qcc.com/api/datalist/lianlist?isNewAgg=true&keyNo={key_no}&pageIndex={page}"
+                        for page_ in range(1, lianlist_page + 1):
+                            lianlist_url = f"https://www.qcc.com/api/datalist/lianlist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}"
                             lianlist_value = get_response(lianlist_url, key_no, pid, tid, cookie_dict)
-                            encounter_captcha(lianlist_value)
-                            lianlist_value_data = lianlist_value["data"]
-                            for lianlist_data in lianlist_value_data:
-                                susong_lianliast.append(lianlist_data)
-                            time.sleep(7)
+                            captcha_value = encounter_captcha(lianlist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                lianlist_value_data = lianlist_value["data"]
+                                for lianlist_data in lianlist_value_data:
+                                    susong_lianliast.append(lianlist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                up_qcc_res_data(lianlist_url, 'case_register', 'get', '', key_no, webpage_id)
+
                     else:
                         susong_lianliast = []
                     # 开庭公告
@@ -431,14 +520,19 @@ def qcc_search_company(search_company_name):
                     elif susong_ktgglist_num > 10:
                         susong_noticelist = []
                         ktgglist_page = math.ceil(susong_ktgglist_num / 10)
-                        for page in range(1, ktgglist_page + 1):
-                            ktgglist_url = f"https://www.qcc.com/api/datalist/noticelist?isNewAgg=true&keyNo={key_no}&KeyNo={key_no}&pageIndex={page}"
+                        for page_ in range(1, ktgglist_page + 1):
+                            ktgglist_url = f"https://www.qcc.com/api/datalist/noticelist?isNewAgg=true&keyNo={key_no}&KeyNo={key_no}&pageIndex={page_}"
                             ktgglist_value = get_response(ktgglist_url, key_no, pid, tid, cookie_dict)
-                            encounter_captcha(ktgglist_value)
-                            ktgglist_value_data = ktgglist_value["data"]
-                            for ktgglist_data in ktgglist_value_data:
-                                susong_noticelist.append(ktgglist_data)
-                            time.sleep(7)
+                            captcha_value = encounter_captcha(ktgglist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                ktgglist_value_data = ktgglist_value["data"]
+                                for ktgglist_data in ktgglist_value_data:
+                                    susong_noticelist.append(ktgglist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                up_qcc_res_data(ktgglist_url, 'case_open', 'get', '', key_no, webpage_id)
+
                     else:
                         susong_noticelist = []
                     # 法院公告
@@ -450,14 +544,19 @@ def qcc_search_company(search_company_name):
                     elif susong_courtlist_num > 10:
                         susong_gonggaolist = []
                         courtlist_page = math.ceil(susong_courtlist_num / 10)
-                        for page in range(1, courtlist_page + 1):
-                            courtlist_url = f"https://www.qcc.com/api/datalist/gonggaolist?isNewAgg=true&keyNo={key_no}&pageIndex={page}&searchKey={key_no}&sortField=PublishDate"
+                        for page_ in range(1, courtlist_page + 1):
+                            courtlist_url = f"https://www.qcc.com/api/datalist/gonggaolist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}&searchKey={key_no}&sortField=PublishDate"
                             courtlist_value = get_response(courtlist_url, key_no, pid, tid, cookie_dict)
-                            encounter_captcha(courtlist_value)
-                            courtlist_value_data = courtlist_value["data"]
-                            for courtlist_data in courtlist_value_data:
-                                susong_gonggaolist.append(courtlist_data)
-                            time.sleep(7)
+                            captcha_value = encounter_captcha(courtlist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                courtlist_value_data = courtlist_value["data"]
+                                for courtlist_data in courtlist_value_data:
+                                    susong_gonggaolist.append(courtlist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                up_qcc_res_data(courtlist_url, 'case_notice', 'get', '', key_no, webpage_id)
+
                     else:
                         susong_gonggaolist = []
                     # 送达公告
@@ -469,14 +568,19 @@ def qcc_search_company(search_company_name):
                     elif susong_sentlist_num > 10:
                         susong_dnoticelist = []
                         sentlist_page = math.ceil(susong_sentlist_num / 10)
-                        for page in range(1, sentlist_page + 1):
-                            sentlist_url = f"https://www.qcc.com/api/datalist/dnoticelist?isNewAgg=true&keyNo={key_no}&pageIndex={page}"
+                        for page_ in range(1, sentlist_page + 1):
+                            sentlist_url = f"https://www.qcc.com/api/datalist/dnoticelist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}"
                             sentlist_value = get_response(sentlist_url, key_no, pid, tid, cookie_dict)
-                            encounter_captcha(sentlist_value)
-                            sentlist_value_data = sentlist_value["data"]
-                            for sentlist_data in sentlist_value_data:
-                                susong_dnoticelist.append(sentlist_data)
-                            time.sleep(7)
+                            captcha_value = encounter_captcha(sentlist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                sentlist_value_data = sentlist_value["data"]
+                                for sentlist_data in sentlist_value_data:
+                                    susong_dnoticelist.append(sentlist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                up_qcc_res_data(sentlist_url, 'case_deliver', 'get', '', key_no, webpage_id)
+
                     else:
                         susong_dnoticelist = []
                     # 诉前调解
@@ -488,14 +592,20 @@ def qcc_search_company(search_company_name):
                     elif susong_pretrialmediationlist_num > 10:
                         susong_pretrialmediationlist = []
                         pretrialmediationlist_page = math.ceil(susong_pretrialmediationlist_num / 10)
-                        for page in range(1, pretrialmediationlist_page + 1):
-                            pretrialmediationlist_url = f"https://www.qcc.com/api/datalist/pretrialmediationlist?caseType=2&isNewAgg=true&keyNo={key_no}&pageIndex={page}"
-                            pretrialmediationlist_value = get_response(pretrialmediationlist_url, key_no, pid, tid, cookie_dict)
-                            encounter_captcha(pretrialmediationlist_value)
-                            pretrialmediationlist_value_data = pretrialmediationlist_value["data"]
-                            for pretrialmediationlist_data in pretrialmediationlist_value_data:
-                                susong_pretrialmediationlist.append(pretrialmediationlist_data)
-                            time.sleep(7)
+                        for page_ in range(1, pretrialmediationlist_page + 1):
+                            pretrialmediationlist_url = f"https://www.qcc.com/api/datalist/pretrialmediationlist?caseType=2&isNewAgg=true&keyNo={key_no}&pageIndex={page_}"
+                            pretrialmediationlist_value = get_response(pretrialmediationlist_url, key_no, pid, tid,
+                                                                       cookie_dict)
+                            captcha_value = encounter_captcha(pretrialmediationlist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                pretrialmediationlist_value_data = pretrialmediationlist_value["data"]
+                                for pretrialmediationlist_data in pretrialmediationlist_value_data:
+                                    susong_pretrialmediationlist.append(pretrialmediationlist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                up_qcc_res_data(pretrialmediationlist_url, 'case_mediate', 'get', '', key_no, webpage_id)
+
                     else:
                         susong_pretrialmediationlist = []
                     # 司法拍卖
@@ -507,14 +617,19 @@ def qcc_search_company(search_company_name):
                     elif susong_judicialsalelist_num > 10:
                         susong_judicialsalelist = []
                         judicialsalelist_page = math.ceil(susong_judicialsalelist_num / 10)
-                        for page in range(1, judicialsalelist_page + 1):
-                            judicialsalelist_url = f"https://www.qcc.com/api/datalist/judicialsalelist?isNewAgg=true&keyNo={key_no}&KeyNo={key_no}&pageIndex={page}"
+                        for page_ in range(1, judicialsalelist_page + 1):
+                            judicialsalelist_url = f"https://www.qcc.com/api/datalist/judicialsalelist?isNewAgg=true&keyNo={key_no}&KeyNo={key_no}&pageIndex={page_}"
                             judicialsalelist_value = get_response(judicialsalelist_url, key_no, pid, tid, cookie_dict)
-                            encounter_captcha(judicialsalelist_value)
-                            judicialsalelist_value_data = judicialsalelist_value["data"]
-                            for judicialsalelist_data in judicialsalelist_value_data:
-                                susong_judicialsalelist.append(judicialsalelist_data)
-                            time.sleep(7)
+                            captcha_value = encounter_captcha(judicialsalelist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                judicialsalelist_value_data = judicialsalelist_value["data"]
+                                for judicialsalelist_data in judicialsalelist_value_data:
+                                    susong_judicialsalelist.append(judicialsalelist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                up_qcc_res_data(judicialsalelist_url, 'auction', 'get', '', key_no, webpage_id)
+
                     else:
                         susong_judicialsalelist = []
                     # 失信被执行人
@@ -527,8 +642,8 @@ def qcc_search_company(search_company_name):
                         susong_shixinlist = []
                         input('失信被执行人超过十个，建议处理')
                         shixinlist_page = math.ceil(susong_shixinlist_num / 10)
-                        for page in range(1, shixinlist_page + 1):
-                            shixinlist_url = f"https://www.qcc.com/api/datalist/shixinlist?isNewAgg=true&keyNo={key_no}&pageIndex={page}"
+                        for page_ in range(1, shixinlist_page + 1):
+                            shixinlist_url = f"https://www.qcc.com/api/datalist/shixinlist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}"
                             pass
                     else:
                         susong_shixinlist = []
@@ -541,17 +656,22 @@ def qcc_search_company(search_company_name):
                     elif susong_endexecutioncaselist_num > 10:
                         susong_endexecutioncaselist = []
                         endexecutioncaselist_page = math.ceil(susong_endexecutioncaselist_num / 10)
-                        for page in range(1, endexecutioncaselist_page + 1):
-                            endexecutioncaselist_url = f"https://www.qcc.com/api/datalist/endexecutioncaselist?isNewAgg=true&keyNo={key_no}&pageIndex={page}"
-                            endexecutioncaselist_value = get_response(endexecutioncaselist_url, key_no, pid, tid, cookie_dict)
-                            encounter_captcha(endexecutioncaselist_value)
-                            endexecutioncaselist_value_data = endexecutioncaselist_value["data"]
-                            for endexecutioncaselist_data in endexecutioncaselist_value_data:
-                                susong_endexecutioncaselist.append(endexecutioncaselist_data)
-                            time.sleep(7)
+                        for page_ in range(1, endexecutioncaselist_page + 1):
+                            endexecutioncaselist_url = f"https://www.qcc.com/api/datalist/endexecutioncaselist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}"
+                            endexecutioncaselist_value = get_response(endexecutioncaselist_url, key_no, pid, tid,
+                                                                      cookie_dict)
+                            captcha_value = encounter_captcha(endexecutioncaselist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                endexecutioncaselist_value_data = endexecutioncaselist_value["data"]
+                                for endexecutioncaselist_data in endexecutioncaselist_value_data:
+                                    susong_endexecutioncaselist.append(endexecutioncaselist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                up_qcc_res_data(endexecutioncaselist_url, 'judgement_end', 'get', '', key_no, webpage_id)
+
                     else:
                         susong_endexecutioncaselist = []
-
 
                     """
                     经营风险!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -576,7 +696,7 @@ def qcc_search_company(search_company_name):
                     elif cfengxian_pledgelist_num > 10:
                         cfengxian_pledgelist = []
                         pledgelist_page = math.ceil(cfengxian_pledgelist_num / 10)
-                        for page in range(1, pledgelist_page + 1):
+                        for page_ in range(1, pledgelist_page + 1):
                             pass  # 暂未找到超过十个的
                     else:
                         cfengxian_pledgelist = []
@@ -589,8 +709,8 @@ def qcc_search_company(search_company_name):
                     elif cfengxian_exceptions_num > 10:
                         cfengxian_exceptions = []
                         exceptions_page = math.ceil(cfengxian_exceptions_num / 10)
-                        for page in range(1, exceptions_page + 1):
-                            pass    # 暂未找到超过十个的
+                        for page_ in range(1, exceptions_page + 1):
+                            pass  # 暂未找到超过十个的
                     else:
                         cfengxian_exceptions = []
                     # 动产抵押
@@ -602,8 +722,8 @@ def qcc_search_company(search_company_name):
                     elif cfengxian_mpledgelist_num > 10:
                         cfengxian_mpledgelist = []
                         mpledgelist_page = math.ceil(cfengxian_mpledgelist_num / 10)
-                        for page in range(1, mpledgelist_page + 1):
-                            pass    # 暂未找到超过十个的
+                        for page_ in range(1, mpledgelist_page + 1):
+                            pass  # 暂未找到超过十个的
                     else:
                         cfengxian_mpledgelist = []
                     # 注销备案
@@ -615,8 +735,8 @@ def qcc_search_company(search_company_name):
                     elif cfengxian_cancelrecordlist_num > 10:
                         cfengxian_enliqinfo = []
                         enliqinfo_page = math.ceil(cfengxian_cancelrecordlist_num / 10)
-                        for page in range(1, enliqinfo_page + 1):
-                            pass    # 暂未找到超过十个的
+                        for page_ in range(1, enliqinfo_page + 1):
+                            pass  # 暂未找到超过十个的
                     else:
                         cfengxian_enliqinfo = []
                     # 行政处罚
@@ -628,8 +748,8 @@ def qcc_search_company(search_company_name):
                     elif cfengxian_adminpenaltylist_num > 10:
                         cfengxian_adminpenaltylist = []
                         adminpenaltylist_page = math.ceil(cfengxian_adminpenaltylist_num / 10)
-                        for page in range(1, adminpenaltylist_page + 1):
-                            pass    # 暂未找到超过十个的
+                        for page_ in range(1, adminpenaltylist_page + 1):
+                            pass  # 暂未找到超过十个的
                     else:
                         cfengxian_adminpenaltylist = []
                     # 环保处罚
@@ -641,8 +761,8 @@ def qcc_search_company(search_company_name):
                     elif cfengxian_envpenaltylist_num > 10:
                         cfengxian_envlist = []
                         envlist_page = math.ceil(cfengxian_envpenaltylist_num / 10)
-                        for page in range(1, envlist_page + 1):
-                            pass    # 暂未找到超过十个的
+                        for page_ in range(1, envlist_page + 1):
+                            pass  # 暂未找到超过十个的
                     else:
                         cfengxian_envlist = []
                     # 税务非正常户
@@ -654,8 +774,8 @@ def qcc_search_company(search_company_name):
                     elif cfengxian_taxabnormallist_num > 10:
                         cfengxian_taxabnormallist = []
                         taxabnormallist_page = math.ceil(cfengxian_taxabnormallist_num / 10)
-                        for page in range(1, taxabnormallist_page + 1):
-                            pass    # 暂未找到超过十个的
+                        for page_ in range(1, taxabnormallist_page + 1):
+                            pass  # 暂未找到超过十个的
                     else:
                         cfengxian_taxabnormallist = []
                     # 欠税公告(通过里面的id再次请求查看详情)
@@ -667,8 +787,8 @@ def qcc_search_company(search_company_name):
                     elif cfengxian_taxillegallist_num > 10:
                         cfengxian_owenoticelist = []
                         owenoticelist_page = math.ceil(cfengxian_taxillegallist_num / 10)
-                        for page in range(1, owenoticelist_page + 1):
-                            pass    # 暂未找到超过十个的
+                        for page_ in range(1, owenoticelist_page + 1):
+                            pass  # 暂未找到超过十个的
                     else:
                         cfengxian_owenoticelist = []
                     # 税收违法
@@ -680,8 +800,8 @@ def qcc_search_company(search_company_name):
                     elif cfengxian_taxillegallist_num > 10:
                         cfengxian_taxillegallist = []
                         taxillegallist_page = math.ceil(cfengxian_taxillegallist_num / 10)
-                        for page in range(1, taxillegallist_page + 1):
-                            pass    # 暂未找到超过十个的
+                        for page_ in range(1, taxillegallist_page + 1):
+                            pass  # 暂未找到超过十个的
                     else:
                         cfengxian_taxillegallist = []
 
@@ -697,8 +817,8 @@ def qcc_search_company(search_company_name):
                     elif crun_tenderlist_num > 10:
                         crun_tenderlist = []
                         tenderlist_page = math.ceil(crun_tenderlist_num / 10)
-                        for page in range(1, tenderlist_page + 1):
-                            pass    # 暂未找到超过十个的, 招投标暂未解决
+                        for page_ in range(1, tenderlist_page + 1):
+                            pass  # 暂未找到超过十个的, 招投标暂未解决
                     else:
                         crun_tenderlist = []
                     # 资质证书
@@ -706,36 +826,112 @@ def qcc_search_company(search_company_name):
                     if crun_certificationsummary_num != 0:
                         crun_certificationsummary = []
                         certificationsummary_page = math.ceil(crun_certificationsummary_num / 10)
-                        for page in range(1, certificationsummary_page + 1):
+                        for page_ in range(1, certificationsummary_page + 1):
                             certificationsummary_url = f'https://www.qcc.com/api/datalist/certificationlist'
                             json_data = {
                                 'keyNo': f'{key_no}',
                                 'isNew': True,
-                                'pageIndex': page,
+                                'pageIndex': page_,
                                 'isNewAgg': True,
                             }
-                            certificationsummary_value = post_response(certificationsummary_url, key_no, pid, tid, cookie_dict, json_data)
-                            encounter_captcha(certificationsummary_value)
-                            certificationsummary_value_data = certificationsummary_value["data"]
-                            for certificationsummary_data in certificationsummary_value_data:
-                                crun_certificationsummary.append(certificationsummary_data)
-                            time.sleep(7)
+                            certificationsummary_value = post_response(certificationsummary_url, key_no, pid, tid,
+                                                                       cookie_dict, json_data)
+                            captcha_value = encounter_captcha(certificationsummary_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                certificationsummary_value_data = certificationsummary_value["data"]
+                                for certificationsummary_data in certificationsummary_value_data:
+                                    crun_certificationsummary.append(certificationsummary_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(certificationsummary_url, 'qualification_cert', 'post', json_data,
+                                                key_no, webpage_id)
+
                     else:
                         crun_certificationsummary = []
                     # 信用评价
                     crun_creditrating_num = inquire_dict.get('信用评价')
-                    # 少于10个的情况下
-                    if 0 < crun_creditrating_num <= 10:
-                        crun_creditrate = crun_json["datalist"]["creditrate"]
-                    # 多于10个的情况下
-                    elif crun_creditrating_num > 10:
-                        crun_creditrate = []
-                        input('信用评价列表超过十个, 建议处理')
-                        creditrate_page = math.ceil(crun_creditrating_num / 10)
-                        for page in range(1, creditrate_page + 1):
-                            pass    # 暂未找到超过十个的
-                    else:
-                        crun_creditrate = []
+                    try:
+                        crun_creditrate_dict = crun_json["datalist"]["creditrate"]
+                    except:
+                        crun_creditrate_dict = dict()
+                    corresponding_dict = {
+                        'TaxCredit': 'tc',
+                        'BondMainBodyCredit': 'bbc',
+                        'EnvCredit': 'ec',
+                        'ImportExportCredit': "customs",
+                        'FundManagerCredit': "fund",
+                        'LaborGuaranteeCredit': "lgc",
+                        'CommunicationCredit': "cc",
+                        'KeepFaithCredit': "kfc",
+                        'SafetyProduceCredit': "spc",
+                        'FireSafetyCredit': "fs",
+                        'RoadTransportCredit': "road",
+                        'ChinaSoftCredit': 'soft'
+                    }
+                    tax_credit = []
+                    bond_main_body_credit = []
+                    env_credit = []
+                    import_export_credit = []
+                    fund_manager_credit = []
+                    labor_guarantee_credit = []
+                    communication_credit = []
+                    keep_faith_credit = []
+                    safety_produce_credit = []
+                    fire_safety_credit = []
+                    road_transport_credit = []
+                    china_soft_credit = []
+                    for crun_creditrate_key, crun_creditrate_value in crun_creditrate_dict.items():
+                        # 如果对应的有值
+                        if crun_creditrate_value:
+                            type_ = corresponding_dict.get(crun_creditrate_key)
+                            crun_url = f'https://www.qcc.com/api/riskDetail/creditratelist?keyNo={key_no}&type={type_}'
+                            crun_value = get_response(crun_url, key_no, pid, tid, cookie_dict)
+                            print('111', crun_value)
+                            captcha_value = encounter_captcha(crun_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                crun_value_data = crun_value["Result"]
+                                for crun_data in crun_value_data:
+                                    if type_ == 'tc':
+                                        tax_credit.append(crun_data)
+                                    elif type_ == 'bbc':
+                                        bond_main_body_credit.append(crun_data)
+                                    elif type_ == 'ec':
+                                        env_credit.append(crun_data)
+                                    elif type_ == 'customs':
+                                        import_export_credit.append(crun_data)
+                                    elif type_ == 'fund':
+                                        fund_manager_credit.append(crun_data)
+                                    elif type_ == 'lgc':
+                                        labor_guarantee_credit.append(crun_data)
+                                    elif type_ == 'cc':
+                                        communication_credit.append(crun_data)
+                                    elif type_ == 'kfc':
+                                        keep_faith_credit.append(crun_data)
+                                    elif type_ == 'spc':
+                                        safety_produce_credit.append(crun_data)
+                                    elif type_ == 'fs':
+                                        fire_safety_credit.append(crun_data)
+                                    elif type_ == 'road':
+                                        road_transport_credit.append(crun_data)
+                                    elif type_ == 'soft':
+                                        china_soft_credit.append(crun_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(crun_url, 'crun', 'get', '', key_no, webpage_id)
+
+                    # # 多于10个的情况下
+                    # elif crun_creditrating_num > 10:
+                    #     crun_creditrate = []
+                    #     input('信用评价列表超过十个, 建议处理')
+                    #     creditrate_page = math.ceil(crun_creditrating_num / 10)
+                    #     for page_ in range(1, creditrate_page + 1):
+                    #         pass  # 暂未找到超过十个的
+                    # else:
+                    #     crun_creditrate = []
                     # 招聘
                     crun_joblist_num = inquire_dict.get('招聘')
                     # 少于10个的情况下
@@ -745,14 +941,20 @@ def qcc_search_company(search_company_name):
                     elif crun_joblist_num > 10:
                         crun_joblist = []
                         joblist_page = math.ceil(crun_joblist_num / 10)
-                        for page in range(1, joblist_page + 1):
-                            joblist_url = f'https://www.qcc.com/api/datalist/joblist?isNewAgg=true&keyNo={key_no}&pageIndex={page}&sortField=publishtime'
-                            joblist_value = requests.get(url=joblist_url, headers=headers).json()
-                            encounter_captcha(joblist_value)
-                            joblist_value_data = joblist_value["data"]
-                            for joblist_data in joblist_value_data:
-                                crun_joblist.append(joblist_data)
-                            time.sleep(7)
+                        for page_ in range(1, joblist_page + 1):
+                            joblist_url = f'https://www.qcc.com/api/datalist/joblist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}&sortField=publishtime'
+                            joblist_value = get_response(joblist_url, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(joblist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                joblist_value_data = joblist_value["data"]
+                                for joblist_data in joblist_value_data:
+                                    crun_joblist.append(joblist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(joblist_url, 'recruitment', 'get', '', key_no, webpage_id)
+
                     else:
                         crun_joblist = []
                     # 进出口信用
@@ -764,15 +966,15 @@ def qcc_search_company(search_company_name):
                     crun_landlist_num = inquire_dict.get('土地信息')
                     # 少于10个的情况下
                     if 0 < crun_landlist_num <= 10:
-                        crun_landlist = crun_json["datalist"]["landlist"]["data"]
+                        crun_landlist = crun_json["datalist"]["landlist"][0]["data"]
                     # 多于10个的情况下
                     elif crun_landlist_num > 10:
                         crun_landlist = []
                         input('土地信息列表超过十个, 建议处理')
                         landlist_page = math.ceil(crun_landlist_num / 10)
-                        for page in range(1, landlist_page + 1):
-                            landlist_url = f'https://www.qcc.com/api/datalist/landlist?isNewAgg=true&keyNo={key_no}&pageIndex={page}'
-                            pass    # 暂未找到超过十个的
+                        for page_ in range(1, landlist_page + 1):
+                            landlist_url = f'https://www.qcc.com/api/datalist/landlist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}'
+                            pass  # 暂未找到超过十个的
                     else:
                         crun_landlist = []
                     # 行政许可
@@ -784,14 +986,20 @@ def qcc_search_company(search_company_name):
                     elif crun_licenselist_num > 10:
                         crun_acolist = []
                         aco_page = math.ceil(crun_licenselist_num / 10)
-                        for page in range(1, aco_page + 1):
-                            aco_url = f'https://www.qcc.com/api/datalist/acolist?isNewAgg=true&keyNo={key_no}&pageIndex={page}'
+                        for page_ in range(1, aco_page + 1):
+                            aco_url = f'https://www.qcc.com/api/datalist/acolist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}'
                             aco_value = get_response(aco_url, key_no, pid, tid, cookie_dict)
-                            encounter_captcha(aco_value)
-                            aco_value_data = aco_value["data"]
-                            for aco_data in aco_value_data:
-                                crun_acolist.append(aco_data)
-                            time.sleep(7)
+                            captcha_value = encounter_captcha(aco_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                aco_value_data = aco_value["data"]
+                                for aco_data in aco_value_data:
+                                    crun_acolist.append(aco_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(aco_url, 'admin_permit', 'get', '', key_no, webpage_id)
+
                     else:
                         crun_acolist = []
                     # 抽查检查
@@ -802,10 +1010,21 @@ def qcc_search_company(search_company_name):
                     # 多于10个的情况下
                     elif crun_spotchecklist_num > 10:
                         crun_spotchecklist = []
-                        input('抽查检查列表超过十个, 建议处理')
                         spotchecklist_page = math.ceil(crun_spotchecklist_num / 10)
-                        for page in range(1, spotchecklist_page + 1):
-                            pass    # 暂未找到超过十个的
+                        for page_ in range(1, spotchecklist_page + 1):
+                            spotchecklist_url = f'https://www.qcc.com/api/datalist/spotchecklist?keyNo={key_no}&pageIndex={page_}'
+                            spotchecklist_value = get_response(spotchecklist_url, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(spotchecklist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                spotchecklist_value_data = spotchecklist_value["data"]
+                                for spotchecklist_data in spotchecklist_value_data:
+                                    crun_spotchecklist.append(spotchecklist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(spotchecklist_url, 'spot_check', 'get', '', key_no, webpage_id)
+
                     else:
                         crun_spotchecklist = []
                     # 食品安全
@@ -817,14 +1036,20 @@ def qcc_search_company(search_company_name):
                     elif crun_foodsafetylist_num > 10:
                         crun_foodsafetylist = []
                         foodsafetylist_page = math.ceil(crun_foodsafetylist_num / 10)
-                        for page in range(1, foodsafetylist_page + 1):
-                            foodsafetylist_url = f'https://www.qcc.com/api/datalist/foodsafetylist?isNewAgg=true&keyNo={key_no}&pageIndex={page}'
+                        for page_ in range(1, foodsafetylist_page + 1):
+                            foodsafetylist_url = f'https://www.qcc.com/api/datalist/foodsafetylist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}'
                             foodsafetylist_value = get_response(foodsafetylist_url, key_no, pid, tid, cookie_dict)
-                            encounter_captcha(foodsafetylist_value)
-                            foodsafetylist_value_data = foodsafetylist_value["data"]
-                            for foodsafetylist_data in foodsafetylist_value_data:
-                                crun_foodsafetylist.append(foodsafetylist_data)
-                            time.sleep(7)
+                            captcha_value = encounter_captcha(foodsafetylist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                foodsafetylist_value_data = foodsafetylist_value["data"]
+                                for foodsafetylist_data in foodsafetylist_value_data:
+                                    crun_foodsafetylist.append(foodsafetylist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(foodsafetylist_url, 'food_safety', 'get', '', key_no, webpage_id)
+
                     else:
                         crun_foodsafetylist = []
                     # 双随机抽查
@@ -837,11 +1062,17 @@ def qcc_search_company(search_company_name):
                         crun_drclist = []
                         drclist_url = f'https://www.qcc.com/api/datalist/drclist?isNewAgg=true&keyNo={key_no}&pageIndex={page}'
                         drclist_value = get_response(drclist_url, key_no, pid, tid, cookie_dict)
-                        encounter_captcha(drclist_value)
-                        drclist_value_data = drclist_value["data"]
-                        for drclist_data in drclist_value_data:
-                            crun_drclist.append(drclist_data)
-                        time.sleep(7)
+                        captcha_value = encounter_captcha(drclist_value, page)
+                        if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                            drclist_value_data = drclist_value["data"]
+                            for drclist_data in drclist_value_data:
+                                crun_drclist.append(drclist_data)
+                            time.sleep(7)
+                        else:
+                            # 先将请求数据上传到数据库中，后续处理
+                            # json_data = json.dumps(json_data, ensure_ascii=False)
+                            up_qcc_res_data(drclist_url, 'double_random_check', 'get', '', key_no, webpage_id)
+
                     else:
                         crun_drclist = []
                     # 纳税人资质
@@ -854,8 +1085,8 @@ def qcc_search_company(search_company_name):
                         crun_taxpayerlist = []
                         input('纳税人资质列表超过十个, 建议处理')
                         taxpayerlist_page = math.ceil(crun_taxpayerlist_num / 10)
-                        for page in range(1, taxpayerlist_page + 1):
-                            pass    # 暂未找到超过十个的
+                        for page_ in range(1, taxpayerlist_page + 1):
+                            pass  # 暂未找到超过十个的
                     else:
                         crun_taxpayerlist = []
                     # 产权交易
@@ -868,8 +1099,8 @@ def qcc_search_company(search_company_name):
                         crun_transactionlist = []
                         input('产权交易列表超过十个, 建议处理')
                         transactionlist_page = math.ceil(crun_transactionlist_num / 10)
-                        for page in range(1, transactionlist_page + 1):
-                            pass    # 暂未找到超过十个的
+                        for page_ in range(1, transactionlist_page + 1):
+                            pass  # 暂未找到超过十个的
                     else:
                         crun_transactionlist = []
                     # 资产拍卖
@@ -882,8 +1113,8 @@ def qcc_search_company(search_company_name):
                         crun_assetsalelist = []
                         input('资产拍卖列表超过十个, 建议处理')
                         assetsalelist_page = math.ceil(assetsalelist_num / 10)
-                        for page in range(1, assetsalelist_page + 1):
-                            pass    # 暂未找到超过十个的
+                        for page_ in range(1, assetsalelist_page + 1):
+                            pass  # 暂未找到超过十个的
                     else:
                         crun_assetsalelist = []
                     # 电信许可
@@ -896,7 +1127,7 @@ def qcc_search_company(search_company_name):
                         crun_telecomlist = []
                         input('电信许可列表超过十个, 建议处理')
                         telecomlist_page = math.ceil(crun_telecomlist_num / 10)
-                        for page in range(1, telecomlist_page + 1):
+                        for page_ in range(1, telecomlist_page + 1):
                             pass
                     else:
                         crun_telecomlist = []
@@ -913,20 +1144,27 @@ def qcc_search_company(search_company_name):
                     elif cassets_shangbiaolist_num > 10:
                         cassets_shangbiaolist = []
                         shangbiaolist_page = math.ceil(cassets_shangbiaolist_num / 10)
-                        for page in range(1, shangbiaolist_page + 1):
+                        for page_ in range(1, shangbiaolist_page + 1):
                             shangbiaolist_url = 'https://www.qcc.com/api/datalist/shangbiaolist'
                             json_data = {
                                 'keyNo': f'{key_no}',
-                                'pageIndex': page,
+                                'pageIndex': page_,
                                 'isNewAgg': True,
                             }
-                            shangbiaolist_value = post_response(shangbiaolist_url,key_no, pid, tid, cookie_dict, json_data)
-                            encounter_captcha(shangbiaolist_value)
-                            shangbiaolist_value_data = shangbiaolist_value["data"]
-                            for shangbiaolist_data in shangbiaolist_value_data:
+                            shangbiaolist_value = post_response(shangbiaolist_url, key_no, pid, tid, cookie_dict,
+                                                                json_data)
+                            captcha_value = encounter_captcha(shangbiaolist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                shangbiaolist_value_data = shangbiaolist_value["data"]
+                                for shangbiaolist_data in shangbiaolist_value_data:
+                                    cassets_shangbiaolist.append(shangbiaolist_data)
+                                time.sleep(6)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(shangbiaolist_url, 'tm_info', 'post', json_data, key_no, webpage_id)
 
-                                cassets_shangbiaolist.append(shangbiaolist_data)
-                            time.sleep(6)
+
                     else:
                         cassets_shangbiaolist = []
                     # 商标文书
@@ -938,15 +1176,20 @@ def qcc_search_company(search_company_name):
                     elif cassets_sbwslist_num > 10:
                         cassets_tmcdslist = []
                         sbwslist_page = math.ceil(cassets_sbwslist_num / 10)
-                        for page in range(1, sbwslist_page + 1):
-                            sbwslist_url = f'https://www.qcc.com/api/datalist/tmcdslist?isNewAgg=true&keyNo={key_no}&pageIndex={page}'
+                        for page_ in range(1, sbwslist_page + 1):
+                            sbwslist_url = f'https://www.qcc.com/api/datalist/tmcdslist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}'
                             sbwslist_value = get_response(sbwslist_url, key_no, pid, tid, cookie_dict)
-                            encounter_captcha(sbwslist_value)
-                            sbwslist_value_data = sbwslist_value["data"]
-                            for sbwslist_data in sbwslist_value_data:
+                            captcha_value = encounter_captcha(sbwslist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                sbwslist_value_data = sbwslist_value["data"]
+                                for sbwslist_data in sbwslist_value_data:
+                                    cassets_tmcdslist.append(sbwslist_data)
+                                time.sleep(6)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(sbwslist_url, 'tm_doc', 'get', '', key_no, webpage_id)
 
-                                cassets_tmcdslist.append(sbwslist_data)
-                            time.sleep(6)
                     else:
                         cassets_tmcdslist = []
                     # 专利信息
@@ -958,19 +1201,25 @@ def qcc_search_company(search_company_name):
                     elif cassets_zhuanlilist_num > 10:
                         cassets_zhuanlilist = []
                         zhuanlilist_page = math.ceil(cassets_zhuanlilist_num / 10)
-                        for page in range(1, zhuanlilist_page + 1):
+                        for page_ in range(1, zhuanlilist_page + 1):
                             zhuanlilist_url = f'https://www.qcc.com/api/datalist/zhuanlilist'
                             json_data = {
                                 'keyNo': f'{key_no}',
-                                'pageIndex': page,
+                                'pageIndex': page_,
                                 'isNewAgg': True,
                             }
                             zhuanlilist_value = post_response(zhuanlilist_url, key_no, pid, tid, cookie_dict, json_data)
-                            encounter_captcha(zhuanlilist_value)
-                            zhuanlilist_value_data = zhuanlilist_value["data"]
-                            for zhuanlilist_data in zhuanlilist_value_data:
-                                cassets_zhuanlilist.append(zhuanlilist_data)
-                            time.sleep(6)
+                            captcha_value = encounter_captcha(zhuanlilist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                zhuanlilist_value_data = zhuanlilist_value["data"]
+                                for zhuanlilist_data in zhuanlilist_value_data:
+                                    cassets_zhuanlilist.append(zhuanlilist_data)
+                                time.sleep(6)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(zhuanlilist_url, 'patent_info', 'post', json_data, key_no, webpage_id)
+
                     else:
                         cassets_zhuanlilist = []
                     # 作品著作权
@@ -982,20 +1231,25 @@ def qcc_search_company(search_company_name):
                     elif cassets_zzqlist_num > 10:
                         cassets_zzqlist = []
                         zzqlist_page = math.ceil(cassets_zzqlist_num / 10)
-                        for page in range(1, zzqlist_page + 1):
+                        for page_ in range(1, zzqlist_page + 1):
                             zzqlist_url = f'https://www.qcc.com/api/datalist/zzqlist'
                             json_data = {
                                 'keyNo': f'{key_no}',
-                                'pageIndex': page,
+                                'pageIndex': page_,
                                 'isNewAgg': True,
                             }
                             zzqlist_value = post_response(zzqlist_url, key_no, pid, tid, cookie_dict, json_data)
-                            encounter_captcha(zzqlist_value)
-                            zzqlist_value_data = zzqlist_value["data"]
-                            for zzqlist_data in zzqlist_value_data:
+                            captcha_value = encounter_captcha(zzqlist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                zzqlist_value_data = zzqlist_value["data"]
+                                for zzqlist_data in zzqlist_value_data:
+                                    cassets_zzqlist.append(zzqlist_data)
+                                time.sleep(6)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(zzqlist_url, 'work_copyright', 'post', json_data, key_no, webpage_id)
 
-                                cassets_zzqlist.append(zzqlist_data)
-                            time.sleep(6)
                     else:
                         cassets_zzqlist = []
                     # 软件著作权
@@ -1007,19 +1261,25 @@ def qcc_search_company(search_company_name):
                     elif cassets_rjzzqlist_num > 10:
                         cassets_rjzzqlist = []
                         rjzzqlist_page = math.ceil(cassets_rjzzqlist_num / 10)
-                        for page in range(1, rjzzqlist_page + 1):
+                        for page_ in range(1, rjzzqlist_page + 1):
                             rjzzqlist_url = f'https://www.qcc.com/api/datalist/rjzzqlist'
                             json_data = {
                                 'keyNo': f'{key_no}',
-                                'pageIndex': page,
+                                'pageIndex': page_,
                                 'isNewAgg': True,
                             }
                             rjzzqlist_value = post_response(rjzzqlist_url, key_no, pid, tid, cookie_dict, json_data)
-                            encounter_captcha(rjzzqlist_value)
-                            rjzzqlist_value_data = rjzzqlist_value["data"]
-                            for rjzzqlist_data in rjzzqlist_value_data:
-                                cassets_rjzzqlist.append(rjzzqlist_data)
-                            time.sleep(6)
+                            captcha_value = encounter_captcha(rjzzqlist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                rjzzqlist_value_data = rjzzqlist_value["data"]
+                                for rjzzqlist_data in rjzzqlist_value_data:
+                                    cassets_rjzzqlist.append(rjzzqlist_data)
+                                time.sleep(6)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(rjzzqlist_url, 'sw_copyright', 'post', json_data, key_no, webpage_id)
+
                     else:
                         cassets_rjzzqlist = []
                     # 备案网站
@@ -1031,19 +1291,25 @@ def qcc_search_company(search_company_name):
                     elif cassets_webitelist_num > 10:
                         cassets_webitelist = []
                         webitelist_page = math.ceil(cassets_webitelist_num / 10)
-                        for page in range(1, webitelist_page + 1):
+                        for page_ in range(1, webitelist_page + 1):
                             webitelist_url = f'https://www.qcc.com/api/datalist/websitelist'
                             json_data = {
                                 'keyNo': f'{key_no}',
-                                'pageIndex': page,
+                                'pageIndex': page_,
                                 'isNewAgg': True,
                             }
                             webitelist_value = post_response(webitelist_url, key_no, pid, tid, cookie_dict, json_data)
-                            encounter_captcha(webitelist_value)
-                            webitelist_value_data = webitelist_value["data"]
-                            for webitelist_data in webitelist_value_data:
-                                cassets_webitelist.append(webitelist_data)
-                            time.sleep(6)
+                            captcha_value = encounter_captcha(webitelist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                webitelist_value_data = webitelist_value["data"]
+                                for webitelist_data in webitelist_value_data:
+                                    cassets_webitelist.append(webitelist_data)
+                                time.sleep(6)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(webitelist_url, 'registered_web', 'post', json_data, key_no, webpage_id)
+
                     else:
                         cassets_webitelist = []
                     # APP
@@ -1055,14 +1321,20 @@ def qcc_search_company(search_company_name):
                     elif cassets_applist_num > 10:
                         cassets_applist = []
                         applist_page = math.ceil(cassets_applist_num / 10)
-                        for page in range(1, applist_page + 1):
-                            applist_url = f'https://www.qcc.com/api/datalist/applist?keyNo={key_no}&pageIndex={page}'
-                            applist_value = get_response(applist_url, key_no, pid, tid, cookie_dict).json()
-                            encounter_captcha(applist_value)
-                            applist_value_data = applist_value["data"]
-                            for applist_data in applist_value_data:
-                                cassets_applist.append(applist_data)
-                            time.sleep(6)
+                        for page_ in range(1, applist_page + 1):
+                            applist_url = f'https://www.qcc.com/api/datalist/applist?keyNo={key_no}&pageIndex={page_}'
+                            applist_value = get_response(applist_url, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(applist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                applist_value_data = applist_value["data"]
+                                for applist_data in applist_value_data:
+                                    cassets_applist.append(applist_data)
+                                time.sleep(6)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(applist_url, 'app', 'get', '', key_no, webpage_id)
+
                     else:
                         cassets_applist = []
                     # 微信公众号
@@ -1074,13 +1346,20 @@ def qcc_search_company(search_company_name):
                     elif cassets_wechatlist_num > 10:
                         cassets_wechatlist = []
                         wechatlist_page = math.ceil(cassets_wechatlist_num / 10)
-                        for page in range(1, wechatlist_page + 1):
-                            wechatlist_url = f'https://www.qcc.com/api/datalist/wechatlist?keyNo={key_no}&pageIndex={page}'
+                        for page_ in range(1, wechatlist_page + 1):
+                            wechatlist_url = f'https://www.qcc.com/api/datalist/wechatlist?keyNo={key_no}&pageIndex={page_}'
                             wechatlist_value = get_response(wechatlist_url, key_no, pid, tid, cookie_dict)
-                            encounter_captcha(wechatlist_value)
+                            captcha_value = encounter_captcha(wechatlist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                wechatlist_value_data = wechatlist_value["data"]
+                                for wechatlist_data in wechatlist_value_data:
+                                    cassets_wechatlist.append(wechatlist_data)
+                                time.sleep(6)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(wechatlist_url, 'wx_official', 'get', '', key_no, webpage_id)
 
-                            cassets_wechatlist.append(wechatlist_value)
-                            time.sleep(6)
                     else:
                         cassets_wechatlist = []
                     # 集成电路布图
@@ -1093,7 +1372,7 @@ def qcc_search_company(search_company_name):
                         cassets_jcdllist = []
                         input('集成电路布图列表超过十个, 建议处理')
                         jcdllist_page = math.ceil(cassets_jcdllist_num / 10)
-                        for page in range(1, jcdllist_page + 1):
+                        for page_ in range(1, jcdllist_page + 1):
                             pass
                     else:
                         cassets_jcdllist = []
@@ -1107,13 +1386,20 @@ def qcc_search_company(search_company_name):
                         cassets_standarlist = []
                         input('标准信息列表超过十个, 建议处理')
                         standarlist_page = math.ceil(cassets_standarlist_num / 10)
-                        for page in range(1, standarlist_page + 1):
-                            standarlist_url = f'https://www.qcc.com/api/datalist/standardlist?isNewAgg=true&keyNo={key_no}&pageIndex={page}'
-                            standarlist_value = get_response(standarlist_url, key_no, pid, tid, cookie_dict).json()
-                            encounter_captcha(standarlist_value)
+                        for page_ in range(1, standarlist_page + 1):
+                            standarlist_url = f'https://www.qcc.com/api/datalist/standardlist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}'
+                            standarlist_value = get_response(standarlist_url, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(standarlist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                standarlist_value_data = standarlist_value["data"]
+                                for standarlist_data in standarlist_value_data:
+                                    cassets_standarlist.append(standarlist_data)
+                                time.sleep(6)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(standarlist_url, 'standard_info', 'get', '', key_no, webpage_id)
 
-                            cassets_standarlist.append(standarlist_value)
-                            time.sleep(6)
                     else:
                         cassets_standarlist = []
                     # 微博
@@ -1125,13 +1411,20 @@ def qcc_search_company(search_company_name):
                     elif cassets_weibolist_num > 10:
                         cassets_weibolist = []
                         weibolist_page = math.ceil(cassets_weibolist_num / 10)
-                        for page in range(1, weibolist_page + 1):
-                            weibolist_url = f'https://www.qcc.com/api/datalist/weibolist?keyNo={key_no}&pageIndex={page}'
-                            weibolist_value = get_response(weibolist_url, key_no, pid, tid, cookie_dict).json()
-                            encounter_captcha(weibolist_value)
+                        for page_ in range(1, weibolist_page + 1):
+                            weibolist_url = f'https://www.qcc.com/api/datalist/weibolist?keyNo={key_no}&pageIndex={page_}'
+                            weibolist_value = get_response(weibolist_url, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(weibolist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                weibolist_value_data = weibolist_value["data"]
+                                for weibolist_data in weibolist_value_data:
+                                    cassets_weibolist.append(weibolist_data)
+                                time.sleep(6)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(weibolist_url, 'weibo', 'get', '', key_no, webpage_id)
 
-                            cassets_weibolist.append(weibolist_value)
-                            time.sleep(6)
                     else:
                         cassets_weibolist = []
                     # 抖音/快手
@@ -1144,8 +1437,8 @@ def qcc_search_company(search_company_name):
                         cassets_shortvideolist = []
                         input('抖音/快手列表超过10条数据，建议处理')
                         shortvideolist_page = math.ceil(cassets_shortvideolist_num / 10)
-                        for page in range(1, shortvideolist_page + 1):
-                            shortvideolist_url = f'https://www.qcc.com/api/datalist/shortvideolist?keyNo={key_no}&pageIndex={page}'
+                        for page_ in range(1, shortvideolist_page + 1):
+                            shortvideolist_url = f'https://www.qcc.com/api/datalist/shortvideolist?keyNo={key_no}&pageIndex={page_}'
                             pass
                     else:
                         cassets_shortvideolist = []
@@ -1158,13 +1451,20 @@ def qcc_search_company(search_company_name):
                     elif cassets_miniprogramlist_num > 10:
                         cassets_wplist = []
                         wplist_page = math.ceil(cassets_miniprogramlist_num / 10)
-                        for page in range(1, wplist_page + 1):
-                            wplist_url = f'https://www.qcc.com/api/datalist/wplist?keyNo={key_no}&pageIndex={page}'
-                            wplist_value = get_response(wplist_url, key_no, pid, tid, cookie_dict).json()
-                            encounter_captcha(wplist_value)
+                        for page_ in range(1, wplist_page + 1):
+                            wplist_url = f'https://www.qcc.com/api/datalist/wplist?keyNo={key_no}&pageIndex={page_}'
+                            wplist_value = get_response(wplist_url, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(wplist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                wplist_value_data = wplist_value["data"]
+                                for wplist_data in wplist_value_data:
+                                    cassets_wplist.append(wplist_data)
+                                time.sleep(6)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(wplist_url, 'mini_program', 'get', '', key_no, webpage_id)
 
-                            cassets_wplist.append(wplist_value)
-                            time.sleep(6)
                     else:
                         cassets_wplist = []
                     # 线上店铺
@@ -1177,8 +1477,8 @@ def qcc_search_company(search_company_name):
                         cassets_shopslist = []
                         input('线上店铺列表超过10条数据，建议处理')
                         shopslist_page = math.ceil(cassets_shopslist_num / 10)
-                        for page in range(1, shopslist_page + 1):
-                            shopslist_url = f'https://www.qcc.com/api/datalist/shopslist?keyNo={key_no}&pageIndex={page}'
+                        for page_ in range(1, shopslist_page + 1):
+                            shopslist_url = f'https://www.qcc.com/api/datalist/shopslist?keyNo={key_no}&pageIndex={page_}'
                             pass
                     else:
                         cassets_shopslist = []
@@ -1192,8 +1492,8 @@ def qcc_search_company(search_company_name):
                         cassets_sytxjylist = []
                         input('商业特许经营列表超过10条数据，建议处理')
                         sytxjylist_page = math.ceil(cassets_sytxjylist_num / 10)
-                        for page in range(1, sytxjylist_page + 1):
-                            sytxjylist_url = f'https://www.qcc.com/api/datalist/sytxjylist?keyNo={key_no}&pageIndex={page}'
+                        for page_ in range(1, sytxjylist_page + 1):
+                            sytxjylist_url = f'https://www.qcc.com/api/datalist/sytxjylist?keyNo={key_no}&pageIndex={page_}'
                             pass
                     else:
                         cassets_sytxjylist = []
@@ -1207,8 +1507,8 @@ def qcc_search_company(search_company_name):
                         cassets_patentpledgelist = []
                         input('知产出质列表超过10条数据，建议处理')
                         patentpledgelist_page = math.ceil(cassets_patentpledgelist_num / 10)
-                        for page in range(1, patentpledgelist_page + 1):
-                            patentpledgelist_url = f'https://www.qcc.com/api/datalist/patentpledgelist?keyNo={key_no}&pageIndex={page}'
+                        for page_ in range(1, patentpledgelist_page + 1):
+                            patentpledgelist_url = f'https://www.qcc.com/api/datalist/patentpledgelist?keyNo={key_no}&pageIndex={page_}'
                             pass
                     else:
                         cassets_patentpledgelist = []
@@ -1227,8 +1527,8 @@ def qcc_search_company(search_company_name):
                         chistory_operlist = []
                         input('历史法定代表人列表超过10条数据，建议处理')
                         operlist_page = math.ceil(chistory_faren_num / 10)
-                        for page in range(1, operlist_page + 1):
-                            operlist_url = f'https://www.qcc.com/api/datalist/operlist?keyNo={key_no}&pageIndex={page}'
+                        for page_ in range(1, operlist_page + 1):
+                            operlist_url = f'https://www.qcc.com/api/datalist/operlist?keyNo={key_no}&pageIndex={page_}'
                             pass
                     else:
                         chistory_operlist = []
@@ -1240,14 +1540,22 @@ def qcc_search_company(search_company_name):
                     # 多于10个的情况下
                     elif chistory_mainmember_num > 10:
                         chistory_hismainmember = []
-                        input('历史主要人员列表超过10条数据，建议处理')
+                        # input('历史主要人员列表超过10条数据，建议处理')
                         hismainmember_page = math.ceil(chistory_mainmember_num / 10)
-                        for page in range(1, hismainmember_page + 1):
-                            hismainmember_url = f'https://www.qcc.com/api/datalist/hismainmember?isNewAgg=true&keyNo={key_no}&pageIndex={page}'
-                            hismainmember_value = get_response(hismainmember_url, key_no, pid, tid, cookie_dict).json()
-                            encounter_captcha(hismainmember_value)
-                            chistory_hismainmember.append(hismainmember_value)
-                            time.sleep(7)
+                        for page_ in range(1, hismainmember_page + 1):
+                            hismainmember_url = f'https://www.qcc.com/api/datalist/hismainmember?isNewAgg=true&keyNo={key_no}&pageIndex={page_}'
+                            hismainmember_value = get_response(hismainmember_url, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(hismainmember_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                hismainmember_value_data = hismainmember_value["data"]
+                                for hismainmember_data in hismainmember_value_data:
+                                    chistory_hismainmember.append(hismainmember_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(hismainmember_url, 'mihis_memberni_program', 'get', '', key_no, webpage_id)
+
                     else:
                         chistory_hismainmember = []
                     # 历史被执行人
@@ -1259,12 +1567,20 @@ def qcc_search_company(search_company_name):
                     elif chistory_hiszhixinglist_num > 10:
                         chistory_hiszhixinglist = []
                         hiszhixinglist_page = math.ceil(chistory_hiszhixinglist_num / 10)
-                        for page in range(1, hiszhixinglist_page + 1):
-                            hiszhixinglist_url = f'https://www.qcc.com/api/datalist/zhixinglist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page}&searchKey={key_no}'
-                            hiszhixinglist_value = get_response(hiszhixinglist_url, key_no, pid, tid, cookie_dict).json()
-                            encounter_captcha(hiszhixinglist_value)
-                            chistory_hiszhixinglist.append(hiszhixinglist_value)
-                            time.sleep(7)
+                        for page_ in range(1, hiszhixinglist_page + 1):
+                            hiszhixinglist_url = f'https://www.qcc.com/api/datalist/zhixinglist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page_}&searchKey={key_no}'
+                            hiszhixinglist_value = get_response(hiszhixinglist_url, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(hiszhixinglist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                hiszhixinglist_value_data = hiszhixinglist_value['data']
+                                for hiszhixinglist_data in hiszhixinglist_value_data:
+                                    chistory_hiszhixinglist.append(hiszhixinglist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(hiszhixinglist_url, 'his_judgement_debtor', 'get', '', key_no, webpage_id)
+
                     else:
                         chistory_hiszhixinglist = []
                     # 历史立案信息
@@ -1276,12 +1592,20 @@ def qcc_search_company(search_company_name):
                     elif chistory_hisliainfo_num > 10:
                         chistory_hislianlist = []
                         hislianlist_page = math.ceil(chistory_hisliainfo_num / 10)
-                        for page in range(1, hislianlist_page + 1):
-                            hislianlist_url = f'https://www.qcc.com/api/datalist/lianlist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page}'
-                            hislianlist_value = get_response(hislianlist_url, key_no, pid, tid, cookie_dict).json()
-                            encounter_captcha(hislianlist_value)
-                            chistory_hislianlist.append(hislianlist_value)
-                            time.sleep(7)
+                        for page_ in range(1, hislianlist_page + 1):
+                            hislianlist_url = f'https://www.qcc.com/api/datalist/lianlist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page_}'
+                            hislianlist_value = get_response(hislianlist_url, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(hislianlist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                hislianlist_value_data = hislianlist_value['data']
+                                for hislianlist_data in hislianlist_value_data:
+                                    chistory_hislianlist.append(hislianlist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(hislianlist_url, 'his_case_register', 'get', '', key_no, webpage_id)
+
                     else:
                         chistory_hislianlist = []
                     # 历史裁判文书
@@ -1293,12 +1617,20 @@ def qcc_search_company(search_company_name):
                     elif chistory_hiswenshulist_num > 10:
                         chistory_hiswenshulist = []
                         hiswenshulist_page = math.ceil(chistory_hiswenshulist_num / 10)
-                        for page in range(1, hiswenshulist_page + 1):
-                            hiswenshulist_url = f'https://www.qcc.com/api/datalist/wenshulist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page}&searchKey={key_no}'
-                            hiswenshulist_value = get_response(hiswenshulist_url, key_no, pid, tid, cookie_dict).json()
-                            encounter_captcha(hiswenshulist_value)
-                            chistory_hiswenshulist.append(hiswenshulist_value)
-                            time.sleep(7)
+                        for page_ in range(1, hiswenshulist_page + 1):
+                            hiswenshulist_url = f'https://www.qcc.com/api/datalist/wenshulist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page_}&searchKey={key_no}'
+                            hiswenshulist_value = get_response(hiswenshulist_url, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(hiswenshulist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                hiswenshulist_value_data = hiswenshulist_value['data']
+                                for hiswenshulist_data in hiswenshulist_value_data:
+                                    chistory_hiswenshulist.append(hiswenshulist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(hiswenshulist_url, 'his_case_doc', 'get', '', key_no, webpage_id)
+
                     else:
                         chistory_hiswenshulist = []
                     # 历史开庭公告
@@ -1310,12 +1642,20 @@ def qcc_search_company(search_company_name):
                     elif chistory_hisktgglist_num > 10:
                         chistory_hisnoticelist = []
                         hisnoticelist_page = math.ceil(chistory_hisktgglist_num / 10)
-                        for page in range(1, hisnoticelist_page + 1):
-                            hisnoticelist_url = f'https://www.qcc.com/api/datalist/noticelist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page}'
-                            hisnoticelist_value = get_response(hisnoticelist_url, key_no, pid, tid, cookie_dict).json()
-                            encounter_captcha(hisnoticelist_value)
-                            chistory_hisnoticelist.append(hisnoticelist_value)
-                            time.sleep(7)
+                        for page_ in range(1, hisnoticelist_page + 1):
+                            hisnoticelist_url = f'https://www.qcc.com/api/datalist/noticelist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page_}'
+                            hisnoticelist_value = get_response(hisnoticelist_url, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(hisnoticelist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                hisnoticelist_value_data = hisnoticelist_value['data']
+                                for hisnoticelist_data in hisnoticelist_value_data:
+                                    chistory_hisnoticelist.append(hisnoticelist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(hisnoticelist_url, 'his_case_open', 'get', '', key_no, webpage_id)
+
                     else:
                         chistory_hisnoticelist = []
                     # 历史行政许可
@@ -1327,12 +1667,20 @@ def qcc_search_company(search_company_name):
                     elif chistory_hisacolist_num > 10:
                         chistory_hisacolist = []
                         hisacolist_page = math.ceil(chistory_hisacolist_num / 10)
-                        for page in range(1, hisacolist_page + 1):
-                            hisacolist_url = f'https://www.qcc.com/api/datalist/acolist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page}'
-                            hisacolist_value = get_response(hisacolist_url, key_no, pid, tid, cookie_dict).json()
-                            encounter_captcha(hisacolist_value)
-                            chistory_hisacolist.append(hisacolist_value)
-                            time.sleep(7)
+                        for page_ in range(1, hisacolist_page + 1):
+                            hisacolist_url = f'https://www.qcc.com/api/datalist/acolist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page_}'
+                            hisacolist_value = get_response(hisacolist_url, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(hisacolist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                hisacolist_value_data = hisacolist_value['data']
+                                for hisacolist_data in hisacolist_value_data:
+                                    chistory_hisacolist.append(hisacolist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(hisacolist_url, 'his_admin_permit', 'get', '', key_no, webpage_id)
+
                     else:
                         chistory_hisacolist = []
                     # 历史行政处罚
@@ -1344,12 +1692,21 @@ def qcc_search_company(search_company_name):
                     elif chistory_hisadminpenaltylist_num > 10:
                         chistory_hisadminpenaltylist = []
                         hisadminpenaltylist_page = math.ceil(chistory_hisadminpenaltylist_num / 10)
-                        for page in range(1, hisadminpenaltylist_page + 1):
-                            hisadminpenaltylist_url = f'https://www.qcc.com/api/datalist/adminpenaltylist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page}'
-                            hisadminpenaltylist_value = get_response(hisadminpenaltylist_url, key_no, pid, tid, cookie_dict).json()
-                            encounter_captcha(hisadminpenaltylist_value)
-                            chistory_hisadminpenaltylist.append(hisadminpenaltylist_value)
-                            time.sleep(7)
+                        for page_ in range(1, hisadminpenaltylist_page + 1):
+                            hisadminpenaltylist_url = f'https://www.qcc.com/api/datalist/adminpenaltylist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page_}'
+                            hisadminpenaltylist_value = get_response(hisadminpenaltylist_url, key_no, pid, tid,
+                                                                     cookie_dict)
+                            captcha_value = encounter_captcha(hisadminpenaltylist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                hisadminpenaltylist_value_data = hisadminpenaltylist_value['data']
+                                for hisadminpenaltylist_data in hisadminpenaltylist_value_data:
+                                    chistory_hisadminpenaltylist.append(hisadminpenaltylist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(hisadminpenaltylist_url, 'his_admin_punish', 'get', '', key_no, webpage_id)
+
                     else:
                         chistory_hisadminpenaltylist = []
                     # 历史股权出质
@@ -1362,8 +1719,8 @@ def qcc_search_company(search_company_name):
                         chistory_hispledgelist = []
                         input('股权出质列表超过十个，建议处理')
                         hispledgelist_page = math.ceil(chistory_hispledgelist_num / 10)
-                        for page in range(1, hispledgelist_page + 1):
-                            hispledgelist_url = f'https://www.qcc.com/api/datalist/pledgelist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page}'
+                        for page_ in range(1, hispledgelist_page + 1):
+                            hispledgelist_url = f'https://www.qcc.com/api/datalist/pledgelist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page_}'
                             pass
                     else:
                         chistory_hispledgelist = []
@@ -1376,18 +1733,27 @@ def qcc_search_company(search_company_name):
                     elif chistory_hisshangbiaolist_num > 10:
                         chistory_hisshangbiaolist = []
                         hisshangbiaolist_page = math.ceil(chistory_hisshangbiaolist_num / 10)
-                        for page in range(1, hisshangbiaolist_page + 1):
+                        for page_ in range(1, hisshangbiaolist_page + 1):
                             hisshangbiaolist_url = f'https://www.qcc.com/api/datalist/shangbiaolist'
                             json_data = {
                                 'keyNo': f'{key_no}',
-                                'pageIndex': page,
+                                'pageIndex': page_,
                                 'isNewAgg': True,
                                 'isValid': '0',
                             }
-                            hisshangbiaolist_value = post_response(hisshangbiaolist_url, key_no, pid, tid, cookie_dict, json_data)
-                            encounter_captcha(hisshangbiaolist_value)
-                            chistory_hisshangbiaolist.append(hisshangbiaolist_value)
-                            time.sleep(7)
+                            hisshangbiaolist_value = post_response(hisshangbiaolist_url, key_no, pid, tid, cookie_dict,
+                                                                   json_data)
+                            captcha_value = encounter_captcha(hisshangbiaolist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                hisshangbiaolist_value_data = hisshangbiaolist_value['data']
+                                for hisshangbiaolist_data in hisshangbiaolist_value_data:
+                                    chistory_hisshangbiaolist.append(hisshangbiaolist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(hisshangbiaolist_url, 'his_tm_info', 'post', json_data, key_no, webpage_id)
+
                     else:
                         chistory_hisshangbiaolist = []
                     # 历史专利信息
@@ -1400,18 +1766,27 @@ def qcc_search_company(search_company_name):
                         chistory_hiszhuanlilist = []
                         input('专利信息列表超过十个，建议处理')
                         hiszhuanlilist_page = math.ceil(chistory_hiszhuanlilist_num / 10)
-                        for page in range(1, hiszhuanlilist_page + 1):
+                        for page_ in range(1, hiszhuanlilist_page + 1):
                             hiszhuanlilist_url = f'https://www.qcc.com/api/datalist/zhuanlilist'
                             json_data = {
                                 'keyNo': f'{key_no}',
-                                'pageIndex': page,
+                                'pageIndex': page_,
                                 'isNewAgg': True,
                                 'isValid': '0',
                             }
-                            hiszhuanlilist_value = post_response(hiszhuanlilist_url, key_no, pid, tid, cookie_dict, json_data)
-                            encounter_captcha(hiszhuanlilist_value)
-                            chistory_hiszhuanlilist.append(hiszhuanlilist_value)
-                            time.sleep(7)
+                            hiszhuanlilist_value = post_response(hiszhuanlilist_url, key_no, pid, tid, cookie_dict,
+                                                                 json_data)
+                            captcha_value = encounter_captcha(hiszhuanlilist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                hiszhuanlilist_value_data = hiszhuanlilist_value['data']
+                                for hiszhuanlilist_data in hiszhuanlilist_value_data:
+                                    chistory_hiszhuanlilist.append(hiszhuanlilist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(hiszhuanlilist_url, 'his_patent_info', 'post', json_data, key_no, webpage_id)
+
                     else:
                         chistory_hiszhuanlilist = []
                     # 历史备案网站
@@ -1424,7 +1799,7 @@ def qcc_search_company(search_company_name):
                         chistory_hiswebsitelist = []
                         input('历史备案网站列表超过十个，建议处理')
                         hiswebsitelist_page = math.ceil(chistory_hiswebsitelist_num / 10)
-                        for page in range(1, hiswebsitelist_page + 1):
+                        for page_ in range(1, hiswebsitelist_page + 1):
                             hiswebsitelist_url = f'https://www.qcc.com/api/datalist/websitelist'
                             pass
                     else:
@@ -1439,7 +1814,7 @@ def qcc_search_company(search_company_name):
                         chistory_hispartner = []
                         input('历史股东信息列表超过十个，建议处理')
                         hispartnerlist_page = math.ceil(chistory_hispartnerlist_num / 10)
-                        for page in range(1, hispartnerlist_page + 1):
+                        for page_ in range(1, hispartnerlist_page + 1):
                             hispartnerlist_url = f'https://www.qcc.com/api/datalist/partnerlist'
                             pass
                     else:
@@ -1454,7 +1829,7 @@ def qcc_search_company(search_company_name):
                         chistory_hisowenoticelist = []
                         input('历史欠税公告列表超过十个，建议处理')
                         hisowenoticelist_page = math.ceil(chistory_hisqianshitax_num / 10)
-                        for page in range(1, hisowenoticelist_page + 1):
+                        for page_ in range(1, hisowenoticelist_page + 1):
                             hisowenoticelist_url = f'https://www.qcc.com/api/datalist/owenoticelist'
                             pass
                     else:
@@ -1469,7 +1844,7 @@ def qcc_search_company(search_company_name):
                         chistory_hisgonggaolist = []
                         input('历史法院公告列表超过十个，建议处理')
                         hisgonggaolist_page = math.ceil(chistory_hiscourtlist_num / 10)
-                        for page in range(1, hisgonggaolist_page + 1):
+                        for page_ in range(1, hisgonggaolist_page + 1):
                             hisgonggaolist_url = f'https://www.qcc.com/api/datalist/gonggaolist'
                             pass
                     else:
@@ -1484,7 +1859,7 @@ def qcc_search_company(search_company_name):
                         chistory_hisenvlist = []
                         input('历史环保处罚列表超过十个，建议处理')
                         hisenvlist_page = math.ceil(chistory_hisenvlist_num / 10)
-                        for page in range(1, hisenvlist_page + 1):
+                        for page_ in range(1, hisenvlist_page + 1):
                             hisenvlist_url = f'https://www.qcc.com/api/datalist/envlist'
                             pass
                     else:
@@ -1498,12 +1873,21 @@ def qcc_search_company(search_company_name):
                     elif chistory_hisendexecutioncaselist_num > 10:
                         chistory_hisendexecutioncaselist = []
                         hisendexecutioncaselist_page = math.ceil(chistory_hisendexecutioncaselist_num / 10)
-                        for page in range(1, hisendexecutioncaselist_page + 1):
-                            hisendexecutioncaselist_url = f'https://www.qcc.com/api/datalist/endexecutioncaselist?isValid=0&keyNo={key_no}&pageIndex={page}'
-                            hisendexecutioncaselist_value = get_response(hisendexecutioncaselist_url, key_no, pid, tid, cookie_dict).json()
-                            encounter_captcha(hisendexecutioncaselist_value)
-                            chistory_hisendexecutioncaselist.append(hisendexecutioncaselist_value)
-                            time.sleep(8)
+                        for page_ in range(1, hisendexecutioncaselist_page + 1):
+                            hisendexecutioncaselist_url = f'https://www.qcc.com/api/datalist/endexecutioncaselist?isValid=0&keyNo={key_no}&pageIndex={page_}'
+                            hisendexecutioncaselist_value = get_response(hisendexecutioncaselist_url, key_no, pid, tid,
+                                                                         cookie_dict)
+                            captcha_value = encounter_captcha(hisendexecutioncaselist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                hisendexecutioncaselist_value_data = hisendexecutioncaselist_value['data']
+                                for hisendexecutioncaselist_data in hisendexecutioncaselist_value_data:
+                                    chistory_hisendexecutioncaselist.append(hisendexecutioncaselist_data)
+                                time.sleep(8)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(hisendexecutioncaselist_url, 'his_judgement_end', 'get', '', key_no, webpage_id)
+
                     else:
                         chistory_hisendexecutioncaselist = []
                     # 历史限制高消费
@@ -1516,12 +1900,21 @@ def qcc_search_company(search_company_name):
                         chistory_hissumptuarylist = []
                         input('历史限制高消费列表超过十个，建议处理')
                         hisconsumptionlist_page = math.ceil(chistory_hisconsumptionlist_num / 10)
-                        for page in range(1, hisconsumptionlist_page + 1):
-                            hisconsumptionlist_url = f'https://www.qcc.com/api/datalist/sumptuarylist?id={key_no}&isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page}'
-                            hisconsumptionlist_value = get_response(hisconsumptionlist_url, key_no, pid, tid, cookie_dict).json()
-                            encounter_captcha(hisconsumptionlist_value)
-                            chistory_hissumptuarylist.append(hisconsumptionlist_value)
-                            time.sleep(8)
+                        for page_ in range(1, hisconsumptionlist_page + 1):
+                            hisconsumptionlist_url = f'https://www.qcc.com/api/datalist/sumptuarylist?id={key_no}&isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page_}'
+                            hisconsumptionlist_value = get_response(hisconsumptionlist_url, key_no, pid, tid,
+                                                                    cookie_dict)
+                            captcha_value = encounter_captcha(hisconsumptionlist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                hisconsumptionlist_value_data = hisconsumptionlist_value['data']
+                                for hisconsumptionlist_data in hisconsumptionlist_value_data:
+                                    chistory_hissumptuarylist.append(hisconsumptionlist_data)
+                                time.sleep(8)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(hisconsumptionlist_url, 'meiyou', 'get', '', key_no, webpage_id)
+
                     else:
                         chistory_hissumptuarylist = []
                     # 历史失信被执行人
@@ -1533,12 +1926,20 @@ def qcc_search_company(search_company_name):
                     elif chistory_hisshixinlist_num > 10:
                         chistory_hisshixinlist = []
                         hisshixinlist_page = math.ceil(chistory_hisshixinlist_num / 10)
-                        for page in range(1, hisshixinlist_page + 1):
-                            hisshixinlist_url = f'https://www.qcc.com/api/datalist/shixinlist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page}&searchKey={key_no}&sortField=pubdate'
-                            hisshixinlist_value = get_response(hisshixinlist_url, key_no, pid, tid, cookie_dict).json()
-                            encounter_captcha(hisshixinlist_value)
-                            chistory_hisshixinlist.extend(hisshixinlist_value)
-                            time.sleep(8)
+                        for page_ in range(1, hisshixinlist_page + 1):
+                            hisshixinlist_url = f'https://www.qcc.com/api/datalist/shixinlist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page_}&searchKey={key_no}&sortField=pubdate'
+                            hisshixinlist_value = get_response(hisshixinlist_url, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(hisshixinlist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                hisshixinlist_value_data = hisshixinlist_value['data']
+                                for hisshixinlist_data in hisshixinlist_value_data:
+                                    chistory_hisshixinlist.extend(hisshixinlist_data)
+                                time.sleep(8)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(hisshixinlist_url, 'his_dishonest_debtor', 'get', '', key_no, webpage_id)
+
                     else:
                         chistory_hisshixinlist = []
                     # 历史经营异常
@@ -1551,8 +1952,8 @@ def qcc_search_company(search_company_name):
                         chistory_hisexceptions = []
                         input('历史经营异常列表超过十个，建议处理')
                         hisexceptions_page = math.ceil(chistory_hisexceptions_num / 10)
-                        for page in range(1, hisexceptions_page + 1):
-                            hisexceptions_url = f'https://www.qcc.com/api/datalist/exceptions?isValid=0&keyNo={key_no}&pageIndex={page}'
+                        for page_ in range(1, hisexceptions_page + 1):
+                            hisexceptions_url = f'https://www.qcc.com/api/datalist/exceptions?isValid=0&keyNo={key_no}&pageIndex={page_}'
                             pass
                     else:
                         chistory_hisexceptions = []
@@ -1565,12 +1966,20 @@ def qcc_search_company(search_company_name):
                     elif chistory_hisfreeze_num > 10:
                         chistory_hisassistancelist = []
                         hisfreeze_page = math.ceil(chistory_hisfreeze_num / 10)
-                        for page in range(1, hisfreeze_page + 1):
-                            hisfreeze_url = f'https://www.qcc.com/api/datalist/assistancelist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page}'
-                            hisfreeze_value = get_response(hisfreeze_url, key_no, pid, tid, cookie_dict).json()
-                            encounter_captcha(hisfreeze_value)
-                            chistory_hisassistancelist.append(hisfreeze_value)
-                            time.sleep(8)
+                        for page_ in range(1, hisfreeze_page + 1):
+                            hisfreeze_url = f'https://www.qcc.com/api/datalist/assistancelist?isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page_}'
+                            hisfreeze_value = get_response(hisfreeze_url, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(hisfreeze_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                hisfreeze_value_data = hisfreeze_value['data']
+                                for hisfreeze_data in hisfreeze_value_data:
+                                    chistory_hisassistancelist.append(hisfreeze_data)
+                                time.sleep(8)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(hisfreeze_url, 'meiyou', 'get', '', key_no, webpage_id)
+
                     else:
                         chistory_hisassistancelist = []
                     # 历史双随机抽查
@@ -1583,8 +1992,8 @@ def qcc_search_company(search_company_name):
                         chistory_hisdrclist = []
                         input('历史双随机抽查列表超过十个，建议处理')
                         hisdrclist_page = math.ceil(chistory_hisdrclist_num / 10)
-                        for page in range(1, hisdrclist_page + 1):
-                            hisdrclist_url = f'https://www.qcc.com/api/datalist/drclist?isValid=0&keyNo={key_no}&pageIndex={page}'
+                        for page_ in range(1, hisdrclist_page + 1):
+                            hisdrclist_url = f'https://www.qcc.com/api/datalist/drclist?isValid=0&keyNo={key_no}&pageIndex={page_}'
                             pass
                     else:
                         chistory_hisdrclist = []
@@ -1598,8 +2007,8 @@ def qcc_search_company(search_company_name):
                         chistory_hispatentpledgelist = []
                         input('历史知产出质列表超过十个，建议处理')
                         hispledgelist_page = math.ceil(chistory_hispledgelist_num / 10)
-                        for page in range(1, hispledgelist_page + 1):
-                            hispledgelist_url = f'https://www.qcc.com/api/datalist/patentpledgelist?isValid=0&keyNo={key_no}&pageIndex={page}'
+                        for page_ in range(1, hispledgelist_page + 1):
+                            hispledgelist_url = f'https://www.qcc.com/api/datalist/patentpledgelist?isValid=0&keyNo={key_no}&pageIndex={page_}'
                             pass
                     else:
                         chistory_hispatentpledgelist = []
@@ -1613,103 +2022,239 @@ def qcc_search_company(search_company_name):
                         chistory_hismpledgelist = []
                         input('历史动产抵押列表超过十个，建议处理')
                         hismpledgelist_page = math.ceil(chistory_hismpledgelist_num / 10)
-                        for page in range(1, hismpledgelist_page + 1):
-                            hismpledgelist_url = f'https://www.qcc.com/api/datalist/mpledgelist?isValid=0&keyNo={key_no}&pageIndex={page}'
-                            pass
+                        for page_ in range(1, hismpledgelist_page + 1):
+                            hismpledgelist_url = f'https://www.qcc.com/api/datalist/mpledgelist'
+                            json_data = {
+                                'keyNo': f'{key_no}',
+                                'pageIndex': page_,
+                                'isNewAgg': True,
+                                'isValid': 0,
+                            }
+                            hismpledgelist_value = post_response(hismpledgelist_url, key_no, pid, tid, cookie_dict,
+                                                                 json_data)
+                            captcha_value = encounter_captcha(hismpledgelist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                hismpledgelist_value_data = hismpledgelist_value['data']
+                                for hismpledgelist_data in hismpledgelist_value_data:
+                                    chistory_hismpledgelist.append(hismpledgelist_data)
+                                time.sleep(8)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(hismpledgelist_url, 'his_chattel_mortgage', 'post', json_data, key_no, webpage_id)
+
                     else:
                         chistory_hismpledgelist = []
                     # 历史诉前调解
                     chistory_hispretrialmediationlist_num = inquire_dict.get('历史诉前调解')
                     # 少于10个的情况下
                     if 0 < chistory_hispretrialmediationlist_num <= 10:
-                        chistory_hispretrialmediationlist = chistory_json["datalist"]["hispretrialmediationlist"]["data"]
+                        chistory_hispretrialmediationlist = chistory_json["datalist"]["hispretrialmediationlist"][
+                            "data"]
                     # 多于10个的情况下
                     elif chistory_hispretrialmediationlist_num > 10:
                         chistory_hispretrialmediationlist = []
                         input('历史诉前调解列表超过十个，建议处理')
                         hispretrialmediationlist_page = math.ceil(chistory_hispretrialmediationlist_num / 10)
-                        for page in range(1, hispretrialmediationlist_page + 1):
-                            hispretrialmediationlist_url = f'https://www.qcc.com/api/datalist/pretrialmediationlist?isValid=0&keyNo={key_no}&pageIndex={page}'
+                        for page_ in range(1, hispretrialmediationlist_page + 1):
+                            hispretrialmediationlist_url = f'https://www.qcc.com/api/datalist/pretrialmediationlist?isValid=0&keyNo={key_no}&pageIndex={page_}'
                             pass
                     else:
                         chistory_hispretrialmediationlist = []
 
-
                     value_dict = {
-                        '工商信息': company_detail,
-                        '股东信息': company_partners,
-                        '主要人员': company_employees,
-                        '对外投资': company_touzilist,
-                        '变更记录': company_changelist,
-                        '企业年报': company_reportyear,
-                        '疑似关系': company_suspectlist,
-                        '司法案件': susong_caselist,
-                        '裁判文书': susong_wenshulist,
-                        '立案信息': susong_lianliast,
-                        '开庭公告': susong_noticelist,
-                        '法院公告': susong_gonggaolist,
-                        '送达公告': susong_dnoticelist,
-                        '诉前调解': susong_pretrialmediationlist,
-                        '司法拍卖': susong_judicialsalelist,
-                        '失信被执行人': susong_shixinlist,
-                        '终本案件': susong_endexecutioncaselist,
-                        '严重违法': cfengxian_svlist,
-                        '股权出质': cfengxian_pledgelist,
-                        '经营异常': cfengxian_exceptions,
-                        '动产抵押': cfengxian_mpledgelist,
-                        '注销备案': cfengxian_enliqinfo,
-                        '行政处罚': cfengxian_adminpenaltylist,
-                        '环保处罚': cfengxian_envlist,
-                        '税务非正常户': cfengxian_taxabnormallist,
-                        '欠税公告': cfengxian_owenoticelist,
-                        '税收违法': cfengxian_taxillegallist,
-                        '招投标': cfengxian_taxillegallist,
-                        '资质证书': crun_certificationsummary,
-                        '信用评价': crun_creditrate,
-                        '招聘': crun_joblist,
-                        '进出口信用': crun_ciaxlist,
-                        '土地信息': crun_landlist,
-                        '行政许可': crun_acolist,
-                        '抽查检查': crun_spotchecklist,
-                        '食品安全': crun_foodsafetylist,
-                        '双随机抽查': crun_drclist,
-                        '纳税人资质': crun_taxpayerlist,
-                        '产权交易': crun_transactionlist,
-                        '资产拍卖': crun_assetsalelist,
-                        '电信许可': crun_telecomlist,
-                        '商标信息': cassets_shangbiaolist,
-                        '商标文书': cassets_tmcdslist,
-                        '专利信息': cassets_zhuanlilist,
-                        '作品著作权': cassets_zzqlist,
-                        '软件著作权': cassets_rjzzqlist,
-                        '备案网站': cassets_webitelist,
-                        'APP': cassets_applist,
-                        '微信公众号': cassets_wechatlist,
-                        '集成电路布图': cassets_jcdllist,
-                        '标准信息': cassets_standarlist,
-                        '微博': cassets_weibolist,
-                        '抖音/快手': cassets_shortvideolist,
-                        '小程序': cassets_wplist,
-                        '线上店铺': cassets_shopslist,
-                        '商业特许经营': cassets_sytxjylist,
-                        '知产出质': cassets_patentpledgelist,
-                        '历史法定代表人': chistory_operlist,
-                        '历史主要人员': chistory_hismainmember,
-                        '历史被执行人': chistory_hiszhixinglist,
-                        '历史立案信息': chistory_hislianlist,
-                        '历史裁判文书': chistory_hiswenshulist,
-                        '历史开庭公告': chistory_hisnoticelist,
-                        '历史行政许可': chistory_hisacolist,
-                        '历史行政处罚': chistory_hisadminpenaltylist,
-                        '历史股权出质': chistory_hispledgelist,
-                        '历史商标信息': chistory_hisshangbiaolist,
+                        'business_info': company_detail,  # 工商信息
+                        'shareholder': company_partners,  # 股东信息
+                        'member': company_employees,  # 主要人员
+                        'invest': company_touzilist,  # 对外投资
+                        'business_change': company_changelist,  # 变更记录
+                        'annual_report': company_reportyear,  # 企业年报
+                        'suspect': company_suspectlist,  # 疑似关系
+                        'judicial_case': susong_caselist,  # 司法案件
+                        'case_doc': susong_wenshulist,  # 裁判文书
+                        'case_register': susong_lianliast,  # 立案信息
+                        'case_open': susong_noticelist,  # 开庭公告
+                        'case_notice': susong_gonggaolist,  # 法院公告
+                        'case_deliver': susong_dnoticelist,  # 送达公告
+                        'case_mediate': susong_pretrialmediationlist,  # 诉前调解
+                        'auction': susong_judicialsalelist,  # 司法拍卖
+                        'dishonest_debtor': susong_shixinlist,  # 失信被执行人
+                        'judgement_end': susong_endexecutioncaselist,  # 终本案件
+                        'serious_illegal': cfengxian_svlist,  # 严重违法
+                        'equity_pledge': cfengxian_pledgelist,  # 股权出质
+                        'abnormal_business': cfengxian_exceptions,  # 经营异常
+                        'chattel_mortgage': cfengxian_mpledgelist,  # 动产抵押
+                        'cancel_filing': cfengxian_enliqinfo,  # 注销备案
+                        'admin_punish': cfengxian_adminpenaltylist,  # 行政处罚
+                        'env_punish': cfengxian_envlist,  # 环保处罚
+                        'abnormal_tax': cfengxian_taxabnormallist,  # 税务非正常户
+                        'tax_notice': cfengxian_owenoticelist,  # 欠税公告
+                        'tax_illegal': cfengxian_taxillegallist,  # 税收违法
+                        'bid': cfengxian_taxillegallist,  # 招投标
+                        'qualification_cert': crun_certificationsummary,  # 资质证书
+                        # 'credit_eval': crun_creditrate,
+                        'tax_credit': tax_credit,  # 信用评价
+                        'bond_main_body_credit': bond_main_body_credit,
+                        'env_credit': env_credit,
+                        'import_export_credit': import_export_credit,
+                        'fund_manager_credit': fund_manager_credit,
+                        'labor_guarantee_credit': labor_guarantee_credit,
+                        'communication_credit': communication_credit,
+                        'keep_faith_credit': keep_faith_credit,
+                        'safety_produce_credit': safety_produce_credit,
+                        'fire_safety_credit': fire_safety_credit,
+                        'road_transport_credit': road_transport_credit,
+                        'china_soft_credit': china_soft_credit,
+                        'recruitment': crun_joblist,  # 招聘
+                        'trade_credit': crun_ciaxlist,  # 进出口信用
+                        'land_info': crun_landlist,  # 土地信息
+                        'admin_permit': crun_acolist,  # 行政许可
+                        'spot_check': crun_spotchecklist,  # 抽查检查
+                        'food_safety': crun_foodsafetylist,  # 食品安全
+                        'double_random_check': crun_drclist,  # 双随机抽查
+                        'taxpayer_qual': crun_taxpayerlist,  # 纳税人资质
+                        'property_transaction': crun_transactionlist,  # 产权交易
+                        'asset_auction': crun_assetsalelist,  # 资产拍卖
+                        'telecom_license': crun_telecomlist,  # 电信许可
+                        'tm_info': cassets_shangbiaolist,  # 商标信息
+                        'tm_doc': cassets_tmcdslist,  # 商标文书
+                        'patent_info': cassets_zhuanlilist,  # 专利信息
+                        'work_copyright': cassets_zzqlist,  # 作品著作权
+                        'sw_copyright': cassets_rjzzqlist,  # 软件著作权
+                        'registered_web': cassets_webitelist,  # 备案网站
+                        'app': cassets_applist,  # APP
+                        'wx_official': cassets_wechatlist,  # 微信公众号
+                        'ic_layout': cassets_jcdllist,  # 集成电路布图
+                        'standard_info': cassets_standarlist,  # 标准信息
+                        'weibo': cassets_weibolist,  # 微博
+                        'short_video': cassets_shortvideolist,  # 抖音/快手
+                        'mini_program': cassets_wplist,  # 小程序
+                        'online_shop': cassets_shopslist,  # 线上店铺
+                        'franchise': cassets_sytxjylist,  # 商业特许经营
+                        'ip_pledge': cassets_patentpledgelist,  # 知产出质
+                        'legal_rep': chistory_operlist,  # 历史法定代表人
+                        'his_member': chistory_hismainmember,  # 历史主要人员
+                        'his_judgement_debtor': chistory_hiszhixinglist,  # 历史被执行人
+                        'his_case_register': chistory_hislianlist,  # 历史立案信息
+                        'his_case_doc': chistory_hiswenshulist,  # 历史裁判文书
+                        'his_case_open': chistory_hisnoticelist,  # 历史开庭公告
+                        'his_admin_permit': chistory_hisacolist,  # 历史行政许可
+                        'his_admin_punish': chistory_hisadminpenaltylist,  # 历史行政处罚
+                        'his_equity_pledge': chistory_hispledgelist,  # 历史股权出质
+                        'his_tm_info': chistory_hisshangbiaolist,  # 历史商标信息
+                        'his_invest': chistory_histouzilist,  # 历史对外投资
+                        'his_patent_info': chistory_hiszhuanlilist,  # 历史专利信息
+                        'his_judgement_end': chistory_hisendexecutioncaselist,  # 历史终本案件
+                        'his_dishonest_debtor': chistory_hisshixinlist,  # 历史失信被执行人
+                        'his_chattel_mortgage': chistory_hismpledgelist,  # 历史动产抵押
                     }
                     print(value_dict)
                     # 转为json数据
-                    value_json = json.dumps(value_dict, ensure_ascii=False, indent=4)
-                    # 将数据保存为json文件
-                    with open(f"江苏徽海能源发展有限公司.json", "w", encoding="utf-8") as f:
-                        f.write(value_json)
+                    # value_json = json.dumps(value_dict, ensure_ascii=False, indent=4)
+                    # # 将数据保存为json文件
+                    # with open(f"江阴市国马呢绒染整有限公司.json", "w", encoding="utf-8") as f:
+                    #     f.write(value_json)
+                    for data_key, data_value in value_dict.items():
+                        if data_value:
+                            if data_key in ['business_info', 'credit_eval', 'trade_credit']:
+                                data_md5 = generate_md5(str(data_value))
+                                data_status = "current"
+                                data_json = json.dumps(data_value, ensure_ascii=False)
+                                up_qcc_data(key_no, data_key, data_status, data_md5, data_json, from_queue, webpage_id)
+
+                            else:
+                                if 'his_' in data_key:
+                                    # 历史信息，增加标识
+                                    data_status = 'history'
+                                    for up_data in data_value:
+                                        if up_data:
+                                            data_key = data_key.replace('his_', '')
+                                            data_json = json.dumps(up_data, ensure_ascii=False)
+                                            data_md5 = generate_md5(str(up_data))
+                                            up_qcc_data(key_no, data_key, data_status, data_md5, data_json, from_queue,
+                                                        webpage_id)
+                                else:
+                                    for up_data in data_value:
+                                        if up_data:
+                                            data_status = "current"
+                                            data_json = json.dumps(up_data, ensure_ascii=False)
+                                            data_md5 = generate_md5(str(up_data))
+                                            up_qcc_data(key_no, data_key, data_status, data_md5, data_json, from_queue,
+                                                        webpage_id)
+                    # 对于封禁的数据，需要单独处理（从数据库中获取信息）
+                    sql_data = get_ban_data(webpage_id)
+                    for ban_id, url, data_key, res_type, json_data, key_no, webpage_id in sql_data:
+                        # print(ban_id, url, data_key, res_type, json_data, key_no, webpage_id)
+                        # 转为json数据
+                        json_data = json.loads(json_data)
+                        if res_type == 'post':
+                            value_ban = post_response(url, key_no, pid, tid, cookie_dict, json_data=json_data)
+                            if value_ban:
+                                for data_value in value_ban['data']:
+                                    if data_key in ['business_info', 'credit_eval', 'trade_credit']:
+                                        data_md5 = generate_md5(str(data_value))
+                                        data_status = "current"
+                                        data_json = json.dumps(data_value, ensure_ascii=False)
+                                        up_qcc_data(key_no, data_key, data_status, data_md5, data_json, from_queue,
+                                                    webpage_id)
+
+                                    else:
+                                        if 'his_' in data_key:
+                                            # 历史信息，增加标识
+                                            data_status = 'history'
+                                            for up_data in data_value:
+                                                if up_data:
+                                                    data_key = data_key.replace('his_', '')
+                                                    data_json = json.dumps(up_data, ensure_ascii=False)
+                                                    data_md5 = generate_md5(str(up_data))
+                                                    up_qcc_data(key_no, data_key, data_status, data_md5, data_json,
+                                                                from_queue,
+                                                                webpage_id)
+                                        else:
+                                            for up_data in data_value:
+                                                if up_data:
+                                                    data_status = "current"
+                                                    data_json = json.dumps(up_data, ensure_ascii=False)
+                                                    data_md5 = generate_md5(str(up_data))
+                                                    up_qcc_data(key_no, data_key, data_status, data_md5, data_json,
+                                                                from_queue,
+                                                                webpage_id)
+                                del_ban_data(ban_id)
+                        elif res_type == 'get':
+                            value_ban = get_response(url, key_no, pid, tid, cookie_dict)
+                            if value_ban:
+                                for data_value in value_ban['data']:
+                                    if data_key in ['business_info', 'credit_eval', 'trade_credit']:
+                                        data_md5 = generate_md5(str(data_value))
+                                        data_status = "current"
+                                        data_json = json.dumps(data_value, ensure_ascii=False)
+                                        up_qcc_data(key_no, data_key, data_status, data_md5, data_json, from_queue,
+                                                    webpage_id)
+
+                                    else:
+                                        if 'his_' in data_key:
+                                            # 历史信息，增加标识
+                                            data_status = 'history'
+                                            for up_data in data_value:
+                                                if up_data:
+                                                    data_key = data_key.replace('his_', '')
+                                                    data_json = json.dumps(up_data, ensure_ascii=False)
+                                                    data_md5 = generate_md5(str(up_data))
+                                                    up_qcc_data(key_no, data_key, data_status, data_md5, data_json,
+                                                                from_queue,
+                                                                webpage_id)
+                                        else:
+                                            for up_data in data_value:
+                                                if up_data:
+                                                    data_status = "current"
+                                                    data_json = json.dumps(up_data, ensure_ascii=False)
+                                                    data_md5 = generate_md5(str(up_data))
+                                                    up_qcc_data(key_no, data_key, data_status, data_md5, data_json,
+                                                                from_queue,
+                                                                webpage_id)
+                                del_ban_data(ban_id)
+
+
 
 
 
@@ -1757,11 +2302,14 @@ def qcc_search_company(search_company_name):
 
 
 # qcc_search_company("杭州泽荣财务咨询有限公司")
-# qcc_search_company("福建金闽再造烟叶发展有限公司")
-# qcc_search_company("广东瑞生科技集团有限公司")
-# qcc_search_company("泸州丹山建筑建材有限责任公司")
-# qcc_search_company("江苏太平洋印刷有限公司")
-# qcc_search_company("江阴市国马呢绒染整有限公司")
-# qcc_search_company("中国华润有限公司")
-# qcc_search_company("常州市兰新建筑工程有限公司")
-qcc_search_company("江苏徽海能源发展有限公司")
+# qcc_search_company("福建金闽再造烟叶发展有限公司")1
+# qcc_search_company("广东瑞生科技集团有限公司") 1
+qcc_search_company("常州市金坛鸿发贸易有限公司")
+# qcc_search_company("江苏太平洋印刷有限公司") 1
+# qcc_search_company("江阴市国马呢绒染整有限公司") 1
+# qcc_search_company("常州市兰新建筑工程有限公司") 1
+# qcc_search_company("江苏徽海能源发展有限公司") 1
+# qcc_search_company("常州市金坛鸿发贸易有限公司") 1
+# qcc_search_company("江苏三联特种钢丝有限公司") 1
+# qcc_search_company("江苏中友精密制管有限公司") 1
+# qcc_search_company("江苏中友精密制管有限公司")

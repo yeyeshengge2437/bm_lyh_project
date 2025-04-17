@@ -15,7 +15,6 @@ co = co.set_argument('--no-sandbox')
 co = co.headless()
 co.set_paths(local_port=9149)
 
-
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'zh-CN,zh;q=0.9',
@@ -69,8 +68,13 @@ def get_hainanzichan_chuzhigonggao(queue_id, webpage_id):
                         for ann in annex:
                             if "http" not in ann:
                                 ann = "https://www.guangzhouamc.com" + ann
+                            if ann in ["http://hnlhzc.w7.yjdns.com/uploadfile/2016/0417/20160417032739725.jpg",
+                                       "http://hnlhzc.w7.yjdns.com/uploadfile/2016/0417/20160417032813966.jpg",
+                                       "http://hnlhzc.w7.yjdns.com/uploadfile/2016/0417/20160417032841760.jpg"]:
+                                continue
                             file_type = ann.split('.')[-1]
-                            if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z', 'jpg'] and "uploadfile" in ann:
+                            if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
+                                             'jpg', 'png', 'jpeg'] and "uploadfile" in ann:
                                 file_url = upload_file_by_url(ann, "hainan", file_type)
                                 files.append(file_url)
                                 original_url.append(ann)
@@ -87,7 +91,8 @@ def get_hainanzichan_chuzhigonggao(queue_id, webpage_id):
                     content_html = ''
                     for con in title_html_info:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
-                    content_html = re.sub(r'<strong>相关热词搜索：</strong>.*?</body></html>&#13;', '', content_html, flags=re.DOTALL)
+                    content_html = re.sub(r'<strong>相关热词搜索：</strong>.*?</body></html>&#13;', '', content_html,
+                                          flags=re.DOTALL)
                     # for con in content_1:
                     #     content_html += etree.tostring(con, encoding='utf-8').decode()
                     # try:
@@ -97,7 +102,8 @@ def get_hainanzichan_chuzhigonggao(queue_id, webpage_id):
                     # except:
                     #     print('截取当前显示区域')
                     try:
-                        image = get_image(page, title_url, "xpath=//td[3]/table[2]/tbody/tr/td/table[3]//@src", is_to_bottom=True, is_time=4)
+                        image = get_image(page, title_url, "xpath=//td[3]/table[2]/tbody/tr/td", is_to_bottom=True,
+                                          is_time=10)
                     except:
                         print('截取当前显示区域')
                         image = get_now_image(page, title_url)
@@ -121,7 +127,8 @@ def get_hainanzichan_chuzhigonggao(queue_id, webpage_id):
                         insert_sql = "INSERT INTO col_paper_page (day, paper, name, original_img, page_url, img_url, create_time, from_queue, create_date, webpage_id) VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s)"
 
                         cursor_test.execute(insert_sql,
-                                            (title_date, name, title_name, up_img, title_url, up_img, create_time, queue_id,
+                                            (title_date, name, title_name, up_img, title_url, up_img, create_time,
+                                             queue_id,
                                              create_date, webpage_id))
                         conn_test.commit()
                     else:
@@ -133,7 +140,8 @@ def get_hainanzichan_chuzhigonggao(queue_id, webpage_id):
                         insert_sql = "INSERT INTO col_paper_notice (page_url, day, paper, title, content, content_url, content_html, create_time,original_files, files, from_queue, create_date, webpage_id) VALUES (%s,%s,%s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)"
 
                         cursor_test.execute(insert_sql,
-                                            (title_url, title_date, name, title_name, title_content, title_url, content_html,
+                                            (title_url, title_date, name, title_name, title_content, title_url,
+                                             content_html,
                                              create_time, original_url, files, queue_id,
                                              create_date, webpage_id))
                         conn_test.commit()
@@ -141,9 +149,17 @@ def get_hainanzichan_chuzhigonggao(queue_id, webpage_id):
 
                     cursor_test.close()
                     conn_test.close()
-        page.close()
+        try:
+            page.quit()
+        except Exception as e:
+            print(e)
+            pass
     except Exception as e:
-        page.close()
+        try:
+            page.quit()
+        except:
+            pass
         raise Exception(e)
+
 
 # get_hainanzichan_chuzhigonggao(111, 222)

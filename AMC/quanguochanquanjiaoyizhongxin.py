@@ -41,7 +41,7 @@ def get_quanguochanquanjiaoyizhongxin(queue_id, webpage_id):
     page.set.load_mode.none()
     try:
         # for zq_type in ['G3', 'PG3']:
-        for page_num in range(1, 241 + 1):
+        for page_num in range(1, 20 + 1):
             if page_num == 1:
                 params = {
                     'project_type': 'ZQ',

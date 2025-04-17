@@ -70,24 +70,25 @@ def get_shandongchanquanjiaoyizhongxin(queue_id, webpage_id):
                     page_url = f"http://www.sdcqjy.com/proj/yqcl/{link_id}"
                 else:
                     page_url = f"http://www.sdcqjy.com/proj/tc/{link_id}"
-                title_name = link_json['name']
-                # import datetime; print(datetime.datetime.utcfromtimestamp(1740326400000 // 1000).strftime('%Y-%m-%d'))
-                title_date = link_json['publishTime']
-                # 使用re模块提取日期
-                title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
-                if title_date:
-                    title_date = title_date[0]
-                else:
-                    title_date = ''
-                print(page_url, title_name, title_date, data_status)
-                # https://hljcqjy.ejy365.com/ejy/detail?infoId=N0129GQ240059&bmStatus=%E6%8A%A5%E5%90%8D%E6%88%AA%E6%AD%A2&ggType=JYGG
-
-                res = requests.get(page_url, headers=headers)
-                res_html = etree.HTML(res.text)
-                time.sleep(2)
-                # title_list = res_html.xpath("//div[@class='rightListContent list-item']")
                 title_url = page_url
                 if title_url not in title_set:
+                    title_name = link_json['name']
+                    # import datetime; print(datetime.datetime.utcfromtimestamp(1740326400000 // 1000).strftime('%Y-%m-%d'))
+                    title_date = link_json['publishTime']
+                    # 使用re模块提取日期
+                    title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
+                    if title_date:
+                        title_date = title_date[0]
+                    else:
+                        title_date = ''
+                    print(page_url, title_name, title_date, data_status)
+                    # https://hljcqjy.ejy365.com/ejy/detail?infoId=N0129GQ240059&bmStatus=%E6%8A%A5%E5%90%8D%E6%88%AA%E6%AD%A2&ggType=JYGG
+
+                    res = requests.get(page_url, headers=headers)
+                    res_html = etree.HTML(res.text)
+                    time.sleep(2)
+                    # title_list = res_html.xpath("//div[@class='rightListContent list-item']")
+
                     title_content = "".join(res_html.xpath("//div[@class='pro_title_main']//text()"))
                     title_content = title_content.join(res_html.xpath("//div[@class='module-item']//text()"))
                     title_content = title_content.join(res_html.xpath("//div[@class='art_cont']//text()"))
@@ -178,7 +179,10 @@ def get_shandongchanquanjiaoyizhongxin(queue_id, webpage_id):
                     conn_test.close()
         page.close()
     except Exception as e:
-        page.close()
+        try:
+            page.close()
+        except:
+            pass
         raise Exception(e)
 
 

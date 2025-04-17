@@ -84,22 +84,22 @@ def get_quanguochanquanhangye_zhaiquan(queue_id, webpage_id):
                 # import datetime; print(datetime.datetime.utcfromtimestamp(1740326400000 // 1000).strftime('%Y-%m-%d'))
                 title_date = int(data['publishDate'])
                 title_date = datetime.utcfromtimestamp(title_date // 1000).strftime('%Y-%m-%d')
-                print(page_url, title_name, title_date)
-
-                page.get(page_url)
-                time.sleep(4)
-                page.refresh()
-                res = page.html
-                res_html = etree.HTML(res)
-                # title_list = res_html.xpath("//div[@class='rightListContent list-item']")
-                # # 使用re模块提取日期
-                # title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
-                # if title_date:
-                #     title_date = title_date[0]
-                # else:
-                #     title_date = ''
                 title_url = page_url
                 if title_url not in title_set:
+                    print(page_url, title_name, title_date)
+                    page.get(page_url)
+                    time.sleep(4)
+                    page.refresh()
+                    res = page.html
+                    res_html = etree.HTML(res)
+                    # title_list = res_html.xpath("//div[@class='rightListContent list-item']")
+                    # # 使用re模块提取日期
+                    # title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
+                    # if title_date:
+                    #     title_date = title_date[0]
+                    # else:
+                    #     title_date = ''
+
                     title_content = "".join(res_html.xpath("//div[@class='project-detail-left']//text()"))
 
                     annex = res_html.xpath("//div[@class='table-detail-info']/div[2]/table[5]/tbody/tr//a//@href")
@@ -180,9 +180,12 @@ def get_quanguochanquanhangye_zhaiquan(queue_id, webpage_id):
 
                     cursor_test.close()
                     conn_test.close()
-            page.close()
-    except Exception as e:
         page.close()
+    except Exception as e:
+        try:
+            page.close()
+        except:
+            pass
         raise Exception(e)
 
 

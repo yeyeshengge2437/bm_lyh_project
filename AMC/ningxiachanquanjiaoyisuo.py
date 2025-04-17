@@ -55,17 +55,18 @@ def get_ningxiachanquanjiaoyi(queue_id, webpage_id):
 
                 page_url = ''.join(data.xpath(".//a//@href"))
                 page_url = "http://www.naee.com.cn" + page_url
-                title_name = ''.join(data.xpath(".//a/div/h3/text()"))
-                # import datetime; print(datetime.datetime.utcfromtimestamp(1740326400000 // 1000).strftime('%Y-%m-%d'))
-                title_date = ''.join(data.xpath(".//a/div/time/text()"))
-                print(page_url, title_name, title_date)
-
-                res = requests.get(page_url, headers=headers)
-                res_html = etree.HTML(res.text)
-                time.sleep(2)
-                # title_list = res_html.xpath("//div[@class='rightListContent list-item']")
                 title_url = page_url
                 if title_url not in title_set:
+                    title_name = ''.join(data.xpath(".//a/div/h3/text()"))
+                    # import datetime; print(datetime.datetime.utcfromtimestamp(1740326400000 // 1000).strftime('%Y-%m-%d'))
+                    title_date = ''.join(data.xpath(".//a/div/time/text()"))
+                    print(page_url, title_name, title_date)
+
+                    res = requests.get(page_url, headers=headers)
+                    res_html = etree.HTML(res.text)
+                    time.sleep(2)
+                    # title_list = res_html.xpath("//div[@class='rightListContent list-item']")
+
                     title_content = "".join(res_html.xpath("//div[@class='nr']//text()"))
                     annex = res_html.xpath("//div[@class='nr']//@href | //div[@class='nr']//@src")
                     if annex:
@@ -151,9 +152,12 @@ def get_ningxiachanquanjiaoyi(queue_id, webpage_id):
 
                     cursor_test.close()
                     conn_test.close()
-            page.close()
-    except Exception as e:
         page.close()
+    except Exception as e:
+        try:
+            page.close()
+        except:
+            pass
         raise Exception(e)
 
 
