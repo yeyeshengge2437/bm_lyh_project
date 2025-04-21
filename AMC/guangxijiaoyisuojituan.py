@@ -60,14 +60,42 @@ def get_guangxijiaoyisuojituan(queue_id, webpage_id):
                 page_url = ''.join(data.xpath("./a//@href"))
                 title_name = ''.join(data.xpath("./a/h1/text()"))
                 # import datetime; print(datetime.datetime.utcfromtimestamp(1740326400000 // 1000).strftime('%Y-%m-%d'))
-                title_date = ''.join(data.xpath("./a//span[3]/text()"))
-                # 使用re模块提取日期
-                title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
-                if title_date:
-                    title_date = title_date[0]
-                else:
-                    title_date = ''
+                # title_date = ''.join(data.xpath("./a//span[3]/text()"))
+                # # 使用re模块提取日期
+                # title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
+                # if title_date:
+                #     title_date = title_date[0]
+                # else:
+                #     title_date = ''
+                url_id = re.findall(r'Detail/(.*?)\.html', page_url)[0]
+                headers_time = {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Accept-Language': 'zh-CN,zh;q=0.9',
+                    'Cache-Control': 'no-cache',
+                    'Client-Id': 'gxcq',
+                    'Connection': 'keep-alive',
+                    'Pragma': 'no-cache',
+                    'Referer': 'http://ljs.gxcq.com.cn/',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36',
+                    # 'Cookie': 'Hm_lvt_0ebc0266344b7e1dbda8f61a3a7ee5a1=1744954682; HMACCOUNT=FDD970C8B3C27398; Hm_lpvt_0ebc0266344b7e1dbda8f61a3a7ee5a1=1744956119',
+                }
+                print(url_id)
+                params = {
+                    'assetsId': f'{url_id}',
+                    # 'n': '0.7465561160908133',
+                }
+
+                response_ = requests.get(
+                    'http://ljs.gxcq.com.cn/api/dscq-project/assets-detail/normal-detail',
+                    params=params,
+                    # cookies=cookies,
+                    headers=headers_time,
+                    verify=False,
+                )
+                # print(response_.json())
+                title_date = response_.json()["data"]["bidActivity"]["announcementStartTime"]
                 print(page_url, title_name, title_date)
+                # return
                 try:
                     page = ChromiumPage(co)
                     page.set.load_mode.none()

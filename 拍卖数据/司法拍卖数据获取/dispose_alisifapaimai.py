@@ -5,7 +5,7 @@ from alisifapaimai import by_keyword_search_ali, get_detail_info_ali
 from api_paimai import sub_queues_next, paper_queue_next, sub_queues_fail, paper_queue_fail, paper_queue_success
 
 webpage_url_list1 = [
-    'https://auction.jd.com/sifa.html'
+    'https://sf.taobao.com'
 ]
 
 
@@ -17,7 +17,7 @@ while True:
         search_keyword = value['name']
         webpage_url_value = value['webpage_url']
         print(id_value, webpage_id_value, search_keyword, webpage_url_value)
-        sub_queue_data_list = by_keyword_search(id_value, webpage_id_value, webpage_url_value, search_keyword)
+        sub_queue_data_list = by_keyword_search_ali(id_value, webpage_id_value, webpage_url_value, search_keyword)
         if sub_queue_data_list:
             success_data = {
                 'id': id_value,
@@ -37,8 +37,9 @@ while True:
                 sub_id_value = sub_value['id']
                 name_value = sub_value['name']
                 sub_web_queue_id_value = sub_value['web_queue_id']
+                remark = sub_value['remark']
                 print(sub_id_value, name_value, sub_web_queue_id_value)
-                get_detail_info(sub_id_value, name_value, sub_web_queue_id_value)
+                get_detail_info_ali(sub_id_value, name_value, sub_web_queue_id_value, remark)
             else:
                 time.sleep(3)
                 break

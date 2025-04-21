@@ -425,6 +425,7 @@ def get_jd_auction_detail(id_, url, url_name, state, from_queue, state_now=''):
     # options.set_argument('--disable-blink-features=AutomationControlled')
     options.set_argument('--incognito')
     options.set_argument(f'--user-data-dir={tempfile.mkdtemp()}')
+    options.set_paths(local_port=9211)
 
     # # 随机化UA
     # ua = UserAgent()
@@ -487,11 +488,11 @@ def get_jd_auction_detail(id_, url, url_name, state, from_queue, state_now=''):
     bidding_price = ''.join(tree.xpath("//table[@class='index_bidList__i8yA2']/tbody/tr[1]/td[3]/div/text()"))  # 竞买价格
     bidding_time = ''.join(tree.xpath("//table[@class='index_bidList__i8yA2']/tbody/tr[1]/td[4]/div/text()"))  # 竞买时间
     auction_history = f'竞买状态:{bidding_status} 竞买代码:{bidding_code} 竞买价格:{bidding_price} 竞买时间:{bidding_time}'
-    people_num = ''.join(tree.xpath("//div[@class='index_auctionstatusbanner__statistics__-mtfv']//text()"))  # 竞买人数
+    people_num = ''.join(tree.xpath("//div[@class='main-block-content']//text()"))  # 竞买人数
     people_num = ''.join(re.findall(r'(\d+)人报名', people_num))
     # subject_info_etree = tree.xpath("//div[@class='paimaiDetailContainer']/div[@class='pm-content']/ul[@class='floors']/li[3]")  # 标的物信息_html
     subject_info_etree = tree.xpath(
-        "//div[@class='paimaiDetailContainer']/div[@class='pm-content']/ul[@class='floors']/li | //div[@id='pmMainFloor']/ul[@class='floors']/li")  # 标的物信息_html
+        "//ul[@class='floors']/li | //div[@id='pmMainFloor']/ul[@class='floors']/li")  # 标的物信息_html
     subject_info = ''
     for subject_con in subject_info_etree:
         subject_con_str = subject_con.xpath(".//text()")
@@ -513,7 +514,7 @@ def get_jd_auction_detail(id_, url, url_name, state, from_queue, state_now=''):
                 subject_annex += annex + ','
                 subject_annex_up += file_url + ','
     subject_annex = str(subject_annex[:-1])
-    auction_html_etree = tree.xpath("//div[@class='pm-content']//li[@class='floor index_floor__1u9-C'][1]")  # 拍卖公告_html
+    auction_html_etree = tree.xpath("//ul[@class='floors']")  # 拍卖公告_html
     auction_html = ''
     for con in auction_html_etree:
         auction_html += etree.tostring(con, encoding='utf-8').decode()
@@ -562,7 +563,7 @@ def get_jd_auction_detail(id_, url, url_name, state, from_queue, state_now=''):
 
 # 获取京东拍卖数据
 def auction(from_queue):
-    update_jd_auction_link()
+    # update_jd_auction_link()
     while True:
         id_, url_sql, title_sql, state_sql = get_jd_auction_null_url()
         if url_sql:
@@ -585,5 +586,5 @@ def investment(from_queue):
 while True:
     time.sleep(1)
     auction("5678")
-    investment('5678')
+    # investment('5678')
 # get_jd_auction_null_url()

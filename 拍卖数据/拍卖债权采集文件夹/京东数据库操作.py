@@ -3,6 +3,7 @@ import re
 import random
 
 from api_paimai import upload_file_by_url
+
 from a_mysql_connection_pool import get_connection
 
 
@@ -68,7 +69,8 @@ def annex_update():
             print(subject_annex_str)
             print(subject_annex_up_str)
             # 更新数据库
-            cursor.execute("UPDATE col_judicial_auctions SET subject_annex_up = %s WHERE id = %s", (subject_annex_str, id_))
+            cursor.execute("UPDATE col_judicial_auctions SET subject_annex_up = %s WHERE id = %s",
+                           (subject_annex_str, id_))
             conn.commit()
             print('更新成功')
     cursor.close()
@@ -79,10 +81,13 @@ def updata_jd_target_html():
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "SELECT * FROM col_judicial_auctions WHERE url LIKE '%paimai.jd.com%' AND state='已结束'")
+        "SELECT id, url, auction_html FROM col_judicial_auctions WHERE url LIKE '%paimai.jd.com%' AND state='已结束'")
     rows = cursor.fetchall()
     for row in rows:
         print(row)
+
+
+updata_jd_target_html()
 
 
 def hainan_remove_files():
