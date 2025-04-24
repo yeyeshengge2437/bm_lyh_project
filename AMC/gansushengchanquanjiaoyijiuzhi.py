@@ -11,6 +11,7 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 from api_paper import get_image, judge_bm_repeat, upload_file, judge_title_repeat, upload_file_by_url, get_now_image
 import requests
 from lxml import etree
+from lxml import html as html_import
 
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
@@ -35,7 +36,15 @@ headers = {
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
     # 'cookie': 'Hm_lvt_d9c21d5fc8d49710aea888cfbe08ba18=1740015610; HMACCOUNT=FDD970C8B3C27398; Hm_lpvt_d9c21d5fc8d49710aea888cfbe08ba18=1740375275; poscms_ci_session=qoilulnkcf8solp8uro4f2qthc01drp1',
 }
+def del_style(content_html):
+    tree = etree.HTML(content_html)
+    # 删除所有 <style> 标签
+    for style_tag in tree.xpath("//style"):
+        style_tag.getparent().remove(style_tag)
 
+    # 输出处理后的 HTML
+    up_content_html = html_import.tostring(tree, encoding="unicode")
+    return up_content_html
 
 def get_gansushengchanquanjiaoyijiuzhi(queue_id, webpage_id):
     page = ChromiumPage(co)
@@ -122,12 +131,13 @@ def get_gansushengchanquanjiaoyijiuzhi(queue_id, webpage_id):
                     #     content_html += etree.tostring(con, encoding='utf-8').decode()
                     for con in content_1:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
+                    content_html = del_style(content_html)
                     # print(content_html)
                     # return
                     try:
                         # //div[@id='text-container']
                         image = get_image(page, title_url,
-                                          "xpath=//div[@class=' size14']")
+                                          "xpath=//div[@class=' size14']", is_click="xpath=//div[@class='imgClose']", is_del_1="xpath=//div[@id='floatDivBoxs']", is_del_2="xpath=//div[@id='qq_right']")
                     except:
                         print('截取当前显示区域')
                         image = get_now_image(page, title_url)

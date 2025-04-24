@@ -74,6 +74,8 @@ def quark_excel_in(img_url):
     if response.status_code == 200:
         body = response.json()
         code = body.get("code")
+        if code != "00000":
+            return None
         return body
     else:
         print("http request error")

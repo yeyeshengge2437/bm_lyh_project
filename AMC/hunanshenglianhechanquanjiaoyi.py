@@ -11,6 +11,7 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 from api_paper import get_image, judge_bm_repeat, upload_file, judge_title_repeat, upload_file_by_url, get_now_image
 import requests
 from lxml import etree
+from lxml import html as html_import
 
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
@@ -122,6 +123,11 @@ def get_hunanchanquanlianhejiaoyi(queue_id, webpage_id):
                     #     content_html += etree.tostring(con, encoding='utf-8').decode()
                     for con in content_1:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
+                    content_html_tree = etree.HTML(content_html)
+                    for style_tag in content_html_tree.xpath("//style"):
+                        style_tag.getparent().remove(style_tag)
+                    # 输出处理后的 HTML
+                    content_html = html_import.tostring(content_html_tree, encoding="unicode")
                     try:
                         image = get_image(page, title_url, "xpath=//div[@class='pm-addition clearfix']")
                     except:

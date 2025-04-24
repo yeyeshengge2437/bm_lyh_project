@@ -85,8 +85,8 @@ def get_xinjiangchanquanjiaoyisuo_zhaiquan(queue_id, webpage_id):
                 title_url = page_url
                 if title_url not in title_set:
                 # if 1:
-                    title_content = "".join(res_html.xpath("//div[@class='product-intro']//text()"))
-                    title_content = title_content.join(res_html.xpath("//div[@class='detail-con-left']//text()"))
+                #     title_content = "".join(res_html.xpath("//div[@class='product-intro']//text()"))
+                #     title_content = title_content.join(res_html.xpath("//div[@class='detail-con-left']//text()"))
 
                     annex = res_html.xpath("//table[@class='base-sw ke-zeroborder']//a//@href")
                     if annex:
@@ -119,6 +119,8 @@ def get_xinjiangchanquanjiaoyisuo_zhaiquan(queue_id, webpage_id):
                     for con in content_1:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
                     content_html = re.sub(r'<h3>猜你喜欢</h3>.*', '', content_html, flags=re.DOTALL).strip()
+                    tree_content = etree.HTML(content_html)
+                    title_content = "".join(tree_content.xpath("//text()"))
                     try:
                         image = get_image(page, title_url,
                                           "xpath=//div[@class='base-container clearfix']")

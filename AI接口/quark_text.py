@@ -54,6 +54,11 @@ def get_signature(client_id, client_secret, business, sign_method, sign_nonce, t
 
 
 def quark_text(img_url):
+    """
+    夸克文本识别
+    :param img_url:
+    :return:
+    """
     client_id = "test"
     client_secret = "6zGXp1QZ6GcLWoEn"
     http_client = get_http_client()
@@ -67,11 +72,13 @@ def quark_text(img_url):
     if response.status_code == 200:
         body = response.json()
         code = body.get("code")
+        if code != "00000":
+            return 0, code, None
         print(body)
-        return 0, 0, body
+        return 0, code, body
     else:
         print("HTTP 请求错误")
-        return 0, 0, None
+        return 0, "http请求错误", None
 
 
 # if __name__ == "__main__":

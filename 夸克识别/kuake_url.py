@@ -89,6 +89,8 @@ def quark(img_url):
                 if image_base64:    # 删除base64信息
                     image_info.pop("ImageBase64")
         code = body.get("code")
+        if code != 0000:
+            return None
         print(body)
         return body
     else:

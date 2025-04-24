@@ -106,7 +106,7 @@ def get_taizhoushichanquanjiaoyisuo(queue_id, webpage_id):
                             file_type = ann.split('.')[-1]
                             file_type = file_type.strip()
                             if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
-                                             'png', 'jpg', 'jpeg'] and 'upload' in ann:
+                                             'png', 'jpg', 'jpeg'] and 'item' in ann:
                                 file_url = upload_file_by_url(ann, "taizhou", file_type)
                                 # file_url = 111
                                 files.append(file_url)

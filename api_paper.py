@@ -92,12 +92,26 @@ def paper_queue_delay(data=None):
 
 def upload_file_by_url(file_url, file_name, file_type, type="paper", verify=None):
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
-
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'Pragma': 'no-cache',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
+        'Sec-Fetch-User': '?1',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36',
+        'sec-ch-ua': '"Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        # 'Cookie': 'JSESSIONID=6A598DE43B2900E10AF0DF9EE48FB248; Hm_lvt_f2b90fd96a52d3f32c2685f6e3f3e93b=1745389440; Hm_lpvt_f2b90fd96a52d3f32c2685f6e3f3e93b=1745389440; HMACCOUNT=FDD970C8B3C27398',
     }
     file_name = file_name + str(random.randint(1, 999999999))
-    r = requests.get(file_url, headers=headers, verify=verify)
+    r = requests.get(file_url, headers=headers)
     if r.status_code != 200:
+        print(f"请求失败，状态码：{r.status_code}, 链接：{file_url}")
         return None
     pdf_path = f"{file_name}.{file_type}"
     if not os.path.exists(pdf_path):
@@ -324,7 +338,7 @@ def get_image(page, url, element, is_to_bottom=False, left_offset=0, right_offse
         time.sleep(is_time)
     tab.wait.ele_displayed(element)
     if is_click:
-        tab.ele(is_click).click(by_js=True)
+        tab.ele(is_click).click()
     if is_to_bottom:
         tab.scroll.to_bottom()
     time.sleep(2)

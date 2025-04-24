@@ -13,7 +13,7 @@ from heilongjiangchanquanjiaoyisuo import get_heilongjiangchanquanjiaoyisuo   # 
 from foshannanfangchanquanjiaoyi import get_fuoshannanfangchanquanjiaoyi   # 佛山市南方产权交易所
 from ningxiachanquanjiaoyisuo import get_ningxiachanquanjiaoyi    # 宁夏产权交易
 from hainanchanquanjiaoyi import get_hainanchanquanjiaoyi    # 海南产权交易
-# from changzhoujiaoyishichang import get_changzhoujiaoyishichang    # 常州交易市场
+from changzhoujiaoyishichang import get_changzhoujiaoyishichang    # 常州交易市场
 from chongqingchanquanjiaoyi import get_chongqingchanquanjiaoyi    # 重庆产权交易所
 from neimengguchanjiao import get_neimengguchanquanjiaoyi_zichanchaoshizhaiquan    # 内蒙古产权交易所_资产超市债权
 from neimengguchanjiao import get_neimengguchanquanjiaoyi_guapaixiangmuzhaiquan     # 内蒙古产权交易所_挂牌项目债权
@@ -83,7 +83,7 @@ methods = {
     'https://www.zjpse.com/page/s/prjs/zhjy/index': get_zhejiangchanquanjiaoyisuo,    # 浙江产权交易所
     'https://www.szee.com.cn/jrzc': get_suzhouchanquanjiaoyizhongxin,    # 苏州市产权交易中心
     'https://www.daee.cn/article/xmdt/jrzq': get_dalianchanquanjiaoyisuo,    # 大连产权交易所
-    'https://sxcqsc.sxcqjy.cn/xmzx.html#/dept': get_shanxishengchanquanjiaoyizhongxin,    # 山东省产权交易中心
+    'https://sxcqsc.sxcqjy.cn/xmzx.html#/dept': get_shanxishengchanquanjiaoyizhongxin,    # 山西省产权交易中心
     'https://www.wzcqpt.com/WZPT/page/s/announcement/equity/index': get_wenzhoulianhechanquanjiaoyizhongxin,   # 温州联合产权交易中心
     'http://www.gxcq.com.cn/list-154.html#assetsTypeParent=ZQ': get_guangxijiaoyisuojituan,   # 广西产权交易所集团
     'https://www.ywcq.com/article/xmgg/zczr': get_yiwuchanquanjiaoyisuo,    # 义乌产权交易所
@@ -96,41 +96,41 @@ methods = {
 }
 
 web_list = [
-    # 'https://www.yindeng.com.cn/ywzq/ywzq_bldkzr/bldkzr_xxpl/bldkzr_xxpl_zrgg',
-    # 'https://www.suaee.com/suaeeHome/#/projectCenter?pageCode=zhaiquan',
+    'https://www.yindeng.com.cn/ywzq/ywzq_bldkzr/bldkzr_xxpl/bldkzr_xxpl_zrgg',
+    'https://www.suaee.com/suaeeHome/#/projectCenter?pageCode=zhaiquan',
     # 'https://www.cbex.com.cn/xm/zqzc',  # 北京产权交易所的需要更换cookies
-    # 'https://www.cspea.com.cn/list?c=C05&s=A02,A03',
-    # 'https://xjcqjy.ejy365.com/EJY/Project?projectType=001001001&HeadId=1',
-    # 'https://www.xemas.com.cn/project-announcement.html?parent-uid=&self-uid=&type=total&sub-uid=',
-    # 'http://www.ytcq.com/tzgg/about.html',
-    # 'https://sta.hnprec.com/client/#/buyerweb/?BusinessTypeId=HouseLand',
-    # 'https://hljcqjy.ejy365.com/EJY/Project?searchKids=%E5%80%BA%E6%9D%83',
-    # 'https://www.fsaee.com/?cid-288_lbid-7_qycq.html',
-    # 'http://www.sdcqjy.com/zccz/articlelist/cjgg',
-    # 'http://www.naee.com.cn/newsLists.do?classId=185',
-    # 'http://www.hncq.cn/index.php?m=content&c=index&a=lists&catid=17&proType=&areaid=&keyword=',
+    'https://www.cspea.com.cn/list?c=C05&s=A02,A03',
+    'https://xjcqjy.ejy365.com/EJY/Project?projectType=001001001&HeadId=1',
+    'https://www.xemas.com.cn/project-announcement.html?parent-uid=&self-uid=&type=total&sub-uid=',
+    'http://www.ytcq.com/tzgg/about.html',
+    'https://sta.hnprec.com/client/#/buyerweb/?BusinessTypeId=HouseLand',
+    'https://hljcqjy.ejy365.com/EJY/Project?searchKids=%E5%80%BA%E6%9D%83',
+    'https://www.fsaee.com/?cid-288_lbid-7_qycq.html',
+    'http://www.sdcqjy.com/zccz/articlelist/cjgg',
+    'http://www.naee.com.cn/newsLists.do?classId=185',
+    'http://www.hncq.cn/index.php?m=content&c=index&a=lists&catid=17&proType=&areaid=&keyword=',
     # 'http://www.czcq.com.cn/czcq/property',
-    # 'https://www.cquae.com/Project?q=s&projectID=5&#name1',
-    # 'https://nmgcqjy.ejy365.com/FinanceReform/NewsIndex?firTypeName=%E8%B5%84%E4%BA%A7%E8%B6%85%E5%B8%82&secTypeName=%E5%80%BA%E6%9D%83&secID=10653&firID=10636&HeadId=4',
-    # 'https://nmgcqjy.ejy365.com/FinanceReform/ProjectIndex?projectType=%E5%80%BA%E6%9D%83&HeadId=2',
-    # 'https://www.hnaee.com/hnaee/xmzx.jsp',
-    # 'https://www.csuaee.com.cn/searchItem.html?keyword=%E5%80%BA%E6%9D%83',
-    # 'http://www.qhcqjy.com/info.do',
-    # 'http://jrzc.gscq.com.cn:9116/#/example/project?a=2290&b=%E6%8E%A8%E4%BB%8B%E6%9C%9F',
-    # 'https://old.gscq.com.cn/index.php?s=xm&c=category&id=4',
-    # 'https://www.prechina.net/project/project.php?class3=52',
-    # 'https://www.sotcbb.com/xmgg?id=xmggjrzczrzspl',
-    # 'https://www.gduaee.com/www/article/tzgg/xxgg',
-    # 'https://www.cscqjy.com.cn/xiangmuzhongxin/teshuzichan',
-    # 'https://www.ovupre.com/list/19.html?type=new',
-    # 'https://cqjy.qdcq.net/pro/?UTRM&proType=bondproc&status=all',
-    # 'https://jxcq.jxggzyjy.cn/cqjy/004/004005/project_center.html',
-    # 'https://www.fjcqjy.com/html/list-content-4n3y18347bt227rw7soh.html',
-    # 'https://aaee.com.cn/xmzx.html#/financial_assets',
-    # 'http://www.tzpre.com/index.php/cms/item-search?keyword=%E5%80%BA%E6%9D%83&submit=%E6%90%9C%E7%B4%A2',
-    # 'https://www.zjpse.com/page/s/prjs/zhjy/index',
-    # 'https://www.szee.com.cn/jrzc',
-    # 'https://www.daee.cn/article/xmdt/jrzq',
+    'https://www.cquae.com/Project?q=s&projectID=5&#name1',
+    'https://nmgcqjy.ejy365.com/FinanceReform/NewsIndex?firTypeName=%E8%B5%84%E4%BA%A7%E8%B6%85%E5%B8%82&secTypeName=%E5%80%BA%E6%9D%83&secID=10653&firID=10636&HeadId=4',
+    'https://nmgcqjy.ejy365.com/FinanceReform/ProjectIndex?projectType=%E5%80%BA%E6%9D%83&HeadId=2',
+    'https://www.hnaee.com/hnaee/xmzx.jsp',
+    'https://www.csuaee.com.cn/searchItem.html?keyword=%E5%80%BA%E6%9D%83',
+    'http://www.qhcqjy.com/info.do',
+    'http://jrzc.gscq.com.cn:9116/#/example/project?a=2290&b=%E6%8E%A8%E4%BB%8B%E6%9C%9F',
+    'https://old.gscq.com.cn/index.php?s=xm&c=category&id=4',
+    'https://www.prechina.net/project/project.php?class3=52',
+    'https://www.sotcbb.com/xmgg?id=xmggjrzczrzspl',
+    'https://www.gduaee.com/www/article/tzgg/xxgg',
+    'https://www.cscqjy.com.cn/xiangmuzhongxin/teshuzichan',
+    'https://www.ovupre.com/list/19.html?type=new',
+    'https://cqjy.qdcq.net/pro/?UTRM&proType=bondproc&status=all',
+    'https://jxcq.jxggzyjy.cn/cqjy/004/004005/project_center.html',
+    'https://www.fjcqjy.com/html/list-content-4n3y18347bt227rw7soh.html',
+    'https://aaee.com.cn/xmzx.html#/financial_assets',
+    'http://www.tzpre.com/index.php/cms/item-search?keyword=%E5%80%BA%E6%9D%83&submit=%E6%90%9C%E7%B4%A2',
+    'https://www.zjpse.com/page/s/prjs/zhjy/index',
+    'https://www.szee.com.cn/jrzc',
+    'https://www.daee.cn/article/xmdt/jrzq',
     'https://sxcqsc.sxcqjy.cn/xmzx.html#/dept',
     'https://www.wzcqpt.com/WZPT/page/s/announcement/equity/index',
     'http://www.gxcq.com.cn/list-154.html#assetsTypeParent=ZQ',

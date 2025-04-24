@@ -3,7 +3,7 @@ import json
 import re
 import time
 from datetime import datetime, timedelta
-import mysql.connector
+from api_paimai import upload_file_by_url
 from DrissionPage import ChromiumPage, ChromiumOptions
 from DrissionPage.common import Settings
 import tempfile
@@ -172,17 +172,21 @@ def get_detail_info(value_id, url, from_queue):
     stage = ''
     address = ''.join(tree.xpath("//div[contains(@class, 'pm-location')]/em/text()"))
     start_bid = ''.join(tree.xpath(
-        "//div[@class='list description']//text()"))
-    start_bid = ''.join(re.findall(r'起拍价\s*[:：]\s*￥\s*(\d{1,3}(?:,\d{3})*)', start_bid))
-    sold_price = ''.join(tree.xpath("//div[@class='mc']/div[@class='price deal']//text()"))
+        "//li[2]/div[@class='index_label__Nie1n ']/div[@id='right-content']//span[contains(@class, 'index_value__YfM3M ')]/text()"))
+    sold_price = ''.join(tree.xpath("//div[@class='priceInfoItemPriceWrap']//text()"))
     sold_price = ''.join(re.findall(r'¥(.*)', sold_price))
-    outcome = ''.join(tree.xpath("//div[@class='mt']/div[@class='result']/span//text()"))
+    sold_price = re.sub(r'保证金.*', '', sold_price)
+    sold_price = re.sub(r'变卖.*', '', sold_price)
+    outcome = ''.join(tree.xpath("//div[@class='index_auctionstatusbanner__statustext__RxEYN']/span//text()"))
     end_time = ''
     start_time = ''
     if state == '已结束' or state == '进行中' or state == '已中止':
-        end_time = ''.join(tree.xpath("//div[@class='mt']/div[@class='endtime']//text()"))
-        end_time = ''.join(re.findall(r'(\d{4}年\d{2}月\d{2}日 \d{2}:\d{2}:\d{2})', end_time))  # 结束时间
+        end_time_str = ''.join(tree.xpath(
+            "//div[@class='index_auctionstatusbanner__endtime__7-dda']/text() | //div[@class='main-block-content']/div[1]//text()"))
+        end_time = ''.join(re.findall(r'(\d{4}年\d{2}月\d{2}日 \d{2}:\d{2}:\d{2})', end_time_str))  # 结束时间
         end_time = end_time.replace('年', '-').replace('月', '-').replace('日', '')
+        if not end_time:
+            end_time = ''.join(re.findall(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})', end_time_str))  # 结束时间
     elif state == '预告中':
         distance_end = ''.join(tree.xpath("//div[@class='index_countdown__remainTime__O7MNa']/div//text()"))
         if not distance_end:
@@ -195,32 +199,38 @@ def get_detail_info(value_id, url, from_queue):
         start_time = None
     procedure_str = ''  # 拍卖程序
     disposal_unit = ''.join(tree.xpath("//a[@id='disposalUnitTag']/text()"))  # 处置单位
-    bidding_status = ''.join(tree.xpath("//table[@class='bidList']/tbody/tr/td[1]//text()"))  # 竞买状态
-    bidding_code = ''.join(tree.xpath("//table[@class='bidList']/tbody/tr/td[3]//text()"))  # 竞买人
-    bidding_price = ''.join(tree.xpath("//table[@class='bidList']/tbody/tr/td[2]//text()"))  # 竞买价格
-    bidding_time = ''.join(tree.xpath("//table[@class='bidList']/tbody/tr/td[4]/text()"))  # 竞买时间
+    bidding_status = ''.join(tree.xpath("//table[@class='index_bidList__i8yA2']/tbody/tr[1]/td[1]/div/text()"))  # 竞买状态
+    bidding_code = ''.join(tree.xpath("//table[@class='index_bidList__i8yA2']/tbody/tr[1]/td[2]/div/text()"))  # 竞买代码
+    bidding_price = ''.join(tree.xpath("//table[@class='index_bidList__i8yA2']/tbody/tr[1]/td[3]/div/text()"))  # 竞买价格
+    bidding_time = ''.join(tree.xpath("//table[@class='index_bidList__i8yA2']/tbody/tr[1]/td[4]/div/text()"))  # 竞买时间
     auction_history = f'竞买状态:{bidding_status} 竞买人:{bidding_code} 竞买价格:{bidding_price} 竞买时间:{bidding_time}'
     people_num = ''.join(tree.xpath("//div[@class='index_auctionstatusbanner__statistics__-mtfv']//text() | //div[@class='endtime']//text()"))  # 竞买人数
     people_num = ''.join(re.findall(r'(\d+)人报名', people_num))
     # subject_info_etree = tree.xpath("//div[@class='paimaiDetailContainer']/div[@class='pm-content']/ul[@class='floors']/li[3]")  # 标的物信息_html
     subject_info_etree = tree.xpath(
-        "//div[@class='paimaiDetailContainer']/div[@class='pm-content']/ul[@class='floors']/li[3] | //ul[@class='floors']/li[@class='floor']")  # 标的物信息_html
+        "//ul[@class='floors']/li | //div[@id='pmMainFloor']/ul[@class='floors']/li")  # 标的物信息_html
     subject_info = ''
-    for con in subject_info_etree:
-        subject_info += etree.tostring(con, encoding='utf-8').decode()
+    for subject_con in subject_info_etree:
+        subject_con_str = subject_con.xpath(".//text()")
+        if '标的物详情描述' in subject_con_str:
+            subject_info += etree.tostring(subject_con, encoding='utf-8').decode()
+
     subject_annex_up_list = tree.xpath("//ul[@class='floors']//@href")  # 标的物信息附件上传
+    subject_annex = ''
     subject_annex_up = ''
     for annex in subject_annex_up_list:
-        if annex.split('.')[-1] not in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
-                                        'png', 'jpg']:
-            continue
         if annex == 'http://zichan.jd.com/':
             continue
-        if 'http' not in annex:
-            annex = 'http:' + annex
-        subject_annex_up += annex + ','
-    subject_annex_up = subject_annex_up[:-1]
-    auction_html_etree = tree.xpath("//div[@class='pm-content']//li[@class='floor index_floor__1u9-C'][1]")  # 拍卖公告_html
+        else:
+            file_name = random.randint(100000, 999999)
+            url_type = annex.split('.')[-1]
+            if url_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',
+                            'png', 'jpg', 'jpeg', "PDF"]:
+                file_url = upload_file_by_url(annex, f"{file_name}", url_type)
+                subject_annex += annex + ','
+                subject_annex_up += file_url + ','
+    subject_annex = str(subject_annex[:-1])
+    auction_html_etree = tree.xpath("//ul[@class='floors']")  # 拍卖公告_html
     auction_html = ''
     for con in auction_html_etree:
         auction_html += etree.tostring(con, encoding='utf-8').decode()

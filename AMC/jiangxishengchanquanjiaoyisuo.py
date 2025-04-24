@@ -110,7 +110,8 @@ def get_jiangxishengchanquanjiaoyisuo(queue_id, webpage_id):
                             if not ann:
                                 continue
                             if "http" not in ann:
-                                ann = 'http://cqjy.jxggzyjy.cn' + ann
+                                ann = 'https://cqjy.jxggzyjy.cn' + ann
+                            ann = re.sub('http:', 'https:', ann)
                             file_type = ann.split('.')[-1]
                             file_type = file_type.strip()
                             if file_type in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', '7z',

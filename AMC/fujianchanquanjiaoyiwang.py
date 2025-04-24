@@ -54,7 +54,7 @@ def get_fujianchanquanjiaoyiwang(queue_id, webpage_id):
 
             res = requests.get(url, headers=headers)
             # print(res.text)
-            res_json = res.text
+            res_json = res.content.decode()
             # print(res_json)
             res_html = etree.HTML(res_json)
             data_list = res_html.xpath("//div[@class='list_main']//ul/li")
@@ -79,12 +79,14 @@ def get_fujianchanquanjiaoyiwang(queue_id, webpage_id):
                 try:
                     response = requests.get(page_url, headers=headers)
                 except Exception as e:
+                    print(f'出错{e}')
                     continue
-                transfer_info = response.text
+                transfer_info = response.content.decode()
                 res_html = etree.HTML(transfer_info)
 
                 title_url = page_url
                 if title_url not in title_set:
+                # if 1:
                     title_content = "".join(res_html.xpath("//div[@class='project_box']//text()"))
 
                     annex = res_html.xpath("//div[@class='project_box']//@href | //div[@class='project_box']//@src")
@@ -123,6 +125,8 @@ def get_fujianchanquanjiaoyiwang(queue_id, webpage_id):
                     for con in content_1:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
                     content_html += transfer_info
+                    # print('内容')
+                    # print(content_html, title_content)
                     # print(content_html)
                     # return
                     try:
@@ -175,7 +179,7 @@ def get_fujianchanquanjiaoyiwang(queue_id, webpage_id):
                     cursor_test.close()
                     conn_test.close()
         try:
-            page.close()
+            page.quit()
         except:
             pass
     except Exception as e:

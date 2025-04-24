@@ -2,6 +2,7 @@
 获取企查查的查询详细页的基础信息
 存在翻页的需要再次请求一下
 """
+# 注意：数据放在测试库中
 import json
 import math
 import random
@@ -14,7 +15,8 @@ import time
 from DrissionPage import ChromiumPage, ChromiumOptions
 from qcc_auto_login import auto_login
 from qcc_api_res import get_response, post_response
-from a_mysql_connection_pool import up_qcc_data, up_qcc_res_data, get_ban_data, del_ban_data
+from a_mysql_connection_pool import up_qcc_data, up_qcc_res_data, get_ban_data, del_ban_data, up_part_qcc_data
+from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_step_finish
 
 
 def generate_md5(data):
@@ -90,15 +92,22 @@ def encounter_captcha(value_json, page):
         return "没有遇到验证码"
 
 
-def qcc_search_company(search_company_name):
-    from_queue = 1234
-    webpage_id = 1234
+def dispose_success_data(success_data, data_key, data_type, key_no, from_queue, webpage_id):
+    up_part_qcc_data(success_data, data_key, key_no, from_queue, webpage_id)
+    part_data = {
+        'data_type': data_type,
+        'id': from_queue,
+    }
+    paper_queue_step_finish(part_data)
+
+
+def qcc_search_company(search_company_name, from_queue, webpage_id):
     search_company_name = search_company_name
     hit_field_list = ['曾用名']  # 股东，曾用名
     random_num = random.randint(1, 6)
 
     co = ChromiumOptions()
-    # co = co.set_user_data_path(r"C:\chome_data\data_nibo")
+    co = co.set_user_data_path(r"D:\chome_data\qcc_xia")
     co.set_paths(local_port=9232)
     # 连接浏览器
     page = ChromiumPage(co)
@@ -151,6 +160,8 @@ def qcc_search_company(search_company_name):
             if company_name.strip("<em>").strip('</em>') == search_company_name:
                 flag = True
                 print("名字重合")
+            else:
+                flag = False
             legal_rep = company.get('OperName')  # 法定代表人
             reg_capital = company.get('RegistCapi')  # 注册资本
             start_date = company.get('StartDate')  # 成立时间
@@ -164,11 +175,15 @@ def qcc_search_company(search_company_name):
             tag = company.get('Tag')  # 标签
             if tag:
                 tag_list.append(tag)
+            else:
+                pass
             tag_info_list = company.get('TagsInfoV2')  # 标签信息
             if tag_info_list:
                 for tag_info in tag_info_list:
                     tag_name = tag_info.get('Name')  # 标签名称
                     tag_list.append(tag_name)
+            else:
+                pass
             scale = company.get('Scale')  # 规模
             hit_reasons = company.get('HitReasons')  # 命中原因
             hit_reason_dict = {}
@@ -188,6 +203,9 @@ def qcc_search_company(search_company_name):
             else:
                 pass
             if flag:
+                print('成功命中该公司')
+                # return True
+                # continue
                 target_url = f'https://www.qcc.com/firm/{key_no}.html'
                 response = requests.get(target_url, cookies=cookie_dict, headers=headers)
                 time.sleep(random_num)
@@ -260,11 +278,18 @@ def qcc_search_company(search_company_name):
                     # 工商信息
                     company_detail = company_json["company"][
                         "companyDetail"]
+                    up_part_qcc_data(company_detail, 'business_info', key_no, from_queue, webpage_id)
+                    part_data = {
+                        'data_type': 'business_info:current',
+                        'id': from_queue,
+                    }
+                    paper_queue_step_finish(part_data)
                     # 股东信息
                     partner_num = inquire_dict.get('股东信息')
                     # 少于50个的情况下
                     if 0 < partner_num <= 50:
-                        company_partners = company_json["datalist"]["partner"]
+                        print(company_json)
+                        company_partners = company_json["company"]["companyDetail"]["Partners"]
                     # 多于50个的情况下
                     elif partner_num > 50:  # 股东信息可以显示超过十个
                         company_partners = []
@@ -281,6 +306,7 @@ def qcc_search_company(search_company_name):
                                 up_qcc_res_data(partner_url, 'shareholder', 'get', '', key_no, webpage_id)
                     else:
                         company_partners = []
+                    dispose_success_data(company_partners, 'shareholder', 'shareholder:current', key_no, from_queue, webpage_id)
                     # 主要人员
                     employees_num = inquire_dict.get('主要人员')
                     # 少于10个的情况下
@@ -303,6 +329,7 @@ def qcc_search_company(search_company_name):
 
                     else:
                         company_employees = []
+                    dispose_success_data(company_employees, 'member', 'member:current', key_no, from_queue, webpage_id)
                     # 对外投资
                     touzilist_num = inquire_dict.get('对外投资')
                     # 少于10个的情况下
@@ -327,6 +354,7 @@ def qcc_search_company(search_company_name):
 
                     else:
                         company_touzilist = []
+                    dispose_success_data(company_touzilist, 'invest', 'invest:current', key_no, from_queue, webpage_id)
                     # # 间接对外投资
                     # # 少于10个的情况下
                     # if 0 < touzilist_num <= 10:
@@ -368,6 +396,7 @@ def qcc_search_company(search_company_name):
 
                     else:
                         chistory_histouzilist = []
+                    dispose_success_data(chistory_histouzilist, 'his_invest', 'invest:history', key_no, from_queue, webpage_id)
                     # 变更记录
                     changelist_num = inquire_dict.get('变更记录')
                     # 少于10个的情况下
@@ -395,12 +424,22 @@ def qcc_search_company(search_company_name):
                             else:
                                 # 先将请求数据上传到数据库中，后续处理
                                 json_data = json.dumps(json_data, ensure_ascii=False)
-                                up_qcc_res_data(changelist_url, 'business_change', 'post', json_data, key_no, webpage_id)
+                                up_qcc_res_data(changelist_url, 'business_change', 'post', json_data, key_no,
+                                                webpage_id)
 
                     else:
                         company_changelist = []
+                    dispose_success_data(company_changelist, 'business_change', 'business_change:current', key_no, from_queue, webpage_id)
+
                     # 企业年报
-                    company_reportyear = company_json["datalist"]["reportyear"]["data"]
+                    try:
+                        company_reportyear = company_json["datalist"]["reportyear"]["data"]
+
+
+                    except:
+                        company_reportyear = []
+                    dispose_success_data(company_reportyear, 'annual_report', 'annual_report:current', key_no,
+                                         from_queue, webpage_id)
                     '''
                     企业年报获取到年报的详细信息，待完善
                     '''
@@ -429,6 +468,7 @@ def qcc_search_company(search_company_name):
                                 for suspectlist_data in suspectlist_value_data:
                                     company_suspectlist.append(suspectlist_data)
                                 time.sleep(7)
+                                print(company_suspectlist)
                             else:
                                 # 先将请求数据上传到数据库中，后续处理
                                 json_data = json.dumps(json_data, ensure_ascii=False)
@@ -436,6 +476,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         company_suspectlist = []
+                    dispose_success_data(company_suspectlist, 'suspect', 'suspect:current', key_no, from_queue, webpage_id)
+
 
                     """
                     法律诉讼!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -463,6 +505,8 @@ def qcc_search_company(search_company_name):
                                 up_qcc_res_data(caselist_url, 'judicial_case', 'get', '', key_no, webpage_id)
                     else:
                         susong_caselist = []
+                    dispose_success_data(susong_caselist, 'judicial_case', 'judicial_case:current', key_no, from_queue, webpage_id)
+
                     # 裁判文书
                     susong_wenshulist_num = inquire_dict.get('裁判文书')
                     # 少于10个的情况下
@@ -487,6 +531,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         susong_wenshulist = []
+                    dispose_success_data(susong_wenshulist, 'case_doc', 'case_doc:current', key_no, from_queue, webpage_id)
+
                     # 立案信息
                     susong_lawcaselist_num = inquire_dict.get('立案信息')
                     # 少于10个的情况下
@@ -511,6 +557,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         susong_lianliast = []
+                    dispose_success_data(susong_lianliast, 'case_register', 'case_register:current', key_no, from_queue, webpage_id)
+
                     # 开庭公告
                     susong_ktgglist_num = inquire_dict.get('开庭公告')
                     # 少于10个的情况下
@@ -535,6 +583,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         susong_noticelist = []
+                    dispose_success_data(susong_noticelist, 'case_open', 'case_open:current', key_no, from_queue, webpage_id)
+
                     # 法院公告
                     susong_courtlist_num = inquire_dict.get('法院公告')
                     # 少于10个的情况下
@@ -559,6 +609,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         susong_gonggaolist = []
+                    dispose_success_data(susong_gonggaolist, 'case_notice', 'case_notice:current', key_no, from_queue, webpage_id)
+
                     # 送达公告
                     susong_sentlist_num = inquire_dict.get('送达公告')
                     # 少于10个的情况下
@@ -583,6 +635,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         susong_dnoticelist = []
+                    dispose_success_data(susong_dnoticelist, 'case_deliver', 'case_deliver:current', key_no, from_queue, webpage_id)
+
                     # 诉前调解
                     susong_pretrialmediationlist_num = inquire_dict.get('诉前调解')
                     # 少于10个的情况下
@@ -604,10 +658,13 @@ def qcc_search_company(search_company_name):
                                 time.sleep(7)
                             else:
                                 # 先将请求数据上传到数据库中，后续处理
-                                up_qcc_res_data(pretrialmediationlist_url, 'case_mediate', 'get', '', key_no, webpage_id)
+                                up_qcc_res_data(pretrialmediationlist_url, 'case_mediate', 'get', '', key_no,
+                                                webpage_id)
 
                     else:
                         susong_pretrialmediationlist = []
+                    dispose_success_data(susong_pretrialmediationlist, 'case_mediate', 'case_mediate:current', key_no, from_queue, webpage_id)
+
                     # 司法拍卖
                     susong_judicialsalelist_num = inquire_dict.get('司法拍卖')
                     # 少于10个的情况下
@@ -632,6 +689,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         susong_judicialsalelist = []
+                    dispose_success_data(susong_judicialsalelist, 'auction', 'auction:current', key_no, from_queue, webpage_id)
+
                     # 失信被执行人
                     susong_shixinlist_num = inquire_dict.get('失信被执行人')
                     # 少于10个的情况下
@@ -647,6 +706,8 @@ def qcc_search_company(search_company_name):
                             pass
                     else:
                         susong_shixinlist = []
+                    dispose_success_data(susong_shixinlist, 'dishonest_debtor', 'dishonest_debtor:current', key_no, from_queue, webpage_id)
+
                     # 终本案件
                     susong_endexecutioncaselist_num = inquire_dict.get('终本案件')
                     # 少于10个的情况下
@@ -668,10 +729,13 @@ def qcc_search_company(search_company_name):
                                 time.sleep(7)
                             else:
                                 # 先将请求数据上传到数据库中，后续处理
-                                up_qcc_res_data(endexecutioncaselist_url, 'judgement_end', 'get', '', key_no, webpage_id)
+                                up_qcc_res_data(endexecutioncaselist_url, 'judgement_end', 'get', '', key_no,
+                                                webpage_id)
 
                     else:
                         susong_endexecutioncaselist = []
+                    dispose_success_data(susong_endexecutioncaselist, 'judgement_end', 'judgement_end:current', key_no, from_queue, webpage_id)
+
 
                     """
                     经营风险!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -687,6 +751,8 @@ def qcc_search_company(search_company_name):
                         input("严重违法超过十个，请获取")
                     else:
                         cfengxian_svlist = []
+                    dispose_success_data(cfengxian_svlist, 'serious_illegal', 'serious_illegal:current', key_no, from_queue, webpage_id)
+
                     # 股权出质
                     cfengxian_pledgelist_num = inquire_dict.get('股权出质')
                     # 少于10个的情况下
@@ -700,6 +766,8 @@ def qcc_search_company(search_company_name):
                             pass  # 暂未找到超过十个的
                     else:
                         cfengxian_pledgelist = []
+                    dispose_success_data(cfengxian_pledgelist, 'equity_pledge', 'equity_pledge:current', key_no, from_queue, webpage_id)
+
                     # 经营异常
                     cfengxian_exceptions_num = inquire_dict.get('经营异常')
                     # 少于10个的情况下
@@ -713,6 +781,8 @@ def qcc_search_company(search_company_name):
                             pass  # 暂未找到超过十个的
                     else:
                         cfengxian_exceptions = []
+                    dispose_success_data(cfengxian_exceptions, 'abnormal_business', 'abnormal_business:current', key_no, from_queue, webpage_id)
+
                     # 动产抵押
                     cfengxian_mpledgelist_num = inquire_dict.get('动产抵押')
                     # 少于10个的情况下
@@ -726,6 +796,8 @@ def qcc_search_company(search_company_name):
                             pass  # 暂未找到超过十个的
                     else:
                         cfengxian_mpledgelist = []
+                    dispose_success_data(cfengxian_mpledgelist, 'chattel_mortgage', 'chattel_mortgage:current', key_no, from_queue, webpage_id)
+
                     # 注销备案
                     cfengxian_cancelrecordlist_num = inquire_dict.get('注销备案')
                     # 少于10个的情况下
@@ -739,6 +811,8 @@ def qcc_search_company(search_company_name):
                             pass  # 暂未找到超过十个的
                     else:
                         cfengxian_enliqinfo = []
+                    dispose_success_data(cfengxian_enliqinfo, 'cancel_filing', 'cancel_filing:current', key_no, from_queue, webpage_id)
+
                     # 行政处罚
                     cfengxian_adminpenaltylist_num = inquire_dict.get('行政处罚')
                     # 少于10个的情况下
@@ -752,6 +826,8 @@ def qcc_search_company(search_company_name):
                             pass  # 暂未找到超过十个的
                     else:
                         cfengxian_adminpenaltylist = []
+                    dispose_success_data(cfengxian_adminpenaltylist, 'admin_punish', 'admin_punish:current', key_no, from_queue, webpage_id)
+
                     # 环保处罚
                     cfengxian_envpenaltylist_num = inquire_dict.get('环保处罚')
                     # 少于10个的情况下
@@ -765,6 +841,8 @@ def qcc_search_company(search_company_name):
                             pass  # 暂未找到超过十个的
                     else:
                         cfengxian_envlist = []
+                    dispose_success_data(cfengxian_envlist, 'env_punish', 'env_punish:current', key_no, from_queue, webpage_id)
+
                     # 税务非正常户
                     cfengxian_taxabnormallist_num = inquire_dict.get('税务非正常户')
                     # 少于10个的情况下
@@ -778,6 +856,8 @@ def qcc_search_company(search_company_name):
                             pass  # 暂未找到超过十个的
                     else:
                         cfengxian_taxabnormallist = []
+                    dispose_success_data(cfengxian_taxabnormallist, 'abnormal_tax', 'abnormal_tax:current', key_no, from_queue, webpage_id)
+
                     # 欠税公告(通过里面的id再次请求查看详情)
                     cfengxian_taxillegallist_num = inquire_dict.get('欠税公告')
                     # 少于10个的情况下
@@ -791,6 +871,8 @@ def qcc_search_company(search_company_name):
                             pass  # 暂未找到超过十个的
                     else:
                         cfengxian_owenoticelist = []
+                    dispose_success_data(cfengxian_owenoticelist, 'tax_notice', 'tax_notice:current', key_no, from_queue, webpage_id)
+
                     # 税收违法
                     cfengxian_taxillegallist_num = inquire_dict.get('税收违法')
                     # 少于10个的情况下
@@ -804,6 +886,8 @@ def qcc_search_company(search_company_name):
                             pass  # 暂未找到超过十个的
                     else:
                         cfengxian_taxillegallist = []
+                    dispose_success_data(cfengxian_taxillegallist, 'tax_illegal', 'tax_illegal:current', key_no, from_queue, webpage_id)
+
 
                     """
                     经营信息
@@ -821,6 +905,8 @@ def qcc_search_company(search_company_name):
                             pass  # 暂未找到超过十个的, 招投标暂未解决
                     else:
                         crun_tenderlist = []
+                    dispose_success_data(crun_tenderlist, 'bid', 'bid:current', key_no, from_queue, webpage_id)
+
                     # 资质证书
                     crun_certificationsummary_num = inquire_dict.get('资质证书')
                     if crun_certificationsummary_num != 0:
@@ -850,6 +936,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         crun_certificationsummary = []
+                    dispose_success_data(crun_certificationsummary, 'qualification_cert', 'qualification_cert:current', key_no, from_queue, webpage_id)
+
                     # 信用评价
                     crun_creditrating_num = inquire_dict.get('信用评价')
                     try:
@@ -922,6 +1010,19 @@ def qcc_search_company(search_company_name):
                                 # 先将请求数据上传到数据库中，后续处理
                                 # json_data = json.dumps(json_data, ensure_ascii=False)
                                 up_qcc_res_data(crun_url, 'crun', 'get', '', key_no, webpage_id)
+                    dispose_success_data(tax_credit, 'tax_credit', 'tax_credit:current', key_no, from_queue, webpage_id)
+                    dispose_success_data(bond_main_body_credit, 'bond_main_body_credit', 'bond_main_body_credit:current', key_no, from_queue, webpage_id)
+                    dispose_success_data(env_credit, 'env_credit', 'env_credit:current', key_no, from_queue, webpage_id)
+                    dispose_success_data(import_export_credit, 'import_export_credit', 'import_export_credit:current', key_no, from_queue, webpage_id)
+                    dispose_success_data(fund_manager_credit, 'fund_manager_credit', 'fund_manager_credit:current', key_no, from_queue, webpage_id)
+                    dispose_success_data(labor_guarantee_credit, 'labor_guarantee_credit', 'labor_guarantee_credit:current', key_no, from_queue, webpage_id)
+                    dispose_success_data(communication_credit, 'communication_credit', 'communication_credit:current', key_no, from_queue, webpage_id)
+                    dispose_success_data(keep_faith_credit, 'keep_faith_credit', 'keep_faith_credit:current', key_no, from_queue, webpage_id)
+                    dispose_success_data(safety_produce_credit, 'safety_produce_credit', 'safety_produce_credit:current', key_no, from_queue, webpage_id)
+                    dispose_success_data(fire_safety_credit, 'fire_safety_credit', 'fire_safety_credit:current', key_no, from_queue, webpage_id)
+                    dispose_success_data(road_transport_credit, 'road_transport_credit', 'road_transport_credit:current', key_no, from_queue, webpage_id)
+                    dispose_success_data(china_soft_credit, 'china_soft_credit', 'china_soft_credit:current', key_no, from_queue, webpage_id)
+
 
                     # # 多于10个的情况下
                     # elif crun_creditrating_num > 10:
@@ -957,11 +1058,15 @@ def qcc_search_company(search_company_name):
 
                     else:
                         crun_joblist = []
+                    dispose_success_data(crun_joblist, 'recruitment', 'recruitment:current', key_no, from_queue, webpage_id)
+
                     # 进出口信用
                     try:
                         crun_ciaxlist = crun_json["datalist"]["ciaxlist"]["data"]
                     except:
                         crun_ciaxlist = []
+                    dispose_success_data(crun_ciaxlist, 'trade_credit', 'trade_credit:current', key_no, from_queue,
+                                         webpage_id)
                     # 土地信息
                     crun_landlist_num = inquire_dict.get('土地信息')
                     # 少于10个的情况下
@@ -977,6 +1082,8 @@ def qcc_search_company(search_company_name):
                             pass  # 暂未找到超过十个的
                     else:
                         crun_landlist = []
+                    dispose_success_data(crun_landlist, 'land_info', 'land_info:current', key_no, from_queue, webpage_id)
+
                     # 行政许可
                     crun_licenselist_num = inquire_dict.get('行政许可')
                     # 少于10个的情况下
@@ -1002,6 +1109,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         crun_acolist = []
+                    dispose_success_data(crun_acolist, 'admin_permit', 'admin_permit:current', key_no, from_queue, webpage_id)
+
                     # 抽查检查
                     crun_spotchecklist_num = inquire_dict.get('抽查检查')
                     # 少于10个的情况下
@@ -1027,6 +1136,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         crun_spotchecklist = []
+                    dispose_success_data(crun_spotchecklist, 'spot_check', 'spot_check:current', key_no, from_queue, webpage_id)
+
                     # 食品安全
                     crun_foodsafetylist_num = inquire_dict.get('食品安全')
                     # 少于10个的情况下
@@ -1052,6 +1163,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         crun_foodsafetylist = []
+                    dispose_success_data(crun_foodsafetylist, 'food_safety', 'food_safety:current', key_no, from_queue, webpage_id)
+
                     # 双随机抽查
                     crun_randomlist_num = inquire_dict.get('双随机抽查')
                     # 少于10个的情况下
@@ -1075,6 +1188,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         crun_drclist = []
+                    dispose_success_data(crun_drclist, 'double_random_check', 'double_random_check:current', key_no, from_queue, webpage_id)
+
                     # 纳税人资质
                     crun_taxpayerlist_num = inquire_dict.get('纳税人资质')
                     # 少于10个的情况下
@@ -1089,6 +1204,8 @@ def qcc_search_company(search_company_name):
                             pass  # 暂未找到超过十个的
                     else:
                         crun_taxpayerlist = []
+                    dispose_success_data(crun_taxpayerlist, 'taxpayer_qual', 'taxpayer_qual:current', key_no, from_queue, webpage_id)
+
                     # 产权交易
                     crun_transactionlist_num = inquire_dict.get('产权交易')
                     # 少于10人的情况下
@@ -1103,6 +1220,8 @@ def qcc_search_company(search_company_name):
                             pass  # 暂未找到超过十个的
                     else:
                         crun_transactionlist = []
+                    dispose_success_data(crun_transactionlist, 'property_transaction', 'property_transaction:current', key_no, from_queue, webpage_id)
+
                     # 资产拍卖
                     assetsalelist_num = inquire_dict.get('资产拍卖')
                     # 少于10人的情况下
@@ -1117,6 +1236,8 @@ def qcc_search_company(search_company_name):
                             pass  # 暂未找到超过十个的
                     else:
                         crun_assetsalelist = []
+                    dispose_success_data(crun_assetsalelist, 'asset_auction', 'asset_auction:current', key_no, from_queue, webpage_id)
+
                     # 电信许可
                     crun_telecomlist_num = inquire_dict.get('电信许可')
                     # 少于10个的情况下
@@ -1131,6 +1252,8 @@ def qcc_search_company(search_company_name):
                             pass
                     else:
                         crun_telecomlist = []
+                    dispose_success_data(crun_telecomlist, 'telecom_license', 'telecom_license:current', key_no, from_queue, webpage_id)
+
 
                     """
                     知识产权!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1167,6 +1290,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         cassets_shangbiaolist = []
+                    dispose_success_data(cassets_shangbiaolist, 'tm_info', 'tm_info:current', key_no, from_queue, webpage_id)
+
                     # 商标文书
                     cassets_sbwslist_num = inquire_dict.get('商标文书')
                     # 少于10个的情况下
@@ -1192,6 +1317,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         cassets_tmcdslist = []
+                    dispose_success_data(cassets_tmcdslist, 'tm_doc', 'tm_doc:current', key_no, from_queue, webpage_id)
+
                     # 专利信息
                     cassets_zhuanlilist_num = inquire_dict.get('专利信息')
                     # 少于10个的情况下
@@ -1222,6 +1349,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         cassets_zhuanlilist = []
+                    dispose_success_data(cassets_zhuanlilist, 'patent_info', 'patent_info:current', key_no, from_queue, webpage_id)
+
                     # 作品著作权
                     cassets_zzqlist_num = inquire_dict.get('作品著作权')
                     # 少于10个的情况下
@@ -1252,6 +1381,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         cassets_zzqlist = []
+                    dispose_success_data(cassets_zzqlist, 'work_copyright', 'work_copyright:current', key_no, from_queue, webpage_id)
+
                     # 软件著作权
                     cassets_rjzzqlist_num = inquire_dict.get('软件著作权')
                     # 少于10个的情况下
@@ -1282,6 +1413,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         cassets_rjzzqlist = []
+                    dispose_success_data(cassets_rjzzqlist, 'sw_copyright', 'sw_copyright:current', key_no, from_queue, webpage_id)
+
                     # 备案网站
                     cassets_webitelist_num = inquire_dict.get('备案网站')
                     # 少于10个的情况下
@@ -1312,6 +1445,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         cassets_webitelist = []
+                    dispose_success_data(cassets_webitelist, 'registered_web', 'registered_web:current', key_no, from_queue, webpage_id)
+
                     # APP
                     cassets_applist_num = inquire_dict.get('APP')
                     # 少于10个的情况下
@@ -1337,6 +1472,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         cassets_applist = []
+                    dispose_success_data(cassets_applist, 'app', 'app:current', key_no, from_queue, webpage_id)
+
                     # 微信公众号
                     cassets_wechatlist_num = inquire_dict.get('微信公众号')
                     # 少于10个的情况下
@@ -1362,6 +1499,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         cassets_wechatlist = []
+                    dispose_success_data(cassets_wechatlist, 'wx_official', 'wx_official:current', key_no, from_queue, webpage_id)
+
                     # 集成电路布图
                     cassets_jcdllist_num = inquire_dict.get('集成电路布图')
                     # 少于10个的情况下
@@ -1376,6 +1515,8 @@ def qcc_search_company(search_company_name):
                             pass
                     else:
                         cassets_jcdllist = []
+                    dispose_success_data(cassets_jcdllist, 'ic_layout', 'ic_layout:current', key_no, from_queue, webpage_id)
+
                     # 标准信息
                     cassets_standarlist_num = inquire_dict.get('标准信息')
                     # 少于10个的情况下
@@ -1402,6 +1543,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         cassets_standarlist = []
+                    dispose_success_data(cassets_standarlist, 'standard_info', 'standard_info:current', key_no, from_queue, webpage_id)
+
                     # 微博
                     cassets_weibolist_num = inquire_dict.get('微博')
                     # 少于10个的情况下
@@ -1427,6 +1570,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         cassets_weibolist = []
+                    dispose_success_data(cassets_weibolist, 'weibo', 'weibo:current', key_no, from_queue, webpage_id)
+
                     # 抖音/快手
                     cassets_shortvideolist_num = inquire_dict.get('抖音/快手')
                     # 少于10个的情况下
@@ -1442,6 +1587,8 @@ def qcc_search_company(search_company_name):
                             pass
                     else:
                         cassets_shortvideolist = []
+                    dispose_success_data(cassets_shortvideolist, 'short_video', 'short_video:current', key_no, from_queue, webpage_id)
+
                     # 小程序
                     cassets_miniprogramlist_num = inquire_dict.get('小程序')
                     # 少于10个的情况下
@@ -1467,6 +1614,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         cassets_wplist = []
+                    dispose_success_data(cassets_wplist, 'mini_program', 'mini_program:current', key_no, from_queue, webpage_id)
+
                     # 线上店铺
                     cassets_shopslist_num = inquire_dict.get('线上店铺')
                     # 少于10个的情况下
@@ -1482,6 +1631,8 @@ def qcc_search_company(search_company_name):
                             pass
                     else:
                         cassets_shopslist = []
+                    dispose_success_data(cassets_shopslist, 'online_shop', 'online_shop:current', key_no, from_queue, webpage_id)
+
                     # 商业特许经营
                     cassets_sytxjylist_num = inquire_dict.get('商业特许经营')
                     # 少于10个的情况下
@@ -1497,6 +1648,8 @@ def qcc_search_company(search_company_name):
                             pass
                     else:
                         cassets_sytxjylist = []
+                    dispose_success_data(cassets_sytxjylist, 'franchise', 'franchise:current', key_no, from_queue, webpage_id)
+
                     # 知产出质
                     cassets_patentpledgelist_num = inquire_dict.get('知产出质')
                     # 少于10个的情况下
@@ -1512,6 +1665,8 @@ def qcc_search_company(search_company_name):
                             pass
                     else:
                         cassets_patentpledgelist = []
+                    dispose_success_data(cassets_patentpledgelist, 'ip_pledge', 'ip_pledge:current', key_no, from_queue, webpage_id)
+
 
                     """
                     历史信息!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1532,6 +1687,8 @@ def qcc_search_company(search_company_name):
                             pass
                     else:
                         chistory_operlist = []
+                    dispose_success_data(chistory_operlist, 'his_legal_rep', 'legal_rep:history', key_no, from_queue, webpage_id)
+
                     # 历史主要人员
                     chistory_mainmember_num = inquire_dict.get('历史主要人员')
                     # 少于10个的情况下
@@ -1554,10 +1711,13 @@ def qcc_search_company(search_company_name):
                             else:
                                 # 先将请求数据上传到数据库中，后续处理
                                 # json_data = json.dumps(json_data, ensure_ascii=False)
-                                up_qcc_res_data(hismainmember_url, 'mihis_memberni_program', 'get', '', key_no, webpage_id)
+                                up_qcc_res_data(hismainmember_url, 'mihis_memberni_program', 'get', '', key_no,
+                                                webpage_id)
 
                     else:
                         chistory_hismainmember = []
+                    dispose_success_data(chistory_hismainmember, 'his_member', 'member:history', key_no, from_queue, webpage_id)
+
                     # 历史被执行人
                     chistory_hiszhixinglist_num = inquire_dict.get('历史被执行人')
                     # 少于10个的情况下
@@ -1579,10 +1739,13 @@ def qcc_search_company(search_company_name):
                             else:
                                 # 先将请求数据上传到数据库中，后续处理
                                 # json_data = json.dumps(json_data, ensure_ascii=False)
-                                up_qcc_res_data(hiszhixinglist_url, 'his_judgement_debtor', 'get', '', key_no, webpage_id)
+                                up_qcc_res_data(hiszhixinglist_url, 'his_judgement_debtor', 'get', '', key_no,
+                                                webpage_id)
 
                     else:
                         chistory_hiszhixinglist = []
+                    dispose_success_data(chistory_hiszhixinglist, 'his_judgement_debtor', 'judgement_debtor:history', key_no, from_queue, webpage_id)
+
                     # 历史立案信息
                     chistory_hisliainfo_num = inquire_dict.get('历史立案信息')
                     # 少于10个的情况下
@@ -1608,6 +1771,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         chistory_hislianlist = []
+                    dispose_success_data(chistory_hislianlist, 'his_case_register', 'case_register:history', key_no, from_queue, webpage_id)
+
                     # 历史裁判文书
                     chistory_hiswenshulist_num = inquire_dict.get('历史裁判文书')
                     # 少于10个的情况下
@@ -1633,6 +1798,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         chistory_hiswenshulist = []
+                    dispose_success_data(chistory_hiswenshulist, 'his_case_doc', 'case_doc:history', key_no, from_queue, webpage_id)
+
                     # 历史开庭公告
                     chistory_hisktgglist_num = inquire_dict.get('历史开庭公告')
                     # 少于10个的情况下
@@ -1658,6 +1825,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         chistory_hisnoticelist = []
+                    dispose_success_data(chistory_hisnoticelist, 'his_case_open', 'case_open:history', key_no, from_queue, webpage_id)
+
                     # 历史行政许可
                     chistory_hisacolist_num = inquire_dict.get('历史行政许可')
                     # 少于10个的情况下
@@ -1683,6 +1852,8 @@ def qcc_search_company(search_company_name):
 
                     else:
                         chistory_hisacolist = []
+                    dispose_success_data(chistory_hisacolist, 'his_admin_permit', 'admin_permit:history', key_no, from_queue, webpage_id)
+
                     # 历史行政处罚
                     chistory_hisadminpenaltylist_num = inquire_dict.get('历史行政处罚')
                     # 少于10个的情况下
@@ -1705,10 +1876,13 @@ def qcc_search_company(search_company_name):
                             else:
                                 # 先将请求数据上传到数据库中，后续处理
                                 # json_data = json.dumps(json_data, ensure_ascii=False)
-                                up_qcc_res_data(hisadminpenaltylist_url, 'his_admin_punish', 'get', '', key_no, webpage_id)
+                                up_qcc_res_data(hisadminpenaltylist_url, 'his_admin_punish', 'get', '', key_no,
+                                                webpage_id)
 
                     else:
                         chistory_hisadminpenaltylist = []
+                    dispose_success_data(chistory_hisadminpenaltylist, 'his_admin_punish', 'admin_punish:history', key_no, from_queue, webpage_id)
+
                     # 历史股权出质
                     chistory_hispledgelist_num = inquire_dict.get('历史股权出质')
                     # 少于10个的情况下
@@ -1724,6 +1898,8 @@ def qcc_search_company(search_company_name):
                             pass
                     else:
                         chistory_hispledgelist = []
+                    dispose_success_data(chistory_hispledgelist, 'his_equity_pledge', 'equity_pledge:history', key_no, from_queue, webpage_id)
+
                     # 历史商标信息
                     chistory_hisshangbiaolist_num = inquire_dict.get('历史商标信息')
                     # 少于10个的情况下
@@ -1752,10 +1928,13 @@ def qcc_search_company(search_company_name):
                             else:
                                 # 先将请求数据上传到数据库中，后续处理
                                 json_data = json.dumps(json_data, ensure_ascii=False)
-                                up_qcc_res_data(hisshangbiaolist_url, 'his_tm_info', 'post', json_data, key_no, webpage_id)
+                                up_qcc_res_data(hisshangbiaolist_url, 'his_tm_info', 'post', json_data, key_no,
+                                                webpage_id)
 
                     else:
                         chistory_hisshangbiaolist = []
+                    dispose_success_data(chistory_hisshangbiaolist, 'his_tm_info', 'tm_info:history', key_no, from_queue, webpage_id)
+
                     # 历史专利信息
                     chistory_hiszhuanlilist_num = inquire_dict.get('历史专利信息')
                     # 少于10个的情况下
@@ -1785,10 +1964,13 @@ def qcc_search_company(search_company_name):
                             else:
                                 # 先将请求数据上传到数据库中，后续处理
                                 json_data = json.dumps(json_data, ensure_ascii=False)
-                                up_qcc_res_data(hiszhuanlilist_url, 'his_patent_info', 'post', json_data, key_no, webpage_id)
+                                up_qcc_res_data(hiszhuanlilist_url, 'his_patent_info', 'post', json_data, key_no,
+                                                webpage_id)
 
                     else:
                         chistory_hiszhuanlilist = []
+                    dispose_success_data(chistory_hiszhuanlilist, 'his_patent_info', 'patent_info:history', key_no, from_queue, webpage_id)
+
                     # 历史备案网站
                     chistory_hiswebsitelist_num = inquire_dict.get('历史备案网站')
                     # 少于10个的情况下
@@ -1804,6 +1986,8 @@ def qcc_search_company(search_company_name):
                             pass
                     else:
                         chistory_hiswebsitelist = []
+                    # dispose_success_data(chistory_hiswebsitelist, 'his_patent_info', 'patent_info:history', key_no, from_queue, webpage_id)
+
                     # 历史股东信息
                     chistory_hispartnerlist_num = inquire_dict.get('历史股东信息')
                     # 少于10个的情况下
@@ -1819,6 +2003,8 @@ def qcc_search_company(search_company_name):
                             pass
                     else:
                         chistory_hispartner = []
+                    dispose_success_data(chistory_hispartner, 'his_shareholder', 'shareholder:history', key_no, from_queue, webpage_id)
+
                     # 历史欠税公告
                     chistory_hisqianshitax_num = inquire_dict.get('历史欠税公告')
                     # 少于10个的情况下
@@ -1834,6 +2020,8 @@ def qcc_search_company(search_company_name):
                             pass
                     else:
                         chistory_hisowenoticelist = []
+                    dispose_success_data(chistory_hisowenoticelist, 'his_tax_notice', 'tax_notice:history', key_no, from_queue, webpage_id)
+
                     # 历史法院公告
                     chistory_hiscourtlist_num = inquire_dict.get('历史法院公告')
                     # 少于10个的情况下
@@ -1849,6 +2037,8 @@ def qcc_search_company(search_company_name):
                             pass
                     else:
                         chistory_hisgonggaolist = []
+                    dispose_success_data(chistory_hisgonggaolist, 'his_case_notice', 'case_notice:history', key_no, from_queue, webpage_id)
+
                     # 历史环保处罚
                     chistory_hisenvlist_num = inquire_dict.get('历史环保处罚')
                     # 少于10个的情况下
@@ -1864,6 +2054,8 @@ def qcc_search_company(search_company_name):
                             pass
                     else:
                         chistory_hisenvlist = []
+                    dispose_success_data(chistory_hisenvlist, 'his_env_punish', 'env_punish:history', key_no, from_queue, webpage_id)
+
                     # 历史终本案件
                     chistory_hisendexecutioncaselist_num = inquire_dict.get('历史终本案件')
                     # 少于10个的情况下
@@ -1886,10 +2078,13 @@ def qcc_search_company(search_company_name):
                             else:
                                 # 先将请求数据上传到数据库中，后续处理
                                 # json_data = json.dumps(json_data, ensure_ascii=False)
-                                up_qcc_res_data(hisendexecutioncaselist_url, 'his_judgement_end', 'get', '', key_no, webpage_id)
+                                up_qcc_res_data(hisendexecutioncaselist_url, 'his_judgement_end', 'get', '', key_no,
+                                                webpage_id)
 
                     else:
                         chistory_hisendexecutioncaselist = []
+                    dispose_success_data(chistory_hisendexecutioncaselist, 'his_judgement_end', 'judgement_end:history', key_no, from_queue, webpage_id)
+
                     # 历史限制高消费
                     chistory_hisconsumptionlist_num = inquire_dict.get('历史限制高消费')
                     # 少于10个的情况下
@@ -1917,6 +2112,9 @@ def qcc_search_company(search_company_name):
 
                     else:
                         chistory_hissumptuarylist = []
+                    # Limit high spending
+                    dispose_success_data(chistory_hissumptuarylist, 'his_limit_high_spend', 'limit_high_spend:history', key_no, from_queue, webpage_id)
+
                     # 历史失信被执行人
                     chistory_hisshixinlist_num = inquire_dict.get('历史失信被执行人')
                     # 少于10个的情况下
@@ -1938,10 +2136,13 @@ def qcc_search_company(search_company_name):
                             else:
                                 # 先将请求数据上传到数据库中，后续处理
                                 # json_data = json.dumps(json_data, ensure_ascii=False)
-                                up_qcc_res_data(hisshixinlist_url, 'his_dishonest_debtor', 'get', '', key_no, webpage_id)
+                                up_qcc_res_data(hisshixinlist_url, 'his_dishonest_debtor', 'get', '', key_no,
+                                                webpage_id)
 
                     else:
                         chistory_hisshixinlist = []
+                    dispose_success_data(chistory_hisshixinlist, 'his_dishonest_debtor', 'dishonest_debtor:history', key_no, from_queue, webpage_id)
+
                     # 历史经营异常
                     chistory_hisexceptions_num = inquire_dict.get('历史经营异常')
                     # 少于10个的情况下
@@ -1957,6 +2158,8 @@ def qcc_search_company(search_company_name):
                             pass
                     else:
                         chistory_hisexceptions = []
+                    dispose_success_data(chistory_hisexceptions, 'his_abnormal_business', 'abnormal_business:history', key_no, from_queue, webpage_id)
+
                     # 历史股权冻结
                     chistory_hisfreeze_num = inquire_dict.get('历史股权冻结')
                     # 少于10个的情况下
@@ -1982,6 +2185,9 @@ def qcc_search_company(search_company_name):
 
                     else:
                         chistory_hisassistancelist = []
+                    # Equity freezing
+                    dispose_success_data(chistory_hisassistancelist, 'his_equity_freezing', 'equity_freezing:history', key_no, from_queue, webpage_id)
+
                     # 历史双随机抽查
                     chistory_hisdrclist_num = inquire_dict.get('历史双随机抽查')
                     # 少于10个的情况下
@@ -1997,6 +2203,9 @@ def qcc_search_company(search_company_name):
                             pass
                     else:
                         chistory_hisdrclist = []
+                    # Double random spot checks
+                    dispose_success_data(chistory_hisdrclist, 'his_double_random_spot_checks', 'double_random_spot_checks:history', key_no, from_queue, webpage_id)
+
                     # 历史知产出质
                     chistory_hispledgelist_num = inquire_dict.get('历史知产出质')
                     # 少于10个的情况下
@@ -2012,6 +2221,9 @@ def qcc_search_company(search_company_name):
                             pass
                     else:
                         chistory_hispatentpledgelist = []
+                    #
+                    dispose_success_data(chistory_hispatentpledgelist, 'his_patentpledge', 'patentpledge:history', key_no, from_queue, webpage_id)
+
                     # 历史动产抵押
                     chistory_hismpledgelist_num = inquire_dict.get('历史动产抵押')
                     # 少于10个的情况下
@@ -2020,7 +2232,7 @@ def qcc_search_company(search_company_name):
                     # 多于10个的情况下
                     elif chistory_hismpledgelist_num > 10:
                         chistory_hismpledgelist = []
-                        input('历史动产抵押列表超过十个，建议处理')
+                        # input('历史动产抵押列表超过十个，建议处理')
                         hismpledgelist_page = math.ceil(chistory_hismpledgelist_num / 10)
                         for page_ in range(1, hismpledgelist_page + 1):
                             hismpledgelist_url = f'https://www.qcc.com/api/datalist/mpledgelist'
@@ -2041,10 +2253,14 @@ def qcc_search_company(search_company_name):
                             else:
                                 # 先将请求数据上传到数据库中，后续处理
                                 json_data = json.dumps(json_data, ensure_ascii=False)
-                                up_qcc_res_data(hismpledgelist_url, 'his_chattel_mortgage', 'post', json_data, key_no, webpage_id)
+                                up_qcc_res_data(hismpledgelist_url, 'his_chattel_mortgage', 'post', json_data, key_no,
+                                                webpage_id)
 
                     else:
                         chistory_hismpledgelist = []
+                    dispose_success_data(chistory_hismpledgelist, 'his_chattel_mortgage', 'chattel_mortgage:history', key_no, from_queue, webpage_id)
+
+
                     # 历史诉前调解
                     chistory_hispretrialmediationlist_num = inquire_dict.get('历史诉前调解')
                     # 少于10个的情况下
@@ -2061,133 +2277,137 @@ def qcc_search_company(search_company_name):
                             pass
                     else:
                         chistory_hispretrialmediationlist = []
+                    dispose_success_data(chistory_hispretrialmediationlist, 'his_pretrialmediation', 'pretrialmediation:history', key_no, from_queue, webpage_id)
 
-                    value_dict = {
-                        'business_info': company_detail,  # 工商信息
-                        'shareholder': company_partners,  # 股东信息
-                        'member': company_employees,  # 主要人员
-                        'invest': company_touzilist,  # 对外投资
-                        'business_change': company_changelist,  # 变更记录
-                        'annual_report': company_reportyear,  # 企业年报
-                        'suspect': company_suspectlist,  # 疑似关系
-                        'judicial_case': susong_caselist,  # 司法案件
-                        'case_doc': susong_wenshulist,  # 裁判文书
-                        'case_register': susong_lianliast,  # 立案信息
-                        'case_open': susong_noticelist,  # 开庭公告
-                        'case_notice': susong_gonggaolist,  # 法院公告
-                        'case_deliver': susong_dnoticelist,  # 送达公告
-                        'case_mediate': susong_pretrialmediationlist,  # 诉前调解
-                        'auction': susong_judicialsalelist,  # 司法拍卖
-                        'dishonest_debtor': susong_shixinlist,  # 失信被执行人
-                        'judgement_end': susong_endexecutioncaselist,  # 终本案件
-                        'serious_illegal': cfengxian_svlist,  # 严重违法
-                        'equity_pledge': cfengxian_pledgelist,  # 股权出质
-                        'abnormal_business': cfengxian_exceptions,  # 经营异常
-                        'chattel_mortgage': cfengxian_mpledgelist,  # 动产抵押
-                        'cancel_filing': cfengxian_enliqinfo,  # 注销备案
-                        'admin_punish': cfengxian_adminpenaltylist,  # 行政处罚
-                        'env_punish': cfengxian_envlist,  # 环保处罚
-                        'abnormal_tax': cfengxian_taxabnormallist,  # 税务非正常户
-                        'tax_notice': cfengxian_owenoticelist,  # 欠税公告
-                        'tax_illegal': cfengxian_taxillegallist,  # 税收违法
-                        'bid': cfengxian_taxillegallist,  # 招投标
-                        'qualification_cert': crun_certificationsummary,  # 资质证书
-                        # 'credit_eval': crun_creditrate,
-                        'tax_credit': tax_credit,  # 信用评价
-                        'bond_main_body_credit': bond_main_body_credit,
-                        'env_credit': env_credit,
-                        'import_export_credit': import_export_credit,
-                        'fund_manager_credit': fund_manager_credit,
-                        'labor_guarantee_credit': labor_guarantee_credit,
-                        'communication_credit': communication_credit,
-                        'keep_faith_credit': keep_faith_credit,
-                        'safety_produce_credit': safety_produce_credit,
-                        'fire_safety_credit': fire_safety_credit,
-                        'road_transport_credit': road_transport_credit,
-                        'china_soft_credit': china_soft_credit,
-                        'recruitment': crun_joblist,  # 招聘
-                        'trade_credit': crun_ciaxlist,  # 进出口信用
-                        'land_info': crun_landlist,  # 土地信息
-                        'admin_permit': crun_acolist,  # 行政许可
-                        'spot_check': crun_spotchecklist,  # 抽查检查
-                        'food_safety': crun_foodsafetylist,  # 食品安全
-                        'double_random_check': crun_drclist,  # 双随机抽查
-                        'taxpayer_qual': crun_taxpayerlist,  # 纳税人资质
-                        'property_transaction': crun_transactionlist,  # 产权交易
-                        'asset_auction': crun_assetsalelist,  # 资产拍卖
-                        'telecom_license': crun_telecomlist,  # 电信许可
-                        'tm_info': cassets_shangbiaolist,  # 商标信息
-                        'tm_doc': cassets_tmcdslist,  # 商标文书
-                        'patent_info': cassets_zhuanlilist,  # 专利信息
-                        'work_copyright': cassets_zzqlist,  # 作品著作权
-                        'sw_copyright': cassets_rjzzqlist,  # 软件著作权
-                        'registered_web': cassets_webitelist,  # 备案网站
-                        'app': cassets_applist,  # APP
-                        'wx_official': cassets_wechatlist,  # 微信公众号
-                        'ic_layout': cassets_jcdllist,  # 集成电路布图
-                        'standard_info': cassets_standarlist,  # 标准信息
-                        'weibo': cassets_weibolist,  # 微博
-                        'short_video': cassets_shortvideolist,  # 抖音/快手
-                        'mini_program': cassets_wplist,  # 小程序
-                        'online_shop': cassets_shopslist,  # 线上店铺
-                        'franchise': cassets_sytxjylist,  # 商业特许经营
-                        'ip_pledge': cassets_patentpledgelist,  # 知产出质
-                        'legal_rep': chistory_operlist,  # 历史法定代表人
-                        'his_member': chistory_hismainmember,  # 历史主要人员
-                        'his_judgement_debtor': chistory_hiszhixinglist,  # 历史被执行人
-                        'his_case_register': chistory_hislianlist,  # 历史立案信息
-                        'his_case_doc': chistory_hiswenshulist,  # 历史裁判文书
-                        'his_case_open': chistory_hisnoticelist,  # 历史开庭公告
-                        'his_admin_permit': chistory_hisacolist,  # 历史行政许可
-                        'his_admin_punish': chistory_hisadminpenaltylist,  # 历史行政处罚
-                        'his_equity_pledge': chistory_hispledgelist,  # 历史股权出质
-                        'his_tm_info': chistory_hisshangbiaolist,  # 历史商标信息
-                        'his_invest': chistory_histouzilist,  # 历史对外投资
-                        'his_patent_info': chistory_hiszhuanlilist,  # 历史专利信息
-                        'his_judgement_end': chistory_hisendexecutioncaselist,  # 历史终本案件
-                        'his_dishonest_debtor': chistory_hisshixinlist,  # 历史失信被执行人
-                        'his_chattel_mortgage': chistory_hismpledgelist,  # 历史动产抵押
-                    }
-                    print(value_dict)
-                    # 转为json数据
-                    # value_json = json.dumps(value_dict, ensure_ascii=False, indent=4)
-                    # # 将数据保存为json文件
-                    # with open(f"江阴市国马呢绒染整有限公司.json", "w", encoding="utf-8") as f:
-                    #     f.write(value_json)
-                    for data_key, data_value in value_dict.items():
-                        if data_value:
-                            if data_key in ['business_info', 'credit_eval', 'trade_credit']:
-                                data_md5 = generate_md5(str(data_value))
-                                data_status = "current"
-                                data_json = json.dumps(data_value, ensure_ascii=False)
-                                up_qcc_data(key_no, data_key, data_status, data_md5, data_json, from_queue, webpage_id)
 
-                            else:
-                                if 'his_' in data_key:
-                                    # 历史信息，增加标识
-                                    data_status = 'history'
-                                    for up_data in data_value:
-                                        if up_data:
-                                            data_key = data_key.replace('his_', '')
-                                            data_json = json.dumps(up_data, ensure_ascii=False)
-                                            data_md5 = generate_md5(str(up_data))
-                                            up_qcc_data(key_no, data_key, data_status, data_md5, data_json, from_queue,
-                                                        webpage_id)
-                                else:
-                                    for up_data in data_value:
-                                        if up_data:
-                                            data_status = "current"
-                                            data_json = json.dumps(up_data, ensure_ascii=False)
-                                            data_md5 = generate_md5(str(up_data))
-                                            up_qcc_data(key_no, data_key, data_status, data_md5, data_json, from_queue,
-                                                        webpage_id)
+                    # value_dict = {
+                    #     'business_info': company_detail,  # 工商信息
+                    #     'shareholder': company_partners,  # 股东信息
+                    #     'member': company_employees,  # 主要人员
+                    #     'invest': company_touzilist,  # 对外投资
+                    #     'business_change': company_changelist,  # 变更记录
+                    #     'annual_report': company_reportyear,  # 企业年报
+                    #     'suspect': company_suspectlist,  # 疑似关系
+                    #     'judicial_case': susong_caselist,  # 司法案件
+                    #     'case_doc': susong_wenshulist,  # 裁判文书
+                    #     'case_register': susong_lianliast,  # 立案信息
+                    #     'case_open': susong_noticelist,  # 开庭公告
+                    #     'case_notice': susong_gonggaolist,  # 法院公告
+                    #     'case_deliver': susong_dnoticelist,  # 送达公告
+                    #     'case_mediate': susong_pretrialmediationlist,  # 诉前调解
+                    #     'auction': susong_judicialsalelist,  # 司法拍卖
+                    #     'dishonest_debtor': susong_shixinlist,  # 失信被执行人
+                    #     'judgement_end': susong_endexecutioncaselist,  # 终本案件
+                    #     'serious_illegal': cfengxian_svlist,  # 严重违法
+                    #     'equity_pledge': cfengxian_pledgelist,  # 股权出质
+                    #     'abnormal_business': cfengxian_exceptions,  # 经营异常
+                    #     'chattel_mortgage': cfengxian_mpledgelist,  # 动产抵押
+                    #     'cancel_filing': cfengxian_enliqinfo,  # 注销备案
+                    #     'admin_punish': cfengxian_adminpenaltylist,  # 行政处罚
+                    #     'env_punish': cfengxian_envlist,  # 环保处罚
+                    #     'abnormal_tax': cfengxian_taxabnormallist,  # 税务非正常户
+                    #     'tax_notice': cfengxian_owenoticelist,  # 欠税公告
+                    #     'tax_illegal': cfengxian_taxillegallist,  # 税收违法
+                    #     'bid': crun_tenderlist,  # 招投标
+                    #     'qualification_cert': crun_certificationsummary,  # 资质证书
+                    #     # 'credit_eval': crun_creditrate,
+                    #     'tax_credit': tax_credit,  # 信用评价
+                    #     'bond_main_body_credit': bond_main_body_credit,
+                    #     'env_credit': env_credit,
+                    #     'import_export_credit': import_export_credit,
+                    #     'fund_manager_credit': fund_manager_credit,
+                    #     'labor_guarantee_credit': labor_guarantee_credit,
+                    #     'communication_credit': communication_credit,
+                    #     'keep_faith_credit': keep_faith_credit,
+                    #     'safety_produce_credit': safety_produce_credit,
+                    #     'fire_safety_credit': fire_safety_credit,
+                    #     'road_transport_credit': road_transport_credit,
+                    #     'china_soft_credit': china_soft_credit,
+                    #     'recruitment': crun_joblist,  # 招聘
+                    #     'trade_credit': crun_ciaxlist,  # 进出口信用
+                    #     'land_info': crun_landlist,  # 土地信息
+                    #     'admin_permit': crun_acolist,  # 行政许可
+                    #     'spot_check': crun_spotchecklist,  # 抽查检查
+                    #     'food_safety': crun_foodsafetylist,  # 食品安全
+                    #     'double_random_check': crun_drclist,  # 双随机抽查
+                    #     'taxpayer_qual': crun_taxpayerlist,  # 纳税人资质
+                    #     'property_transaction': crun_transactionlist,  # 产权交易
+                    #     'asset_auction': crun_assetsalelist,  # 资产拍卖
+                    #     'telecom_license': crun_telecomlist,  # 电信许可
+                    #     'tm_info': cassets_shangbiaolist,  # 商标信息
+                    #     'tm_doc': cassets_tmcdslist,  # 商标文书
+                    #     'patent_info': cassets_zhuanlilist,  # 专利信息
+                    #     'work_copyright': cassets_zzqlist,  # 作品著作权
+                    #     'sw_copyright': cassets_rjzzqlist,  # 软件著作权
+                    #     'registered_web': cassets_webitelist,  # 备案网站
+                    #     'app': cassets_applist,  # APP
+                    #     'wx_official': cassets_wechatlist,  # 微信公众号
+                    #     'ic_layout': cassets_jcdllist,  # 集成电路布图
+                    #     'standard_info': cassets_standarlist,  # 标准信息
+                    #     'weibo': cassets_weibolist,  # 微博
+                    #     'short_video': cassets_shortvideolist,  # 抖音/快手
+                    #     'mini_program': cassets_wplist,  # 小程序
+                    #     'online_shop': cassets_shopslist,  # 线上店铺
+                    #     'franchise': cassets_sytxjylist,  # 商业特许经营
+                    #     'ip_pledge': cassets_patentpledgelist,  # 知产出质
+                    #     'his_legal_rep': chistory_operlist,  # 历史法定代表人
+                    #     'his_member': chistory_hismainmember,  # 历史主要人员
+                    #     'his_judgement_debtor': chistory_hiszhixinglist,  # 历史被执行人
+                    #     'his_case_register': chistory_hislianlist,  # 历史立案信息
+                    #     'his_case_doc': chistory_hiswenshulist,  # 历史裁判文书
+                    #     'his_case_open': chistory_hisnoticelist,  # 历史开庭公告
+                    #     'his_admin_permit': chistory_hisacolist,  # 历史行政许可
+                    #     'his_admin_punish': chistory_hisadminpenaltylist,  # 历史行政处罚
+                    #     'his_equity_pledge': chistory_hispledgelist,  # 历史股权出质
+                    #     'his_tm_info': chistory_hisshangbiaolist,  # 历史商标信息
+                    #     'his_invest': chistory_histouzilist,  # 历史对外投资
+                    #     'his_patent_info': chistory_hiszhuanlilist,  # 历史专利信息
+                    #     'his_judgement_end': chistory_hisendexecutioncaselist,  # 历史终本案件
+                    #     'his_dishonest_debtor': chistory_hisshixinlist,  # 历史失信被执行人
+                    #     'his_chattel_mortgage': chistory_hismpledgelist,  # 历史动产抵押
+                    # }
+                    # print(value_dict)
+                    # # 转为json数据
+                    # # value_json = json.dumps(value_dict, ensure_ascii=False, indent=4)
+                    # # # 将数据保存为json文件
+                    # # with open(f"江阴市国马呢绒染整有限公司.json", "w", encoding="utf-8") as f:
+                    # #     f.write(value_json)
+                    #
+                    # # 数据库操作
+                    # for data_key, data_value in value_dict.items():
+                    #     if data_value:
+                    #         if data_key in ['business_info', 'credit_eval', 'trade_credit']:
+                    #             data_md5 = generate_md5(str(data_value))
+                    #             data_status = "current"
+                    #             data_json = json.dumps(data_value, ensure_ascii=False)
+                    #             up_qcc_data(key_no, data_key, data_status, data_md5, data_json, from_queue, webpage_id)
+                    #
+                    #         else:
+                    #             if 'his_' in data_key:
+                    #                 # 历史信息，增加标识
+                    #                 data_status = 'history'
+                    #                 for up_data in data_value:
+                    #                     if up_data:
+                    #                         data_key = data_key.replace('his_', '')
+                    #                         data_json = json.dumps(up_data, ensure_ascii=False)
+                    #                         data_md5 = generate_md5(str(up_data))
+                    #                         up_qcc_data(key_no, data_key, data_status, data_md5, data_json, from_queue,
+                    #                                     webpage_id)
+                    #             else:
+                    #                 for up_data in data_value:
+                    #                     if up_data:
+                    #                         data_status = "current"
+                    #                         data_json = json.dumps(up_data, ensure_ascii=False)
+                    #                         data_md5 = generate_md5(str(up_data))
+                    #                         up_qcc_data(key_no, data_key, data_status, data_md5, data_json, from_queue,
+                    #                                     webpage_id)
                     # 对于封禁的数据，需要单独处理（从数据库中获取信息）
                     sql_data = get_ban_data(webpage_id)
                     for ban_id, url, data_key, res_type, json_data, key_no, webpage_id in sql_data:
                         # print(ban_id, url, data_key, res_type, json_data, key_no, webpage_id)
-                        # 转为json数据
-                        json_data = json.loads(json_data)
                         if res_type == 'post':
+                            # 转为json数据
+                            json_data = json.loads(json_data)
                             value_ban = post_response(url, key_no, pid, tid, cookie_dict, json_data=json_data)
                             if value_ban:
                                 for data_value in value_ban['data']:
@@ -2253,39 +2473,51 @@ def qcc_search_company(search_company_name):
                                                                 from_queue,
                                                                 webpage_id)
                                 del_ban_data(ban_id)
-
-
-
-
-
+                    # 处理成功的接口
+                    success_data = {
+                        'id': from_queue,
+                        'description': f'数据获取成功',
+                    }
+                    paper_queue_success(success_data)
+                    return True
             else:
-                company_simple_dict = {
-                    'company_name': company_name,
-                    'key_no': key_no,
-                    'search_company_name': search_company_name,
-                    'hit_reason': hit_reason_dict,
-                    'legal_rep': legal_rep,
-                    'reg_capital': reg_capital,
-                    'start_date': start_date,
-                    'address': address,
-                    'uni_code': uni_code,
-                    'phone_num_now': phone_num_now,
-                    'email': email,
-                    'official_web': official_web,
-                    'short_status': short_status,
-                    'tag_list': tag_list,
-                    'scale': scale
-                }
-                search_company_list.append(company_simple_dict)
-                # print(f"公司名称：{company_name}，命中原因：{hit_reason_dict}，法定代表人：{legal_rep}，注册资本：{reg_capital}，成立时间：{start_date}，地址：{address}，统一社会信用代码：{uni_code}，电话：{phone_num_now}，邮箱：{email}，官网：{official_web}，状态：{short_status}，标签：{tag_list}，规模：{scale}")
-                # 将搜索页面的信息转换为 JSON 格式
-                company_simple_json = json.dumps(search_company_list, ensure_ascii=False, indent=4)
-                # 没有匹配到公司，获取到的公司列表
-                # print("没有匹配到精确公司，获取到的多个公司列表")
-                # print(company_simple_json)
-
+                pass
+            #     print('企查查上没有该名称的公司')
+            #     company_simple_dict = {
+            #         'company_name': company_name,
+            #         'key_no': key_no,
+            #         'search_company_name': search_company_name,
+            #         'hit_reason': hit_reason_dict,
+            #         'legal_rep': legal_rep,
+            #         'reg_capital': reg_capital,
+            #         'start_date': start_date,
+            #         'address': address,
+            #         'uni_code': uni_code,
+            #         'phone_num_now': phone_num_now,
+            #         'email': email,
+            #         'official_web': official_web,
+            #         'short_status': short_status,
+            #         'tag_list': tag_list,
+            #         'scale': scale
+            #     }
+            #     search_company_list.append(company_simple_dict)
+            #     # print(f"公司名称：{company_name}，命中原因：{hit_reason_dict}，法定代表人：{legal_rep}，注册资本：{reg_capital}，成立时间：{start_date}，地址：{address}，统一社会信用代码：{uni_code}，电话：{phone_num_now}，邮箱：{email}，官网：{official_web}，状态：{short_status}，标签：{tag_list}，规模：{scale}")
+            # # 如果没有命中公司，将搜索页面的信息转换为 JSON 格式返回
+            # company_simple_json = json.dumps(search_company_list, ensure_ascii=False, indent=4)
+            # # 没有匹配到公司，获取到的公司列表
+            # # print("没有匹配到精确公司，获取到的多个公司列表")
+            # print(company_simple_json)
+        page.quit()
     else:
         print("网站限制")
+        print("获取数据失败")
+        # 直接调取失败接口
+        fail_data = {
+            'id': from_queue,
+            'description': f'数据获取失败, 网站限制',
+        }
+        paper_queue_fail(data=fail_data)
+
         try:
             get_captcha(page)
         except:
@@ -2295,16 +2527,15 @@ def qcc_search_company(search_company_name):
         time.sleep(5)
         page.refresh()
         # 判断是否为扫描二维码
-
         page.quit()
-        print("获取数据失败")
-        return "失败", None
+        return False
 
 
 # qcc_search_company("杭州泽荣财务咨询有限公司")
 # qcc_search_company("福建金闽再造烟叶发展有限公司")1
 # qcc_search_company("广东瑞生科技集团有限公司") 1
-qcc_search_company("常州市金坛鸿发贸易有限公司")
+# value = qcc_search_company("常州金世达新建材有限公司")
+# print(value)
 # qcc_search_company("江苏太平洋印刷有限公司") 1
 # qcc_search_company("江阴市国马呢绒染整有限公司") 1
 # qcc_search_company("常州市兰新建筑工程有限公司") 1
@@ -2313,3 +2544,58 @@ qcc_search_company("常州市金坛鸿发贸易有限公司")
 # qcc_search_company("江苏三联特种钢丝有限公司") 1
 # qcc_search_company("江苏中友精密制管有限公司") 1
 # qcc_search_company("江苏中友精密制管有限公司")
+
+web_list = [
+    'https://www.qcc.com',
+]
+
+# while True:
+#     try:
+#         paper_queue = paper_queue_next(webpage_url_list=web_list)
+#         if paper_queue is None or len(paper_queue) == 0:
+#             time.sleep(600)
+#             continue
+#         else:
+#             queue_id = paper_queue['id']
+#             webpage_id = paper_queue["webpage_id"]
+#             search_keyword = paper_queue['name']
+#             search_value = qcc_search_company(search_keyword, queue_id, webpage_id)
+#             if search_value:
+#                 pass
+#             elif search_value is None:
+#                 fail_data = {
+#                     'id': queue_id,
+#                     'description': f'公司名与企查查不匹配',
+#                 }
+#             else:
+#                 pass
+#     except Exception as e:
+#         print(f"解析过程中发生错误：{e}")
+#         time.sleep(60)
+
+while True:
+
+    paper_queue = paper_queue_next(webpage_url_list=web_list)
+    if paper_queue is None or len(paper_queue) == 0:
+        time.sleep(600)
+        continue
+    else:
+        queue_id = paper_queue['id']
+        webpage_id = paper_queue["webpage_id"]
+        search_keyword = paper_queue['name']
+        collect_type = paper_queue['collect_type']
+        if collect_type == 'corp_search_all':
+            search_value = qcc_search_company(search_keyword, queue_id, webpage_id)
+            if search_value:
+                pass
+            elif search_value is None:
+                fail_data = {
+                    'id': queue_id,
+                    'description': f'公司名与企查查不匹配',
+                }
+                paper_queue_fail(data=fail_data)
+            else:
+                pass
+        else:
+            # 处理关联公司的工商信息， 股东，对外投资， 主要人员， 疑似关系
+            pass

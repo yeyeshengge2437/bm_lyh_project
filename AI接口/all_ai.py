@@ -82,6 +82,7 @@ def get_ai_value():
                 time.sleep(360)
                 continue
             if value:
+                time.sleep(30)
                 queue_id = value['id']
                 name = value['name']
                 tell_tool = value['tell_tool']
@@ -106,14 +107,22 @@ def get_ai_value():
                         ai_parse_fail(data=fail_data)
                         continue
                     if tell_tool == "quark_text":
-                        output_text = json.dumps(output_text, ensure_ascii=False)
-                        success_data = {
-                            'id': queue_id,
-                            'remark': name,
-                            'output_text': str(output_text),
-                        }
-                        print('成功', success_data)
-                        ai_parse_success(data=success_data)
+                        if output_token_num == '00000':
+                            output_text = json.dumps(output_text, ensure_ascii=False)
+                            success_data = {
+                                'id': queue_id,
+                                'remark': name,
+                                'output_text': str(output_text),
+                            }
+                            print('成功', success_data)
+                            ai_parse_success(data=success_data)
+                        else:
+                            fail_data = {
+                                'id': f'{queue_id}',
+                                'remark': f'{output_token_num}'
+                            }
+                            print('失败', fail_data)
+                            ai_parse_fail(data=fail_data)
                     else:
                         success_data = {
                             'id': f'{queue_id}',
@@ -145,7 +154,7 @@ if __name__ == '__main__':
     多进程2个
     """
     process_list = []
-    for i in range(2):
+    for i in range(1):
         process = Process(target=get_ai_value, args=())
         process_list.append(process)
 

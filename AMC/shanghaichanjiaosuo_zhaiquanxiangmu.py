@@ -64,21 +64,22 @@ def get_shanghaichanjiangsuo_zhaiquanxiangmu(queue_id, webpage_id):
         data_list = res_json["data"]["data"]
         for data in data_list:
             page_url = data["xmurl"]
-            title_name = data["xmmc"]
-            title_date_num = data["gpksrq"]
-            title_date = str(datetime.fromtimestamp(title_date_num / 1000).strftime("%Y-%m-%d"))
-            page.get(page_url)
-            time.sleep(3)
-            res = page.html
-            res_html = etree.HTML(res)
-            # 使用re模块提取日期
-            title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
-            if title_date:
-                title_date = title_date[0]
-            else:
-                title_date = ''
             title_url = page_url
             if title_url not in title_set:
+                title_name = data["xmmc"]
+                title_date_num = data["gpksrq"]
+                title_date = str(datetime.fromtimestamp(title_date_num / 1000).strftime("%Y-%m-%d"))
+                page.get(page_url)
+                time.sleep(10)
+                res = page.html
+                res_html = etree.HTML(res)
+                # 使用re模块提取日期
+                title_date = re.findall(r'\d{4}-\d{1,2}-\d{2}', title_date)
+                if title_date:
+                    title_date = title_date[0]
+                else:
+                    title_date = ''
+
                 # print(title_name,title_url)
                 # return
                 title_content = "".join(res_html.xpath(
@@ -171,9 +172,15 @@ def get_shanghaichanjiangsuo_zhaiquanxiangmu(queue_id, webpage_id):
 
                 cursor_test.close()
                 conn_test.close()
-        page.quit()
+        try:
+            page.quit()
+        except:
+            pass
     except Exception as e:
-        page.quit()
+        try:
+            page.quit()
+        except:
+            pass
         raise Exception(e)
 
 

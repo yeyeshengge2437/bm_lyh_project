@@ -34,7 +34,17 @@ headers = {
     'sec-ch-ua-platform': '"Windows"',
     # 'Cookie': '_ga=GA1.1.1606555070.1740029608; Hm_lvt_7de38d8594a7cf1a574241f30c33446b=1740536797; _ga_ERPNN1LEDY=deleted; _ga_ERPNN1LEDY=deleted; cart=; qimoClientId=6181641741573012907; EJY-JSESSIONID=MjAyMmQ5ZTctYzQwOC00OTlkLTg1NDAtOWExZTY5MTM1ODQ1; qimo_seosource_0=%E7%AB%99%E5%86%85; qimo_seokeywords_0=; uuid_49a6c050-3b8b-11eb-a27b-59d93a528836=855ed560-42a1-42a1-863d-7ca53f661f28; Hm_lvt_575182d134dee4d26e03124da592d030=1740029607,1740723217,1741161561,1741573016; HMACCOUNT=FDD970C8B3C27398; sessionId=2022d9e7-c408-499d-8540-9a1e69135845; qimo_seosource_49a6c050-3b8b-11eb-a27b-59d93a528836=%E7%AB%99%E5%86%85; qimo_seokeywords_49a6c050-3b8b-11eb-a27b-59d93a528836=; qimo_xstKeywords_49a6c050-3b8b-11eb-a27b-59d93a528836=; href=https%3A%2F%2Fwww.ejy365.com%2Fjygg_more%3Fproject_type%3DZQ; accessId=49a6c050-3b8b-11eb-a27b-59d93a528836; Hm_lpvt_575182d134dee4d26e03124da592d030=1741573118; pageViewNum=3; _ga_ERPNN1LEDY=GS1.1.1741573016.23.1.1741573218.0.0.0',
 }
+def compress_html(html):
+    # 移除 <!-- ... --> 注释（可选）
+    html = re.sub(r'<!--.*?-->', '', html, flags=re.DOTALL)
 
+    # 移除换行符(\n)、制表符(\t)、连续空格(保留单个空格)
+    html = re.sub(r'\s+', ' ', html)
+
+    # 移除 > 和 < 之间的空格（避免破坏HTML标签结构）
+    html = re.sub(r'>\s+<', '><', html)
+
+    return html.strip()
 
 def get_quanguochanquanjiaoyizhongxin(queue_id, webpage_id):
     page = ChromiumPage(co)
@@ -81,8 +91,8 @@ def get_quanguochanquanjiaoyizhongxin(queue_id, webpage_id):
                         title_date = title_date[0]
                     else:
                         title_date = ''
-                    title_content = "".join(res_html.xpath("//div[@class='product-intro']//text()"))
-                    title_content = title_content.join(res_html.xpath("//div[@class='detail-con-left']//text()"))
+                    # title_content = "".join(res_html.xpath("//div[@class='product-intro']//text()"))
+                    # title_content = title_content.join(res_html.xpath("//div[@class='detail-con-left']//text()"))
 
                     annex = res_html.xpath("//table[@class='base-sw ke-zeroborder']//a//@href | //div[@id='d-bdgk']//@href | //div[@id='tab1_content']//@href")
                     if annex:
@@ -114,6 +124,9 @@ def get_quanguochanquanjiaoyizhongxin(queue_id, webpage_id):
                     for con in content_1:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
                     content_html = re.sub(r'<!--第一位是竞买公告-->.*</html>', '', content_html, flags=re.DOTALL)
+                    content_html = compress_html(content_html)
+                    tree = etree.HTML(content_html)
+                    title_content = "".join(tree.xpath("//text()"))
                     try:
                         image = get_image(page, title_url,
                                           "xpath=//div[@class='base-container clearfix']")

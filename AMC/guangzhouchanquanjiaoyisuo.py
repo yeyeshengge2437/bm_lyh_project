@@ -11,6 +11,7 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 from api_paper import get_image, judge_bm_repeat, upload_file, judge_title_repeat, upload_file_by_url, get_now_image
 import requests
 from lxml import etree
+from lxml import html as html_import
 
 co = ChromiumOptions()
 co = co.set_argument('--no-sandbox')
@@ -27,7 +28,41 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
     # 'Cookie': 'JSESSIONID=49B045CF0B2DF12E9630B8A885E54C26; Hm_lvt_6eda7fc02dd514d4aa276037c947668f=1739963032,1740040980; HWWAFSESID=629717395942b88b17; HWWAFSESTIME=1741223999066; Hm_lvt_865d7b41bbb886391b9a558ea304692d=1739963069,1740990818,1741224051; HMACCOUNT=FDD970C8B3C27398; Hm_lpvt_865d7b41bbb886391b9a558ea304692d=1741227792',
 }
+def del_style(content_html):
+    tree = etree.HTML(content_html)
+    # 删除所有 <style> 标签
+    for style_tag in tree.xpath("//style"):
+        style_tag.getparent().remove(style_tag)
 
+    # 输出处理后的 HTML
+    up_content_html = html_import.tostring(tree, encoding="unicode")
+    return up_content_html
+
+
+def del_script(content_html):
+    tree = etree.HTML(content_html)
+    # 删除所有 <style> 标签
+    for style_tag in tree.xpath("//script"):
+        style_tag.getparent().remove(style_tag)
+
+    # 输出处理后的 HTML
+    up_content_html = html_import.tostring(tree, encoding="unicode")
+    return up_content_html
+
+
+def compress_html(html):
+    # 移除 <!-- ... --> 注释（可选）
+    html = re.sub(r'<!--.*?-->', '', html, flags=re.DOTALL)
+
+    # 移除换行符(\n)、制表符(\t)、连续空格(保留单个空格)
+    html = re.sub(r'\s+', ' ', html)
+
+    # 移除 > 和 < 之间的空格（避免破坏HTML标签结构）
+    html = re.sub(r'>\s+<', '><', html)
+
+    html = re.sub(r'<div class="right-list clearfix"><h3>猜你喜欢</h3>.*', '', html)
+
+    return html.strip()
 
 def get_guangzhouchanquanjiaoyisuo(queue_id, webpage_id):
     page = ChromiumPage(co)
@@ -71,13 +106,16 @@ def get_guangzhouchanquanjiaoyisuo(queue_id, webpage_id):
                 else:
                     title_date = ''
                 # print(page_url, title_name, title_date)
+                # page_url = 'http://gz.gemas.com.cn/portal/page?to=proUtrg&proId=9e8210f75313483b84aba80ee7621f39'
                 page.get(page_url)
-                time.sleep(2)
+                time.sleep(10)
                 page_html = page.html
                 if '该项目已归档' in page_html:
                     continue
                 # http://gz.gemas.com.cn/portal/page?to=proUtrm&proId=eb0f12d1170f44ab88b17e51d8e268fb&packId=
                 pro_id = ''.join(re.findall(r'&proId=(.*?)&p', page_url))
+                if not pro_id:
+                    pro_id = ''.join(re.findall(r'&proId=(.*)', page_url))
                 # print(pro_id)
                 flag = True
                 if 'proUtrm' in page_url:
@@ -130,6 +168,9 @@ def get_guangzhouchanquanjiaoyisuo(queue_id, webpage_id):
                     response = requests.get('http://gz.gemas.com.cn/portal/page', params=params, headers=headers,
                                             verify=False)
                     res_html_ = response.text
+                res_html_ = del_script(res_html_)
+                res_html_ = del_style(res_html_)
+                res_html_ = compress_html(res_html_)
                 res_html = etree.HTML(res_html_)
                 title_url = page_url
                 if title_url not in title_set:

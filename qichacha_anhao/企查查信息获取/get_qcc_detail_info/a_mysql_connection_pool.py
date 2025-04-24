@@ -1,5 +1,6 @@
+import json
 from datetime import datetime
-
+import hashlib
 import mysql.connector.pooling
 from dbutils.pooled_db import PooledDB
 
@@ -8,7 +9,7 @@ db_config = {
     "host": "rm-bp1t2339v742zh9165o.mysql.rds.aliyuncs.com",
     "user": "col2024",
     "password": "Bm_a12a06",
-    "database": "col",
+    "database": "col_test",
     "port": 3306,
 }
 
@@ -80,4 +81,52 @@ def del_ban_data(id):
     return True
 
 
+def generate_md5(data):
+    """
+    生成输入数据的 MD5 哈希值
 
+    参数:
+        data: 可以是字符串、字典、列表等
+
+    返回:
+        返回数据的 MD5 哈希值（32位十六进制字符串）
+    """
+    # 如果是字典或列表，先转成 JSON 字符串
+    if isinstance(data, (dict, list)):
+        data = json.dumps(data, sort_keys=True, ensure_ascii=False)
+
+    # 如果是字符串，编码成字节
+    if isinstance(data, str):
+        data = data.encode('utf-8')
+
+    # 计算 MD5
+    md5_hash = hashlib.md5(data)
+    return md5_hash.hexdigest()
+
+
+def up_part_qcc_data(data_value, data_key, key_no, from_queue, webpage_id):
+    if data_key in ['business_info', 'credit_eval', 'trade_credit']:
+        data_md5 = generate_md5(str(data_value))
+        data_status = "current"
+        data_json = json.dumps(data_value, ensure_ascii=False)
+        up_qcc_data(key_no, data_key, data_status, data_md5, data_json, from_queue, webpage_id)
+
+    else:
+        if 'his_' in data_key:
+            # 历史信息，增加标识
+            data_status = 'history'
+            for up_data in data_value:
+                if up_data:
+                    data_key = data_key.replace('his_', '')
+                    data_json = json.dumps(up_data, ensure_ascii=False)
+                    data_md5 = generate_md5(str(up_data))
+                    up_qcc_data(key_no, data_key, data_status, data_md5, data_json, from_queue,
+                                webpage_id)
+        else:
+            for up_data in data_value:
+                if up_data:
+                    data_status = "current"
+                    data_json = json.dumps(up_data, ensure_ascii=False)
+                    data_md5 = generate_md5(str(up_data))
+                    up_qcc_data(key_no, data_key, data_status, data_md5, data_json, from_queue,
+                                webpage_id)

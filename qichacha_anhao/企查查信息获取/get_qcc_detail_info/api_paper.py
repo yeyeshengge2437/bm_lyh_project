@@ -9,8 +9,8 @@ import mysql.connector
 import pdfplumber
 import requests
 
-produce_url = "http://118.31.45.18:29875"  # 生产环境
-# produce_url = "http://121.43.164.84:29775"    # 测试环境
+# produce_url = "http://118.31.45.18:29875"  # 生产环境
+produce_url = "http://118.31.45.18:29775"    # 测试环境
 test_url = produce_url
 
 requests.DEFAULT_RETRIES = 3
@@ -89,6 +89,27 @@ def paper_queue_delay(data=None):
         print(err)
         return None
 
+def paper_queue_step_finish(data=None):
+    """
+    队列阶段性完成请求
+    :param data:
+    :return:
+    """
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
+        'Content-Type': 'application/json'
+    }
+    try:
+        if data is None:
+            data = {}
+        url = test_url + "/website/queue/step-finish"
+        data_str = json.dumps(data)
+        res = s.post(url=url, headers=headers, data=data_str)
+        result = res.json()
+        return result.get("value")
+    except Exception as err:
+        print(err)
+        return None
 
 def upload_file_by_url(file_url, file_name, file_type, type="paper", verify=None):
     headers = {

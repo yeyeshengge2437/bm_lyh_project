@@ -2,7 +2,7 @@ import json
 import re
 import time
 import os
-import random
+from lxml import html as html_import
 import re
 import time
 from datetime import datetime
@@ -281,11 +281,19 @@ def get_neimengguchanquanjiaoyi_guapaixiangmuzhaiquan(queue_id, webpage_id):
                     #     content_html += etree.tostring(con, encoding='utf-8').decode()
                     for con in content_1:
                         content_html += etree.tostring(con, encoding='utf-8').decode()
-                    content_html = re.sub(r'<!--第一位是竞买公告------------------------------.*</html>', '', content_html,  flags=re.DOTALL )
+                    content_html = re.sub(r'<!--第一位是竞买公告------------------------------.*</html>', '', content_html,  flags=re.DOTALL)
                     try:
                         content_html += '!@#' + iframe_html
                     except:
                         pass
+                    tree = html_import.fromstring(content_html)
+
+                    # 删除所有 <style> 标签
+                    for style_tag in tree.xpath("//style"):
+                        style_tag.getparent().remove(style_tag)
+
+                    # 输出处理后的 HTML
+                    content_html = html_import.tostring(tree, encoding="unicode")
 
                     try:
                         image = get_image(page, title_url, "xpath=//div[@id='tab1_content']")
