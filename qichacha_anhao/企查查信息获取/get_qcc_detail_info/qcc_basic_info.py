@@ -270,88 +270,104 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                 inquire_dict[company_nav_children_name] = company_nav_children_count
                     print(inquire_dict)
                     # return
-                    # """
-                    # 获取每个表的json信息
-                    # """
-                    # """
-                    # 基本信息!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    # """
-                    # # 工商信息
-                    # company_detail = company_json["company"][
-                    #     "companyDetail"]
-                    # up_part_qcc_data(company_detail, 'business_info', key_no, from_queue, webpage_id)
-                    # part_data = {
-                    #     'data_type': 'business_info:current',
-                    #     'id': from_queue,
-                    # }
-                    # paper_queue_step_finish(part_data)
-                    # # 股东信息
-                    # partner_num = inquire_dict.get('股东信息')
-                    # # 少于50个的情况下
-                    # if 0 < partner_num <= 50:
-                    #     print(company_json)
-                    #     company_partners = company_json["company"]["companyDetail"]["Partners"]
-                    # # 多于50个的情况下
-                    # elif partner_num > 50:  # 股东信息可以显示超过十个
-                    #     company_partners = []
-                    #     partner_page = math.ceil(partner_num / 50)
-                    #     for page_ in range(1, partner_page + 1):
-                    #         partner_url = f'https://www.qcc.com/api/datalist/partner?keyNo={key_no}&pageIndex={page_}&pageSize=50&type=IpoPartners'
-                    #         partner_value = get_response(partner_url, key_no, pid, tid, cookie_dict)
-                    #         captcha_value = encounter_captcha(partner_value, page)
-                    #         if captcha_value in ['验证码识别成功', '没有遇到验证码']:
-                    #             company_partners.append(partner_value)
-                    #             time.sleep(7)
-                    #         else:
-                    #             # 先将请求数据上传到数据库中，后续处理
-                    #             up_qcc_res_data(partner_url, 'shareholder', 'get', '', key_no, webpage_id)
-                    # else:
-                    #     company_partners = []
-                    # dispose_success_data(company_partners, 'shareholder', 'shareholder:current', key_no, from_queue, webpage_id)
-                    # # 主要人员
-                    # employees_num = inquire_dict.get('主要人员')
-                    # # 少于10个的情况下
-                    # if 0 < employees_num <= 10:
-                    #     company_employees = company_json["company"]["companyDetail"]["Employees"]
-                    # # 多于10个的情况下
-                    # elif employees_num > 10:
-                    #     company_employees = []
-                    #     employees_page = math.ceil(employees_num / 10)
-                    #     for page_ in range(1, employees_page + 1):
-                    #         employees_url = f'https://www.qcc.com/api/datalist/mainmember?isNewAgg=true&keyNo={key_no}&nodeName=Employees&pageIndex={page_}'
-                    #         employees_value = get_response(employees_url, key_no, pid, tid, cookie_dict)
-                    #         captcha_value = encounter_captcha(employees_value, page)
-                    #         if captcha_value in ['验证码识别成功', '没有遇到验证码']:
-                    #             company_partners.append(employees_value)
-                    #             time.sleep(7)
-                    #         else:
-                    #             # 先将请求数据上传到数据库中，后续处理
-                    #             up_qcc_res_data(employees_url, 'shareholder', 'get', '', key_no, webpage_id)
-                    #
-                    # else:
-                    #     company_employees = []
-                    # dispose_success_data(company_employees, 'member', 'member:current', key_no, from_queue, webpage_id)
-                    # # 对外投资
-                    # touzilist_num = inquire_dict.get('对外投资')
+                    """
+                    获取每个表的json信息
+                    """
+                    """
+                    基本信息!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    """
+                    # 工商信息
+                    company_detail = company_json["company"][
+                        "companyDetail"]
+                    up_part_qcc_data(company_detail, 'business_info', key_no, from_queue, webpage_id)
+                    part_data = {
+                        'data_type': 'business_info:current',
+                        'id': from_queue,
+                    }
+                    paper_queue_step_finish(part_data)
+                    # 股东信息
+                    partner_num = inquire_dict.get('股东信息')
+                    # 少于50个的情况下
+                    if 0 < partner_num <= 50:
+                        print(company_json)
+                        company_partners = company_json["company"]["companyDetail"]["Partners"]
+                    # 多于50个的情况下
+                    elif partner_num > 50:  # 股东信息可以显示超过十个
+                        company_partners = []
+                        partner_page = math.ceil(partner_num / 50)
+                        for page_ in range(1, partner_page + 1):
+                            partner_url = f'https://www.qcc.com/api/datalist/partner?keyNo={key_no}&pageIndex={page_}&pageSize=50&type=IpoPartners'
+                            partner_value = get_response(partner_url, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(partner_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                company_partners.append(partner_value)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                up_qcc_res_data(partner_url, 'shareholder', 'get', '', key_no, webpage_id)
+                    else:
+                        company_partners = []
+                    dispose_success_data(company_partners, 'shareholder', 'shareholder:current', key_no, from_queue, webpage_id)
+                    # 主要人员
+                    employees_num = inquire_dict.get('主要人员')
+                    # 少于10个的情况下
+                    if 0 < employees_num <= 10:
+                        company_employees = company_json["company"]["companyDetail"]["Employees"]
+                    # 多于10个的情况下
+                    elif employees_num > 10:
+                        company_employees = []
+                        employees_page = math.ceil(employees_num / 10)
+                        for page_ in range(1, employees_page + 1):
+                            employees_url = f'https://www.qcc.com/api/datalist/mainmember?isNewAgg=true&keyNo={key_no}&nodeName=Employees&pageIndex={page_}'
+                            employees_value = get_response(employees_url, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(employees_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                company_partners.append(employees_value)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                up_qcc_res_data(employees_url, 'shareholder', 'get', '', key_no, webpage_id)
+
+                    else:
+                        company_employees = []
+                    dispose_success_data(company_employees, 'member', 'member:current', key_no, from_queue, webpage_id)
+                    # 对外投资
+                    touzilist_num = inquire_dict.get('对外投资')
+                    # 少于10个的情况下
+                    if 0 < touzilist_num <= 10:
+                        company_touzilist = company_json["datalist"]["touzilist"][0]["data"]
+                    # 多于10个的情况下
+                    elif touzilist_num > 10:
+                        company_touzilist = []
+                        touzilist_page = math.ceil(touzilist_num / 10)
+                        for page_ in range(1, touzilist_page + 1):
+                            touzilist_url = f'https://www.qcc.com/api/datalist/touzilist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}'
+                            touzilist_value = get_response(touzilist_url, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(touzilist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                touzilist_value_data = touzilist_value["data"]
+                                for touzilist_data in touzilist_value_data:
+                                    company_touzilist.append(touzilist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                up_qcc_res_data(touzilist_url, 'invest', 'get', '', key_no, webpage_id)
+
+                    else:
+                        company_touzilist = []
+                    dispose_success_data(company_touzilist, 'invest', 'invest:current', key_no, from_queue, webpage_id)
+                    # # 间接对外投资
                     # # 少于10个的情况下
                     # if 0 < touzilist_num <= 10:
-                    #     company_touzilist = company_json["datalist"]["touzilist"][0]["data"]
+                    #     company_holdcolist = company_json["datalist"]["holdcolist"]["data"]
                     # # 多于10个的情况下
                     # elif touzilist_num > 10:
-                    #     company_touzilist = []
-                    #     touzilist_page = math.ceil(touzilist_num / 10)
-                    #     for page_ in range(1, touzilist_page + 1):
-                    #         touzilist_url = f'https://www.qcc.com/api/datalist/touzilist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}'
-                    #         touzilist_value = get_response(touzilist_url, key_no, pid, tid, cookie_dict)
-                    #         captcha_value = encounter_captcha(touzilist_value, page)
-                    #         if captcha_value in ['验证码识别成功', '没有遇到验证码']:
-                    #             touzilist_value_data = touzilist_value["data"]
-                    #             for touzilist_data in touzilist_value_data:
-                    #                 company_touzilist.append(touzilist_data)
-                    #             time.sleep(7)
-                    #         else:
-                    #             # 先将请求数据上传到数据库中，后续处理
-                    #             up_qcc_res_data(touzilist_url, 'invest', 'get', '', key_no, webpage_id)
+                    #     company_holdcolist = []
+                    #     holdcolist_page = math.ceil(touzilist_num / 10)
+                    #     for page_ in range(1, holdcolist_page + 1):
+                    #         holdcolist_url = f'https://www.qcc.com/api/datalist/indirecttouzilist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}'
+                    #         holdcolist_value = get_response(holdcolist_url, key_no, pid, tid, cookie_dict)
+                    #         encounter_captcha(holdcolist_value, page)
                     #
                     #         company_holdcolist.append(holdcolist_value)
                     #         time.sleep(7)
@@ -885,12 +901,45 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                     # 多于10个的情况下
                     elif crun_tenderlist_num > 10:
                         crun_tenderlist = []
-                        tenderlist_page = math.ceil(crun_tenderlist_num / 10)
+                        try:
+                            crun_tender_num_2 = crun_json["datalist"]["tenderlist"]["groupItems"]["openbidkeynos"]["count"]    # 投标方数量
+                        except:
+                            crun_tender_num_2 = 0
+                        tenderlist_page = math.ceil(crun_tender_num_2 / 10)
                         for page_ in range(1, tenderlist_page + 1):
-                            pass  # 暂未找到超过十个的, 招投标暂未解决
+                            crun_url_1 = f'https://www.qcc.com/api/datalist/tenderlist?companyId={key_no}&pageIndex={page_}&role=2'    # 投标方
+                            crun_value = get_response(crun_url_1, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(crun_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                crun_value_data = crun_value['data']
+                                for crun_data in crun_value_data:
+                                    crun_tenderlist.append(crun_data)
+                                time.sleep(8)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(crun_url_1, 'bid', 'get', '', key_no, webpage_id)
+                        try:
+                            crun_tender_num_1 = crun_json["datalist"]["tenderlist"]["groupItems"]["ifbwithoutwtbkeynos"]["count"]    # 招采方数量
+                        except:
+                            crun_tender_num_1 = 0
+                        tenderlist_page = math.ceil(crun_tender_num_1 / 10)
+                        for page_ in range(1, tenderlist_page + 1):
+                            crun_url_1 = f'https://www.qcc.com/api/datalist/tenderlist?companyId={key_no}&pageIndex={page_}&role=1'  # 招采方
+                            crun_value = get_response(crun_url_1, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(crun_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                crun_value_data = crun_value['data']
+                                for crun_data in crun_value_data:
+                                    crun_tenderlist.append(crun_data)
+                                time.sleep(8)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(crun_url_1, 'bid', 'get', '', key_no, webpage_id)
                     else:
                         crun_tenderlist = []
-                    dispose_success_data(crun_tenderlist, 'bid', 'bid:current', key_no, from_queue, webpage_id)
+                    dispose_success_data(crun_tenderlist, 'bid', 'bid:current',  key_no, from_queue, webpage_id)
 
                     # 资质证书
                     crun_certificationsummary_num = inquire_dict.get('资质证书')
@@ -959,7 +1008,11 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                         # 如果对应的有值
                         if crun_creditrate_value:
                             type_ = corresponding_dict.get(crun_creditrate_key)
-                            crun_url = f'https://www.qcc.com/api/riskDetail/creditratelist?keyNo={key_no}&type={type_}'
+                            if type_ == 'bbc':
+                                _id = crun_creditrate_value["BondCode"]
+                                crun_url = f'https://www.qcc.com/api/riskDetail/creditratelist?id={_id}&keyNo={key_no}&type=bbc'
+                            else:
+                                crun_url = f'https://www.qcc.com/api/riskDetail/creditratelist?keyNo={key_no}&type={type_}'
                             crun_value = get_response(crun_url, key_no, pid, tid, cookie_dict)
                             print('111', crun_value)
                             captcha_value = encounter_captcha(crun_value, page)
