@@ -249,18 +249,17 @@ def qcc_search_company_nibo(search_company_name):
                             if common_kd == '参保人数':
                                 enrollment_num = common.get('Value')  # 参保人数
                     enrollment_year_ = ''  # 参保年份
-                    annual_report_info = company_detail.get('StaffHisCntPopUpInfo')  # 获取年报信息
+                    annual_report_info = company_detail["company"]["companyDetail"]["CommonList"]  # 获取年报信息
                     if annual_report_info:
                         for annual_report in annual_report_info:
-                            if annual_report.get('TypeDesc'):
-                                if annual_report.get('TypeDesc') == '工商年报':
-                                    enrollment_year_list = annual_report.get('YearList')  # 参保年份
-                                    if enrollment_year_list:
-                                        for enrollment_year in enrollment_year_list:
-                                            if enrollment_year.get('SourceDesc'):
-                                                if enrollment_year.get('SourceDesc') == '参保人数':
-                                                    enrollment_year_ += str(enrollment_year.get('Year'))
-                                                    break
+                            if annual_report.get('Key'):
+                                if annual_report.get('Key') == 25:
+                                    enrollment_year_json = annual_report.get('Value')  # 参保年份
+                                    if enrollment_year_json:
+                                        enrollment_year_dict = json.loads(enrollment_year_json)
+                                        if enrollment_year_dict.get('s'):
+                                            enrollment_year_ += str(enrollment_year_dict.get('s'))
+                                            break
                     if enrollment_year_:
                         enrollment_num += f'({enrollment_year_})年报'
                     check_date = company_detail.get('CheckDate')  # 核准日期

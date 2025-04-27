@@ -6,7 +6,57 @@ import re
 import time
 import ddddocr
 from lxml import etree
+from lxml import html as html_import
 from DrissionPage import ChromiumPage, ChromiumOptions
+
+
+def del_style(content_html):
+    tree = etree.HTML(content_html)
+    # 删除所有 <style> 标签
+    for style_tag in tree.xpath("//style"):
+        style_tag.getparent().remove(style_tag)
+
+    # 输出处理后的 HTML
+    up_content_html = html_import.tostring(tree, encoding="unicode")
+    return up_content_html
+
+
+def del_script(content_html):
+    tree = etree.HTML(content_html)
+    # 删除所有 <style> 标签
+    for style_tag in tree.xpath("//script"):
+        style_tag.getparent().remove(style_tag)
+
+    # 输出处理后的 HTML
+    up_content_html = html_import.tostring(tree, encoding="unicode")
+    return up_content_html
+
+
+def del_link(content_html):
+    tree = etree.HTML(content_html)
+    # 删除所有 <style> 标签
+    for style_tag in tree.xpath("//link"):
+        style_tag.getparent().remove(style_tag)
+
+    # 输出处理后的 HTML
+    up_content_html = html_import.tostring(tree, encoding="unicode")
+    return up_content_html
+
+
+def compress_html(html):
+    # 移除 <!-- ... --> 注释（可选）
+    html = re.sub(r'<!--.*?-->', '', html, flags=re.DOTALL)
+
+    # 移除换行符(\n)、制表符(\t)、连续空格(保留单个空格)
+    html = re.sub(r'\s+', ' ', html)
+
+    # 移除 > 和 < 之间的空格（避免破坏HTML标签结构）
+    html = re.sub(r'>\s+<', '><', html)
+
+    html = re.sub(r'<div class="right-list clearfix"><h3>猜你喜欢</h3>.*', '', html)
+
+    return html.strip()
+
 
 ocr = ddddocr.DdddOcr(show_ad=False)
 co = ChromiumOptions()
@@ -14,7 +64,11 @@ co = co.set_user_data_path(r'D:\chome_data\data_one')
 co.set_paths(local_port=9136)
 
 # anhao_set = {'（2023）甘01民终7998号', '（2019）辽01执异461号', '（2016）甘民初91号', '（2017）甘03民终352号', '（2021）甘0802民初3216号', '（2018）甘0302民初3123号', '（2015）沪高民四（海）终字第99号', '（2019）甘03民终80号', '（2018）甘0302民初1181号', '（2016）甘0302民初2594号', '（2018）甘0302民初179号', '（2018）甘0302民初229号', '（2020）甘0302民初912号', '（2015）金中民一初字第14号', '（2022）甘03民终115号', '（2020）甘03民特1号', '（2023）甘0302民初866号', '（2019）甘0302民初308号', '（2017）甘0302民初80号', '（2023）甘0302民初723号', '（2020）甘民终132号', '（2019）桂0602民初167号', '（2021）沪7101民初1542号', '（2016）最高法民终254号', '（2023）甘03民终596号', '（2020）甘03执23号之五', '（2015）普民二（商）初字第951号', '（2017）甘0302民初2764号', '（2020）沪7101破172号', '（2021）甘0302民初281号', '（2015）普民二（商）初字第961号', '（2019）甘执83号', '（2018）甘03民终33号', '（2019）甘03民终67号', '（2021）甘0102民初14761号', '（2017）甘03民终312号', '（2017）沪0107执294号', '（2017）甘03民终216号', '（2016）陕民初31号', '（2016）沪02民特398号', '（2016）甘03民终309号', '（2024）甘01民终7331号', '（2012）兰法民二初字第95号', '（2018）甘0302民初444号', '（2021）甘0302民初2431号', '（2018）浙0102民初6515号', '（2021）甘03民终22号', '（2019）甘03民初28号', '（2016）甘民初37号', '（2020）甘0321民初2052号', '（2017）甘民终453号', '（2023）甘0302民初994号', '（2016）甘0302民初2475号', '（2020）甘01民初711号之一', '(2023)甘0123民初2513号'}
-anhao_set = {'（2023）甘01民终7998号', '（2019）辽01执异461号', '（2016）甘民初91号', '（2017）甘03民终352号', '（2021）甘0802民初3216号', '（2018）甘0302民初3123号', '（2015）沪高民四（海）终字第99号', '（2019）甘03民终80号', '（2018）甘0302民初1181号', '（2016）甘0302民初2594号', '（2018）甘0302民初179号', '（2018）甘0302民初229号', '（2020）甘0302民初912号', '（2015）金中民一初字第14号', '（2022）甘03民终115号', '（2020）甘03民特1号', '（2023）甘0302民初866号', '（2019）甘0302民初308号',  '（2020）甘01民初711号之一', '(2023)甘0123民初2513号'}
+anhao_set = {'（2023）甘01民终7998号', '（2019）辽01执异461号', '（2016）甘民初91号', '（2017）甘03民终352号',
+             '（2021）甘0802民初3216号', '（2018）甘0302民初3123号', '（2015）沪高民四（海）终字第99号', '（2019）甘03民终80号',
+             '（2018）甘0302民初1181号', '（2016）甘0302民初2594号', '（2018）甘0302民初179号', '（2018）甘0302民初229号',
+             '（2020）甘0302民初912号', '（2015）金中民一初字第14号', '（2022）甘03民终115号', '（2020）甘03民特1号',
+             '（2023）甘0302民初866号', '（2019）甘0302民初308号', '（2020）甘01民初711号之一', '(2023)甘0123民初2513号'}
 # 连接浏览器
 page = ChromiumPage()
 tab = page.get_tab()
@@ -24,11 +78,11 @@ tab.get(taget_url)
 # print(tab.html)
 time.sleep(3)
 
-login = tab.ele("@class=phone-number-input",).input('15938554242', by_js=True)
+login = tab.ele("@class=phone-number-input", ).input('15938554242', by_js=True)
 time.sleep(2)
 # login.click(by_js=True)
 # login
-password = tab.ele("@class=password",).input('Liyongheng10!', by_js=True)
+password = tab.ele("@class=password", ).input('Liyongheng10!', by_js=True)
 time.sleep(2)
 tab.ele("@class=captcha-img").click(by_js=True)
 time.sleep(5)
@@ -98,14 +152,46 @@ for anhao in anhao_set:
         url = base_url + href
         print(anhao)
         print(url)
-    tab.back(1)
-    #     new_tab = page.new_tab()
-    #     new_tab.get(url)
-    #     time.sleep(2)
-    #     wen_html = new_tab.html
-    #     print(wen_html)
-    # break
+        new_tab = page.new_tab()
+        new_tab.get(url)
+        time.sleep(2)
+        wen_html = new_tab.html
+        wen_html = del_script(wen_html)
+        wen_html = del_style(wen_html)
+        wen_html = del_link(wen_html)
+        wen_html = compress_html(wen_html)
+        wen_html_tree = etree.HTML(wen_html)
+        case_number = ''    # 案号从输入项
+        wen_url = url
+        title = ''.join(wen_html_tree.xpath("//div[@class='PDF_title']/text()"))
+        court = ''.join(wen_html_tree.xpath("//h4[@class='clearfix'][1]//text()"))
+        case_type = ''.join(wen_html_tree.xpath("//h4[@class='clearfix'][2]//text()"))
+        cause = ''.join(wen_html_tree.xpath("//h4[@class='clearfix'][3]//text()"))
+        procedure_type = ''.join(wen_html_tree.xpath("//h4[@class='clearfix'][4]//text()"))
+        judgment_date = ''.join(wen_html_tree.xpath("//h4[@class='clearfix'][5]//text()"))
+        parties = ''.join(wen_html_tree.xpath("//h4[@class='clearfix'][6]//text()"))
+        legal_basis = ''.join(wen_html_tree.xpath("//div[@class='del_right'][1]//ul/li[2]//text()"))
+        content = ''.join(wen_html_tree.xpath("//div[@class='PDF_pox']/div//text()"))
+        publish_date_str = ''.join(wen_html_tree.xpath("//table[@class='dftable']//text()"))
+        # 正则匹配
+        publish_date = re.findall(r'\d{4}-\d{2}-\d{2}', publish_date_str)[0]
+        value = {
+            "案号": case_number,
+            "链接": wen_url,
+            "标题": title,
+            "法院": court,
+            "案件类型": case_type,
+            "案由": cause,
+            "程序类型": procedure_type,
+            "裁判日期": judgment_date,
+            "当事人": parties,
+            "法律依据": legal_basis,
+            "内容": content,
+            "发布时间": publish_date,
+        }
+        print(value)
 
+    tab.back(1)
 
 
 page.close()

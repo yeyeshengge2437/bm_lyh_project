@@ -13,6 +13,6 @@ def add_newlines(input_file, output_file, chars_per_line=50):
         file.write(new_content)
 
 # 使用函数
-input_file = '1.txt'  # 需要读取的文件名
+input_file = '裁判文书数据.txt'  # 需要读取的文件名
 output_file = '33.txt'  # 输出文件名
 add_newlines(input_file, output_file)

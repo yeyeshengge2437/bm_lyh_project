@@ -42,7 +42,7 @@ def get_guizhouyangguangchanquanjiaoyisuo(queue_id, webpage_id):
     page.set.load_mode.none()
     try:
         # for zq_type in ['C05', 'C06']:
-        for page_num in range(1, 101):
+        for page_num in range(1, 2):
             params = {
                 'class3': '52',
                 'page': f'{page_num}',
