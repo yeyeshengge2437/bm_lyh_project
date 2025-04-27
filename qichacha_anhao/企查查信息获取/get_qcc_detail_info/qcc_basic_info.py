@@ -2245,7 +2245,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                     else:
                         chistory_hisassistancelist = []
                     # Equity freezing
-                    dispose_success_data(chistory_hisassistancelist, 'his_equity_freezing', 'equity_freezing:history', key_no, from_queue, webpage_id)
+                    dispose_success_data(chistory_hisassistancelist, 'his_share_freeze', 'share_freeze:history', key_no, from_queue, webpage_id)
 
                     # 历史双随机抽查
                     chistory_hisdrclist_num = inquire_dict.get('历史双随机抽查')
@@ -2263,7 +2263,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                     else:
                         chistory_hisdrclist = []
                     # Double random spot checks
-                    dispose_success_data(chistory_hisdrclist, 'his_double_random_spot_checks', 'double_random_spot_checks:history', key_no, from_queue, webpage_id)
+                    dispose_success_data(chistory_hisdrclist, 'his_double_random_check', 'double_random_check:history', key_no, from_queue, webpage_id)
 
                     # 历史知产出质
                     chistory_hispledgelist_num = inquire_dict.get('历史知产出质')
@@ -2281,7 +2281,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                     else:
                         chistory_hispatentpledgelist = []
                     #
-                    dispose_success_data(chistory_hispatentpledgelist, 'his_patentpledge', 'patentpledge:history', key_no, from_queue, webpage_id)
+                    dispose_success_data(chistory_hispatentpledgelist, 'his_ip_pledge', 'ip_pledge:history', key_no, from_queue, webpage_id)
 
                     # 历史动产抵押
                     chistory_hismpledgelist_num = inquire_dict.get('历史动产抵押')
