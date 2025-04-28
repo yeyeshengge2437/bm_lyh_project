@@ -209,7 +209,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                 # continue
                 target_url = f'https://www.qcc.com/firm/{key_no}.html'
                 response = requests.get(target_url, cookies=cookie_dict, headers=headers)
-                time.sleep(random_num)
+                time.sleep(8)
                 company_html = response.text
                 pid_list = re.findall(r"<script>window\.pid='(.*?)'; window\.tid", company_html)
                 tid_list = re.findall(r"window\.tid='(.*?)'</script>", company_html)
@@ -218,27 +218,27 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                 company_data = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function', company_html)
                 susong_url = f'https://www.qcc.com/csusong/{key_no}.html'
                 susong_response = requests.get(susong_url, cookies=cookie_dict, headers=headers)
-                time.sleep(random_num)
+                time.sleep(9)
                 susong_html = susong_response.text
                 susong_data = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function', susong_html)
                 cfengxian_url = f'https://www.qcc.com/cfengxian/{key_no}.html'
                 cfengxian_response = requests.get(cfengxian_url, cookies=cookie_dict, headers=headers)
-                time.sleep(random_num)
+                time.sleep(9)
                 cfengxian_html = cfengxian_response.text
                 cfengxian_data = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function', cfengxian_html)
                 crun_url = f'https://www.qcc.com/crun/{key_no}.html'
                 crun_response = requests.get(crun_url, cookies=cookie_dict, headers=headers)
-                time.sleep(random_num)
+                time.sleep(4)
                 crun_html = crun_response.text
                 crun_data = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function', crun_html)
                 cassets_url = f'https://www.qcc.com/cassets/{key_no}.html'
                 cassets_response = requests.get(cassets_url, cookies=cookie_dict, headers=headers)
-                time.sleep(random_num)
+                time.sleep(9)
                 cassets_html = cassets_response.text
                 cassets_data = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function', cassets_html)
                 chistory_url = f'https://www.qcc.com/chistory/{key_no}.html'
                 chistory_response = requests.get(chistory_url, cookies=cookie_dict, headers=headers)
-                time.sleep(random_num)
+                time.sleep(9)
                 chistory_html = chistory_response.text
                 chistory_data = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function', chistory_html)
                 # print(company_data[0])
@@ -637,6 +637,21 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                     else:
                         susong_dnoticelist = []
                     dispose_success_data(susong_dnoticelist, 'case_deliver', 'case_deliver:current', key_no, from_queue, webpage_id)
+                    # 破产重整
+                    susong_bankrupt_num = inquire_dict.get('破产重整')
+                    if 0 < susong_bankrupt_num <= 10:
+                        susong_bankruptlist = susong_json["datalist"]["bankruptcylist"]["data"]
+                    # 多于10个的情况下
+                    elif susong_bankrupt_num > 10:
+                        susong_bankruptlist = []
+                        input("破产重整信息大于十个, 建议处理")
+                        bankruptlist_page = math.ceil(susong_bankrupt_num / 10)
+                        for page_ in range(1, bankruptlist_page + 1):
+                            pass
+                    else:
+                        susong_bankruptlist = []
+                    dispose_success_data(susong_bankruptlist, 'bankrupt', 'bankrupt:current', key_no, from_queue,
+                                         webpage_id)
 
                     # 诉前调解
                     susong_pretrialmediationlist_num = inquire_dict.get('诉前调解')
@@ -1221,18 +1236,19 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                     # 多于10个的情况下
                     elif crun_randomlist_num > 10:
                         crun_drclist = []
-                        drclist_url = f'https://www.qcc.com/api/datalist/drclist?isNewAgg=true&keyNo={key_no}&pageIndex={page}'
-                        drclist_value = get_response(drclist_url, key_no, pid, tid, cookie_dict)
-                        captcha_value = encounter_captcha(drclist_value, page)
-                        if captcha_value in ['验证码识别成功', '没有遇到验证码']:
-                            drclist_value_data = drclist_value["data"]
-                            for drclist_data in drclist_value_data:
-                                crun_drclist.append(drclist_data)
-                            time.sleep(7)
-                        else:
-                            # 先将请求数据上传到数据库中，后续处理
-                            # json_data = json.dumps(json_data, ensure_ascii=False)
-                            up_qcc_res_data(drclist_url, 'double_random_check', 'get', '', key_no, webpage_id)
+                        for page_ in range(1, crun_randomlist_num + 1):
+                            drclist_url = f'https://www.qcc.com/api/datalist/drclist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}'
+                            drclist_value = get_response(drclist_url, key_no, pid, tid, cookie_dict)
+                            captcha_value = encounter_captcha(drclist_value, page)
+                            if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                                drclist_value_data = drclist_value["data"]
+                                for drclist_data in drclist_value_data:
+                                    crun_drclist.append(drclist_data)
+                                time.sleep(7)
+                            else:
+                                # 先将请求数据上传到数据库中，后续处理
+                                # json_data = json.dumps(json_data, ensure_ascii=False)
+                                up_qcc_res_data(drclist_url, 'double_random_check', 'get', '', key_no, webpage_id)
 
                     else:
                         crun_drclist = []
@@ -2172,7 +2188,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                     else:
                         chistory_hissumptuarylist = []
                     # Limit high spending
-                    dispose_success_data(chistory_hissumptuarylist, 'his_limit_high_spend', 'limit_high_spend:history', key_no, from_queue, webpage_id)
+                    dispose_success_data(chistory_hissumptuarylist, 'his_sumptuary', 'sumptuary:history', key_no, from_queue, webpage_id)
 
                     # 历史失信被执行人
                     chistory_hisshixinlist_num = inquire_dict.get('历史失信被执行人')
@@ -2336,7 +2352,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                             pass
                     else:
                         chistory_hispretrialmediationlist = []
-                    dispose_success_data(chistory_hispretrialmediationlist, 'his_pretrialmediation', 'pretrialmediation:history', key_no, from_queue, webpage_id)
+                    dispose_success_data(chistory_hispretrialmediationlist, 'his_case_mediate', 'case_mediate:history', key_no, from_queue, webpage_id)
 
 
                     # value_dict = {
