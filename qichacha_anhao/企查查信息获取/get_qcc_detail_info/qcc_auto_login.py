@@ -24,7 +24,7 @@ def auto_login(page, account, password):
     page.wait(2)
     page.ele("xpath=//div[@class='qcc-login-type-change']").click()
     time.sleep(2)
-    page.ele("xpath=//div[@class='qcc-login-phone-tabs-item'][2]/a[@class='active']").click()
+    page.ele("xpath=//div[@class='qcc-login-phone-tabs-item'][2]/a").click()    # 点击密码登录
     time.sleep(2)
     page.ele(
         "xpath=//input[@class='qccd-input qccd-input-lg qcc-login-quick-login-phone qcc-login-quick-login-password']").input(account)

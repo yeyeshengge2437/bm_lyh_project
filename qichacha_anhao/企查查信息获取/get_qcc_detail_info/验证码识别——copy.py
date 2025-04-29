@@ -80,9 +80,9 @@ def get_captcha(page, iframe_url=None):
             x_last = (right_x - raw_x) * (x_percent / 100) + raw_x
             y_last = (right_y - raw_y) * (y_percent / 100) + raw_y
             page.actions.move_to((x_last, y_last)).click()
-            time.sleep(random.uniform(4, 7))
+            time.sleep(random.uniform(1, 7))
         # 点击确定按钮
-        tab.ele("确定").click()
+        tab.ele("确定").click(by_js=True)
     else:
         print('验证码未见过')
         input()

@@ -73,27 +73,25 @@ headers = {
 def encounter_captcha(value_json, page):
     if value_json.get('message'):
         if value_json.get('message') == '未满足前提条件':
-            print("未满足前提条件, 网站限制")
+            print("网站限制")
             page.refresh()
-            time.sleep(8)
-            # try:
-            get_captcha(page)
-            time.sleep(10)
-            page.refresh()
-            time.sleep(10)
-            if '验证后再操作' in str(page.html):
+            time.sleep(random.uniform(7, 17))
+            try:
+                get_captcha(page)
+                page.refresh()
+                time.sleep(random.uniform(7, 17))
+                if page.ele("xpath=//input[@id='searchKey']"):
+                    return "验证码识别成功"
+                else:
+                    return False
+            except Exception as e:
+                print(e)
+                print("不是验证码")
+                time.sleep(3600)
+                # input_value = input('是否等待3600秒, 0=等')
+                # if input_value == '0':
+                #     time.sleep(3600)
                 return False
-            else:
-                print("验证码识别成功")
-                return "验证码识别成功"
-            # except Exception as e:
-            #     print(e)
-            #     print("不是验证码")
-            #     time.sleep(3600)
-            #     # input_value = input('是否等待3600秒, 0=等')
-            #     # if input_value == '0':
-            #     #     time.sleep(3600)
-            #     return False
     else:
         return "没有遇到验证码"
 
@@ -113,8 +111,8 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
     random_num = random.randint(1, 6)
 
     co = ChromiumOptions()
-    co = co.set_user_data_path(r"D:\chome_data\qcc_xia")
-    co.set_paths(local_port=9232)
+    co = co.set_user_data_path(r"D:\chome_data\qcc_two")
+    co.set_paths(local_port=9234)
     # 连接浏览器
     page = ChromiumPage(co)
     page.set.window.max()
@@ -130,7 +128,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
         """
         这里输入账号密码
         """
-        login_outcome = auto_login(tab, '18157172586', "Renliang1221")
+        login_outcome = auto_login(tab, '18357151616', "wensheng123")
         if login_outcome:
             print('登录成功')
         else:
@@ -147,7 +145,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
         'key': search_company_name,
     }
     response = requests.get('https://www.qcc.com/web/search', params=params, cookies=cookie_dict, headers=headers)
-    time.sleep(10)
+    time.sleep(random.uniform(7, 17))
     res_html = response.text
     res_json = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function', res_html)
     if res_json:
@@ -214,7 +212,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                 # continue
                 target_url = f'https://www.qcc.com/firm/{key_no}.html'
                 response = requests.get(target_url, cookies=cookie_dict, headers=headers)
-                time.sleep(12)
+                time.sleep(random.uniform(7, 17))
                 company_html = response.text
                 pid_list = re.findall(r"<script>window\.pid='(.*?)'; window\.tid", company_html)
                 tid_list = re.findall(r"window\.tid='(.*?)'</script>", company_html)
@@ -223,9 +221,6 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                     print("获取数据失败")
                     try:
                         get_captcha(page)
-                        time.sleep(random.uniform(7, 17))
-                        page.refresh()
-                        time.sleep(random.uniform(2, 4))
                     except:
                         time.sleep(3600)
                     # 直接调取失败接口
@@ -240,27 +235,27 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                     company_data = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function', company_html)
                     susong_url = f'https://www.qcc.com/csusong/{key_no}.html'
                     susong_response = requests.get(susong_url, cookies=cookie_dict, headers=headers)
-                    time.sleep(9)
+                    time.sleep(random.uniform(7, 17))
                     susong_html = susong_response.text
                     susong_data = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function', susong_html)
                     cfengxian_url = f'https://www.qcc.com/cfengxian/{key_no}.html'
                     cfengxian_response = requests.get(cfengxian_url, cookies=cookie_dict, headers=headers)
-                    time.sleep(9)
+                    time.sleep(random.uniform(7, 17))
                     cfengxian_html = cfengxian_response.text
                     cfengxian_data = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function', cfengxian_html)
                     crun_url = f'https://www.qcc.com/crun/{key_no}.html'
                     crun_response = requests.get(crun_url, cookies=cookie_dict, headers=headers)
-                    time.sleep(4)
+                    time.sleep(random.uniform(7, 17))
                     crun_html = crun_response.text
                     crun_data = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function', crun_html)
                     cassets_url = f'https://www.qcc.com/cassets/{key_no}.html'
                     cassets_response = requests.get(cassets_url, cookies=cookie_dict, headers=headers)
-                    time.sleep(9)
+                    time.sleep(random.uniform(7, 17))
                     cassets_html = cassets_response.text
                     cassets_data = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function', cassets_html)
                     chistory_url = f'https://www.qcc.com/chistory/{key_no}.html'
                     chistory_response = requests.get(chistory_url, cookies=cookie_dict, headers=headers)
-                    time.sleep(9)
+                    time.sleep(random.uniform(7, 17))
                     chistory_html = chistory_response.text
                     chistory_data = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function', chistory_html)
                     # print(company_data[0])
@@ -323,7 +318,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                 captcha_value = encounter_captcha(partner_value, page)
                                 if captcha_value in ['验证码识别成功', '没有遇到验证码']:
                                     company_partners.append(partner_value)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     up_qcc_res_data(partner_url, 'shareholder', 'get', '', key_no, webpage_id)
@@ -346,7 +341,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                 captcha_value = encounter_captcha(employees_value, page)
                                 if captcha_value in ['验证码识别成功', '没有遇到验证码']:
                                     company_partners.append(employees_value)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     up_qcc_res_data(employees_url, 'shareholder', 'get', '', key_no, webpage_id)
@@ -356,8 +351,6 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                         dispose_success_data(company_employees, 'member', 'member:current', key_no, from_queue, webpage_id)
                         # 对外投资
                         touzilist_num = inquire_dict.get('对外投资')
-                        if not touzilist_num:
-                            touzilist_num = 0
                         # 少于10个的情况下
                         if 0 < touzilist_num <= 10:
                             company_touzilist = company_json["datalist"]["touzilist"][0]["data"]
@@ -373,7 +366,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     touzilist_value_data = touzilist_value["data"]
                                     for touzilist_data in touzilist_value_data:
                                         company_touzilist.append(touzilist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     up_qcc_res_data(touzilist_url, 'invest', 'get', '', key_no, webpage_id)
@@ -395,7 +388,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                         #         encounter_captcha(holdcolist_value, page)
                         #
                         #         company_holdcolist.append(holdcolist_value)
-                        #         time.sleep(7)
+                        #         time.sleep(random.uniform(7, 17))
                         # else:
                         #     company_holdcolist = []
                         # 历史对外投资
@@ -415,7 +408,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     histouzilist_value_data = histouzilist_value['data']
                                     for histouzilist_data in histouzilist_value_data:
                                         chistory_histouzilist.append(histouzilist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     up_qcc_res_data(histouzilist_url, 'his_invest', 'get', '', key_no, webpage_id)
@@ -447,7 +440,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     changelist_value_data = changelist_value['data']
                                     for changelist_data in changelist_value_data:
                                         company_changelist.append(changelist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     json_data = json.dumps(json_data, ensure_ascii=False)
@@ -477,7 +470,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     branch_value_data = branch_value['data']
                                     for branch_data in branch_value_data:
                                         company_branch_list.append(branch_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     up_qcc_res_data(branch_url, 'branch', 'get', '', key_no, webpage_id)
@@ -497,8 +490,6 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                             company_headquarter = dict()
                         dispose_success_data(company_headquarter, 'headquarter', 'headquarter:current', key_no,
                                              from_queue, webpage_id)
-
-
 
                         # 企业年报
                         try:
@@ -536,7 +527,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     suspectlist_value_data = suspectlist_value['data']
                                     for suspectlist_data in suspectlist_value_data:
                                         company_suspectlist.append(suspectlist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                     print(company_suspectlist)
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
@@ -568,7 +559,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     caselist_value_data = caselist_value["data"]
                                     for caselist_data in caselist_value_data:
                                         susong_caselist.append(caselist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     up_qcc_res_data(caselist_url, 'judicial_case', 'get', '', key_no, webpage_id)
@@ -594,7 +585,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     wenshulist_value_data = wenshulist_value["data"]
                                     for wenshulist_data in wenshulist_value_data:
                                         susong_wenshulist.append(wenshulist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     up_qcc_res_data(wenshulist_url, 'case_doc', 'get', '', key_no, webpage_id)
@@ -621,7 +612,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     lianlist_value_data = lianlist_value["data"]
                                     for lianlist_data in lianlist_value_data:
                                         susong_lianliast.append(lianlist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     up_qcc_res_data(lianlist_url, 'case_register', 'get', '', key_no, webpage_id)
@@ -648,7 +639,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     ktgglist_value_data = ktgglist_value["data"]
                                     for ktgglist_data in ktgglist_value_data:
                                         susong_noticelist.append(ktgglist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     up_qcc_res_data(ktgglist_url, 'case_open', 'get', '', key_no, webpage_id)
@@ -675,7 +666,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     courtlist_value_data = courtlist_value["data"]
                                     for courtlist_data in courtlist_value_data:
                                         susong_gonggaolist.append(courtlist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     up_qcc_res_data(courtlist_url, 'case_notice', 'get', '', key_no, webpage_id)
@@ -702,7 +693,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     sentlist_value_data = sentlist_value["data"]
                                     for sentlist_data in sentlist_value_data:
                                         susong_dnoticelist.append(sentlist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     up_qcc_res_data(sentlist_url, 'case_deliver', 'get', '', key_no, webpage_id)
@@ -745,7 +736,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     pretrialmediationlist_value_data = pretrialmediationlist_value["data"]
                                     for pretrialmediationlist_data in pretrialmediationlist_value_data:
                                         susong_pretrialmediationlist.append(pretrialmediationlist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     up_qcc_res_data(pretrialmediationlist_url, 'case_mediate', 'get', '', key_no,
@@ -773,7 +764,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     judicialsalelist_value_data = judicialsalelist_value["data"]
                                     for judicialsalelist_data in judicialsalelist_value_data:
                                         susong_judicialsalelist.append(judicialsalelist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     up_qcc_res_data(judicialsalelist_url, 'auction', 'get', '', key_no, webpage_id)
@@ -819,7 +810,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     endexecutioncaselist_value_data = endexecutioncaselist_value["data"]
                                     for endexecutioncaselist_data in endexecutioncaselist_value_data:
                                         susong_endexecutioncaselist.append(endexecutioncaselist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     up_qcc_res_data(endexecutioncaselist_url, 'judgement_end', 'get', '', key_no,
@@ -1016,7 +1007,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     crun_value_data = crun_value['data']
                                     for crun_data in crun_value_data:
                                         crun_tenderlist.append(crun_data)
-                                    time.sleep(8)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1035,7 +1026,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     crun_value_data = crun_value['data']
                                     for crun_data in crun_value_data:
                                         crun_tenderlist.append(crun_data)
-                                    time.sleep(8)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1064,7 +1055,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     certificationsummary_value_data = certificationsummary_value["data"]
                                     for certificationsummary_data in certificationsummary_value_data:
                                         crun_certificationsummary.append(certificationsummary_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1147,7 +1138,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                             road_transport_credit.append(crun_data)
                                         elif type_ == 'soft':
                                             china_soft_credit.append(crun_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1201,7 +1192,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     joblist_value_data = joblist_value["data"]
                                     for joblist_data in joblist_value_data:
                                         crun_joblist.append(joblist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1237,7 +1228,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     landlist_value_data = landlist_value["data"]
                                     for aco_data in landlist_value_data:
                                         crun_landlist.append(aco_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1264,7 +1255,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     aco_value_data = aco_value["data"]
                                     for aco_data in aco_value_data:
                                         crun_acolist.append(aco_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1292,7 +1283,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     spotchecklist_value_data = spotchecklist_value["data"]
                                     for spotchecklist_data in spotchecklist_value_data:
                                         crun_spotchecklist.append(spotchecklist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1320,7 +1311,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     foodsafetylist_value_data = foodsafetylist_value["data"]
                                     for foodsafetylist_data in foodsafetylist_value_data:
                                         crun_foodsafetylist.append(foodsafetylist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1347,7 +1338,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     drclist_value_data = drclist_value["data"]
                                     for drclist_data in drclist_value_data:
                                         crun_drclist.append(drclist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1452,7 +1443,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     shangbiaolist_value_data = shangbiaolist_value["data"]
                                     for shangbiaolist_data in shangbiaolist_value_data:
                                         cassets_shangbiaolist.append(shangbiaolist_data)
-                                    time.sleep(6)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1481,7 +1472,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     sbwslist_value_data = sbwslist_value["data"]
                                     for sbwslist_data in sbwslist_value_data:
                                         cassets_tmcdslist.append(sbwslist_data)
-                                    time.sleep(6)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1513,7 +1504,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     zhuanlilist_value_data = zhuanlilist_value["data"]
                                     for zhuanlilist_data in zhuanlilist_value_data:
                                         cassets_zhuanlilist.append(zhuanlilist_data)
-                                    time.sleep(6)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1546,7 +1537,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     zzqlist_value_data = zzqlist_value["data"]
                                     for zzqlist_data in zzqlist_value_data:
                                         cassets_zzqlist.append(zzqlist_data)
-                                    time.sleep(6)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1579,7 +1570,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     rjzzqlist_value_data = rjzzqlist_value["data"]
                                     for rjzzqlist_data in rjzzqlist_value_data:
                                         cassets_rjzzqlist.append(rjzzqlist_data)
-                                    time.sleep(6)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1612,7 +1603,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     webitelist_value_data = webitelist_value["data"]
                                     for webitelist_data in webitelist_value_data:
                                         cassets_webitelist.append(webitelist_data)
-                                    time.sleep(6)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1640,7 +1631,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     applist_value_data = applist_value["data"]
                                     for applist_data in applist_value_data:
                                         cassets_applist.append(applist_data)
-                                    time.sleep(6)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1667,7 +1658,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     wechatlist_value_data = wechatlist_value["data"]
                                     for wechatlist_data in wechatlist_value_data:
                                         cassets_wechatlist.append(wechatlist_data)
-                                    time.sleep(6)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1713,7 +1704,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     standarlist_value_data = standarlist_value["data"]
                                     for standarlist_data in standarlist_value_data:
                                         cassets_standarlist.append(standarlist_data)
-                                    time.sleep(6)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1741,7 +1732,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     weibolist_value_data = weibolist_value["data"]
                                     for weibolist_data in weibolist_value_data:
                                         cassets_weibolist.append(weibolist_data)
-                                    time.sleep(6)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1786,7 +1777,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     wplist_value_data = wplist_value["data"]
                                     for wplist_data in wplist_value_data:
                                         cassets_wplist.append(wplist_data)
-                                    time.sleep(6)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1891,7 +1882,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     hismainmember_value_data = hismainmember_value["data"]
                                     for hismainmember_data in hismainmember_value_data:
                                         chistory_hismainmember.append(hismainmember_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1920,7 +1911,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     hiszhixinglist_value_data = hiszhixinglist_value['data']
                                     for hiszhixinglist_data in hiszhixinglist_value_data:
                                         chistory_hiszhixinglist.append(hiszhixinglist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1949,7 +1940,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     hislianlist_value_data = hislianlist_value['data']
                                     for hislianlist_data in hislianlist_value_data:
                                         chistory_hislianlist.append(hislianlist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -1977,7 +1968,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     hiswenshulist_value_data = hiswenshulist_value['data']
                                     for hiswenshulist_data in hiswenshulist_value_data:
                                         chistory_hiswenshulist.append(hiswenshulist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -2005,7 +1996,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     hisnoticelist_value_data = hisnoticelist_value['data']
                                     for hisnoticelist_data in hisnoticelist_value_data:
                                         chistory_hisnoticelist.append(hisnoticelist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -2033,7 +2024,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     hisacolist_value_data = hisacolist_value['data']
                                     for hisacolist_data in hisacolist_value_data:
                                         chistory_hisacolist.append(hisacolist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -2062,7 +2053,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     hisadminpenaltylist_value_data = hisadminpenaltylist_value['data']
                                     for hisadminpenaltylist_data in hisadminpenaltylist_value_data:
                                         chistory_hisadminpenaltylist.append(hisadminpenaltylist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -2092,7 +2083,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     hispledgelist_value_data = hispledgelist_value['data']
                                     for hispledgelist_data in hispledgelist_value_data:
                                         chistory_hispledgelist.append(hispledgelist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -2127,7 +2118,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     hisshangbiaolist_value_data = hisshangbiaolist_value['data']
                                     for hisshangbiaolist_data in hisshangbiaolist_value_data:
                                         chistory_hisshangbiaolist.append(hisshangbiaolist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     json_data = json.dumps(json_data, ensure_ascii=False)
@@ -2164,7 +2155,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     hiszhuanlilist_value_data = hiszhuanlilist_value['data']
                                     for hiszhuanlilist_data in hiszhuanlilist_value_data:
                                         chistory_hiszhuanlilist.append(hiszhuanlilist_data)
-                                    time.sleep(7)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     json_data = json.dumps(json_data, ensure_ascii=False)
@@ -2283,7 +2274,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     hisendexecutioncaselist_value_data = hisendexecutioncaselist_value['data']
                                     for hisendexecutioncaselist_data in hisendexecutioncaselist_value_data:
                                         chistory_hisendexecutioncaselist.append(hisendexecutioncaselist_data)
-                                    time.sleep(8)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -2314,7 +2305,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     hisconsumptionlist_value_data = hisconsumptionlist_value['data']
                                     for hisconsumptionlist_data in hisconsumptionlist_value_data:
                                         chistory_hissumptuarylist.append(hisconsumptionlist_data)
-                                    time.sleep(8)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -2343,7 +2334,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     hisshixinlist_value_data = hisshixinlist_value['data']
                                     for hisshixinlist_data in hisshixinlist_value_data:
                                         chistory_hisshixinlist.append(hisshixinlist_data)
-                                    time.sleep(8)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -2390,7 +2381,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     hisfreeze_value_data = hisfreeze_value['data']
                                     for hisfreeze_data in hisfreeze_value_data:
                                         chistory_hisassistancelist.append(hisfreeze_data)
-                                    time.sleep(8)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -2465,7 +2456,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                     hismpledgelist_value_data = hismpledgelist_value['data']
                                     for hismpledgelist_data in hismpledgelist_value_data:
                                         chistory_hismpledgelist.append(hismpledgelist_data)
-                                    time.sleep(8)
+                                    time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
                                     json_data = json.dumps(json_data, ensure_ascii=False)
@@ -2741,7 +2732,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
             time.sleep(3600)
         time.sleep(10)
         page.refresh()
-        time.sleep(5)
+        time.sleep(random.uniform(7, 17))
         page.refresh()
         # 判断是否为扫描二维码
         page.quit()
@@ -2753,8 +2744,8 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
     random_num = random.randint(1, 6)
 
     co = ChromiumOptions()
-    co = co.set_user_data_path(r"D:\chome_data\qcc_xia")
-    co.set_paths(local_port=9232)
+    co = co.set_user_data_path(r"D:\chome_data\qcc_two")
+    co.set_paths(local_port=9234)
     # 连接浏览器
     page = ChromiumPage(co)
     page.set.window.max()
@@ -2770,7 +2761,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
         """
         这里输入账号密码
         """
-        login_outcome = auto_login(tab, '18157172586', "Renliang1221")
+        login_outcome = auto_login(tab, '18357151616', "wensheng123")
         if login_outcome:
             print('登录成功')
         else:
@@ -2791,17 +2782,17 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
     if not pid_list or not tid_list:
         print("网站限制")
         print("获取数据失败")
-        try:
-            get_captcha(page)
-            time.sleep(10)
-        except:
-            time.sleep(3600)
         # 直接调取失败接口
         fail_data = {
             'id': from_queue,
             'description': f'数据获取失败, 网站限制',
         }
         paper_queue_fail(data=fail_data)
+        try:
+            get_captcha(page)
+        except:
+            time.sleep(3600)
+
     else:
         pid = pid_list[0]
         tid = tid_list[0]
@@ -2892,7 +2883,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
                     captcha_value = encounter_captcha(partner_value, page)
                     if captcha_value in ['验证码识别成功', '没有遇到验证码']:
                         company_partners.append(partner_value)
-                        time.sleep(7)
+                        time.sleep(random.uniform(7, 17))
                     else:
                         # 先将请求数据上传到数据库中，后续处理
                         up_qcc_res_data(partner_url, 'shareholder', 'get', '', key_no, webpage_id)
@@ -2916,7 +2907,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
                     captcha_value = encounter_captcha(employees_value, page)
                     if captcha_value in ['验证码识别成功', '没有遇到验证码']:
                         company_partners.append(employees_value)
-                        time.sleep(7)
+                        time.sleep(random.uniform(7, 17))
                     else:
                         # 先将请求数据上传到数据库中，后续处理
                         up_qcc_res_data(employees_url, 'shareholder', 'get', '', key_no, webpage_id)
@@ -2943,7 +2934,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
                         touzilist_value_data = touzilist_value["data"]
                         for touzilist_data in touzilist_value_data:
                             company_touzilist.append(touzilist_data)
-                        time.sleep(7)
+                        time.sleep(random.uniform(7, 17))
                     else:
                         # 先将请求数据上传到数据库中，后续处理
                         up_qcc_res_data(touzilist_url, 'invest', 'get', '', key_no, webpage_id)
@@ -2965,7 +2956,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
             #         encounter_captcha(holdcolist_value, page)
             #
             #         company_holdcolist.append(holdcolist_value)
-            #         time.sleep(7)
+            #         time.sleep(random.uniform(7, 17))
             # else:
             #     company_holdcolist = []
             # 历史对外投资
@@ -2985,7 +2976,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
                         histouzilist_value_data = histouzilist_value['data']
                         for histouzilist_data in histouzilist_value_data:
                             chistory_histouzilist.append(histouzilist_data)
-                        time.sleep(7)
+                        time.sleep(random.uniform(7, 17))
                     else:
                         # 先将请求数据上传到数据库中，后续处理
                         up_qcc_res_data(histouzilist_url, 'his_invest', 'get', '', key_no, webpage_id)
@@ -2993,6 +2984,47 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
             else:
                 chistory_histouzilist = []
             dispose_success_data(chistory_histouzilist, 'his_invest', 'invest:history', key_no, from_queue, webpage_id)
+
+            # 分支机构
+            branch_num = inquire_dict.get('分支机构')
+            if not branch_num:
+                branch_num = 0
+            if 0 < branch_num <= 10:
+                company_branch_list = company_json["datalist"]["branchelist"]["data"]
+            # 多于10个的情况下
+            elif branch_num > 10:
+                company_branch_list = []
+                branch_page = math.ceil(branch_num / 10)
+                for page_ in range(1, branch_page + 1):
+                    branch_url = f'https://www.qcc.com/api/datalist/branchelist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}'
+                    branch_value = get_response(branch_url, key_no, pid, tid, cookie_dict)
+                    captcha_value = encounter_captcha(branch_value, page)
+                    if captcha_value in ['验证码识别成功', '没有遇到验证码']:
+                        branch_value_data = branch_value['data']
+                        for branch_data in branch_value_data:
+                            company_branch_list.append(branch_data)
+                        time.sleep(random.uniform(7, 17))
+                    else:
+                        # 先将请求数据上传到数据库中，后续处理
+                        up_qcc_res_data(branch_url, 'branch', 'get', '', key_no, webpage_id)
+
+            else:
+                company_branch_list = []
+            dispose_success_data(company_branch_list, 'branch', 'branch:current', key_no,
+                                 from_queue, webpage_id)
+
+            # 总公司
+            headquarter_num = inquire_dict.get('总公司')
+            if not headquarter_num:
+                headquarter_num = 0
+            if headquarter_num:
+                company_headquarter = company_json["company"]["companyDetail"]["ParentInfoV2"]
+            else:
+                company_headquarter = dict()
+            dispose_success_data(company_headquarter, 'headquarter', 'headquarter:current', key_no,
+                                 from_queue, webpage_id)
+
+
 
             # 疑似关系
             suspectlist_num = inquire_dict.get('疑似关系')
@@ -3018,7 +3050,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
                         suspectlist_value_data = suspectlist_value['data']
                         for suspectlist_data in suspectlist_value_data:
                             company_suspectlist.append(suspectlist_data)
-                        time.sleep(7)
+                        time.sleep(random.uniform(7, 17))
                         print(company_suspectlist)
                     else:
                         # 先将请求数据上传到数据库中，后续处理
@@ -3054,6 +3086,8 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
 
             # 历史主要人员
             chistory_mainmember_num = inquire_dict.get('历史主要人员')
+            if not chistory_mainmember_num:
+                chistory_mainmember_num = 0
             # 少于10个的情况下
             if 0 < chistory_mainmember_num <= 10:
                 chistory_hismainmember = chistory_json["datalist"]["hismainmember"]["data"]
@@ -3070,7 +3104,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
                         hismainmember_value_data = hismainmember_value["data"]
                         for hismainmember_data in hismainmember_value_data:
                             chistory_hismainmember.append(hismainmember_data)
-                        time.sleep(7)
+                        time.sleep(random.uniform(7, 17))
                     else:
                         # 先将请求数据上传到数据库中，后续处理
                         # json_data = json.dumps(json_data, ensure_ascii=False)
@@ -3173,12 +3207,11 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
 
             try:
                 get_captcha(page)
-                time.sleep(10)
             except:
                 time.sleep(3600)
             time.sleep(10)
             page.refresh()
-            time.sleep(5)
+            time.sleep(random.uniform(7, 17))
             page.refresh()
             # 判断是否为扫描二维码
             page.quit()
@@ -3190,8 +3223,8 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
     random_num = random.randint(1, 6)
 
     co = ChromiumOptions()
-    co = co.set_user_data_path(r"D:\chome_data\qcc_xia")
-    co.set_paths(local_port=9232)
+    co = co.set_user_data_path(r"D:\chome_data\qcc_two")
+    co.set_paths(local_port=9234)
     # 连接浏览器
     page = ChromiumPage(co)
     page.set.window.max()
@@ -3207,7 +3240,7 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
         """
         这里输入账号密码
         """
-        login_outcome = auto_login(tab, '18157172586', "Renliang1221")
+        login_outcome = auto_login(tab, '18357151616', "wensheng123")
         if login_outcome:
             print('登录成功')
         else:
@@ -3230,7 +3263,6 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
         print("获取数据失败")
         try:
             get_captcha(page)
-            time.sleep(10)
         except:
             time.sleep(3600)
         # 直接调取失败接口
@@ -3290,7 +3322,7 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
                         ps_legal_rep_value_value_data = ps_legal_rep_value["data"]
                         for ps_legal_rep_value_data in ps_legal_rep_value_value_data:
                             ps_legal_rep.append(ps_legal_rep_value_data)
-                        time.sleep(7)
+                        time.sleep(random.uniform(7, 17))
                     else:
                         # 先将请求数据上传到数据库中，后续处理
                         up_qcc_res_data(ps_legal_rep_url, 'ps_legal_rep', 'get', '', key_no, webpage_id)
@@ -3318,7 +3350,7 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
                         ps_comp_rel_url_value_data = ps_comp_rel_value["data"]
                         for ps_legal_rep_data in ps_comp_rel_url_value_data:
                             ps_comp_rel_list.append(ps_legal_rep_data)
-                        time.sleep(7)
+                        time.sleep(random.uniform(7, 17))
                     else:
                         # 先将请求数据上传到数据库中，后续处理
                         up_qcc_res_data(ps_comp_rel_url, 'ps_comp_rel', 'get', '', key_no, webpage_id)
@@ -3345,7 +3377,7 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
                         his_ps_legal_rep_value_data = his_ps_legal_rep_value["data"]
                         for his_ps_legal_rep_value_data in his_ps_legal_rep_value_data:
                             his_ps_legal_rep.append(his_ps_legal_rep_value_data)
-                        time.sleep(7)
+                        time.sleep(random.uniform(7, 17))
                     else:
                         # 先将请求数据上传到数据库中，后续处理
                         up_qcc_res_data(his_ps_legal_rep_url, 'his_ps_legal_rep', 'get', '', key_no, webpage_id)
@@ -3373,7 +3405,7 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
                         his_ps_comp_rel_url_value_data = his_ps_comp_rel_value["data"]
                         for his_ps_legal_rep_data in his_ps_comp_rel_url_value_data:
                             his_ps_comp_rel_list.append(his_ps_legal_rep_data)
-                        time.sleep(7)
+                        time.sleep(random.uniform(7, 17))
                     else:
                         # 先将请求数据上传到数据库中，后续处理
                         up_qcc_res_data(his_ps_comp_rel_url, 'his_ps_comp_rel', 'get', '', key_no, webpage_id)
@@ -3479,7 +3511,7 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
                 time.sleep(3600)
             time.sleep(10)
             page.refresh()
-            time.sleep(5)
+            time.sleep(random.uniform(7, 17))
             page.refresh()
             # 判断是否为扫描二维码
             page.quit()
@@ -3490,29 +3522,7 @@ web_list = [
     'https://www.qcc.com',
 ]
 
-# while True:
-#     try:
-#         paper_queue = paper_queue_next(webpage_url_list=web_list)
-#         if paper_queue is None or len(paper_queue) == 0:
-#             time.sleep(600)
-#             continue
-#         else:
-#             queue_id = paper_queue['id']
-#             webpage_id = paper_queue["webpage_id"]
-#             search_keyword = paper_queue['name']
-#             search_value = qcc_search_company(search_keyword, queue_id, webpage_id)
-#             if search_value:
-#                 pass
-#             elif search_value is None:
-#                 fail_data = {
-#                     'id': queue_id,
-#                     'description': f'公司名与企查查不匹配',
-#                 }
-#             else:
-#                 pass
-#     except Exception as e:
-#         print(f"解析过程中发生错误：{e}")
-#         time.sleep(60)
+
 
 while True:
 

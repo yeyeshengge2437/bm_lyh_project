@@ -62,7 +62,7 @@ def up_qcc_res_data(url, data_key, res_type, json_data, key_no, webpage_id):
 def get_ban_data(webpage_id):
     conn = get_connection()
     cursor = conn.cursor()
-    sql = "SELECT * FROM col_qcc_res_data WHERE webpage_id = %s"
+    sql = "SELECT id, url, data_key, res_type, json_data, key_no, from_queue, webpage_id FROM col_qcc_res_data WHERE webpage_id = %s"
     cursor.execute(sql, (webpage_id,))
     result = cursor.fetchall()
     cursor.close()
@@ -105,7 +105,7 @@ def generate_md5(data):
 
 
 def up_part_qcc_data(data_value, data_key, key_no, from_queue, webpage_id):
-    if data_key in ['business_info', 'credit_eval', 'trade_credit']:
+    if data_key in ['business_info', 'credit_eval', "headquarter"]:
         data_md5 = generate_md5(str(data_value))
         data_status = "current"
         data_json = json.dumps(data_value, ensure_ascii=False)
@@ -130,3 +130,121 @@ def up_part_qcc_data(data_value, data_key, key_no, from_queue, webpage_id):
                     data_md5 = generate_md5(str(up_data))
                     up_qcc_data(key_no, data_key, data_status, data_md5, data_json, from_queue,
                                 webpage_id)
+
+
+def in_qcc_cookies(cookies, cookies_is_effective, cookies_tag):
+    """
+    插入一条可以用的cookies
+    :param cookies:
+    :param cookies_is_effective:
+    :param cookies_tag:
+    :return:
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    # 上传数据
+    insert_sql = "INSERT INTO col_qcc_res_data (cookies, cookies_is_effective, cookies_tag) VALUES (%s, %s, %s)"
+    cursor.execute(insert_sql, (cookies, cookies_is_effective, cookies_tag))
+    cookies_id = cursor.lastrowid
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return True, cookies_id
+
+
+def lapse_qcc_cookies(cookies_id):
+    """
+    将cookies数据信息失效掉
+    :param cookies_id:
+    :return:
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    up_sql = "UPDATE col_qcc_res_data SET cookies_is_effective = %s WHERE id = %s"
+    cursor.execute(up_sql, (0, cookies_id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return True
+
+def available_qcc_cookies(cookies_id):
+    """
+    将cookies数据信息变为有效
+    :param cookies_id:
+    :return:
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    up_sql = "UPDATE col_qcc_res_data SET cookies_is_effective = %s WHERE id = %s"
+    cursor.execute(up_sql, (1, cookies_id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return True
+
+
+def up_qcc_cookies(cookies, cookies_is_effective, cookies_id):
+    """
+    更新cookies的状态
+    :param cookies:
+    :param cookies_is_effective: 1：可用， 0:不可用， 2：正在处理中
+    :param cookies_id:
+    :return:
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    up_sql = "UPDATE col_qcc_res_data SET cookies = %s, cookies_is_effective = %s WHERE id = %s"
+    cursor.execute(up_sql, (cookies, cookies_is_effective, cookies_id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return True
+
+
+def search_qcc_cookies_one():
+    """
+    随机获取一个可以用的cookies
+    :return:
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    sql = "SELECT id, cookies, cookies_tag FROM col_qcc_res_data WHERE cookies_is_effective = %s"
+    cursor.execute(sql, (1,))
+    result = cursor.fetchone()
+    if result:
+        cookies_id = result[0]
+        cookies = result[1]
+        cookies_tag = result[2]
+        up_sql = "UPDATE col_qcc_res_data SET cookies_is_effective = %s WHERE id = %s ORDER BY RAND() LIMIT 1"
+        cursor.execute(up_sql, (2, cookies_id,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        cookies = json.loads(cookies)
+        return cookies_id, cookies, cookies_tag
+    else:
+        cursor.close()
+        conn.close()
+        return False, False, False
+def get_lapse_qcc_cookies():
+    """
+    获取一个已经失效的cookies信息
+    :return:
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    sql = "SELECT id, cookies_tag FROM col_qcc_res_data WHERE cookies_is_effective = %s ORDER BY RAND() LIMIT 1"
+    cursor.execute(sql, (0,))
+    result = cursor.fetchone()
+    if result:
+        id_ = result[0]
+        cookies_tag = result[1]
+        cursor.close()
+        conn.close()
+        return id_, cookies_tag
+    else:
+        cursor.close()
+        conn.close()
+        return False, False
+
+
