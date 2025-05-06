@@ -9,8 +9,8 @@ import mysql.connector
 import pdfplumber
 import requests
 
-# produce_url = "http://118.31.45.18:29875"  # 生产环境
-produce_url = "http://118.31.45.18:29775"    # 测试环境
+produce_url = "http://118.31.45.18:29875"  # 生产环境
+# produce_url = "http://118.31.45.18:29775"    # 测试环境
 test_url = produce_url
 
 requests.DEFAULT_RETRIES = 3

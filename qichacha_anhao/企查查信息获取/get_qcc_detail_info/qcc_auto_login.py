@@ -27,11 +27,15 @@ def auto_login(page, account, password):
     page.ele("xpath=//div[@class='qcc-login-phone-tabs-item'][2]/a").click()    # 点击密码登录
     time.sleep(2)
     page.ele(
-        "xpath=//input[@class='qccd-input qccd-input-lg qcc-login-quick-login-phone qcc-login-quick-login-password']").input(account)
+        "xpath=//input[@class='qccd-input qccd-input-lg qcc-login-quick-login-phone qcc-login-quick-login-password']").input(account, clear=True)
     time.sleep(1)
-    page.ele("xpath=//input[@class='qccd-input qccd-input-lg']").input(password)
+    page.ele("xpath=//input[@class='qccd-input qccd-input-lg']").input(password, clear=True)
+    time.sleep(2)
+    # 增加勾选同意协议
+    page.ele("xpath=//input[@class='qccd-checkbox-input']").click()    # 新增勾选同意协议名单
+    time.sleep(2)
     page.ele(
-        "xpath=//div[@class='qcc-login-quick-login'][2]/button[@class='qccd-btn qccd-btn-primary qccd-btn-lg qccd-btn-block']").click()
+        "xpath=//div[@class='qcc-login-quick-login'][2]/button[@class='qccd-btn qccd-btn-primary qccd-btn-lg qccd-btn-block']").click() # 点击登录
     time.sleep(3)
     sliding_diagram = page.ele("xpath=//div[contains(@class, 'geetest_box_wrap')]/div[contains(@class, 'geetest_box')]")
     image_loc = sliding_diagram.rect.corners

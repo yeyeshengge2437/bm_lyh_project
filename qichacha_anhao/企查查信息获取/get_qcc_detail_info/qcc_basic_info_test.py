@@ -2878,6 +2878,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
         paper_queue_fail(data=fail_data)
         try:
             get_captcha(page)
+            time.sleep(10)
         except:
             time.sleep(3600)
 
@@ -3234,23 +3235,23 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
                                 if 'his_' in data_key:
                                     # 历史信息，增加标识
                                     data_status = 'history'
-                                    for up_data in data_value:
-                                        if up_data:
-                                            data_key = data_key.replace('his_', '')
-                                            data_json = json.dumps(up_data, ensure_ascii=False)
-                                            data_md5 = generate_md5(str(up_data))
-                                            up_qcc_data(key_no, data_key, data_status, data_md5, data_json,
-                                                        from_queue,
-                                                        webpage_id)
+                                    # for up_data in data_value:
+                                    if data_value:
+                                        data_key = data_key.replace('his_', '')
+                                        data_json = json.dumps(data_value, ensure_ascii=False)
+                                        data_md5 = generate_md5(str(data_value))
+                                        up_qcc_data(key_no, data_key, data_status, data_md5, data_json,
+                                                    from_queue,
+                                                    webpage_id)
                                 else:
-                                    for up_data in data_value:
-                                        if up_data:
-                                            data_status = "current"
-                                            data_json = json.dumps(up_data, ensure_ascii=False)
-                                            data_md5 = generate_md5(str(up_data))
-                                            up_qcc_data(key_no, data_key, data_status, data_md5, data_json,
-                                                        from_queue,
-                                                        webpage_id)
+                                    # for up_data in data_value:
+                                    if data_value:
+                                        data_status = "current"
+                                        data_json = json.dumps(data_value, ensure_ascii=False)
+                                        data_md5 = generate_md5(str(data_value))
+                                        up_qcc_data(key_no, data_key, data_status, data_md5, data_json,
+                                                    from_queue,
+                                                    webpage_id)
                         del_ban_data(ban_id)
                 elif res_type == 'get':
                     value_ban = get_response(url, key_no, pid, tid, cookie_dict)
@@ -3267,14 +3268,14 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
                                 if 'his_' in data_key:
                                     # 历史信息，增加标识
                                     data_status = 'history'
-                                    for up_data in data_value:
-                                        if up_data:
-                                            data_key = data_key.replace('his_', '')
-                                            data_json = json.dumps(up_data, ensure_ascii=False)
-                                            data_md5 = generate_md5(str(up_data))
-                                            up_qcc_data(key_no, data_key, data_status, data_md5, data_json,
-                                                        from_queue,
-                                                        webpage_id)
+                                    # for up_data in data_value:
+                                    if data_value:
+                                        data_key = data_key.replace('his_', '')
+                                        data_json = json.dumps(data_value, ensure_ascii=False)
+                                        data_md5 = generate_md5(str(data_value))
+                                        up_qcc_data(key_no, data_key, data_status, data_md5, data_json,
+                                                    from_queue,
+                                                    webpage_id)
                                 else:
                                     data_status = "current"
                                     if data_key == 'bid':
@@ -3284,14 +3285,14 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
                                                     from_queue,
                                                     webpage_id)
                                     else:
-                                        for up_data in data_value:
-                                            if up_data:
-                                                data_json = json.dumps(up_data, ensure_ascii=False)
-                                                data_md5 = generate_md5(str(up_data))
-                                                up_qcc_data(key_no, data_key, data_status, data_md5,
-                                                            data_json,
-                                                            from_queue,
-                                                            webpage_id)
+                                        # for up_data in data_value:
+                                        if data_value:
+                                            data_json = json.dumps(data_value, ensure_ascii=False)
+                                            data_md5 = generate_md5(str(data_value))
+                                            up_qcc_data(key_no, data_key, data_status, data_md5,
+                                                        data_json,
+                                                        from_queue,
+                                                        webpage_id)
                         del_ban_data(ban_id)
             # 处理成功的接口
             success_data = {
@@ -3370,6 +3371,7 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
         print("获取数据失败")
         try:
             get_captcha(page)
+            time.sleep(10)
         except:
             time.sleep(3600)
         # 直接调取失败接口
@@ -3542,23 +3544,23 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
                                 if 'his_' in data_key:
                                     # 历史信息，增加标识
                                     data_status = 'history'
-                                    for up_data in data_value:
-                                        if up_data:
-                                            data_key = data_key.replace('his_', '')
-                                            data_json = json.dumps(up_data, ensure_ascii=False)
-                                            data_md5 = generate_md5(str(up_data))
-                                            up_qcc_data(key_no, data_key, data_status, data_md5, data_json,
-                                                        from_queue,
-                                                        webpage_id)
+                                    # for up_data in data_value:
+                                    if data_value:
+                                        data_key = data_key.replace('his_', '')
+                                        data_json = json.dumps(data_value, ensure_ascii=False)
+                                        data_md5 = generate_md5(str(data_value))
+                                        up_qcc_data(key_no, data_key, data_status, data_md5, data_json,
+                                                    from_queue,
+                                                    webpage_id)
                                 else:
-                                    for up_data in data_value:
-                                        if up_data:
-                                            data_status = "current"
-                                            data_json = json.dumps(up_data, ensure_ascii=False)
-                                            data_md5 = generate_md5(str(up_data))
-                                            up_qcc_data(key_no, data_key, data_status, data_md5, data_json,
-                                                        from_queue,
-                                                        webpage_id)
+                                    # for up_data in data_value:
+                                    if data_value:
+                                        data_status = "current"
+                                        data_json = json.dumps(data_value, ensure_ascii=False)
+                                        data_md5 = generate_md5(str(data_value))
+                                        up_qcc_data(key_no, data_key, data_status, data_md5, data_json,
+                                                    from_queue,
+                                                    webpage_id)
                         del_ban_data(ban_id)
                 elif res_type == 'get':
                     value_ban = get_response(url, key_no, pid, tid, cookie_dict)
@@ -3575,14 +3577,14 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
                                 if 'his_' in data_key:
                                     # 历史信息，增加标识
                                     data_status = 'history'
-                                    for up_data in data_value:
-                                        if up_data:
-                                            data_key = data_key.replace('his_', '')
-                                            data_json = json.dumps(up_data, ensure_ascii=False)
-                                            data_md5 = generate_md5(str(up_data))
-                                            up_qcc_data(key_no, data_key, data_status, data_md5, data_json,
-                                                        from_queue,
-                                                        webpage_id)
+                                    # for up_data in data_value:
+                                    if data_value:
+                                        data_key = data_key.replace('his_', '')
+                                        data_json = json.dumps(data_value, ensure_ascii=False)
+                                        data_md5 = generate_md5(str(data_value))
+                                        up_qcc_data(key_no, data_key, data_status, data_md5, data_json,
+                                                    from_queue,
+                                                    webpage_id)
                                 else:
                                     data_status = "current"
                                     if data_key == 'bid':
@@ -3592,14 +3594,14 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
                                                     from_queue,
                                                     webpage_id)
                                     else:
-                                        for up_data in data_value:
-                                            if up_data:
-                                                data_json = json.dumps(up_data, ensure_ascii=False)
-                                                data_md5 = generate_md5(str(up_data))
-                                                up_qcc_data(key_no, data_key, data_status, data_md5,
-                                                            data_json,
-                                                            from_queue,
-                                                            webpage_id)
+                                        # for up_data in data_value:
+                                        if data_value:
+                                            data_json = json.dumps(data_value, ensure_ascii=False)
+                                            data_md5 = generate_md5(str(data_value))
+                                            up_qcc_data(key_no, data_key, data_status, data_md5,
+                                                        data_json,
+                                                        from_queue,
+                                                        webpage_id)
                         del_ban_data(ban_id)
             # 处理成功的接口
             success_data = {
@@ -3651,36 +3653,36 @@ while True:
         search_keyword = paper_queue['name']
         collect_type = paper_queue['collect_type']
         if collect_type == 'corp_search_all':
-            # try:
-            search_value = qcc_search_company(search_keyword, queue_id, webpage_id)
-            if search_value:
-                pass
-            elif search_value is None:
+            try:
+                search_value = qcc_search_company(search_keyword, queue_id, webpage_id)
+                if search_value:
+                    pass
+                elif search_value is None:
+                    fail_data = {
+                        'id': queue_id,
+                        'description': f'公司名与企查查不匹配',
+                    }
+                    paper_queue_fail(data=fail_data)
+                else:
+                    print(search_value)
+                    pass
+            except Exception as e:
                 fail_data = {
                     'id': queue_id,
-                    'description': f'公司名与企查查不匹配',
+                    'description': f'出现错误：{e}',
                 }
                 paper_queue_fail(data=fail_data)
-            else:
-                print(search_value)
-                pass
-            # except Exception as e:
-            #     fail_data = {
-            #         'id': queue_id,
-            #         'description': f'出现错误：{e}',
-            #     }
-            #     paper_queue_fail(data=fail_data)
 
         else:
-            # try:
+            try:
                 # 判断search_key是公司还是个人，如果search_key字符串以p开头
-            if search_keyword.startswith('p'):
-                qcc_search_people(search_keyword, queue_id, webpage_id)
-            else:
-                qcc_search_keyno(search_keyword, queue_id, webpage_id)
-            # except Exception as e:
-            #     fail_data = {
-            #         'id': queue_id,
-            #         'description': f'出现错误：{e}',
-            #     }
-            #     paper_queue_fail(data=fail_data)
+                if search_keyword.startswith('p'):
+                    qcc_search_people(search_keyword, queue_id, webpage_id)
+                else:
+                    qcc_search_keyno(search_keyword, queue_id, webpage_id)
+            except Exception as e:
+                fail_data = {
+                    'id': queue_id,
+                    'description': f'出现错误：{e}',
+                }
+                paper_queue_fail(data=fail_data)

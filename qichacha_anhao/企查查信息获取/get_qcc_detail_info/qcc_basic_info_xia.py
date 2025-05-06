@@ -114,8 +114,8 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
     random_num = random.randint(1, 6)
 
     co = ChromiumOptions()
-    co = co.set_user_data_path(r"D:\chome_data\qcc_xia")
-    co.set_paths(local_port=9232)
+    co = co.set_user_data_path(r"D:\chome_data\qcc_xia_1")
+    co.set_paths(local_port=9235)
     # 连接浏览器
     page = ChromiumPage(co)
     page.set.window.max()
@@ -131,7 +131,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
         """
         这里输入账号密码
         """
-        login_outcome = auto_login(tab, '18157172586', "Renliang1221")
+        login_outcome = auto_login(tab, '18858289307', "jyls8891")
         if login_outcome:
             print('登录成功')
         else:
@@ -2843,8 +2843,8 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
     random_num = random.randint(1, 6)
 
     co = ChromiumOptions()
-    co = co.set_user_data_path(r"D:\chome_data\qcc_xia")
-    co.set_paths(local_port=9232)
+    co = co.set_user_data_path(r"D:\chome_data\qcc_xia_1")
+    co.set_paths(local_port=9235)
     # 连接浏览器
     page = ChromiumPage(co)
     page.set.window.max()
@@ -2860,7 +2860,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
         """
         这里输入账号密码
         """
-        login_outcome = auto_login(tab, '18157172586', "Renliang1221")
+        login_outcome = auto_login(tab, '18858289307', "jyls8891")
         if login_outcome:
             print('登录成功')
         else:
@@ -3301,8 +3301,8 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
     random_num = random.randint(1, 6)
 
     co = ChromiumOptions()
-    co = co.set_user_data_path(r"D:\chome_data\qcc_xia")
-    co.set_paths(local_port=9232)
+    co = co.set_user_data_path(r"D:\chome_data\qcc_xia_1")
+    co.set_paths(local_port=9235)
     # 连接浏览器
     page = ChromiumPage(co)
     page.set.window.max()
@@ -3318,7 +3318,7 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
         """
         这里输入账号密码
         """
-        login_outcome = auto_login(tab, '18157172586', "Renliang1221")
+        login_outcome = auto_login(tab, '18858289307', "jyls8891")
         if login_outcome:
             print('登录成功')
         else:

@@ -23,27 +23,35 @@ while True:
     print(img_url)
     identify_data = quark(img_url)
     time.sleep(randint(5, 20))
-    identify_code = identify_data['code']
-    if identify_code == '00000':
-        print('识别成功')
-        identify_data = json.dumps(identify_data, ensure_ascii=False)
-        data = {
-            'id': int(id_str),
-            'output_text': str(identify_data),
-            'remark': '识别成功'
-        }
-        print(img_url_identify_success(data=data))
-    elif identify_code in ['A0401', 'A0406']:
-        data = {
-            'id': int(id_str),
-            'remark': f'压缩图后,识别失败,错误码{identify_code}'
-        }
-        print(img_url_identify_fail(data=data))
+    if identify_data:
+        identify_code = identify_data.get('code')
+        if identify_code == '00000':
+            print('识别成功')
+            identify_data = json.dumps(identify_data, ensure_ascii=False)
+            data = {
+                'id': int(id_str),
+                'output_text': str(identify_data),
+                'remark': '识别成功'
+            }
+            print(img_url_identify_success(data=data))
+        elif identify_code in ['A0401', 'A0406']:
+            data = {
+                'id': int(id_str),
+                'remark': f'压缩图后,识别失败,错误码{identify_code}'
+            }
+            print(img_url_identify_fail(data=data))
+        else:
+            print(f"识别失败, 错误码{identify_code}")
+            data = {
+                'id': int(id_str),
+                'remark': f'识别失败,错误码{identify_code}'
+            }
+            print(img_url_identify_fail(data=data))
     else:
-        print(f"识别失败, 错误码{identify_code}")
+        print(f"识别失败")
         data = {
             'id': int(id_str),
-            'remark': f'识别失败,错误码{identify_code}'
+            'remark': f'识别失败'
         }
         print(img_url_identify_fail(data=data))
 
