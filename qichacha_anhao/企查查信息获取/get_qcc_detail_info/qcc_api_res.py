@@ -4,6 +4,7 @@ import execjs
 import requests
 
 # 这里补充一下cookies
+count_num = 0
 
 
 def build_api_headers(url, key_no, pid, tid, json_data=None):
@@ -83,7 +84,11 @@ def get_api(url, key_no, pid, tid, cookies, json_data=None):
 def get_response(url, key_no, pid, tid, cookies, params=None):
     main_member = get_api(url, key_no, pid, tid, cookies).json()
     print(main_member)
+    global count_num
+    count_num += 1
+    print(f'现有请求次数{count_num}')
     return main_member
+
 
 # url = 'https://www.qcc.com/api/datalist/mainmember?isNewAgg=true&keyNo=e01ade065389b3428b6ede6dc941cd3a&nodeName=Employees&pageIndex=2'
 # key_no = 'e01ade065389b3428b6ede6dc941cd3a'
@@ -103,7 +108,11 @@ def get_response(url, key_no, pid, tid, cookies, params=None):
 def post_response(url, key_no, pid, tid, cookies, json_data=None):
     financial = post_api(url, key_no, pid, tid, cookies, json_data=json_data).json()
     print(financial)
+    global count_num
+    count_num += 1
+    print(f'现有请求次数{count_num}')
     return financial
+
 
 # url = f'https://www.qcc.com/api/datalist/changelist'
 # key_no = '9cce0780ab7644008b73bc2120479d31'
@@ -124,4 +133,5 @@ def post_response(url, key_no, pid, tid, cookies, json_data=None):
 #     'isAggs': True,
 # }
 # post_response(url, key_no, pid, tid, cookies, json_data)
+
 

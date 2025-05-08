@@ -18,16 +18,19 @@ s = requests.session()
 s.keep_alive = False
 
 
-def paper_queue_next(webpage_url_list=None):
+def paper_queue_next(webpage_url_list=None, collect_type_list=None):
     headers = {
         'Content-Type': 'application/json'
     }
     if webpage_url_list is None:
         webpage_url_list = []
+    if collect_type_list is None:
+        collect_type_list = []
 
     url = test_url + "/website/queue/next"
     data = {
-        "webpage_url_list": webpage_url_list
+        "webpage_url_list": webpage_url_list,
+        "collect_type_list": collect_type_list
     }
 
     data_str = json.dumps(data)

@@ -2,22 +2,26 @@
 获取企查查的查询详细页的基础信息
 存在翻页的需要再次请求一下
 """
+import hashlib
 # 注意：数据放在测试库中
 import json
 import math
 import random
 import re
-from datetime import datetime, timedelta
-import hashlib
-from 验证码识别 import get_captcha
-import requests
 import time
+
+import requests
 from DrissionPage import ChromiumPage, ChromiumOptions
-from qcc_auto_login import auto_login
-from qcc_api_res import get_response, post_response
+
 from a_mysql_connection_pool import up_qcc_data, up_qcc_res_data, get_ban_data, del_ban_data, up_part_qcc_data
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_step_finish
+from qcc_api_res import get_response, post_response
+from qcc_auto_login import auto_login
+from 验证码识别 import get_captcha
 
+file_path = r'D:\chome_data\qcc_xia'
+iphone_num = '18157172586'
+password = "Renliang1221"
 
 def generate_md5(data):
     """
@@ -114,7 +118,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
     random_num = random.randint(1, 6)
 
     co = ChromiumOptions()
-    co = co.set_user_data_path(r"D:\chome_data\qcc_xia")
+    co = co.set_user_data_path(file_path)
     co.set_paths(local_port=9232)
     # 连接浏览器
     page = ChromiumPage(co)
@@ -131,7 +135,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
         """
         这里输入账号密码
         """
-        login_outcome = auto_login(tab, '18157172586', "Renliang1221")
+        login_outcome = auto_login(tab, iphone_num, password)
         if login_outcome:
             print('登录成功')
         else:
@@ -832,11 +836,20 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                         # 多于10个的情况下
                         elif sumptuary_num > 10:
                             sumptuary_list = []
-                            input('限制高消费超过十个，建议处理')
                             sumptuary_page = math.ceil(sumptuary_num / 10)
                             for page_ in range(1, sumptuary_page + 1):
-                                sumptuary_url = f"https://www.qcc.com/api/datalist/sumptuary?isNewAgg=true&keyNo={key_no}&pageIndex={page_}"
-                                pass
+                                sumptuary_url = f"https://www.qcc.com/api/datalist/sumptuarylist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}"
+                                sumptuary_value = get_response(sumptuary_url, key_no, pid, tid, cookie_dict)
+                                captcha_value = encounter_captcha(sumptuary_value, page)
+                                if captcha_value in ['没有遇到验证码']:
+                                    sumptuary_value_data = sumptuary_value["data"]
+                                    for sumptuary_data in sumptuary_value_data:
+                                        sumptuary_list.append(sumptuary_data)
+                                    time.sleep(7)
+                                else:
+                                    # 先将请求数据上传到数据库中，后续处理
+                                    up_qcc_res_data(sumptuary_url, 'sumptuary', 'get', '', key_no,
+                                                    webpage_id)
                         else:
                             sumptuary_list = []
                         dispose_success_data(sumptuary_list, 'sumptuary', 'sumptuary:current', key_no,
@@ -2385,7 +2398,6 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                         # 多于10个的情况下
                         elif chistory_hisconsumptionlist_num > 10:
                             chistory_hissumptuarylist = []
-                            input('历史限制高消费列表超过十个，建议处理')
                             hisconsumptionlist_page = math.ceil(chistory_hisconsumptionlist_num / 10)
                             for page_ in range(1, hisconsumptionlist_page + 1):
                                 hisconsumptionlist_url = f'https://www.qcc.com/api/datalist/sumptuarylist?id={key_no}&isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page_}'
@@ -2843,7 +2855,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
     random_num = random.randint(1, 6)
 
     co = ChromiumOptions()
-    co = co.set_user_data_path(r"D:\chome_data\qcc_xia")
+    co = co.set_user_data_path(file_path)
     co.set_paths(local_port=9232)
     # 连接浏览器
     page = ChromiumPage(co)
@@ -2860,7 +2872,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
         """
         这里输入账号密码
         """
-        login_outcome = auto_login(tab, '18157172586', "Renliang1221")
+        login_outcome = auto_login(tab, iphone_num, password)
         if login_outcome:
             print('登录成功')
         else:
@@ -3301,7 +3313,7 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
     random_num = random.randint(1, 6)
 
     co = ChromiumOptions()
-    co = co.set_user_data_path(r"D:\chome_data\qcc_xia")
+    co = co.set_user_data_path(file_path)
     co.set_paths(local_port=9232)
     # 连接浏览器
     page = ChromiumPage(co)
@@ -3318,7 +3330,7 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
         """
         这里输入账号密码
         """
-        login_outcome = auto_login(tab, '18157172586', "Renliang1221")
+        login_outcome = auto_login(tab, iphone_num, password)
         if login_outcome:
             print('登录成功')
         else:
@@ -3633,8 +3645,11 @@ web_list = [
 #         print(f"解析过程中发生错误：{e}")
 #         time.sleep(60)
 
+#
+
 while True:
 
+    # paper_queue = paper_queue_next(webpage_url_list=web_list, collect_type_list=['corp_search_all'])
     paper_queue = paper_queue_next(webpage_url_list=web_list)
     if paper_queue is None or len(paper_queue) == 0:
         time.sleep(30)
@@ -3645,36 +3660,36 @@ while True:
         search_keyword = paper_queue['name']
         collect_type = paper_queue['collect_type']
         if collect_type == 'corp_search_all':
-            try:
-                search_value = qcc_search_company(search_keyword, queue_id, webpage_id)
-                if search_value:
-                    pass
-                elif search_value is None:
-                    fail_data = {
-                        'id': queue_id,
-                        'description': f'公司名与企查查不匹配',
-                    }
-                    paper_queue_fail(data=fail_data)
-                else:
-                    print(search_value)
-                    pass
-            except Exception as e:
+            # try:
+            search_value = qcc_search_company(search_keyword, queue_id, webpage_id)
+            if search_value:
+                pass
+            elif search_value is None:
                 fail_data = {
                     'id': queue_id,
-                    'description': f'出现错误：{e}',
+                    'description': f'公司名与企查查不匹配',
                 }
                 paper_queue_fail(data=fail_data)
+            else:
+                print(search_value)
+                pass
+            # except Exception as e:
+            #     fail_data = {
+            #         'id': queue_id,
+            #         'description': f'出现错误：{e}',
+            #     }
+            #     paper_queue_fail(data=fail_data)
 
         else:
-            try:
-                # 判断search_key是公司还是个人，如果search_key字符串以p开头
-                if search_keyword.startswith('p'):
-                    qcc_search_people(search_keyword, queue_id, webpage_id)
-                else:
-                    qcc_search_keyno(search_keyword, queue_id, webpage_id)
-            except Exception as e:
-                fail_data = {
-                    'id': queue_id,
-                    'description': f'出现错误：{e}',
-                }
-                paper_queue_fail(data=fail_data)
+            # try:
+            # 判断search_key是公司还是个人，如果search_key字符串以p开头
+            if search_keyword.startswith('p'):
+                qcc_search_people(search_keyword, queue_id, webpage_id)
+            else:
+                qcc_search_keyno(search_keyword, queue_id, webpage_id)
+            # except Exception as e:
+            #     fail_data = {
+            #         'id': queue_id,
+            #         'description': f'出现错误：{e}',
+            #     }
+            #     paper_queue_fail(data=fail_data)

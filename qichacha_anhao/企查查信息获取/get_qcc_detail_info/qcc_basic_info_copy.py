@@ -3411,7 +3411,7 @@ web_list = [
 
 while True:
 
-    paper_queue = paper_queue_next(webpage_url_list=web_list)
+    paper_queue = paper_queue_next(webpage_url_list=web_list, collect_type_list=['corp_search_all'])
     if paper_queue is None or len(paper_queue) == 0:
         time.sleep(30)
         continue

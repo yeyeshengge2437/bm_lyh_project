@@ -7,7 +7,6 @@ import json
 import math
 import random
 import re
-from datetime import datetime, timedelta
 import hashlib
 from 验证码识别 import get_captcha
 import requests
@@ -78,6 +77,7 @@ def encounter_captcha(value_json, page):
             time.sleep(random.uniform(7, 17))
             try:
                 get_captcha(page)
+                time.sleep(random.uniform(7, 17))
                 page.refresh()
                 time.sleep(random.uniform(7, 17))
                 if page.ele("xpath=//input[@id='searchKey']"):
@@ -129,7 +129,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
         """
         这里输入账号密码
         """
-        login_outcome = auto_login(tab, '18357151616', "wensheng123")
+        login_outcome = auto_login(tab, '18357151616', "wensheng1234")
         if login_outcome:
             print('登录成功')
         else:
@@ -824,11 +824,20 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                         # 多于10个的情况下
                         elif sumptuary_num > 10:
                             sumptuary_list = []
-                            input('限制高消费超过十个，建议处理')
                             sumptuary_page = math.ceil(sumptuary_num / 10)
                             for page_ in range(1, sumptuary_page + 1):
-                                sumptuary_url = f"https://www.qcc.com/api/datalist/sumptuary?isNewAgg=true&keyNo={key_no}&pageIndex={page_}"
-                                pass
+                                sumptuary_url = f"https://www.qcc.com/api/datalist/sumptuarylist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}"
+                                sumptuary_value = get_response(sumptuary_url, key_no, pid, tid, cookie_dict)
+                                captcha_value = encounter_captcha(sumptuary_value, page)
+                                if captcha_value in ['没有遇到验证码']:
+                                    sumptuary_value_data = sumptuary_value["data"]
+                                    for sumptuary_data in sumptuary_value_data:
+                                        sumptuary_list.append(sumptuary_data)
+                                    time.sleep(7)
+                                else:
+                                    # 先将请求数据上传到数据库中，后续处理
+                                    up_qcc_res_data(sumptuary_url, 'sumptuary', 'get', '', key_no,
+                                                    webpage_id)
                         else:
                             sumptuary_list = []
                         dispose_success_data(sumptuary_list, 'sumptuary', 'sumptuary:current', key_no,
@@ -2374,7 +2383,6 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                         # 多于10个的情况下
                         elif chistory_hisconsumptionlist_num > 10:
                             chistory_hissumptuarylist = []
-                            input('历史限制高消费列表超过十个，建议处理')
                             hisconsumptionlist_page = math.ceil(chistory_hisconsumptionlist_num / 10)
                             for page_ in range(1, hisconsumptionlist_page + 1):
                                 hisconsumptionlist_url = f'https://www.qcc.com/api/datalist/sumptuarylist?id={key_no}&isNewAgg=true&isValid=0&keyNo={key_no}&pageIndex={page_}'
@@ -2849,7 +2857,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
         """
         这里输入账号密码
         """
-        login_outcome = auto_login(tab, '18357151616', "wensheng123")
+        login_outcome = auto_login(tab, '18357151616', "wensheng1234")
         if login_outcome:
             print('登录成功')
         else:
@@ -3348,7 +3356,7 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
         """
         这里输入账号密码
         """
-        login_outcome = auto_login(tab, '18357151616', "wensheng123")
+        login_outcome = auto_login(tab, '18357151616', "wensheng1234")
         if login_outcome:
             print('登录成功')
         else:
@@ -3643,6 +3651,7 @@ web_list = [
 
 while True:
 
+    # paper_queue = paper_queue_next(webpage_url_list=web_list, collect_type_list=['corp_search_all'])
     paper_queue = paper_queue_next(webpage_url_list=web_list)
     if paper_queue is None or len(paper_queue) == 0:
         time.sleep(30)
