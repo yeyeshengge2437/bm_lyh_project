@@ -9,10 +9,10 @@ import math
 import random
 import re
 import time
-
+import traceback
 import requests
 from DrissionPage import ChromiumPage, ChromiumOptions
-
+from dingdingbot import dd_program_abnormal
 from a_mysql_connection_pool import up_qcc_data, up_qcc_res_data, get_ban_data, del_ban_data, up_part_qcc_data
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail, paper_queue_step_finish
 from qcc_api_res import get_response, post_response
@@ -76,7 +76,7 @@ headers = {
 
 def encounter_captcha(value_json, page):
     if value_json.get('message'):
-        if value_json.get('message') == '未满足前提条件':
+        if value_json.get('message') in ['未满足前提条件', '被立即暂停服务']:
             print("未满足前提条件, 网站限制")
             page.refresh()
             time.sleep(8)
@@ -156,7 +156,6 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
     res_html = response.text
     res_json = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function', res_html)
     if res_json:
-        # page.quit()
         search_company_list = []
         res_json = res_json[0]
         res_json = json.loads(res_json)
@@ -2797,7 +2796,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                             'description': f'数据获取成功',
                         }
                         paper_queue_success(success_data)
-                        page.quit()
+                        # page.quit()
                         return True
             else:
                 pass
@@ -2826,7 +2825,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
             # # 没有匹配到公司，获取到的公司列表
             # # print("没有匹配到精确公司，获取到的多个公司列表")
             # print(company_simple_json)
-        page.quit()
+        # page.quit()
     else:
         print("网站限制")
         print("获取数据失败")
@@ -2846,7 +2845,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
         time.sleep(5)
         page.refresh()
         # 判断是否为扫描二维码
-        page.quit()
+        # page.quit()
         return False
 
 
@@ -2989,7 +2988,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
                 company_partners = []
                 partner_page = math.ceil(partner_num / 50)
                 for page_ in range(1, partner_page + 1):
-                    partner_url = f'https://www.qcc.com/api/datalist/partner?keyNo={key_no}&pageIndex={page_}&pageSize=50&type=IpoPartners'
+                    partner_url = f'https://www.qcc.com/api/datalist/partner?keyNo={key_no}&pageIndex={page_}&pageSize=50'
                     partner_value = get_response(partner_url, key_no, pid, tid, cookie_dict)
                     captcha_value = encounter_captcha(partner_value, page)
                     if captcha_value in ['没有遇到验证码']:
@@ -3281,7 +3280,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
                 'description': f'数据获取成功',
             }
             paper_queue_success(success_data)
-            page.quit()
+            # page.quit()
             return True
 
         else:
@@ -3304,7 +3303,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
             time.sleep(5)
             page.refresh()
             # 判断是否为扫描二维码
-            page.quit()
+            # page.quit()
             return False
 
 
@@ -3591,7 +3590,7 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
                 'description': f'数据获取成功',
             }
             paper_queue_success(success_data)
-            page.quit()
+            # page.quit()
             return True
 
         else:
@@ -3613,7 +3612,7 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
             time.sleep(5)
             page.refresh()
             # 判断是否为扫描二维码
-            page.quit()
+            # page.quit()
             return False
 
 
@@ -3660,36 +3659,40 @@ while True:
         search_keyword = paper_queue['name']
         collect_type = paper_queue['collect_type']
         if collect_type == 'corp_search_all':
-            # try:
-            search_value = qcc_search_company(search_keyword, queue_id, webpage_id)
-            if search_value:
-                pass
-            elif search_value is None:
+            try:
+                search_value = qcc_search_company(search_keyword, queue_id, webpage_id)
+                if search_value:
+                    pass
+                elif search_value is None:
+                    fail_data = {
+                        'id': queue_id,
+                        'description': f'公司名与企查查不匹配',
+                    }
+                    paper_queue_fail(data=fail_data)
+                else:
+                    print(search_value)
+                    pass
+            except Exception as e:
+                error_msg = traceback.format_exc()
                 fail_data = {
                     'id': queue_id,
-                    'description': f'公司名与企查查不匹配',
+                    'description': f'出现错误：{e}',
                 }
                 paper_queue_fail(data=fail_data)
-            else:
-                print(search_value)
-                pass
-            # except Exception as e:
-            #     fail_data = {
-            #         'id': queue_id,
-            #         'description': f'出现错误：{e}',
-            #     }
-            #     paper_queue_fail(data=fail_data)
+                dd_program_abnormal(title=f"企查查程序异常，账号：{iphone_num}", msg=error_msg)
 
         else:
-            # try:
-            # 判断search_key是公司还是个人，如果search_key字符串以p开头
-            if search_keyword.startswith('p'):
-                qcc_search_people(search_keyword, queue_id, webpage_id)
-            else:
-                qcc_search_keyno(search_keyword, queue_id, webpage_id)
-            # except Exception as e:
-            #     fail_data = {
-            #         'id': queue_id,
-            #         'description': f'出现错误：{e}',
-            #     }
-            #     paper_queue_fail(data=fail_data)
+            try:
+                # 判断search_key是公司还是个人，如果search_key字符串以p开头
+                if search_keyword.startswith('p'):
+                    qcc_search_people(search_keyword, queue_id, webpage_id)
+                else:
+                    qcc_search_keyno(search_keyword, queue_id, webpage_id)
+            except Exception as e:
+                error_msg = traceback.format_exc()
+                fail_data = {
+                    'id': queue_id,
+                    'description': f'出现错误：{e}',
+                }
+                paper_queue_fail(data=fail_data)
+                dd_program_abnormal(title=f"企查查程序异常，账号：{iphone_num}", msg=error_msg)

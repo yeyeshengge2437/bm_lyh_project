@@ -2,7 +2,7 @@ import re
 import time
 
 import requests
-from ai_api_mid import ai_parse_next, ai_parse_success, ai_parse_fail
+from ai_api_mid_produce import ai_parse_next, ai_parse_success, ai_parse_fail
 
 
 # Authorization: Bearer M3JPM98-JMP46MY-HEF0H3P-CAQED8E

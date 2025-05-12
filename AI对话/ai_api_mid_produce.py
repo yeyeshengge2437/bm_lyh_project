@@ -8,8 +8,8 @@ requests.DEFAULT_RETRIES = 3
 s = requests.session()
 s.keep_alive = False
 
-# produce_url = "http://118.31.45.18:29810"
-produce_url = "http://118.31.45.18:29710"    # 测试环境
+produce_url = "http://118.31.45.18:29810"
+# produce_url = "http://118.31.45.18:29710"    # 测试环境
 
 
 def ai_parse_next(data=None):

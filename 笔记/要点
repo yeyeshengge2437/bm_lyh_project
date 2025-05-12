@@ -28,3 +28,15 @@
 
     6.上一个节点
         ../
+
+
+使用 traceback.format_exc()（推荐）
+python
+import traceback
+
+try:
+    # 可能出错的代码
+    1 / 0
+except Exception as e:
+    error_msg = traceback.format_exc()  # 捕获完整错误堆栈
+    print("完整错误信息：\n", error_msg)

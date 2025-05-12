@@ -71,7 +71,7 @@ headers = {
 
 def encounter_captcha(value_json, page):
     if value_json.get('message'):
-        if value_json.get('message') == '未满足前提条件':
+        if value_json.get('message') in ['未满足前提条件', '被立即暂停服务']:
             print("网站限制")
             page.refresh()
             time.sleep(random.uniform(7, 17))
@@ -150,7 +150,6 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
     res_html = response.text
     res_json = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function', res_html)
     if res_json:
-        # page.quit()
         search_company_list = []
         res_json = res_json[0]
         res_json = json.loads(res_json)
@@ -314,7 +313,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                             company_partners = []
                             partner_page = math.ceil(partner_num / 50)
                             for page_ in range(1, partner_page + 1):
-                                partner_url = f'https://www.qcc.com/api/datalist/partner?keyNo={key_no}&pageIndex={page_}&pageSize=50&type=IpoPartners'
+                                partner_url = f'https://www.qcc.com/api/datalist/partner?keyNo={key_no}&pageIndex={page_}&pageSize=50'
                                 partner_value = get_response(partner_url, key_no, pid, tid, cookie_dict)
                                 captcha_value = encounter_captcha(partner_value, page)
                                 if captcha_value in [ '没有遇到验证码']:
@@ -2782,7 +2781,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                             'description': f'数据获取成功',
                         }
                         paper_queue_success(success_data)
-                        page.quit()
+                        # page.quit()
                         return True
             else:
                 pass
@@ -2811,7 +2810,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
             # # 没有匹配到公司，获取到的公司列表
             # # print("没有匹配到精确公司，获取到的多个公司列表")
             # print(company_simple_json)
-        page.quit()
+        # page.quit()
     else:
         print("网站限制")
         print("获取数据失败")
@@ -2831,7 +2830,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
         time.sleep(random.uniform(7, 17))
         page.refresh()
         # 判断是否为扫描二维码
-        page.quit()
+        # page.quit()
         return False
 
 
@@ -3308,7 +3307,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
                 'description': f'数据获取成功',
             }
             paper_queue_success(success_data)
-            page.quit()
+            # page.quit()
             return True
 
         else:
@@ -3330,7 +3329,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
             time.sleep(random.uniform(7, 17))
             page.refresh()
             # 判断是否为扫描二维码
-            page.quit()
+            # page.quit()
             return False
 
 
@@ -3617,7 +3616,7 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
                 'description': f'数据获取成功',
             }
             paper_queue_success(success_data)
-            page.quit()
+            # page.quit()
             return True
 
         else:
@@ -3639,7 +3638,7 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
             time.sleep(random.uniform(7, 17))
             page.refresh()
             # 判断是否为扫描二维码
-            page.quit()
+            # page.quit()
             return False
 
 

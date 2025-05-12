@@ -1,5 +1,6 @@
 import time
-
+import traceback
+from dingdingbot import dd_program_abnormal
 from api_paper import paper_queue_next, paper_queue_success, paper_queue_fail
 from yindeng_zhuanranggonggao import get_yindengzhongxin_zhuanranggonggao   # 银登中心转让公告
 from shanghaichanjiaosuo_zhaiquanxiangmu import get_shanghaichanjiangsuo_zhaiquanxiangmu   # 上海联合产权交易所——债权项目
@@ -162,12 +163,15 @@ while True:
                 }
                 paper_queue_success(data=data)
             except Exception as e:
+                error_msg = traceback.format_exc()
                 print(e)
                 data = {
                     "id": queue_id,
                     'description': f'程序异常:{e}',
                 }
                 paper_queue_fail(data=data)
+                dd_program_abnormal(title=f"产权交易所，程序异常", msg=f"程序异常：{e}")
+
     except Exception as e:
         time.sleep(60)
         print(f"解析过程中发生错误：{e}")
