@@ -465,8 +465,8 @@ def get_jd_auction_detail(id_, url, url_name, state, from_queue, state_now=''):
     sold_price = re.sub(r'保证金.*', '', sold_price)
     sold_price = re.sub(r'变卖.*', '', sold_price)
     outcome = ''.join(tree.xpath("//div[@class='index_auctionstatusbanner__statustext__RxEYN']/span//text()"))
-    end_time = ''
-    start_time = ''
+    end_time = None
+    start_time = None
     if state_now == '已结束' or state_now == '进行中':
         end_time_str = ''.join(tree.xpath(
             "//div[@class='index_auctionstatusbanner__endtime__7-dda']/text() | //div[@class='main-block-content']/div[1]//text()"))
@@ -481,6 +481,8 @@ def get_jd_auction_detail(id_, url, url_name, state, from_queue, state_now=''):
         start_time = parse_opentime(distance_end)
         print(distance_end)
         print(start_time)
+    if not end_time:
+        end_time = None
     procedure_str = ''  # 拍卖程序
     disposal_unit = ''.join(tree.xpath("//a[@id='disposalUnitTag']/text()"))  # 处置单位
     bidding_status = ''.join(tree.xpath("//table[@class='index_bidList__i8yA2']/tbody/tr[1]/td[1]/div/text()"))  # 竞买状态

@@ -326,7 +326,9 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                 partner_value = get_response(partner_url, key_no, pid, tid, cookie_dict)
                                 captcha_value = encounter_captcha(partner_value, page)
                                 if captcha_value in ['没有遇到验证码']:
-                                    company_partners.append(partner_value)
+                                    partner_value_data = partner_value.get('data')
+                                    for partner_data in partner_value_data:
+                                        company_partners.append(partner_data)
                                     time.sleep(7)
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
@@ -507,8 +509,6 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                         # 企业年报
                         try:
                             company_reportyear = company_json["datalist"]["reportyear"]["data"]
-
-
                         except:
                             company_reportyear = []
                         dispose_success_data(company_reportyear, 'annual_report', 'annual_report:current', key_no,
@@ -516,6 +516,29 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                         '''
                         企业年报获取到年报的详细信息，待完善
                         '''
+                        for reportyear_data in company_reportyear:
+                            # 获取年报的基本详情
+                            reportyear_id = reportyear_data.get('id')
+                            year_str = reportyear_data.get('year')
+                            year_num = re.findall(r'\d+', year_str)[0]
+                            if reportyear_id:
+                                reportyear_url = f'https://www.qcc.com/webReportYearDetail/{reportyear_id}_{year_num}.html'
+                                reportyear_value = requests.get(reportyear_url, headers=headers, cookies=cookie_dict)
+                                reportyear_html = reportyear_value.text
+                                nianbao_data = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function',reportyear_html)
+
+                                nianbao_json = json.loads(nianbao_data[0])
+                                annual_report_info = []
+                                annual_report_info.append(nianbao_json["detail"]["reportYearEntity"]["reportInfo"])
+                                dispose_success_data(annual_report_info, 'annual_report_info', 'annual_report_info:current', key_no,
+                                                     from_queue,
+                                                     webpage_id)
+
+
+
+
+
+
                         # 疑似关系
                         suspectlist_num = inquire_dict.get('疑似关系')
                         if not suspectlist_num:
@@ -3103,6 +3126,44 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
                 chistory_histouzilist = []
             dispose_success_data(chistory_histouzilist, 'his_invest', 'invest:history', key_no, from_queue, webpage_id)
 
+            # 分支机构
+            branch_num = inquire_dict.get('分支机构')
+            if not branch_num:
+                branch_num = 0
+            if 0 < branch_num <= 10:
+                company_branch_list = company_json["datalist"]["branchelist"]["data"]
+            # 多于10个的情况下
+            elif 10 < branch_num <= 20:
+                company_branch_list = []
+                branch_page = math.ceil(branch_num / 10)
+                for page_ in range(1, branch_page + 1):
+                    branch_url = f'https://www.qcc.com/api/datalist/branchelist?isNewAgg=true&keyNo={key_no}&pageIndex={page_}'
+                    branch_value = get_response(branch_url, key_no, pid, tid, cookie_dict)
+                    captcha_value = encounter_captcha(branch_value, page)
+                    if captcha_value in ['没有遇到验证码']:
+                        branch_value_data = branch_value['data']
+                        for branch_data in branch_value_data:
+                            company_branch_list.append(branch_data)
+                        time.sleep(random.uniform(7, 17))
+                    else:
+                        # 先将请求数据上传到数据库中，后续处理
+                        up_qcc_res_data(branch_url, 'branch', 'get', '', key_no, webpage_id)
+
+            else:
+                company_branch_list = []
+            dispose_success_data(company_branch_list, 'branch', 'branch:current', key_no,
+                                 from_queue, webpage_id)
+
+            # 总公司
+            headquarter_num = inquire_dict.get('总公司')
+            if not headquarter_num:
+                headquarter_num = 0
+            if headquarter_num:
+                company_headquarter = company_json["company"]["companyDetail"]["ParentInfoV2"]
+            else:
+                company_headquarter = dict()
+            dispose_success_data(company_headquarter, 'headquarter', 'headquarter:current', key_no,
+                                 from_queue, webpage_id)
             # 疑似关系
             suspectlist_num = inquire_dict.get('疑似关系')
             if not suspectlist_num:

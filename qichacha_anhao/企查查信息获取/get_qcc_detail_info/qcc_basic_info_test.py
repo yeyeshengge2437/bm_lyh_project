@@ -316,8 +316,10 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                 partner_url = f'https://www.qcc.com/api/datalist/partner?keyNo={key_no}&pageIndex={page_}&pageSize=50'
                                 partner_value = get_response(partner_url, key_no, pid, tid, cookie_dict)
                                 captcha_value = encounter_captcha(partner_value, page)
-                                if captcha_value in [ '没有遇到验证码']:
-                                    company_partners.append(partner_value)
+                                if captcha_value in ['没有遇到验证码']:
+                                    partner_value_data = partner_value.get('data')
+                                    for partner_data in partner_value_data:
+                                        company_partners.append(partner_data)
                                     time.sleep(random.uniform(7, 17))
                                 else:
                                     # 先将请求数据上传到数据库中，后续处理
@@ -339,7 +341,7 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                 employees_url = f'https://www.qcc.com/api/datalist/mainmember?isNewAgg=true&keyNo={key_no}&nodeName=Employees&pageIndex={page_}'
                                 employees_value = get_response(employees_url, key_no, pid, tid, cookie_dict)
                                 captcha_value = encounter_captcha(employees_value, page)
-                                if captcha_value in [ '没有遇到验证码']:
+                                if captcha_value in ['没有遇到验证码']:
                                     company_partners.append(employees_value)
                                     time.sleep(random.uniform(7, 17))
                                 else:
@@ -3096,7 +3098,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
             if 0 < branch_num <= 10:
                 company_branch_list = company_json["datalist"]["branchelist"]["data"]
             # 多于10个的情况下
-            elif branch_num > 10:
+            elif 10 < branch_num <= 20:
                 company_branch_list = []
                 branch_page = math.ceil(branch_num / 10)
                 for page_ in range(1, branch_page + 1):
