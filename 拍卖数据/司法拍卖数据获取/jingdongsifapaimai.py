@@ -178,8 +178,8 @@ def get_detail_info(value_id, url, from_queue):
     sold_price = re.sub(r'保证金.*', '', sold_price)
     sold_price = re.sub(r'变卖.*', '', sold_price)
     outcome = ''.join(tree.xpath("//div[@class='index_auctionstatusbanner__statustext__RxEYN']/span//text()"))
-    end_time = ''
-    start_time = ''
+    end_time = None
+    start_time = None
     if state == '已结束' or state == '进行中' or state == '已中止':
         end_time_str = ''.join(tree.xpath(
             "//div[@class='index_auctionstatusbanner__endtime__7-dda']/text() | //div[@class='main-block-content']/div[1]//text()"))
