@@ -105,7 +105,7 @@ def generate_md5(data):
 
 
 def up_part_qcc_data(data_value, data_key, key_no, from_queue, webpage_id):
-    if data_key in ['business_info', 'credit_eval', "headquarter", 'annual_report_info']:
+    if data_key in ['business_info', 'credit_eval', "headquarter",]:
         data_md5 = generate_md5(str(data_value))
         data_status = "current"
         data_json = json.dumps(data_value, ensure_ascii=False)

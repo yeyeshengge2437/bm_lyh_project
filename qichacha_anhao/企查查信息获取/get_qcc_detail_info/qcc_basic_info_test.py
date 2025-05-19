@@ -505,6 +505,112 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                         '''
                         企业年报获取到年报的详细信息，待完善
                         '''
+                        annual_report_info_list = []
+                        nianbao_shareholder_list = []
+                        nianbao_modify_record_list = []
+                        for reportyear_data in company_reportyear:
+                            # 获取年报的基本详情
+                            reportyear_id = reportyear_data.get('Id')
+                            year_str = reportyear_data.get('Year')
+                            year_num = re.findall(r'\d+', year_str)[0]
+                            if reportyear_id:
+                                reportyear_url = f'https://www.qcc.com/webReportYearDetail/{key_no}_{year_num}.html'
+                                reportyear_value = requests.get(reportyear_url, headers=headers, cookies=cookie_dict)
+                                reportyear_html = reportyear_value.text
+                                nianbao_data = re.findall(r'window\.__INITIAL_STATE__=(.*?);\(function',
+                                                          reportyear_html)
+
+                                nianbao_json = json.loads(nianbao_data[0])
+                                annual_report_info = nianbao_json["detail"]["reportYearEntity"]["reportInfo"]
+                                annual_report_info_list.append(annual_report_info)
+
+                                # 年报股东信息
+                                nianbao_shareholder_num = int(
+                                    nianbao_json["detail"]["reportYearEntity"]["reportInfo"]["NodesCount"][
+                                        "PartnersCount"])
+                                if 0 < nianbao_shareholder_num <= 10:
+                                    nianbao_shareholder = nianbao_json["detail"]["reportYearEntity"]["partnersList"][
+                                        "Result"]
+                                    for nianbao_shareholder_data in nianbao_shareholder:
+                                        nianbao_shareholder_data['year'] = year_num
+                                        nianbao_shareholder_list.append(nianbao_shareholder_data)
+                                elif nianbao_shareholder_num > 10:
+                                    nianbao_shareholder_page = math.ceil(nianbao_shareholder_num / 10)
+                                    for page_ in range(1, nianbao_shareholder_page + 1):
+                                        nianbao_shareholder_url = f'https://www.qcc.com/api/datalist/annualReportPartnerList'
+                                        json_data = {
+                                            'pageIndex': page_,
+                                            'keyNo': f'{key_no}',
+                                            'year': f'{year_str}',
+                                        }
+                                        nianbao_shareholder_value = post_response(nianbao_shareholder_url, key_no, pid,
+                                                                                  tid, cookie_dict, json_data)
+                                        captcha_value = encounter_captcha(nianbao_shareholder_value, page)
+                                        if captcha_value in ['没有遇到验证码']:
+                                            nianbao_shareholder = nianbao_shareholder_value['data']
+                                            for nianbao_shareholder_data in nianbao_shareholder:
+                                                nianbao_shareholder_data['year'] = year_num
+                                                nianbao_shareholder_list.append(nianbao_shareholder_data)
+                                            time.sleep(13)
+                                        else:
+                                            # 先将请求数据上传到数据库中，后续处理
+                                            json_data = json.dumps(json_data, ensure_ascii=False)
+                                            up_qcc_res_data(nianbao_shareholder_url, 'annual_report_shareholder',
+                                                            'post', json_data, key_no,
+                                                            webpage_id)
+
+                                # 年报修改记录
+                                nianbao_modify_record_num = int(
+                                    nianbao_json["detail"]["reportYearEntity"]["reportInfo"]["NodesCount"][
+                                        "ChangeCount"])
+                                if 0 < nianbao_modify_record_num <= 10:
+                                    nianbao_modify_record = nianbao_json["detail"]["reportYearEntity"]["reportInfo"][
+                                        "ChangeList"]
+                                    for nianbao_modify_record_data in nianbao_modify_record:
+                                        nianbao_modify_record_data['year'] = year_num
+                                        nianbao_modify_record_list.append(nianbao_modify_record_data)
+                                elif nianbao_modify_record_num > 10:
+                                    nianbao_modify_record_page = math.ceil(nianbao_modify_record_num / 10)
+                                    for page_ in range(1, nianbao_modify_record_page + 1):
+                                        nianbao_modify_record_url = f'https://www.qcc.com/api/datalist/annualReportChangeList'
+                                        json_data = {
+                                            'pageIndex': page_,
+                                            'keyNo': f'{key_no}',
+                                            'year': f'{year_str}',
+                                        }
+                                        nianbao_modify_record_value = post_response(nianbao_modify_record_url, key_no,
+                                                                                    pid, tid, cookie_dict, json_data)
+                                        captcha_value = encounter_captcha(nianbao_modify_record_value, page)
+                                        if captcha_value in ['没有遇到验证码']:
+                                            nianbao_modify_record = nianbao_modify_record_value['data']
+                                            for nianbao_modify_record_data in nianbao_modify_record:
+                                                nianbao_modify_record_data['year'] = year_num
+                                                nianbao_modify_record_list.append(nianbao_modify_record_data)
+                                            time.sleep(13)
+                                        else:
+                                            # 先将请求数据上传到数据库中，后续处理
+                                            json_data = json.dumps(json_data, ensure_ascii=False)
+                                            up_qcc_res_data(nianbao_modify_record_url, 'annual_report_change', 'post',
+                                                            json_data, key_no,
+                                                            webpage_id)
+
+                        # print(annual_report_info_list)
+                        # print(nianbao_shareholder_list)
+                        # input('数据获取完成')
+                        dispose_success_data(annual_report_info_list, 'annual_report_info',
+                                             'annual_report_info:current', key_no,
+                                             from_queue,
+                                             webpage_id)
+                        dispose_success_data(nianbao_shareholder_list, 'annual_report_shareholder',
+                                             'annual_report_shareholder:current', key_no,
+                                             from_queue,
+                                             webpage_id)
+                        dispose_success_data(nianbao_modify_record_list, 'annual_report_change',
+                                             'annual_report_change:current', key_no,
+                                             from_queue,
+                                             webpage_id)
+
+
                         # 疑似关系
                         suspectlist_num = inquire_dict.get('疑似关系')
                         if not suspectlist_num:
@@ -1937,10 +2043,10 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                         # 历史法人代表
                         chistory_faren_num = inquire_dict.get('历史法定代表人')
                         # 少于10个的情况下
-                        if 0 < chistory_faren_num <= 10:
+                        if 0 < chistory_faren_num <= 11:
                             chistory_operlist = chistory_json["datalist"]["hisinfo"]["data"]["OperList"]
                         # 多于10个的情况下
-                        elif chistory_faren_num > 10:
+                        elif chistory_faren_num > 11:
                             chistory_operlist = []
                             input('历史法定代表人列表超过10条数据，建议处理')
                             operlist_page = math.ceil(chistory_faren_num / 10)
@@ -2713,6 +2819,15 @@ def qcc_search_company(search_company_name, from_queue, webpage_id):
                                             data_json = json.dumps(data_value, ensure_ascii=False)
                                             up_qcc_data(key_no, data_key, data_status, data_md5, data_json, from_queue,
                                                         webpage_id)
+                                        elif data_key in ['annual_report_shareholder', 'annual_report_change']:
+                                            year_str = json_data['year']
+                                            year_num = re.findall(r'\d+', year_str)[0]
+                                            data_status = 'current'
+                                            data_value['year'] = year_num
+                                            data_md5 = generate_md5(str(data_value))
+                                            data_json = json.dumps(data_value, ensure_ascii=False)
+                                            up_qcc_data(key_no, data_key, data_status, data_md5, data_json, from_queue,
+                                                        webpage_id)
 
                                         else:
                                             if 'his_' in data_key:
@@ -2858,7 +2973,7 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
         """
         这里输入账号密码
         """
-        login_outcome = auto_login(tab, '18357151616', "wensheng1234")
+        login_outcome = auto_login(tab, '18357151616', "wensheng12345！")
         if login_outcome:
             print('登录成功')
         else:
@@ -3179,10 +3294,10 @@ def qcc_search_keyno(search_company_keyno, from_queue, webpage_id):
             if not chistory_faren_num:
                 chistory_faren_num = 0
             # 少于10个的情况下
-            if 0 < chistory_faren_num <= 10:
+            if 0 < chistory_faren_num <= 11:
                 chistory_operlist = chistory_json["datalist"]["hisinfo"]["data"]["OperList"]
             # 多于10个的情况下
-            elif chistory_faren_num > 10:
+            elif chistory_faren_num > 11:
                 chistory_operlist = []
                 input('历史法定代表人列表超过10条数据，建议处理')
                 operlist_page = math.ceil(chistory_faren_num / 10)
@@ -3357,7 +3472,7 @@ def qcc_search_people(people_keyno, from_queue, webpage_id):
         """
         这里输入账号密码
         """
-        login_outcome = auto_login(tab, '18357151616', "wensheng1234")
+        login_outcome = auto_login(tab, '18357151616', "wensheng12345！")
         if login_outcome:
             print('登录成功')
         else:
